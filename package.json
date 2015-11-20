@@ -5,14 +5,14 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mpress/membership-system.git"
+    "url": "git+https://github.com/southlondonmakerspace/membership-system.git"
   },
   "author": "Tom Lynch, Matthew Press",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mpress/membership-system/issues"
+    "url": "https://github.com/southlondonmakerspace/membership-system/issues"
   },
-  "homepage": "https://github.com/mpress/membership-system#readme",
+  "homepage": "https://github.com/southlondonmakerspace/membership-system#readme",
   "dependencies": {
     "body-parser": "^1.14.1",
     "cookie-parser": "^1.4.0",

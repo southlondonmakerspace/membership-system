@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Membership System for the South London Makerspace",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mpress/membership-system.git"
@@ -26,5 +23,11 @@
     "passport": "^0.3.2",
     "passport-persona": "^0.1.7",
     "swig": "^1.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/js/app.js"
   }
 }
+
+

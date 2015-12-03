@@ -2,7 +2,7 @@ module.exports = function( app ){
 
 	app.get( '/', function ( req, res ) {
 
-		res.send( 'Hello Makers!!' );
+		res.render( 'index', {} );
 	});
 
 	app.get( '/login' , function( req, res ){

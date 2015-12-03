@@ -1,11 +1,14 @@
 var	express = require( 'express'),
-	config = require( '../../config/config.json' );
+	config = require( '../../config/config.json');
+	app = express(),
+	swig = require( 'swig' );
 
-var site = express();
 
-site.get( '/', function ( req, res ) {
+app.engine( 'html', swig.renderFile );
+app.set( 'view engine', 'html' );
+app.set( 'views', __dirname + '/../views' );
 
-	res.send( 'Hello Makers!' );
-});
+var routes = require( './routes' )( app );
 
-site.listen( config.port );
+
+app.listen( config.port );

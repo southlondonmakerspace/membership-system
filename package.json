@@ -3,19 +3,16 @@
   "version": "1.0.0",
   "description": "Membership System for the South London Makerspace",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mpress/membership-system.git"
+    "url": "git+https://github.com/southlondonmakerspace/membership-system.git"
   },
   "author": "Tom Lynch, Matthew Press",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mpress/membership-system/issues"
+    "url": "https://github.com/southlondonmakerspace/membership-system/issues"
   },
-  "homepage": "https://github.com/mpress/membership-system#readme",
+  "homepage": "https://github.com/southlondonmakerspace/membership-system#readme",
   "dependencies": {
     "body-parser": "^1.14.1",
     "cookie-parser": "^1.4.0",
@@ -26,5 +23,11 @@
     "passport": "^0.3.2",
     "passport-persona": "^0.1.7",
     "swig": "^1.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/js/app.js"
   }
 }
+
+

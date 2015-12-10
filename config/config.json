@@ -8,5 +8,6 @@
 	"users": [
 		"me@unknowndomain.co.uk",
 		"example@example.com"
-	]
+	],
+	"audience": "http://localhost:3001"
 }

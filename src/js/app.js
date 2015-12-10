@@ -15,7 +15,7 @@ var passport = require( 'passport' ),
 	PersonaStrategy = require( 'passport-persona' ).Strategy;
 
 // Add support for persona authentication
-passport.use( new PersonaStrategy( { audience: 'http://localhost:3001' },
+passport.use( new PersonaStrategy( { audience: config.audience },
 	function( email, done ) {
 	    process.nextTick(function () {
 	    	if ( config.users.indexOf( email ) != -1 )

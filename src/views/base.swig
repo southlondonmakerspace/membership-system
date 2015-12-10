@@ -10,6 +10,7 @@
 		{% block scripts %}
 			<script src="/js/jquery.js"></script>
 			<script src="/js/bootstrap.js"></script>
+			<script src="https://login.persona.org/include.js" type="text/javascript"></script>
 			<script src="/js/script.js"></script>
 		{% endblock %}
 	</head>

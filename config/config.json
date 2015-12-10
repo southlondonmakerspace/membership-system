@@ -4,5 +4,9 @@
 	"globals": {
 		"organisation": "South London Makerspace",
 		"title": "Membership System"
-	}
+	},
+	"users": [
+		"me@unknowndomain.co.uk",
+		"example@example.com"
+	]
 }

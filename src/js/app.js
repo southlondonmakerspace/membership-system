@@ -52,6 +52,24 @@ app.use( session( {
 
 // Include support for notifications
 app.use( flash() );
+app.use( function( req, res, next ) {
+	var flash = req.flash();
+	var flashes = [];
+	var types = Object.keys( flash );
+	for ( t in types ) {
+		var key = types[t];
+		var messages = flash[key];
+		for ( m in messages ) {
+			var message = messages[m];
+			flashes.push( {
+				type: key == 'error' ? 'danger' : key,
+				message: message
+			} );
+		}
+	}
+	res.locals.flashes = flashes;
+	next();
+} )
 
 // Include support for passport and sessions
 app.use( passport.initialize() );

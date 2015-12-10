@@ -13,7 +13,7 @@ var	express = require( 'express' ),
 	http = require( 'http' ).Server( app );
 
 // Setup static route
-app.use( express.static( __dirname + '/static' ) );
+app.use( express.static( __dirname + '../../../static' ) );
 
 // Enable support for form post data
 app.use( body.json() );

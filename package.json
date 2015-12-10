@@ -14,7 +14,6 @@
   },
   "homepage": "https://github.com/southlondonmakerspace/membership-system#readme",
   "dependencies": {
-    "add-flash": "0.0.3",
     "body-parser": "^1.14.1",
     "cookie-parser": "^1.4.0",
     "express": "^4.13.3",

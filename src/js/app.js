@@ -4,13 +4,13 @@ var mongoose = require( 'mongoose' );
 
 var	express = require( 'express' ),
 	flash = require( 'express-flash' ),
-	add_flash = require( 'add-flash' ),
 	session = require( 'express-session' ),
 	body = require('body-parser'),
 	cookie = require('cookie-parser'),
 	swig = require( 'swig' ),
 	app = express(),
 	http = require( 'http' ).Server( app );
+
 
 // Setup static route
 app.use( express.static( __dirname + '../../../static' ) );
@@ -31,7 +31,6 @@ app.use( session( {
 
 // Include support for notifications
 app.use( flash() );
-app.use( add_flash() );
 
 // Load in local variables such as config.globals
 app.use( function( req, res, next ) {

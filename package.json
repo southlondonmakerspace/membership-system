@@ -29,5 +29,3 @@
     "start": "node src/js/app.js"
   }
 }
-
-

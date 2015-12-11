@@ -1,3 +1,5 @@
+"use strict";
+
 var passport = require( 'passport' );
 
 module.exports = function( app ){
@@ -31,10 +33,10 @@ module.exports = function( app ){
 		successFlash: true
 	} ) );
 
-}
+};
 
 function ensureAuthenticated( req, res, next ) {
-  if ( req.isAuthenticated() ) { return next(); }
-  req.flash( 'error', 'Please login first' );
-  res.redirect( '/login' )
+	if ( req.isAuthenticated() ) { return next(); }
+	req.flash( 'error', 'Please login first' );
+	res.redirect( '/login' );
 }

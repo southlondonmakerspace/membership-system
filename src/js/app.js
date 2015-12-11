@@ -1,25 +1,28 @@
-var config = require( '../../config/config.json' );
-
-var mongoose = require( 'mongoose' );
-
-var	express = require( 'express' ),
+var config = require( '../../config/config.json'),
+	mongoose = require( 'mongoose'),
+	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	session = require( 'express-session' ),
 	body = require('body-parser'),
 	cookie = require('cookie-parser'),
 	swig = require( 'swig' ),
 	app = express(),
-	http = require( 'http' ).Server( app );
-
-var passport = require( 'passport' ),
+	http = require( 'http' ).Server( app),
+	passport = require( 'passport' ),
 	PersonaStrategy = require( 'passport-persona' ).Strategy;
 
+"use strict";
 // Add support for persona authentication
 passport.use( new PersonaStrategy( { audience: config.audience },
 	function( email, done ) {
+
 	    process.nextTick(function () {
-	    	if ( config.users.indexOf( email ) != -1 )
-				return done( null, { email: email }, { message: 'User login successful' } );
+
+	    	if ( config.users.indexOf( email ) != -1 ){
+
+			    return done( null, { email: email }, { message: 'User login successful' } );
+		    }
+
 			return done( null, false, { message: 'Unauthorised user' } );
 		} );
 	}
@@ -53,14 +56,16 @@ app.use( session( {
 // Include support for notifications
 app.use( flash() );
 app.use( function( req, res, next ) {
-	var flash = req.flash();
-	var flashes = [];
-	var types = Object.keys( flash );
+
+	var flash = req.flash(),
+		flashes = [],
+		types = Object.keys( flash );
+
 	for ( t in types ) {
-		var key = types[t];
-		var messages = flash[key];
+		var key = types[ t ];
+		var messages = flash[ key ];
 		for ( m in messages ) {
-			var message = messages[m];
+			var message = messages[ m ];
 			flashes.push( {
 				type: key == 'error' ? 'danger' : key,
 				message: message
@@ -81,7 +86,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-// Use SWIG to rener pages
+// Use SWIG to render pages
 app.engine( 'swig', swig.renderFile );
 app.set( 'views', __dirname + './../views' );
 app.set( 'view engine', 'swig' );

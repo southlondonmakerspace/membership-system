@@ -2,11 +2,25 @@
 This is a system for managing membership and payment to South London Makerspace.
 
 ## Setup
-To be written.
+Clone the repo. Then run 
+```
+npm update
+```
 
 ### Configuration
-To be written.
 
+You can automatically compile your css as you edit the less files by running:
+```
+npm run watch
+```
+
+To run the application:
+```
+npm start
+```
+
+By default it will then be available on `http://localhost:3001/`
+The port is configurable in the  `config/congig.json`
 ## License
 
 	Membership System

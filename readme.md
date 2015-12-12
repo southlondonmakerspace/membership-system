@@ -2,7 +2,7 @@
 This is a system for managing membership and payment to South London Makerspace.
 
 ## Setup
-Clone the repo. Then run 
+Clone the repo. Then run:
 ```
 npm update
 ```

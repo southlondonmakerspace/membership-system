@@ -1,22 +1,23 @@
-var config = require( '../../config/config.json'),
-	mongoose = require( 'mongoose'),
+var body = require( 'body-parser' ),
+	config = require( '../../config/config.json' ),
+	cookie = require('cookie-parser'),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
-	session = require( 'express-session' ),
-	body = require('body-parser'),
-	cookie = require('cookie-parser'),
-	swig = require( 'swig' ),
-	app = express(),
-	http = require( 'http' ).Server( app),
+	http = require( 'http' ).Server( app ),
+	mongoose = require( 'mongoose'),
 	passport = require( 'passport' ),
-	PersonaStrategy = require( 'passport-persona' ).Strategy;
+	PersonaStrategy = require( 'passport-persona' ).Strategy,
+	session = require( 'express-session' ),
+	swig = require( 'swig'),
+	app = express();
 
 "use strict";
+
 // Add support for persona authentication
 passport.use( new PersonaStrategy( { audience: config.audience },
 	function( email, done ) {
 
-	    process.nextTick(function () {
+	    process.nextTick( function () {
 
 	    	if ( config.users.indexOf( email ) != -1 ){
 
@@ -33,7 +34,7 @@ passport.serializeUser( function( user, done ) {
 } );
 
 passport.deserializeUser( function( email, done ) {
-	done(null, { email: email });
+	done( null, { email: email } );
 } );
 
 // Setup static route

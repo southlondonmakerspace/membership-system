@@ -5,7 +5,7 @@ var body = require( 'body-parser' ),
 	swig = require( 'swig'),
 
 	app = express(),
-	http = require( 'http' ).Server( app ),;
+	http = require( 'http' ).Server( app );
 
 "use strict";
 

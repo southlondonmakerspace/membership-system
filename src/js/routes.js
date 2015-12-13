@@ -6,7 +6,7 @@ module.exports = function( app ){
 
 	app.get( '/', function ( req, res ) {
 		res.render( 'index' );
-	});
+	} );
 
 	app.get( '/login' , function( req, res ) {
 		res.render( 'login' );
@@ -23,8 +23,9 @@ module.exports = function( app ){
 	} );
 
 	app.get( '/account', ensureAuthenticated, function( req, res ) {
+
 		res.render( 'account', { user: req.user } );
-	});
+	} );
 
 	app.post( '/auth/browserid', passport.authenticate( 'persona', {
 		failureRedirect: '/login',
@@ -36,7 +37,10 @@ module.exports = function( app ){
 };
 
 function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() ) { return next(); }
+
+	if ( req.isAuthenticated() ) {
+		return next();
+	}
 	req.flash( 'error', 'Please login first' );
 	res.redirect( '/login' );
 }

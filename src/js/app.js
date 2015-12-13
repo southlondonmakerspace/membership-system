@@ -1,41 +1,16 @@
 var body = require( 'body-parser' ),
 	config = require( '../../config/config.json' ),
-	cookie = require('cookie-parser'),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
-	http = require( 'http' ).Server( app ),
-	mongoose = require( 'mongoose'),
-	passport = require( 'passport' ),
-	PersonaStrategy = require( 'passport-persona' ).Strategy,
-	session = require( 'express-session' ),
 	swig = require( 'swig'),
-	app = express();
+
+	app = express(),
+	http = require( 'http' ).Server( app ),;
 
 "use strict";
 
-// Add support for persona authentication
-passport.use( new PersonaStrategy( { audience: config.audience },
-	function( email, done ) {
-
-	    process.nextTick( function () {
-
-	    	if ( config.users.indexOf( email ) != -1 ){
-
-			    return done( null, { email: email }, { message: 'User login successful' } );
-		    }
-
-			return done( null, false, { message: 'Unauthorised user' } );
-		} );
-	}
-) );
-
-passport.serializeUser( function( user, done ) {
-	done( null, user.email );
-} );
-
-passport.deserializeUser( function( email, done ) {
-	done( null, { email: email } );
-} );
+// handle authentication
+require( './authentication' )( app );
 
 // Setup static route
 app.use( express.static( __dirname + '../../../static' ) );
@@ -44,15 +19,8 @@ app.use( express.static( __dirname + '../../../static' ) );
 app.use( body.json() );
 app.use( body.urlencoded( { extended: true } ) );
 
-// Add support for sessions
-app.use( cookie() );
-app.use( session( {
-	secret: config.secret,
-	cookie: { maxAge: 60000 },
-	saveUninitialized: false,
-	resave: false,
-	rolling: true
-} ) );
+// handle sessions
+require( './sessions' )( app );
 
 // Include support for notifications
 app.use( flash() );
@@ -77,10 +45,6 @@ app.use( function( req, res, next ) {
 	next();
 } )
 
-// Include support for passport and sessions
-app.use( passport.initialize() );
-app.use( passport.session() );
-
 // Load in local variables such as config.globals
 app.use( function( req, res, next ) {
 	res.locals.config = config.globals;
@@ -95,7 +59,7 @@ app.set( 'view cache', false ); // Disables cache
 swig.setDefaults( { cache: false } ); // Disables cache
 
 // Generic routes
-var routes = require( './routes' )( app );
+require( './routes' )( app );
 
 // Start server
 app.listen( config.port );

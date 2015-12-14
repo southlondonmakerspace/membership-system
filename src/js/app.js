@@ -1,5 +1,8 @@
+"use strict";
+
 var body = require( 'body-parser' ),
 	config = require( '../../config/config.json' ),
+	database = require( './database'),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),
@@ -7,7 +10,6 @@ var body = require( 'body-parser' ),
 	app = express(),
 	http = require( 'http' ).Server( app );
 
-"use strict";
 
 // handle authentication
 require( './authentication' )( app );

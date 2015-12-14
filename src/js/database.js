@@ -9,14 +9,14 @@ module.exports =  function() {
 	var db = mongoose.connection;
 
 	db.on( 'error', console.error.bind( console, 'connection error' ) );
-	db.once('open', function callback () {
-		var memberSchema = mongoose.Schema({
+	db.once( 'open', function callback () {
+		var memberSchema = mongoose.Schema( {
 			name: String,
 			uuid: {
 				type: String ,
 				default: function () { // pseudo uuid4
 					function s4() {
-						return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+						return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
 					};
 					return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 				}
@@ -36,23 +36,30 @@ module.exports =  function() {
 			last_entered: { type: Date }, // last recorded that they went in to the space
 			last_updated: { type: Date }, // last time any entry was updated
 			permission: { type: Number, default: 0 } // permission level. 0 is none, 50 is admin
-		});
+		} );
 
-		var Member = mongoose.model('Member', memberSchema);
-		var member = new Member({ name: 'TestMember' });
-		console.log(member.name);
+		var Member = mongoose.model( 'Member', memberSchema );
+		Member.find( function ( err, members ) {
+
+			if ( err ){
+
+				return console.error( err );
+			}
+
+			console.log( members );
+		} );
+
+		// test creation of new member
+		var member = new Member( { name: 'TestMember' } );
+		console.log( member.name );
+		member.save( function ( err, member ) {
+
+			if ( err ){
+
+				return console.error( err );
+			}
+		} );
 
 
-		member.save(function (err, member) {
-
-			if (err) return console.error(err);
-		});
-
-		Member.find(function (err, members) {
-
-			if (err) return console.error(err);
-			console.log(members);
-		})
-
-	});
+	} );
 }();

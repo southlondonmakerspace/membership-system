@@ -19,6 +19,7 @@
     "express": "^4.13.3",
     "express-flash": "git://github.com/RGBboy/express-flash.git",
     "express-session": "^1.12.1",
+    "less": "^2.5.3",
     "mongoose": "^4.2.5",
     "passport": "^0.3.2",
     "passport-persona": "^0.1.7",
@@ -26,6 +27,12 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/js/app.js"
+    "start": "node src/js/app.js",
+    "watch-css": "catw -c 'lessc -' 'static/less/*.less' -o static/css/style.css -v",
+    "watch": "npm run watch-css"
+  },
+  "devDependencies": {
+    "catw": "^1.0.1",
+    "watchify": "^3.6.1"
   }
 }

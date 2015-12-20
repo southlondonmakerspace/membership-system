@@ -1,10 +1,12 @@
+"use strict";
+
 var passport = require( 'passport' );
 
 module.exports = function( app ){
 
 	app.get( '/', function ( req, res ) {
 		res.render( 'index' );
-	});
+	} );
 
 	app.get( '/login' , function( req, res ) {
 		res.render( 'login' );
@@ -21,8 +23,9 @@ module.exports = function( app ){
 	} );
 
 	app.get( '/account', ensureAuthenticated, function( req, res ) {
+
 		res.render( 'account', { user: req.user } );
-	});
+	} );
 
 	app.post( '/auth/browserid', passport.authenticate( 'persona', {
 		failureRedirect: '/login',
@@ -31,10 +34,13 @@ module.exports = function( app ){
 		successFlash: true
 	} ) );
 
-}
+};
 
 function ensureAuthenticated( req, res, next ) {
-  if ( req.isAuthenticated() ) { return next(); }
-  req.flash( 'error', 'Please login first' );
-  res.redirect( '/login' )
+
+	if ( req.isAuthenticated() ) {
+		return next();
+	}
+	req.flash( 'error', 'Please login first' );
+	res.redirect( '/login' );
 }

@@ -32,10 +32,13 @@ app.use( function( req, res, next ) {
 		flashes = [],
 		types = Object.keys( flash );
 
-	for ( t in types ) {
+		console.log( flash );
+		console.log( types );
+
+	for ( var t in types ) {
 		var key = types[ t ];
 		var messages = flash[ key ];
-		for ( m in messages ) {
+		for ( var m in messages ) {
 			var message = messages[ m ];
 			flashes.push( {
 				type: key == 'error' ? 'danger' : key,

@@ -3,7 +3,7 @@
 {% block content %}
 	<h1>Login</h1>
 	{% include 'partials/flash.swig' %}
-	
+
 	<form action="/auth/browserid" method="post" style="display:none;">
 		<input type="text" name="assertion"/>
 	</form>

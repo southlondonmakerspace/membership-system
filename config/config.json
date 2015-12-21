@@ -10,6 +10,23 @@
 		"example@example.com",
 	  	"matt@matthewpress.com"
 	],
-	"audience": "http://localhost:3001"
 	"mongo": "mongodb://localhost/test",
+	"audience": "http://localhost:3001",
+	"apps": [
+		{
+			"id": "profile",
+			"title": "Profile",
+			"path": "/profile"
+		},
+		{
+			"id": "statement",
+			"title": "Statement",
+			"path": "/statement"
+		},
+		{
+			"id": "members",
+			"title": "Members",
+			"path": "/members"
+		}
+	]
 }

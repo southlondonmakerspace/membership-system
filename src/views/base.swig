@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>{% block title %}{{ config.title }} &mdash; {{ config.organisation }}{% endblock %}</title>
+		<title>{% block title %}{% if title %}{{ title }} &mdash; {% endif %}{{ config.title }} &mdash; {{ config.organisation }}{% endblock %}</title>
 		<link rel="shortcut icon" href="/imgs/favicon.ico" />
 		{% block stylesheets %}
 			<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">

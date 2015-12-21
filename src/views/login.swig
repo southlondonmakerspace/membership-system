@@ -3,6 +3,11 @@
 {% set title = 'Login' %}
 {% set activeApp = 'login' %}
 
+{% block scripts %}
+	<script src="https://login.persona.org/include.js" type="text/javascript"></script>
+	{% parent %}
+{% endblock %}
+
 {% block content %}
 	<script>
 		jQuery( document ).ready( function() {

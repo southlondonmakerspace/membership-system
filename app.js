@@ -64,5 +64,11 @@ swig.setDefaults( { cache: false } ); // Disables cache
 // Generic routes
 require( __dirname + '/src/js/routes' )( app );
 
+// Error 404
+app.get( '*', function( req, res ) {
+	res.status( 404 );
+	res.render( '404' );
+} );
+
 // Start server
 app.listen( config.port );

@@ -17,9 +17,9 @@
 		<div class="container">
 			{% include 'partials/navbar.swig' %}
 	    	{% include 'partials/flash.swig' %}
-	    	{% if title %}
+	    	{% if heading %}
 	    		<div class="page-header">
-					<h1>{{ title }}</h1>
+					<h2>{{ heading }}</h2>
 				</div>
 			{% endif %}
 			{% block content %}{% endblock %}

@@ -39,9 +39,6 @@
 					<input id="password" name="password" type="password" class="form-control" />
 				</p>
 				<p>
-					<label for="remember"><input id="remember" name="remember" type="checkbox" /> Remember me</label>
-				</p>
-				<p>
 					<button class="btn btn-primary" href="#" role="button">Login</button>
 				</p>
 			</form>

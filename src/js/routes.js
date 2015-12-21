@@ -16,6 +16,14 @@ module.exports = function( app ){
 		res.redirect( '/' );
 	} );
 
+	app.get( '/join' , function( req, res ) {
+		res.render( 'join' );
+	} );
+
+	app.post( '/join', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
+		res.redirect( '/' );
+	} );
+
 	app.get( '/logout', function( req, res ) {
 		req.logout();
 		req.flash( 'success', 'Logged out' );

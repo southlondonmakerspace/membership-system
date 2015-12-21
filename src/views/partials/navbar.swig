@@ -19,6 +19,7 @@
 			{% else %}
 				<ul class="nav navbar-nav navbar-right">
 					<li{% if activeApp == 'login' %} class="active"{% endif %}><a href="/login">Login</a></li>
+					<li{% if activeApp == 'join' %} class="active"{% endif %}><a href="/join">Join</a></li>
 				</ul>
 			{% endif %}
 		</div>

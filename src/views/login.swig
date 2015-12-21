@@ -1,14 +1,9 @@
 {% extends 'base.swig' %}
 
+{% set title = 'Login' %}
+{% set activeApp = 'login' %}
+
 {% block content %}
-	<h1>Login</h1>
-	{% include 'partials/flash.swig' %}
-
-	<form action="/auth/browserid" method="post" style="display:none;">
-		<input type="text" name="assertion"/>
-	</form>
-
-	<img src="https://developer.mozilla.org/files/3969/plain_sign_in_blue.png" id="browserid"/>
 	<script>
 		jQuery( document ).ready( function() {
 			jQuery( "#browserid" ).click( function() {
@@ -23,5 +18,15 @@
 			});
 		} )
 	</script>
+
+	<p>Sign in here.</p>
+	<p><a class="btn btn-primary" href="#" role="button">Sign in</a></p>
+
+	<div class="page-header">
+		<h3>Legacy sign in</h3>
+	</div>
+	<p>If you signed up prior to the end of 2015 you may need to use this legacy sign in.</p>
+	<p><a class="btn btn-primary" href="#" role="button" id="browserid">Sign in with Persona</a></p>
+	<form action="/auth/browserid" method="post" style="display:none;"><input type="text" name="assertion"/></form>
 
 {% endblock %}

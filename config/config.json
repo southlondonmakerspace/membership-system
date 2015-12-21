@@ -10,7 +10,7 @@
 		"example@example.com",
 	  	"matt@matthewpress.com"
 	],
-	"mongo": "mongodb://localhost/test",
+	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
 	"apps": [
 		{

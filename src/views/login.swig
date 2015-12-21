@@ -5,6 +5,7 @@
 
 {% block scripts %}
 	<script src="https://login.persona.org/include.js" type="text/javascript"></script>
+	{% parent %}
 	<script type="text/javascript">
 		jQuery( document ).ready( function() {
 			jQuery( "#browserid" ).click( function() {
@@ -19,7 +20,6 @@
 			});
 		} )
 	</script>
-	{% parent %}
 {% endblock %}
 
 {% block content %}

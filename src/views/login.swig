@@ -5,11 +5,7 @@
 
 {% block scripts %}
 	<script src="https://login.persona.org/include.js" type="text/javascript"></script>
-	{% parent %}
-{% endblock %}
-
-{% block content %}
-	<script>
+	<script type="text/javascript">
 		jQuery( document ).ready( function() {
 			jQuery( "#browserid" ).click( function() {
 				navigator.id.get( function( assertion ) {
@@ -23,7 +19,10 @@
 			});
 		} )
 	</script>
+	{% parent %}
+{% endblock %}
 
+{% block content %}
 	<div class="row">
 		<div class="col-md-4">
 			<div class="page-header">

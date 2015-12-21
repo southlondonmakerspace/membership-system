@@ -11,4 +11,5 @@
 	  	"matt@matthewpress.com"
 	],
 	"audience": "http://localhost:3001"
+	"mongo": "mongodb://localhost/test",
 }

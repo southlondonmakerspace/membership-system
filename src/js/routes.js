@@ -31,7 +31,6 @@ module.exports = function( app ){
 	} );
 
 	app.get( '/account', ensureAuthenticated, function( req, res ) {
-
 		res.render( 'account', { user: req.user } );
 	} );
 

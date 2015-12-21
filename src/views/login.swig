@@ -61,7 +61,7 @@
 			<div class="page-header">
 				<h2>Legacy migration</h2>
 			</div>
-			<p>If you signed up prior to 2-16 you may need to migrate your old account.</p>
+			<p>If you signed up prior to 2016 you may need to migrate your old account.</p>
 			<p>
 				<a class="btn btn-default" href="#" role="button" id="browserid">Sign in with Persona</a>
 				<form action="/auth/browserid" method="post" style="display:none;"><input type="text" name="assertion"/></form>

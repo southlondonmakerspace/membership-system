@@ -1,6 +1,7 @@
 "use strict";
 
 var mongoose = require( 'mongoose' );
+var config = require( __dirname + '../../../config/config.json' );
 
 module.exports =  function() {
 
@@ -49,16 +50,16 @@ module.exports =  function() {
 			console.log( members );
 		} );
 
-		// test creation of new member
-		var member = new Member( { name: 'TestMember' } );
-		console.log( member.name );
-		member.save( function ( err, member ) {
+		// // test creation of new member
+		// var member = new Member( { name: 'TestMember' } );
+		// console.log( member.name );
+		// member.save( function ( err, member ) {
 
-			if ( err ){
+		// 	if ( err ){
 
-				return console.error( err );
-			}
-		} );
+		// 		return console.error( err );
+		// 	}
+		// } );
 
 
 	} );

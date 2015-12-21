@@ -2,14 +2,13 @@
 
 var body = require( 'body-parser' ),
 	config = require( __dirname + '/config/config.json' ),
-	database = require( __dirname + '/src/js/database'),
+	database = require( __dirname + '/src/js/database').connect( config.mongo ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),
 
 	app = express(),
 	http = require( 'http' ).Server( app );
-
 
 // handle authentication
 require( __dirname + '/src/js/authentication' )( app );

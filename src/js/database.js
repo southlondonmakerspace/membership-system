@@ -3,18 +3,16 @@
 var mongoose = require( 'mongoose' );
 var config = require( __dirname + '../../../config/config.json' );
 
-module.exports =  function() {
-
+module.exports = function() {
 	mongoose.connect( config.mongo );
-
+	
 	var db = mongoose.connection;
-
 	db.on( 'error', console.error.bind( console, 'connection error' ) );
 	db.once( 'open', function callback () {
 		var memberSchema = mongoose.Schema( {
 			name: String,
 			uuid: {
-				type: String ,
+				type: String,
 				default: function () { // pseudo uuid4
 					function s4() {
 						return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
@@ -40,27 +38,5 @@ module.exports =  function() {
 		} );
 
 		var Member = mongoose.model( 'Member', memberSchema );
-		Member.find( function ( err, members ) {
-
-			if ( err ){
-
-				return console.error( err );
-			}
-
-			console.log( members );
-		} );
-
-		// // test creation of new member
-		// var member = new Member( { name: 'TestMember' } );
-		// console.log( member.name );
-		// member.save( function ( err, member ) {
-
-		// 	if ( err ){
-
-		// 		return console.error( err );
-		// 	}
-		// } );
-
-
 	} );
 }();

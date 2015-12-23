@@ -1,7 +1,9 @@
 {% extends 'base.swig' %}
 
 {% block content %}
-	<h1>Home</h1>
-	{% include 'partials/flash.swig' %}
-	<a href="/login">Login</a>
+	<div class="jumbotron">
+		<h2>Ahoy!</h2>
+		<p>South London Makerspace is a social, community workshop.</p>
+		<p><a class="btn btn-primary btn-lg" href="#" role="button">Join</a></p>
+	</div>
 {% endblock %}

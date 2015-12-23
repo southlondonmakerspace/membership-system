@@ -1,8 +1,8 @@
 {% extends 'base.swig' %}
 
+{% set title = 'Account' %}
+{% set heading = 'Welcome' %}
+
 {% block content %}
-	<h1>Welcome</h1>
-	{% include 'partials/flash.swig' %}
-	<p>{{ user.email }}</p>
-	<p><a href="/logout">Logout</a></p>
+	<p><strong>Email:</strong> {{ user.email }}</p>
 {% endblock %}

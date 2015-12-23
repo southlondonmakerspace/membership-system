@@ -1,47 +1,45 @@
 "use strict";
 
-var passport = require( 'passport' );
+var	express = require( 'express' ),
+	app = express(),
+	passport = require( 'passport' );
 
-module.exports = function( app ){
+app.set( 'views', __dirname + '/../views' );
 
-	app.get( '/', function ( req, res ) {
-		res.render( 'index' );
-	} );
+app.get( '/', function ( req, res ) {
+	res.render( 'index' );
+} );
 
-	app.get( '/login' , function( req, res ) {
-		res.render( 'login' );
-	} );
+app.get( '/login' , function( req, res ) {
+	res.render( 'login' );
+} );
 
-	app.post( '/login', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
-		res.redirect( '/' );
-	} );
+app.post( '/login', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
+	res.redirect( '/' );
+} );
 
-	app.get( '/join' , function( req, res ) {
-		res.render( 'join' );
-	} );
+app.get( '/join' , function( req, res ) {
+	res.render( 'join' );
+} );
 
-	app.post( '/join', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
-		res.redirect( '/' );
-	} );
+app.post( '/join', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
+	res.redirect( '/' );
+} );
 
-	app.get( '/logout', function( req, res ) {
-		req.logout();
-		req.flash( 'success', 'Logged out' );
-		res.redirect( '/' );
-	} );
+app.get( '/logout', function( req, res ) {
+	req.logout();
+	req.flash( 'success', 'Logged out' );
+	res.redirect( '/' );
+} );
 
-	app.get( '/account', ensureAuthenticated, function( req, res ) {
-		res.render( 'account', { user: req.user } );
-	} );
+app.post( '/auth/browserid', passport.authenticate( 'persona', {
+	failureRedirect: '/login',
+	successRedirect: '/profile',
+	failureFlash: true,
+	successFlash: true
+} ) );
 
-	app.post( '/auth/browserid', passport.authenticate( 'persona', {
-		failureRedirect: '/login',
-		successRedirect: '/account',
-		failureFlash: true,
-		successFlash: true
-	} ) );
-
-};
+module.exports = app;
 
 function ensureAuthenticated( req, res, next ) {
 

@@ -9,19 +9,8 @@
 	"audience": "http://localhost:3001",
 	"apps": [
 		{
-			"id": "profile",
 			"title": "Profile",
-			"path": "/profile"
-		},
-		{
-			"id": "statement",
-			"title": "Statement",
-			"path": "/statement"
-		},
-		{
-			"id": "members",
-			"title": "Members",
-			"path": "/members"
+			"path": "profile"
 		}
 	]
 }

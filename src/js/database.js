@@ -8,8 +8,11 @@ exports.connect = function( url ) {
 	db.on( 'error', console.error.bind( console, 'connection error' ) );
 }
 
-exports.memberSchema = mongoose.Schema( {
-	name: {
+var memberSchema = mongoose.Schema( {
+	firstname: {
+		type: String
+	},
+	lastname: {
 		type: String
 	},
 	uuid: {
@@ -68,5 +71,11 @@ exports.memberSchema = mongoose.Schema( {
 		type: Date
 	} // last time any entry was updated
 } );
+
+memberSchema.virtual( 'fullname' ).get( function() {
+	return this.firstname + ' ' + this.lastname;
+} );
+
+exports.memberSchema = memberSchema;
 
 exports.Members = mongoose.model( 'Members', exports.memberSchema );

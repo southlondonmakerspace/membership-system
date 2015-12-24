@@ -28,7 +28,7 @@
 			<div class="page-header">
 				<h2>Login</h2>
 			</div>
-			<form action="post">
+			<form method="post">
 				<p></p>
 				<p>
 					<label for="username">Username: </label>

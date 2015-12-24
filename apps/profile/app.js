@@ -39,6 +39,10 @@ app.post( '/update', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
+app.get( '/password', ensureAuthenticated, function( req, res ) {
+	res.render( 'change-password' );
+} );
+
 module.exports = app;
 
 function ensureAuthenticated( req, res, next ) {

@@ -14,6 +14,10 @@ var memberSchema = mongoose.Schema( {
 		required: true,
 		unique: true
 	},
+	password: {
+		type: String,
+		required: true
+	},
 	firstname: {
 		type: String,
 		required: true

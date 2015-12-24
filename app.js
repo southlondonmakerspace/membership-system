@@ -60,8 +60,13 @@ app.set( 'view engine', 'swig' );
 app.set( 'view cache', false ); // Disables cache
 swig.setDefaults( { cache: false } ); // Disables cache
 
-// Generic routes
-require( __dirname + '/src/js/routes' )( app );
+// Load top level app
+app.use( '/', require( __dirname + '/src/js/routes' ) );
+
+// Load apps
+for ( var a in config.apps ) {
+	app.use( '/' + config.apps[a].path, require( __dirname + '/apps/' + config.apps[a].path + '/app' ) );
+}
 
 // Error 404
 app.get( '*', function( req, res ) {

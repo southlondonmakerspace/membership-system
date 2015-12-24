@@ -15,8 +15,7 @@ module.exports =  function( app ) {
 			process.nextTick( function () {
 				database.Members.findOne( { email: email }, function( err, user ) {
 					if ( user != null ) {
-						console.log( user );
-						return done( null, { email: email }, { message: 'User login successful' } );
+						return done( null, { _id: user._id }, { message: 'User login successful' } );
 					} else {
 						return done( null, false, { message: 'Unauthorised user' } );
 					}
@@ -25,12 +24,18 @@ module.exports =  function( app ) {
 		}
 	) );
 
-	passport.serializeUser( function( user, done ) {
-		done( null, user.email );
+	passport.serializeUser( function( id, done ) {
+		done( null, id );
 	} );
 
-	passport.deserializeUser( function( email, done ) {
-		done( null, { email: email } );
+	passport.deserializeUser( function( id, done ) {
+		database.Members.findById( id, function( err, user ) {
+			if ( user != null ) {
+				return done( null, user );
+			} else {
+				return done( null, false, { message: 'Please login' } );
+			}
+		} );
 	} );
 
 	// Include support for passport and sessions

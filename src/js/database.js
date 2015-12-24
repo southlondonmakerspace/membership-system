@@ -19,14 +19,28 @@ var memberSchema = mongoose.Schema( {
 	},
 	email: {
 		type: String,
-		required: true
+		required: true,
+		unique: true,
+		validate: {
+			validator: function ( v ) {
+				return /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,}/.test( v );
+			},
+			message: '{VALUE} is not a valid email address'
+		}
 	},
 	address: {
 		type: String,
 		required: true
 	},
 	tag_id: {
-		type: String
+		type: String,
+		unique: true,
+		validate: {
+			validator: function ( v ) {
+				return /[A-z0-9]{8}/.test( v );
+			},
+			message: '{VALUE} is not a valid tag ID'
+		}
 	},
 	transactions: {
 		type: Array

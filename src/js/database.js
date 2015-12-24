@@ -9,6 +9,11 @@ exports.connect = function( url ) {
 }
 
 var memberSchema = mongoose.Schema( {
+	username: {
+		type: String,
+		required: true,
+		unique: true
+	},
 	firstname: {
 		type: String,
 		required: true

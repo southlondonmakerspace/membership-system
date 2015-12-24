@@ -17,6 +17,7 @@ app.get( '/update', ensureAuthenticated, function( req, res ) {
 
 app.post( '/update', ensureAuthenticated, function( req, res ) {
 	var profile = {
+		username: req.body.username,
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
 		email: req.body.email,

@@ -10,7 +10,7 @@
 			{% if user %}
 				<ul class="nav navbar-nav">
 					{% for app in apps %}
-						<li{% if activeApp == app.id %} class="active"{% endif %}><a href="{{ app.path }}">{{ app.title }}</a></li>
+						<li{% if activeApp == app.id %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
 					{% endfor %}
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

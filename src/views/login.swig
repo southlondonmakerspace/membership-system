@@ -39,7 +39,8 @@
 					<input id="password" name="password" type="password" class="form-control" />
 				</p>
 				<p>
-					<button class="btn btn-primary" href="#" role="button">Login</button>
+					<button class="btn btn-primary" role="button">Login</button>
+					<a class="btn btn-default" href="/password-reset" role="button">Password Reset</a>
 				</p>
 			</form>
 		</div>

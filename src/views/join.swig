@@ -19,8 +19,8 @@
 					<input id="password" name="password" type="password" class="form-control" />
 				</p>
 				<p>
-					<label for="password2">Confirm: </label>
-					<input id="password2" name="password2" type="password" class="form-control" />
+					<label for="verify">Verify password: </label>
+					<input id="verify" name="verify" type="password" class="form-control" />
 				</p>
 				<p>
 					<label for="email">Email: </label>

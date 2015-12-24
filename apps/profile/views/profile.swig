@@ -15,4 +15,13 @@
 	<p>
 		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
 	</p>
+
+	{% if user.permissions.length > 0 %}
+		<h3>Permissions</h3>
+		<ul>
+			{% for permission in user.permissions %}
+				<li>{{ permission.name }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
 {% endblock %}

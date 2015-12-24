@@ -27,6 +27,23 @@ var memberSchema = mongoose.Schema( {
 	},
 	tag_id: {
 		type: String
+	},
+	transactions: {
+		type: Array
+	},
+	permissions: {
+		type: Array
+
+		/* 
+			Containing an array of objects:
+				permission: ObjectId of permission from a permissions table.
+					name: name of permission
+					slug: system name for API
+					description: Short explanation about tweet, text only
+				date_added: Date the permission was granted
+				date_updated: Date the permission was last update/renewed
+				date_expires: (optional) Date the permission will expire
+		*/
 	}
 } );
 

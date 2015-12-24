@@ -15,7 +15,7 @@
 	<p><strong>Address:</strong> {{ user.address }}</p>
 
 	<p>
-		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/profile/password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a>
 	</p>
 
 	{% if user.permissions.length > 0 %}

@@ -233,3 +233,12 @@ function ensureAuthenticated( req, res, next ) {
 	req.flash( 'error', 'Please login first' );
 	res.redirect( '/login' );
 }
+
+function generatePassword( password, salt ) {
+	if ( ! salt ) salt = crypto.randomBytes( 256 ).toString( 'hex' );
+	var hash = crypto.pbkdf2Sync( password, salt, 1000, 512, 'sha512' ).toString( 'hex' )
+	return {
+		salt: salt,
+		hash: hash
+	};
+}

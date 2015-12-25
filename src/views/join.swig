@@ -23,6 +23,14 @@
 					<input id="verify" name="verify" type="password" class="form-control" />
 				</p>
 				<p>
+					<label for="firstname">First Name: </label>
+					<input id="firstname" name="firstname" type="text" value="{{ user.firstname }}" class="form-control" />
+				</p>
+				<p>
+					<label for="lastname">Last Name: </label>
+					<input id="lastname" name="lastname" type="text" value="{{ user.lastname }}" class="form-control" />
+				</p>
+				<p>
 					<label for="email">Email: </label>
 					<input id="email" name="email" type="email" value="{{ user.email }}" class="form-control" />
 				</p>

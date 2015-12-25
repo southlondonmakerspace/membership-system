@@ -15,6 +15,16 @@
 		<p>These are the details associated with your account on our legacy system, please update them if necessary.</p>
 
 		<p>
+			<label for="firstname">First name: </label>
+			<input id="firstname" name="firstname" type="text" class="form-control" required value="{{ legacy.firstname }}" />
+		</p>
+		
+		<p>
+			<label for="lastname">Last name: </label>
+			<input id="lastname" name="lastname" type="text" class="form-control" required value="{{ legacy.lastname }}" />
+		</p>
+		
+		<p>
 			<label for="email">Email: </label>
 			<input id="email" name="email" type="email" class="form-control" required value="{{ legacy.email }}" />
 		</p>
@@ -32,6 +42,7 @@
 			<label for="username">Username: </label>
 			<input id="username" name="username" type="text" class="form-control" required />
 		</p>
+		
 		<p>
 			<label for="password">Password: </label>
 			<input id="password" name="password" type="password" class="form-control" required />

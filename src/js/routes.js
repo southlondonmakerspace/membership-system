@@ -5,6 +5,7 @@ var	express = require( 'express' ),
 	passport = require( 'passport' );
 
 var Members = require( './database' ).Members,
+	LegacyMembers = require( './database' ).LegacyMembers,
 	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId;
 
 var crypto = require( 'crypto' );
@@ -36,12 +37,13 @@ app.post( '/login', passport.authenticate( 'local', {
 	successFlash: true
 } ) );
 
-app.get( '/migration', ensureAuthenticated, function( req, res ) {
-	// Needs to go off and access legacy document collection
+app.get( '/migration', migrationAuthenticated, function( req, res ) {
+	req.user.firstname = req.user.name.split( ' ' )[0];
+	req.user.lastname = req.user.name.split( ' ' )[1];
 	res.render( 'migrate', { legacy: req.user } );
 } );
 
-app.post( '/migration', ensureAuthenticated, function( req, res ) {
+app.post( '/migration', migrationAuthenticated, function( req, res ) {
 	// Needs to create new user and mark legacy document as migrated to prevent repeats
 	req.flash( 'info', 'This is where migration would occur' );
 	res.redirect( '/profile' );
@@ -216,19 +218,22 @@ app.get( '/logout', function( req, res ) {
 
 app.post( '/auth/browserid', passport.authenticate( 'persona', {
 	failureRedirect: '/login',
-	successRedirect: '/profile',
+	successRedirect: '/migration',
 	failureFlash: true,
 	successFlash: true
 } ) );
 
 module.exports = app;
 
-function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() ) {
+function migrationAuthenticated( req, res, next ) {
+	if ( req.isAuthenticated() && req.user != undefined && req.user.migrated == false ) {
 		return next();
+	} else if ( req.isAuthenticated() ) {
+		res.redirect( '/profile' );
+		return;		
 	}
 
-	req.flash( 'error', 'Please login first' );
+	req.flash( 'error', 'Please login with Persona before migrating' );
 	res.redirect( '/login' );
 }
 

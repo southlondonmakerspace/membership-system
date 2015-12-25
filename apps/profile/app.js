@@ -46,9 +46,13 @@ app.get( '/password', ensureAuthenticated, function( req, res ) {
 module.exports = app;
 
 function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() ) {
+	if ( req.isAuthenticated() && req.user != undefined && req.user.migrated == null ) {
 		return next();
+	} else if ( req.isAuthenticated() ) {
+		res.redirect( '/migration' );
+		return;		
 	}
+
 	req.flash( 'error', 'Please login first' );
 	res.redirect( '/login' );
 }

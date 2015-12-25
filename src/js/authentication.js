@@ -14,13 +14,11 @@ var crypto = require( 'crypto' );
 
 module.exports =  function( app ) {
 
-	// Add support for persona authentication
+	// Add support for local authentication
 	passport.use( new LocalStrategy( function( username, password, done ) {
 			database.Members.findOne( { username: username }, function( err, user ) {
 				if ( user != null ) {
 					var password_hash = generatePassword( password, user.password_salt ).hash;
-					console.log( 'submitted password: ' + password_hash );
-					console.log( 'user password: ' + user.password_hash );
 					if ( password_hash == user.password_hash ) {
 						if ( user.activated ) {
 							return done( null, { _id: user._id }, { message: 'User login successful' } );
@@ -39,28 +37,42 @@ module.exports =  function( app ) {
 	// Add support for persona authentication
 	passport.use( new PersonaStrategy( { audience: config.audience },
 		function( email, done ) {
-			database.Members.findOne( { email: email }, function( err, user ) {
+			database.LegacyMembers.findOne( { email: email }, function( err, user ) {
 				if ( user != null ) {
-					return done( null, { _id: user._id }, { message: 'User login successful' } );
+					if ( ! user.migrated ) {
+						return done( null, { _id: user._id, legacy: true }, { message: 'Persona login successful, ready to migrate' } );
+					} else {
+						return done( null, false, { message: 'This acccount has been migrated already, please login normally' } );	
+					}
 				} else {
-					return done( null, false, { message: 'Unauthorised user' } );
+					return done( null, false, { message: 'This account cannot be migrated, you may have the wrong email address' } );
 				}
 			} );
 		}
 	) );
 
-	passport.serializeUser( function( id, done ) {
-		done( null, id );
+	passport.serializeUser( function( data, done ) {
+		done( null, data );
 	} );
 
-	passport.deserializeUser( function( id, done ) {
-		database.Members.findById( id, function( err, user ) {
-			if ( user != null ) {
-				return done( null, user );
-			} else {
-				return done( null, false, { message: 'Please login' } );
-			}
-		} );
+	passport.deserializeUser( function( data, done ) {
+		if ( data.legacy ) {
+			database.LegacyMembers.findById( data._id, function( err, user ) {
+				if ( user != null ) {
+					return done( null, user );
+				} else {
+					return done( null, false, { message: 'Please login' } );
+				}
+			} );
+		} else {
+			database.Members.findById( data._id, function( err, user ) {
+				if ( user != null ) {
+					return done( null, user );
+				} else {
+					return done( null, false, { message: 'Please login' } );
+				}
+			} );
+		}
 	} );
 
 	// Include support for passport and sessions

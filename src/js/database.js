@@ -8,6 +8,16 @@ exports.connect = function( url ) {
 	db.on( 'error', console.error.bind( console, 'connection error' ) );
 }
 
+var legacySchema = mongoose.Schema( {
+	email: String,
+	name: String,
+	address: String,
+	migrated: {
+		type: Boolean,
+		default: false
+	}
+} );
+
 var memberSchema = mongoose.Schema( {
 	_id: {
 		type: mongoose.Schema.ObjectId,
@@ -91,6 +101,8 @@ memberSchema.virtual( 'fullname' ).get( function() {
 	return this.firstname + ' ' + this.lastname;
 } );
 
+exports.legacySchema = legacySchema;
 exports.memberSchema = memberSchema;
 
+exports.LegacyMembers = mongoose.model( 'LegacyMembers', exports.legacySchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );

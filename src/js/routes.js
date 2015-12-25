@@ -29,14 +29,12 @@ app.get( '/login' , function( req, res ) {
 	}
 } );
 
-app.post( '/login', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
-	if ( req.user ) {
-		req.flash( 'warning', 'You are already logged in' );
-		res.redirect( '/profile' );
-	} else {
-		res.redirect( '/migration' );
-	}
-} );
+app.post( '/login', passport.authenticate( 'local', {
+	failureRedirect: '/login',
+	successRedirect: '/profile',
+	failureFlash: true,
+	successFlash: true
+} ) );
 
 app.get( '/migration', ensureAuthenticated, function( req, res ) {
 	// Needs to go off and access legacy document collection

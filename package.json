@@ -20,7 +20,7 @@
     "express-flash": "git://github.com/RGBboy/express-flash.git",
     "express-session": "^1.12.1",
     "less": "^2.5.3",
-    "mandrill": "^0.1.0",
+    "mandrill-api": "^1.0.45",
     "mongoose": "^4.2.5",
     "passport": "^0.3.2",
     "passport-persona": "^0.1.7",

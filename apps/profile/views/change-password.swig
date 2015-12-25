@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Profile' %}
-{% set heading = 'Profile' %}
+{% set title = 'Change Password' %}
+{% set heading = 'Change Password' %}
 
 {% block content %}
 	<form method="post">

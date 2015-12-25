@@ -22,8 +22,11 @@ module.exports =  function( app ) {
 					console.log( 'submitted password: ' + password_hash );
 					console.log( 'user password: ' + user.password_hash );
 					if ( password_hash == user.password_hash ) {
-						console.log( 'validated' );
-						return done( null, { _id: user._id }, { message: 'User login successful' } );
+						if ( user.activated ) {
+							return done( null, { _id: user._id }, { message: 'User login successful' } );
+						} else {
+							return done( null, false, { message: 'Account not activated' } );
+						}
 					}
 					return done( null, false, { message: 'Unauthorised user' } );
 				} else {

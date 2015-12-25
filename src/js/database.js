@@ -9,6 +9,12 @@ exports.connect = function( url ) {
 }
 
 var memberSchema = mongoose.Schema( {
+	_id: {
+		type: mongoose.Schema.ObjectId,
+		default: new mongoose.Types.ObjectId(),
+		required: true,
+		unique: true
+	},
 	username: {
 		type: String,
 		required: true,

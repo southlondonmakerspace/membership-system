@@ -9,7 +9,7 @@
 			<div class="page-header">
 				<h2>Join</h2>
 			</div>
-			<form action="post">
+			<form method="post">
 				<p>
 					<label for="username">Username: </label>
 					<input id="username" name="username" type="text" class="form-control" />

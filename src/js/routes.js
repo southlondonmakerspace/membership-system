@@ -25,6 +25,12 @@ app.get( '/join' , function( req, res ) {
 app.post( '/join', function( req, res ) {
 	res.redirect( '/' );
 } );
+
+app.get( '/password-reset' , function( req, res ) {
+	res.render( 'reset-password' );
+} );
+
+app.post( '/password-reset', function( req, res ) {
 	res.redirect( '/' );
 } );
 

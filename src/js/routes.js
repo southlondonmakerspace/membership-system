@@ -2,7 +2,10 @@
 
 var	express = require( 'express' ),
 	app = express(),
-	passport = require( 'passport' );
+	passport = require( 'passport' ),
+	Members = require( './database' ).Members,
+	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId,
+	crypto = require( 'crypto' );
 
 app.set( 'views', __dirname + '/../views' );
 
@@ -44,7 +47,8 @@ app.get( '/join' , function( req, res ) {
 		req.flash( 'warning', 'You are logged in' );
 		res.redirect( '/profile' );
 	} else {
-		res.render( 'join' );
+		res.render( 'join', { user: req.session.join } );
+		delete req.session.join;
 	}
 } );
 
@@ -53,7 +57,52 @@ app.post( '/join', function( req, res ) {
 		req.flash( 'warning', 'You are logged in' );
 		res.redirect( '/profile' );
 	} else {
-		res.redirect( '/' );
+		var user = {
+			username: req.body.username,
+			firstname: req.body.firstname,
+			lastname: req.body.lastname,
+			email: req.body.email,
+			address: req.body.address,
+		};
+
+		if ( req.body.password != req.body.verify ) {
+			req.flash( 'danger', 'Passwords did not match' );
+			req.session.join = user;
+			res.redirect( '/join' );
+			return;
+		}
+
+		// Generate email code salt
+		crypto.randomBytes( 10, function( ex, code ) {
+			user.activation_code = code.toString( 'hex' );
+
+			// Generate user salt
+			crypto.randomBytes( 256, function( ex, salt ) {
+				user.password_salt = salt.toString( 'hex' );
+
+				// Generate password hash
+				crypto.pbkdf2( req.body.password, user.password_salt, 1000, 512, 'sha512', function( err, hash ) {
+					user.password_hash = hash.toString( 'hex' );
+
+					// Store new member
+					new Members( user ).save( function( status ) {
+						if ( status != null && status.errors != undefined ) {
+							var keys = Object.keys( status.errors );
+							for ( var k in keys ) {
+								var key = keys[k];
+								req.flash( 'danger', status.errors[key].message );
+							}
+							req.session.join = user;
+							res.redirect( '/join' );
+						} else {
+							req.flash( 'success', 'Account created, please check your email for a registration link' );
+							res.redirect( '/' );
+							// Send an email
+						}
+					} );
+				} );
+			} );
+		} );
 	}
 } );
 

@@ -12,6 +12,7 @@ var legacySchema = mongoose.Schema( {
 	email: String,
 	name: String,
 	address: String,
+	card_id: String,
 	migrated: {
 		type: Boolean,
 		default: false

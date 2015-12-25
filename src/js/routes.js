@@ -22,7 +22,9 @@ app.get( '/join' , function( req, res ) {
 	res.render( 'join' );
 } );
 
-app.post( '/join', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
+app.post( '/join', function( req, res ) {
+	res.redirect( '/' );
+} );
 	res.redirect( '/' );
 } );
 

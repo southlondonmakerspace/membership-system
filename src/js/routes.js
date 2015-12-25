@@ -24,8 +24,19 @@ app.post( '/login', passport.authenticate( 'persona', { failureRedirect: '/login
 		req.flash( 'warning', 'You are already logged in' );
 		res.redirect( '/profile' );
 	} else {
-		res.redirect( '/' );
+		res.redirect( '/migration' );
 	}
+} );
+
+app.get( '/migration', ensureAuthenticated, function( req, res ) {
+	// Needs to go off and access legacy document collection
+	res.render( 'migrate', { legacy: req.user } );
+} );
+
+app.post( '/migration', ensureAuthenticated, function( req, res ) {
+	// Needs to create new user and mark legacy document as migrated to prevent repeats
+	req.flash( 'info', 'This is where migration would occur' );
+	res.redirect( '/profile' );
 } );
 
 app.get( '/join' , function( req, res ) {
@@ -70,10 +81,10 @@ app.post( '/auth/browserid', passport.authenticate( 'persona', {
 module.exports = app;
 
 function ensureAuthenticated( req, res, next ) {
-
 	if ( req.isAuthenticated() ) {
 		return next();
 	}
+
 	req.flash( 'error', 'Please login first' );
 	res.redirect( '/login' );
 }

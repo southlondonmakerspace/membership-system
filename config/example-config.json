@@ -1,0 +1,19 @@
+{
+	"port" : 3001,
+	"secret": "random",
+	"globals": {
+		"organisation": "South London Makerspace",
+		"title": "Membership System"
+	},
+	"mandrill": {
+		"api_key": ""
+	},
+	"mongo": "mongodb://localhost/membership-system",
+	"audience": "http://localhost:3001",
+	"apps": [
+		{
+			"title": "Profile",
+			"path": "profile"
+		}
+	]
+}

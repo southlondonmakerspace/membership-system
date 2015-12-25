@@ -16,22 +16,22 @@
 
 		<p>
 			<label for="firstname">First name: </label>
-			<input id="firstname" name="firstname" type="text" class="form-control" required value="{{ legacy.firstname }}" />
+			<input id="firstname" name="firstname" type="text" class="form-control" required value="{{ user.firstname }}" />
 		</p>
 		
 		<p>
 			<label for="lastname">Last name: </label>
-			<input id="lastname" name="lastname" type="text" class="form-control" required value="{{ legacy.lastname }}" />
+			<input id="lastname" name="lastname" type="text" class="form-control" required value="{{ user.lastname }}" />
 		</p>
 		
 		<p>
 			<label for="email">Email: </label>
-			<input id="email" name="email" type="email" class="form-control" required value="{{ legacy.email }}" />
+			<input id="email" name="email" type="email" class="form-control" required value="{{ user.email }}" />
 		</p>
 
 		<p>
 			<label for="address">Address: </label>
-			<textarea id="address" rows="4" name="address" class="form-control" required>{{ legacy.address }}</textarea>
+			<textarea id="address" rows="4" name="address" class="form-control" required>{{ user.address }}</textarea>
 		</p>
 		
 		<h3>Enter your new details</h3>
@@ -40,7 +40,7 @@
 
 		<p>
 			<label for="username">Username: </label>
-			<input id="username" name="username" type="text" class="form-control" required />
+			<input id="username" name="username" type="text" class="form-control" value="{{ user.username }}" required />
 		</p>
 		
 		<p>

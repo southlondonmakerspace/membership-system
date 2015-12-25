@@ -40,13 +40,57 @@ app.post( '/login', passport.authenticate( 'local', {
 app.get( '/migration', migrationAuthenticated, function( req, res ) {
 	req.user.firstname = req.user.name.split( ' ' )[0];
 	req.user.lastname = req.user.name.split( ' ' )[1];
-	res.render( 'migrate', { legacy: req.user } );
+	res.render( 'migrate', { user: req.session.migration ? req.session.migration : req.user } );
+	delete req.session.migration;
 } );
 
 app.post( '/migration', migrationAuthenticated, function( req, res ) {
-	// Needs to create new user and mark legacy document as migrated to prevent repeats
-	req.flash( 'info', 'This is where migration would occur' );
-	res.redirect( '/profile' );
+	var user = {
+		username: req.body.username,
+		firstname: req.body.firstname,
+		lastname: req.body.lastname,
+		email: req.body.email,
+		address: req.body.address,
+		tag_id: req.user.card_id,
+		activated: true
+	};
+
+	if ( req.body.password != req.body.verify ) {
+		req.flash( 'danger', 'Passwords did not match' );
+		req.session.migration = user;
+		res.redirect( '/migration' );
+		return;
+	}
+
+	// Generate user salt
+	crypto.randomBytes( 256, function( ex, salt ) {
+		user.password_salt = salt.toString( 'hex' );
+
+		// Generate password hash
+		crypto.pbkdf2( req.body.password, user.password_salt, 1000, 512, 'sha512', function( err, hash ) {
+			user.password_hash = hash.toString( 'hex' );
+
+			// Store new member
+			new Members( user ).save( function( status, user ) {
+				if ( status != null && status.errors != undefined ) {
+					var keys = Object.keys( status.errors );
+					for ( var k in keys ) {
+						var key = keys[k];
+						req.flash( 'danger', status.errors[key].message );
+					}
+					req.session.migration = user;
+					res.redirect( '/migration' );
+				} else {
+					LegacyMembers.update( { _id: req.user._id }, { $set: { migrated: true } }, function( status ) {
+						console.log( status );
+					} );
+					req.session.passport = { user: { _id: user._id } };
+					req.flash( 'success', 'Account migrated' );
+					res.redirect( '/profile' );
+				}
+			} );
+		} );
+	} );
 } );
 
 app.get( '/join' , function( req, res ) {
@@ -194,9 +238,9 @@ app.post( '/activate' , function( req, res ) {
 					activated: true
 				}
 			}, function ( status ) {
-				console.log( status );
-				req.flash( 'success', 'You account is now active, please login' )
-				res.redirect( '/login' );
+				req.session.passport = { user: { _id: user._id } };
+				req.flash( 'success', 'You account is now active.' )
+				res.redirect( '/profile' );
 			} )
 		} );
 	}

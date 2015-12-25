@@ -11,19 +11,39 @@ app.get( '/', function ( req, res ) {
 } );
 
 app.get( '/login' , function( req, res ) {
-	res.render( 'login' );
+	if ( req.user ) {
+		req.flash( 'warning', 'You are already logged in' );
+		res.redirect( '/profile' );
+	} else {
+		res.render( 'login' );
+	}
 } );
 
 app.post( '/login', passport.authenticate( 'persona', { failureRedirect: '/login' } ), function( req, res ) {
-	res.redirect( '/' );
+	if ( req.user ) {
+		req.flash( 'warning', 'You are already logged in' );
+		res.redirect( '/profile' );
+	} else {
+		res.redirect( '/' );
+	}
 } );
 
 app.get( '/join' , function( req, res ) {
-	res.render( 'join' );
+	if ( req.user ) {
+		req.flash( 'warning', 'You are logged in' );
+		res.redirect( '/profile' );
+	} else {
+		res.render( 'join' );
+	}
 } );
 
 app.post( '/join', function( req, res ) {
-	res.redirect( '/' );
+	if ( req.user ) {
+		req.flash( 'warning', 'You are logged in' );
+		res.redirect( '/profile' );
+	} else {
+		res.redirect( '/' );
+	}
 } );
 
 app.get( '/password-reset' , function( req, res ) {

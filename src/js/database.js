@@ -28,6 +28,10 @@ var memberSchema = mongoose.Schema( {
 		type: String,
 		required: true
 	},
+	activated: {
+		type: Boolean,
+		default: false
+	},
 	activation_code: {
 		type: String,
 	},

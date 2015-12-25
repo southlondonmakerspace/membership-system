@@ -14,7 +14,11 @@ var memberSchema = mongoose.Schema( {
 		required: true,
 		unique: true
 	},
-	password: {
+	password_hash: {
+		type: String,
+		required: true
+	},
+	password_salt: {
 		type: String,
 		required: true
 	},

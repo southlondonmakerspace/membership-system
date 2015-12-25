@@ -12,7 +12,7 @@
 			<form method="post">
 				<p>
 					<label for="username">Username: </label>
-					<input id="username" name="username" type="text" class="form-control" />
+					<input id="username" name="username" type="text" value="{{ user.username }}" class="form-control" />
 				</p>
 				<p>
 					<label for="password">Password: </label>
@@ -24,11 +24,11 @@
 				</p>
 				<p>
 					<label for="email">Email: </label>
-					<input id="email" name="email" type="email" class="form-control" />
+					<input id="email" name="email" type="email" value="{{ user.email }}" class="form-control" />
 				</p>
 				<p>
 					<label for="address">Address: </label>
-					<textarea id="address" name="address" class="form-control"></textarea>
+					<textarea id="address" name="address" class="form-control">{{ user.address }}</textarea>
 				</p>
 				<p>
 					<button class="btn btn-primary">Next <span class="glyphicon glyphicon-chevron-right"></span></button>

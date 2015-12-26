@@ -6,14 +6,22 @@
 		"title": "Membership System"
 	},
 	"mandrill": {
-		"api_key": ""
+		"api_key": "",
+		"from_email": "trustees@southlondonmakerspace.org",
+		"from_name": "South London Makerspace"
 	},
 	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
 	"apps": [
 		{
 			"title": "Profile",
-			"path": "profile"
-		}
+			"path": "profile",
+			"showMenu": true
+		},
+		{ "path": "join" },
+		{ "path": "activate" },
+		{ "path": "migration" },
+		{ "path": "login" },
+		{ "path": "password-reset" }
 	]
 }

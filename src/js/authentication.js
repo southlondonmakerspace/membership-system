@@ -12,7 +12,7 @@ var passport = require( 'passport' ),
 
 var crypto = require( 'crypto' );
 
-module.exports =  function( app ) {
+module.exports = function( app ) {
 
 	// Add support for local authentication
 	passport.use( new LocalStrategy( function( username, password, done ) {
@@ -89,3 +89,5 @@ function generatePassword( password, salt ) {
 		hash: hash
 	};
 }
+
+module.exports.generatePassword = generatePassword;

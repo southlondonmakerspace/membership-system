@@ -39,6 +39,9 @@ var memberSchema = mongoose.Schema( {
 		type: String,
 		required: true
 	},
+	password_reset_code: {
+		type: String,
+	},
 	activated: {
 		type: Boolean,
 		default: false

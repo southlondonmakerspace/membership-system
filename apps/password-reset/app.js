@@ -77,8 +77,6 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 app.post( '/change-password', function( req, res ) {
 	Members.findOne( { password_reset_code: req.body.password_reset_code }, function( err, user ) {
 		if ( user ) {
-			console.log( req.body.password );
-
 			if ( req.body.password != req.body.verify ) {
 				req.flash( 'danger', 'Passwords did not match' );
 				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
@@ -97,7 +95,6 @@ app.post( '/change-password', function( req, res ) {
 						password_salt: password_salt,
 						password_reset_code: null,
 					} }, function( status ) {
-						console.log( status );
 						req.session.passport = { user: { _id: user._id } };
 						req.flash( 'success', 'Password changed' );
 						res.redirect( '/profile' );

@@ -12,7 +12,7 @@ module.exports =  function( app ) {
 	app.use( cookie() );
 	app.use( session( {
 		secret: config.secret,
-		cookie: { maxAge: 60000 },
+		cookie: { maxAge: 31*24*60*60*1000 },
 		saveUninitialized: false,
 		resave: false,
 		rolling: true

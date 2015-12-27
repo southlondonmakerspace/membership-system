@@ -18,6 +18,11 @@
 			"path": "profile",
 			"showMenu": true
 		},
+		{
+			"title": "Admin",
+			"path": "admin",
+			"showMenu": true
+		},
 		{ "path": "join" },
 		{ "path": "activate" },
 		{ "path": "migration" },

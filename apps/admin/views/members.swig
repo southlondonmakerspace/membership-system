@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Users' %}
-{% set heading = 'Users' %}
+{% set title = 'Members' %}
+{% set heading = 'Members' %}
 {% set activeApp = 'admin' %}
 
 {% block content %}
@@ -15,12 +15,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for user in users %}
+			{% for member in members %}
 				<tr>
-					<td>{{ user.firstname }}</td>
-					<td>{{ user.lastname }}</td>
-					<td>{{ user.username }}</td>
-					<td><a href="/admin/users/{{ user._id | raw }}/edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
+					<td>{{ member.firstname }}</td>
+					<td>{{ member.lastname }}</td>
+					<td>{{ member.username }}</td>
+					<td><a href="/admin/members/{{ member._id | raw }}/edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
 				</tr>
 			{% endfor %}
 		</tbody>

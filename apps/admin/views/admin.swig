@@ -6,7 +6,7 @@
 
 {% block content %}
 	<ul>
-		<li><a href="/admin/users">Users</a></li>
+		<li><a href="/admin/members">Members</a></li>
 		<li><a href="/admin/permissions">Permissions</a></li>
 		<li><a href="/admin/settings">Settings</a></li>
 	</ul>

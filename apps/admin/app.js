@@ -13,12 +13,18 @@ app.get( '/', ensureAuthenticated, function( req, res ) {
 } );
 
 /*
- *	USERS
+ *	MEMBERS
  */
 
-app.get( '/users', ensureAuthenticated, function( req, res ) {
-	Members.find( function( err, users ) {
-		res.render( 'users', { users: users } );
+app.get( '/members', ensureAuthenticated, function( req, res ) {
+	Members.find( function( err, members ) {
+		res.render( 'members', { members: members } );
+	} );
+} );
+
+app.get( '/members/:id/edit', ensureAuthenticated, function( req, res ) {
+	Members.findOne( { _id: req.params.id }, function( err, member ) {
+		res.render( 'edit-member', { member: member } );
 	} );
 } );
 

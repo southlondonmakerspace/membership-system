@@ -10,7 +10,7 @@
 	
 	<p><strong>Email:</strong> {{ user.email }}</p>
 
-	<p><strong>Tag:</strong> {{ user.tag_id }}</p>
+	<p><strong>Tag:</strong> {{ user.tag_id | default('No tag associated') }}</p>
 
 	<p><strong>Address:</strong> {{ user.address }}</p>
 
@@ -22,7 +22,22 @@
 		<h3>Permissions</h3>
 		<ul>
 			{% for permission in user.permissions %}
-				<li>{{ permission.name }}</li>
+				{% set permission = permission.permission %}
+				<li>
+					<strong>{{ permission.name }}</strong>
+					{% if permission.description %}
+						<br />{{ permission.description }}
+					{% endif %}
+					{% if permission.date_expires %}
+						<br />
+						{% if now < permission.date_expires %}
+							Expired: 
+						{% elif now < permission.date_expires %}
+							Expires: 
+						{% endif %}
+						{{ permission.date_expires | date('d/m/Y') }}
+					{% endif %}
+				</li>
 			{% endfor %}
 		</ul>
 	{% endif %}

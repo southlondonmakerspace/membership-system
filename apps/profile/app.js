@@ -12,7 +12,9 @@ var authentication = require( '../../src/js/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', ensureAuthenticated, function( req, res ) {
-	res.render( 'profile', { user: req.user } );
+	Members.findById( req.user._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
+		res.render( 'profile', { user: user } );
+	} )
 } );
 
 app.get( '/update', ensureAuthenticated, function( req, res ) {

@@ -1,12 +1,34 @@
 "use strict";
 
-var mongoose = require( 'mongoose' );
+var mongoose = require( 'mongoose' ),
+	ObjectId = mongoose.Schema.ObjectId;
 
 exports.connect = function( url ) {
 	mongoose.connect( url );
 	var db = mongoose.connection;
 	db.on( 'error', console.error.bind( console, 'connection error' ) );
 }
+
+var permissionsSchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: new mongoose.Types.ObjectId(),
+		required: true,
+		unique: true
+	},
+	name: {
+		type: String,
+		required: true
+	},
+	slug: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	description: {
+		type: String,
+	}
+} );
 
 var legacySchema = mongoose.Schema( {
 	email: String,
@@ -21,7 +43,7 @@ var legacySchema = mongoose.Schema( {
 
 var memberSchema = mongoose.Schema( {
 	_id: {
-		type: mongoose.Schema.ObjectId,
+		type: ObjectId,
 		default: new mongoose.Types.ObjectId(),
 		required: true,
 		unique: true
@@ -87,28 +109,36 @@ var memberSchema = mongoose.Schema( {
 	transactions: {
 		type: Array
 	},
-	permissions: {
-		type: Array
-
-		/* 
-			Containing an array of objects:
-				permission: ObjectId of permission from a permissions table.
-					name: name of permission
-					slug: system name for API
-					description: Short explanation about tweet, text only
-				date_added: Date the permission was granted
-				date_updated: Date the permission was last update/renewed
-				date_expires: (optional) Date the permission will expire
-		*/
-	}
+	permissions: [ {
+		permission: {
+			type: ObjectId,
+			ref: 'Permissions',
+			required: true
+		},
+		date_added: {
+			type: Date,
+			default: Date.now,
+			required: true
+		},
+		date_updated: {
+			type: Date,
+			default: Date.now,
+			required: true
+		},
+		date_expires: {
+			type: Date
+		}
+	} ]
 } );
 
 memberSchema.virtual( 'fullname' ).get( function() {
 	return this.firstname + ' ' + this.lastname;
 } );
 
+exports.permissionsSchema = permissionsSchema;
 exports.legacySchema = legacySchema;
 exports.memberSchema = memberSchema;
 
+exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.LegacyMembers = mongoose.model( 'LegacyMembers', exports.legacySchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );

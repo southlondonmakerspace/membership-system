@@ -12,11 +12,19 @@ app.get( '/', ensureAuthenticated, function( req, res ) {
 	res.render( 'admin' );
 } );
 
+/*
+ *	USERS
+ */
+
 app.get( '/users', ensureAuthenticated, function( req, res ) {
 	Members.find( function( err, users ) {
 		res.render( 'users', { users: users } );
 	} );
 } );
+
+/*
+ *	PERMISSIONS
+ */
 
 app.get( '/permissions', ensureAuthenticated, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
@@ -60,6 +68,15 @@ app.post( '/permissions/:id/edit', ensureAuthenticated, function( req, res ) {
 		res.redirect( '/admin/permissions/' + req.params.id + '/edit' );
 	} );
 } );
+
+/*
+ *	SETTINGS
+ */
+
+ app.get( '/settings', ensureAuthenticated, function( req, res ) {
+ 	req.flash( 'info', 'This are has not yet been built.' );
+ 	res.redirect( '/admin' );
+ } );
 
 module.exports = app;
 

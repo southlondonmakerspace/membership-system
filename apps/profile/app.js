@@ -11,6 +11,14 @@ var authentication = require( '../../src/js/authentication' );
 
 app.set( 'views', __dirname + '/views' );
 
+app.use( function( req, res, next ) {
+	res.locals.breadcrumb.push( {
+		name: "Profile",
+		url: "/profile"
+	} );
+	next();
+} );
+
 app.get( '/', ensureAuthenticated, function( req, res ) {
 	if ( req.session.requested ) {
 		res.redirect( req.session.requested );
@@ -23,6 +31,9 @@ app.get( '/', ensureAuthenticated, function( req, res ) {
 } );
 
 app.get( '/update', ensureAuthenticated, function( req, res ) {
+	res.locals.breadcrumb.push( {
+		name: "Update"
+	} );
 	res.render( 'update', { user: req.user } );
 } );
 
@@ -51,6 +62,9 @@ app.post( '/update', ensureAuthenticated, function( req, res ) {
 } );
 
 app.get( '/change-password', ensureAuthenticated, function( req, res ) {
+	res.locals.breadcrumb.push( {
+		name: "Change Password"
+	} );
 	res.render( 'change-password' );
 } );
 

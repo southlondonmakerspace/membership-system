@@ -8,6 +8,14 @@ var	express = require( 'express' ),
 
 app.set( 'views', __dirname + '/views' );
 
+app.use( function( req, res, next ) {
+	res.locals.breadcrumb.push( {
+		name: "Admin",
+		url: "/admin"
+	} );
+	next();
+} );
+
 app.get( '/', ensureAuthenticated, function( req, res ) {
 	res.render( 'admin' );
 } );
@@ -16,33 +24,79 @@ app.get( '/', ensureAuthenticated, function( req, res ) {
  *	MEMBERS
  */
 
-app.get( '/members', ensureAuthenticated, function( req, res ) {
+var members = express();
+members.set( 'views', __dirname + '/views' );
+
+members.use( function( req, res, next ) {
+	res.locals.breadcrumb.push( {
+		name: "Members",
+		url: "/admin/members"
+	} );
+	next();
+} );
+
+members.get( '/', ensureAuthenticated, function( req, res ) {
 	Members.find( function( err, members ) {
 		res.render( 'members', { members: members } );
 	} );
 } );
 
-app.get( '/members/:id/edit', ensureAuthenticated, function( req, res ) {
+members.get( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	Members.findOne( { _id: req.params.id }, function( err, member ) {
+		res.locals.breadcrumb.push( {
+			name: member.fullname
+		} );
 		res.render( 'edit-member', { member: member } );
 	} );
 } );
+
+members.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
+	var member = {
+		username: req.body.username,
+		firstname: req.body.firstname,
+		lastname: req.body.lastname,
+		email: req.body.email,
+		tag_id: req.body.tag_id,
+		address: req.body.address
+	};
+
+	Members.update( { _id: req.params.id }, member, function( status ) {
+		req.flash( 'success', 'Members updated' );
+		res.redirect( '/admin/members/' + req.params.id + '/edit' );
+	} );
+} );
+
+app.use( '/members', members );
 
 /*
  *	PERMISSIONS
  */
 
-app.get( '/permissions', ensureAuthenticated, function( req, res ) {
+var permissions = express();
+permissions.set( 'views', __dirname + '/views' );
+
+permissions.use( function( req, res, next ) {
+	res.locals.breadcrumb.push( {
+		name: "Permissions",
+		url: "/admin/permissions"
+	} );
+	next();
+} );
+
+permissions.get( '/', ensureAuthenticated, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		res.render( 'permissions', { permissions: permissions } );
 	} );
 } );
 
-app.get( '/permissions/create', ensureAuthenticated, function( req, res ) {
+permissions.get( '/create', ensureAuthenticated, function( req, res ) {
+	res.locals.breadcrumb.push( {
+		name: 'Create'
+	} );
 	res.render( 'create-permission' );
 } );
 
-app.post( '/permissions/create', ensureAuthenticated, function( req, res ) {
+permissions.post( '/create', ensureAuthenticated, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
@@ -56,13 +110,16 @@ app.post( '/permissions/create', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
-app.get( '/permissions/:id/edit', ensureAuthenticated, function( req, res ) {
+permissions.get( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	Permissions.findOne( { _id: req.params.id }, function( err, permission ) {
+		res.locals.breadcrumb.push( {
+			name: permission.name
+		} );
 		res.render( 'edit-permission', { permission: permission } );
 	} );
 } );
 
-app.post( '/permissions/:id/edit', ensureAuthenticated, function( req, res ) {
+permissions.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
@@ -74,6 +131,8 @@ app.post( '/permissions/:id/edit', ensureAuthenticated, function( req, res ) {
 		res.redirect( '/admin/permissions/' + req.params.id + '/edit' );
 	} );
 } );
+
+app.use( '/permissions', permissions );
 
 /*
  *	SETTINGS

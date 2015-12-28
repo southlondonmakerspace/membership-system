@@ -50,6 +50,7 @@ app.use( function( req, res, next ) {
 app.use( function( req, res, next ) {
 	res.locals.apps = config.apps;
 	res.locals.config = config.globals;
+	res.locals.breadcrumb = [];
 	next();
 } );
 

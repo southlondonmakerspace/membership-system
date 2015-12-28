@@ -16,6 +16,7 @@
 	<body>
 		<div class="container">
 			{% include 'partials/navbar.swig' %}
+	    	{% include 'partials/breadcrumb.swig' %}
 	    	{% include 'partials/flash.swig' %}
 	    	{% if heading %}
 	    		<div class="page-header">

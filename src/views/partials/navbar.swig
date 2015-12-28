@@ -7,11 +7,11 @@
 		</div>
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			{% if user %}
+			{% if loggedIn %}
 				<ul class="nav navbar-nav">
 					{% for app in apps %}
 						{% if app.showMenu %}
-							<li{% if activeApp == app.id %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
+							<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
 						{% endif %}
 					{% endfor %}
 				</ul>

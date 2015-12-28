@@ -67,6 +67,21 @@ members.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
+members.get( '/:id/permissions', ensureAuthenticated, function( req, res ) {
+	Permissions.find( function( err, permissions ) {
+		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id + '/edit'
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Permissions'
+			} );
+			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date() } );
+		} );
+	} );
+} );
+
 app.use( '/members', members );
 
 /*

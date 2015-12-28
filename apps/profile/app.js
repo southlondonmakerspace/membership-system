@@ -16,6 +16,7 @@ app.use( function( req, res, next ) {
 		name: "Profile",
 		url: "/profile"
 	} );
+	res.locals.activeApp = 'profile';
 	next();
 } );
 

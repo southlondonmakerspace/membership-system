@@ -13,6 +13,7 @@ app.use( function( req, res, next ) {
 		name: "Admin",
 		url: "/admin"
 	} );
+	res.locals.activeApp = 'admin';
 	next();
 } );
 

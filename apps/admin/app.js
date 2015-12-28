@@ -139,7 +139,7 @@ app.use( '/permissions', permissions );
  */
 
  app.get( '/settings', ensureAuthenticated, function( req, res ) {
- 	req.flash( 'info', 'This are has not yet been built.' );
+ 	req.flash( 'info', 'This area has not yet been built.' );
  	res.redirect( '/admin' );
  } );
 
@@ -152,8 +152,6 @@ function ensureAuthenticated( req, res, next ) {
 		res.redirect( '/migration' );
 		return;		
 	}
-
-	req.session.requested = req.originalUrl;
 	req.flash( 'error', 'Please login first' );
 	res.redirect( '/login' );
 }

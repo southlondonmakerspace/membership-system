@@ -20,11 +20,6 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', ensureAuthenticated, function( req, res ) {
-	if ( req.session.requested ) {
-		res.redirect( req.session.requested );
-		delete req.session.requested;
-		return;
-	}
 	Members.findById( req.user._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 		res.render( 'profile', { user: user } );
 	} )

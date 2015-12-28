@@ -48,6 +48,7 @@ app.use( function( req, res, next ) {
 
 // Load in local variables such as config.globals
 app.use( function( req, res, next ) {
+	if ( req.user ) res.locals.loggedIn = true
 	res.locals.apps = config.apps;
 	res.locals.config = config.globals;
 	res.locals.breadcrumb = [];

@@ -1,4 +1,4 @@
-{% extends 'base.swig' %}
+{% extends '../../../src/views/base.swig' %}
 
 {% set title = 'Join' %}
 {% set activeApp = 'join' %}
@@ -9,26 +9,34 @@
 			<div class="page-header">
 				<h2>Join</h2>
 			</div>
-			<form action="post">
+			<form method="post">
 				<p>
 					<label for="username">Username: </label>
-					<input id="username" name="username" type="text" class="form-control" />
+					<input id="username" name="username" type="text" value="{{ user.username }}" class="form-control" />
 				</p>
 				<p>
 					<label for="password">Password: </label>
 					<input id="password" name="password" type="password" class="form-control" />
 				</p>
 				<p>
-					<label for="password2">Confirm: </label>
-					<input id="password2" name="password2" type="password" class="form-control" />
+					<label for="verify">Verify password: </label>
+					<input id="verify" name="verify" type="password" class="form-control" />
+				</p>
+				<p>
+					<label for="firstname">First Name: </label>
+					<input id="firstname" name="firstname" type="text" value="{{ user.firstname }}" class="form-control" />
+				</p>
+				<p>
+					<label for="lastname">Last Name: </label>
+					<input id="lastname" name="lastname" type="text" value="{{ user.lastname }}" class="form-control" />
 				</p>
 				<p>
 					<label for="email">Email: </label>
-					<input id="email" name="email" type="email" class="form-control" />
+					<input id="email" name="email" type="email" value="{{ user.email }}" class="form-control" />
 				</p>
 				<p>
 					<label for="address">Address: </label>
-					<textarea id="address" name="address" class="form-control"></textarea>
+					<textarea id="address" name="address" class="form-control">{{ user.address }}</textarea>
 				</p>
 				<p>
 					<button class="btn btn-primary">Next <span class="glyphicon glyphicon-chevron-right"></span></button>

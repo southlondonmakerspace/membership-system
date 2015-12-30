@@ -1,4 +1,4 @@
-{% extends 'base.swig' %}
+{% extends '../../../src/views/base.swig' %}
 
 {% set title = 'Login' %}
 {% set activeApp = 'login' %}
@@ -28,7 +28,7 @@
 			<div class="page-header">
 				<h2>Login</h2>
 			</div>
-			<form action="post">
+			<form method="post">
 				<p></p>
 				<p>
 					<label for="username">Username: </label>
@@ -39,7 +39,8 @@
 					<input id="password" name="password" type="password" class="form-control" />
 				</p>
 				<p>
-					<button class="btn btn-primary" href="#" role="button">Login</button>
+					<button class="btn btn-primary" role="button">Login</button>
+					<a class="btn btn-default" href="/password-reset" role="button">Password Reset</a>
 				</p>
 			</form>
 		</div>

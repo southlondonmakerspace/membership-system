@@ -1,0 +1,32 @@
+{
+	"port" : 3001,
+	"secret": "random",
+	"globals": {
+		"organisation": "South London Makerspace",
+		"title": "Membership System"
+	},
+	"mandrill": {
+		"api_key": "",
+		"from_email": "trustees@southlondonmakerspace.org",
+		"from_name": "South London Makerspace"
+	},
+	"mongo": "mongodb://localhost/membership-system",
+	"audience": "http://localhost:3001",
+	"apps": [
+		{
+			"title": "Profile",
+			"path": "profile",
+			"showMenu": true
+		},
+		{
+			"title": "Admin",
+			"path": "admin",
+			"showMenu": true
+		},
+		{ "path": "join" },
+		{ "path": "activate" },
+		{ "path": "migration" },
+		{ "path": "login" },
+		{ "path": "password-reset" }
+	]
+}

@@ -12,7 +12,7 @@ exports.connect = function( url ) {
 var permissionsSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: new mongoose.Types.ObjectId(),
+		default: function() { return new mongoose.Types.ObjectId() },
 		required: true,
 		unique: true
 	},
@@ -44,7 +44,7 @@ var legacySchema = mongoose.Schema( {
 var memberSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: new mongoose.Types.ObjectId(),
+		default: function() { return new mongoose.Types.ObjectId() },
 		required: true,
 		unique: true
 	},

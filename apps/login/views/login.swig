@@ -31,7 +31,7 @@
 			<form method="post">
 				<p></p>
 				<p>
-					<label for="username">Username: </label>
+					<label for="username">Email: </label>
 					<input id="username" name="username" type="text" class="form-control" />
 				</p>
 				<p>

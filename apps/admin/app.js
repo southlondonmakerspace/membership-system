@@ -53,7 +53,6 @@ members.get( '/:id/edit', ensureAuthenticated, function( req, res ) {
 
 members.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	var member = {
-		username: req.body.username,
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
 		email: req.body.email,

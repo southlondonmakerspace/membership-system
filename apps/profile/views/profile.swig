@@ -4,8 +4,6 @@
 {% set heading = 'Profile' %}
 
 {% block content %}
-	<p><strong>Username:</strong> {{ user.username }}</p>
-	
 	<p><strong>Name:</strong> {{ user.fullname }}</p>
 	
 	<p><strong>Email:</strong> {{ user.email }}</p>

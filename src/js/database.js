@@ -37,10 +37,16 @@ var memberSchema = mongoose.Schema( {
 		required: true,
 		unique: true
 	},
-	username: {
+	email: {
 		type: String,
 		required: true,
-		unique: true
+		unique: true,
+		validate: {
+			validator: function ( v ) {
+				return /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,}/.test( v );
+			},
+			message: '{VALUE} is not a valid email address'
+		}
 	},
 	password_hash: {
 		type: String,
@@ -67,17 +73,6 @@ var memberSchema = mongoose.Schema( {
 	lastname: {
 		type: String,
 		required: true
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-		validate: {
-			validator: function ( v ) {
-				return /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,}/.test( v );
-			},
-			message: '{VALUE} is not a valid email address'
-		}
 	},
 	address: {
 		type: String,

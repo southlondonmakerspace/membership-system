@@ -28,7 +28,6 @@ app.post( '/', function( req, res ) {
 		res.redirect( '/profile' );
 	} else {
 		var user = {
-			username: req.body.username,
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
 			email: req.body.email,

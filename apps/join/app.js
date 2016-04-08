@@ -10,9 +10,6 @@ var crypto = require( 'crypto' );
 
 var config = require( '../../config/config.json' );
 
-var mandrill = require( 'mandrill-api/mandrill' ),
-	mandrill_client = new mandrill.Mandrill( config.mandrill.api_key );
-
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/' , function( req, res ) {
@@ -68,40 +65,40 @@ app.post( '/', function( req, res ) {
 							req.session.join = user;
 							res.redirect( '/join' );
 						} else {
-							var message = {
-								subject: 'Activation Email – ' + config.globals.organisation,
-								from_email: config.mandrill.from_email,
-								from_name: config.mandrill.from_name,
-								to: [ {
-									email: user.email,
-									name: user.firstname + ' ' + user.lastname,
-								} ],
-								track_opens: true,
-								track_clicks: true,
-								global_merge_vars: [
-									{
-										name: 'NAME',
-										content: user.firstname
-									},
-									{
-										name: 'LINK',
-										content: config.audience + '/activate/' + user.activation_code
-									}
-								]
-							};
+							// var message = {
+							// 	subject: 'Activation Email – ' + config.globals.organisation,
+							// 	from_email: config.mandrill.from_email,
+							// 	from_name: config.mandrill.from_name,
+							// 	to: [ {
+							// 		email: user.email,
+							// 		name: user.firstname + ' ' + user.lastname,
+							// 	} ],
+							// 	track_opens: true,
+							// 	track_clicks: true,
+							// 	global_merge_vars: [
+							// 		{
+							// 			name: 'NAME',
+							// 			content: user.firstname
+							// 		},
+							// 		{
+							// 			name: 'LINK',
+							// 			content: config.audience + '/activate/' + user.activation_code
+							// 		}
+							// 	]
+							// };
 
-							mandrill_client.messages.sendTemplate( {
-								template_name: 'activation-email',
-								template_content: null,
-								message: message
-							}, function ( e ) {
+							// mandrill_client.messages.sendTemplate( {
+							// 	template_name: 'activation-email',
+							// 	template_content: null,
+							// 	message: message
+							// }, function ( e ) {
 								req.flash( 'success', 'Account created, please check your email for a registration link' );
 								res.redirect( '/' );
-							}, function ( e ) {
-								req.flash( 'danger', 'Your account was created, but there was a problem sending the activation email, please contact: ' + config.mandrill.from_name );
-								res.redirect( '/' );
-								console.log( e );
-							} );
+							// }, function ( e ) {
+							// 	req.flash( 'danger', 'Your account was created, but there was a problem sending the activation email, please contact: ' + config.mandrill.from_name );
+							// 	res.redirect( '/' );
+							// 	console.log( e );
+							// } );
 						}
 					} );
 				} );

@@ -8,9 +8,6 @@ var Members = require( './database' ).Members;
 
 var config = require( '../../config/config.json' );
 
-var mandrill = require( 'mandrill-api/mandrill' ),
-	mandrill_client = new mandrill.Mandrill( config.mandrill.api_key );
-
 app.set( 'views', __dirname + '/../views' );
 
 app.get( '/', function ( req, res ) {

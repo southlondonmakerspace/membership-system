@@ -10,9 +10,6 @@ var crypto = require( 'crypto' );
 
 var config = require( '../../config/config.json' );
 
-var mandrill = require( 'mandrill-api/mandrill' ),
-	mandrill_client = new mandrill.Mandrill( config.mandrill.api_key );
-
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/' , function( req, res ) {
@@ -24,41 +21,41 @@ app.post( '/', function( req, res ) {
 		if ( user ) {
 			crypto.randomBytes( 10, function( ex, code ) {
 				var password_reset_code = code.toString( 'hex' );
-				Members.update( { _id: user._id }, { $set: { password_reset_code: password_reset_code } }, function ( status ) {
-					var message = {
-						subject: 'Password Reset – ' + config.globals.organisation,
-						from_email: config.mandrill.from_email,
-						from_name: config.mandrill.from_name,
-						to: [ {
-							email: user.email,
-							name: user.firstname + ' ' + user.lastname,
-						} ],
-						track_opens: true,
-						track_clicks: true,
-						global_merge_vars: [
-							{
-								name: 'NAME',
-								content: user.firstname
-							},
-							{
-								name: 'USERNAME',
-								content: user.username
-							},
-							{
-								name: 'LINK',
-								content: config.audience + '/password-reset/code/' + password_reset_code
-							}
-						]
-					};
+				// Members.update( { _id: user._id }, { $set: { password_reset_code: password_reset_code } }, function ( status ) {
+				// 	var message = {
+				// 		subject: 'Password Reset – ' + config.globals.organisation,
+				// 		from_email: config.mandrill.from_email,
+				// 		from_name: config.mandrill.from_name,
+				// 		to: [ {
+				// 			email: user.email,
+				// 			name: user.firstname + ' ' + user.lastname,
+				// 		} ],
+				// 		track_opens: true,
+				// 		track_clicks: true,
+				// 		global_merge_vars: [
+				// 			{
+				// 				name: 'NAME',
+				// 				content: user.firstname
+				// 			},
+				// 			{
+				// 				name: 'USERNAME',
+				// 				content: user.username
+				// 			},
+				// 			{
+				// 				name: 'LINK',
+				// 				content: config.audience + '/password-reset/code/' + password_reset_code
+				// 			}
+				// 		]
+				// 	};
 
-					mandrill_client.messages.sendTemplate( {
-						template_name: 'password-reset',
-						template_content: null,
-						message: message
-					}, function ( e ) {
-					}, function ( e ) {
-					} );
-				} );
+				// 	mandrill_client.messages.sendTemplate( {
+				// 		template_name: 'password-reset',
+				// 		template_content: null,
+				// 		message: message
+				// 	}, function ( e ) {
+				// 	}, function ( e ) {
+				// 	} );
+				// } );
 			} );
 		}
 		req.flash( 'success', 'If there is an account associated with the email address you will receive an email shortly' );

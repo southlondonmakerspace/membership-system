@@ -24,7 +24,7 @@
 
 {% block content %}
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-6">
 			<div class="page-header">
 				<h2>Login</h2>
 			</div>
@@ -45,24 +45,13 @@
 			</form>
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-md-6">
 			<div class="page-header">
 				<h2>Join</h2>
 			</div>
 			<p>If you are a new around here why not join?</p>
 			<p>
 				<a class="btn btn-default" href="/join">Join</a>
-			</p>
-		</div>
-
-		<div class="col-md-4">
-			<div class="page-header">
-				<h2>Legacy migration</h2>
-			</div>
-			<p>If you signed up prior to 2016 you may need to migrate your old account.</p>
-			<p>
-				<a class="btn btn-default" href="#" role="button" id="browserid">Sign in with Persona</a>
-				<form action="/auth/browserid" method="post" style="display:none;"><input type="text" name="assertion"/></form>
 			</p>
 		</div>
 	</div>

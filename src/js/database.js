@@ -30,17 +30,6 @@ var permissionsSchema = mongoose.Schema( {
 	}
 } );
 
-var legacySchema = mongoose.Schema( {
-	email: String,
-	name: String,
-	address: String,
-	card_id: String,
-	migrated: {
-		type: Boolean,
-		default: false
-	}
-} );
-
 var memberSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
@@ -136,9 +125,7 @@ memberSchema.virtual( 'fullname' ).get( function() {
 } );
 
 exports.permissionsSchema = permissionsSchema;
-exports.legacySchema = legacySchema;
 exports.memberSchema = memberSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
-exports.LegacyMembers = mongoose.model( 'LegacyMembers', exports.legacySchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );

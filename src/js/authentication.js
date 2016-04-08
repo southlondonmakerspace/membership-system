@@ -7,7 +7,6 @@ var config = require( '../../config/config.json' );
 var database = require( './database');
 
 var passport = require( 'passport' ),
-	PersonaStrategy = require( 'passport-persona' ).Strategy,
 	LocalStrategy = require( 'passport-local' ).Strategy;
 
 var crypto = require( 'crypto' );
@@ -29,23 +28,6 @@ module.exports = function( app ) {
 					return done( null, false, { message: 'Unauthorised user' } );
 				} else {
 					return done( null, false, { message: 'Unauthorised user' } );
-				}
-			} );
-		}
-	) );
-
-	// Add support for persona authentication
-	passport.use( new PersonaStrategy( { audience: config.audience },
-		function( email, done ) {
-			database.LegacyMembers.findOne( { email: email }, function( err, user ) {
-				if ( user != null ) {
-					if ( ! user.migrated ) {
-						return done( null, { _id: user._id, legacy: true }, { message: 'Persona login successful, ready to migrate' } );
-					} else {
-						return done( null, false, { message: 'This acccount has been migrated already, please login normally' } );	
-					}
-				} else {
-					return done( null, false, { message: 'This account cannot be migrated, you may have the wrong email address' } );
 				}
 			} );
 		}

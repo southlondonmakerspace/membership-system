@@ -6,6 +6,8 @@ var	express = require( 'express' ),
 	Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 
+var auth = require( '../../src/js/authentication.js' );
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
@@ -17,7 +19,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', ensureAuthenticated, function( req, res ) {
+app.get( '/', auth.isAdmin, function( req, res ) {
 	res.render( 'admin' );
 } );
 
@@ -36,22 +38,26 @@ members.use( function( req, res, next ) {
 	next();
 } );
 
-members.get( '/', ensureAuthenticated, function( req, res ) {
+members.get( '/', auth.isAdmin, function( req, res ) {
 	Members.find( function( err, members ) {
 		res.render( 'members', { members: members } );
 	} );
 } );
 
-members.get( '/:id/edit', ensureAuthenticated, function( req, res ) {
+members.get( '/:id/edit', auth.isAdmin, function( req, res ) {
 	Members.findOne( { _id: req.params.id }, function( err, member ) {
-		res.locals.breadcrumb.push( {
-			name: member.fullname
-		} );
-		res.render( 'edit-member', { member: member } );
+		if ( member != undefined ) {
+			res.locals.breadcrumb.push( {
+				name: member.fullname
+			} );
+			res.render( 'edit-member', { member: member } );
+		} else {
+			res.render( '../../../src/views/404' );
+		}
 	} );
 } );
 
-members.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
+members.post( '/:id/edit', auth.isAdmin, function( req, res ) {
 	var member = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -66,7 +72,7 @@ members.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
-members.get( '/:id/permissions', ensureAuthenticated, function( req, res ) {
+members.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			res.locals.breadcrumb.push( {
@@ -79,6 +85,11 @@ members.get( '/:id/permissions', ensureAuthenticated, function( req, res ) {
 			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date() } );
 		} );
 	} );
+} );
+
+members.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
+	req.flash( 'error', 'Not yet implemented.' );
+	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 } );
 
 app.use( '/members', members );
@@ -98,20 +109,20 @@ permissions.use( function( req, res, next ) {
 	next();
 } );
 
-permissions.get( '/', ensureAuthenticated, function( req, res ) {
+permissions.get( '/', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		res.render( 'permissions', { permissions: permissions } );
 	} );
 } );
 
-permissions.get( '/create', ensureAuthenticated, function( req, res ) {
+permissions.get( '/create', auth.isAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
 	res.render( 'create-permission' );
 } );
 
-permissions.post( '/create', ensureAuthenticated, function( req, res ) {
+permissions.post( '/create', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
@@ -119,13 +130,12 @@ permissions.post( '/create', ensureAuthenticated, function( req, res ) {
 	};
 
 	new Permissions( permission ).save( function( err, permission ) {
-		console.log( err );
 		req.flash( 'success', 'Permission created' );
 		res.redirect( '/admin/permissions/' + permission._id + '/edit' );
 	} );
 } );
 
-permissions.get( '/:id/edit', ensureAuthenticated, function( req, res ) {
+permissions.get( '/:id/edit', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { _id: req.params.id }, function( err, permission ) {
 		res.locals.breadcrumb.push( {
 			name: permission.name
@@ -134,7 +144,7 @@ permissions.get( '/:id/edit', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
-permissions.post( '/:id/edit', ensureAuthenticated, function( req, res ) {
+permissions.post( '/:id/edit', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
@@ -153,20 +163,9 @@ app.use( '/permissions', permissions );
  *	SETTINGS
  */
 
- app.get( '/settings', ensureAuthenticated, function( req, res ) {
+ app.get( '/settings', auth.isAdmin, function( req, res ) {
  	req.flash( 'info', 'This area has not yet been built.' );
  	res.redirect( '/admin' );
  } );
 
 module.exports = app;
-
-function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() && req.user != undefined && req.user.migrated == null ) {
-		return next();
-	} else if ( req.isAuthenticated() ) {
-		res.redirect( '/migration' );
-		return;		
-	}
-	req.flash( 'error', 'Please login first' );
-	res.redirect( '/login' );
-}

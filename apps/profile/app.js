@@ -7,7 +7,7 @@ var	express = require( 'express' ),
 
 var crypto = require( 'crypto' );
 
-var authentication = require( '../../src/js/authentication' );
+var auth = require( '../../src/js/authentication.js' );
 
 app.set( 'views', __dirname + '/views' );
 
@@ -20,20 +20,20 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', ensureAuthenticated, function( req, res ) {
+app.get( '/', auth.isMember, function( req, res ) {
 	Members.findById( req.user._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 		res.render( 'profile', { user: user } );
 	} )
 } );
 
-app.get( '/update', ensureAuthenticated, function( req, res ) {
+app.get( '/update', auth.isMember, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: "Update"
 	} );
 	res.render( 'update', { user: req.user } );
 } );
 
-app.post( '/update', ensureAuthenticated, function( req, res ) {
+app.post( '/update', auth.isMember, function( req, res ) {
 	var profile = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -56,14 +56,14 @@ app.post( '/update', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
-app.get( '/change-password', ensureAuthenticated, function( req, res ) {
+app.get( '/change-password', auth.isMember, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: "Change Password"
 	} );
 	res.render( 'change-password' );
 } );
 
-app.post( '/change-password', ensureAuthenticated, function( req, res ) {
+app.post( '/change-password', auth.isMember, function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		var password_hash = authentication.generatePassword( req.body.current, user.password_salt ).hash;
 		if ( password_hash != user.password_hash ) {
@@ -99,15 +99,3 @@ app.post( '/change-password', ensureAuthenticated, function( req, res ) {
 } );
 
 module.exports = app;
-
-function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() && req.user != undefined && req.user.migrated == null ) {
-		return next();
-	} else if ( req.isAuthenticated() ) {
-		res.redirect( '/migration' );
-		return;		
-	}
-
-	req.flash( 'error', 'Please login first' );
-	res.redirect( '/login' );
-}

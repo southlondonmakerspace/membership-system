@@ -23,7 +23,7 @@ npm start
 ```
 
 By default it will then be available on `http://localhost:3001/`
-The port is configurable in the  `config/congig.json`
+The port is configurable in the  `config/config.json`
 ## License
 
 	Membership System

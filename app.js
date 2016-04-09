@@ -26,7 +26,6 @@ require( __dirname + '/src/js/sessions' )( app );
 // Include support for notifications
 app.use( flash() );
 app.use( function( req, res, next ) {
-
 	var flash = req.flash(),
 		flashes = [],
 		types = Object.keys( flash );
@@ -48,7 +47,8 @@ app.use( function( req, res, next ) {
 
 // Load in local variables such as config.globals
 app.use( function( req, res, next ) {
-	if ( req.user ) res.locals.loggedIn = true
+	if ( req.user )
+		res.locals.loggedIn = true
 	res.locals.apps = config.apps;
 	res.locals.config = config.globals;
 	res.locals.breadcrumb = [];

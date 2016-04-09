@@ -8,7 +8,6 @@ var session = require( 'express-session' ),
 	passport = require( 'passport' );
 
 module.exports =  function( app ) {
-
 	app.use( cookie() );
 	app.use( session( {
 		secret: config.secret,
@@ -20,5 +19,4 @@ module.exports =  function( app ) {
 
 	app.use( passport.initialize() );
 	app.use( passport.session() );
-
 }

@@ -12,7 +12,7 @@
 			<form method="post">
 				<p>
 					<label for="permission">Permission: </label>
-					<select class="form-control" id="permission" name="permissions">
+					<select class="form-control" id="permission" name="permission">
 						<option disabled selected>&mdash;</option>
 						{% for permission in permissions %}
 							<option value="{{ permission.slug }}">{{ permission.name }}</option>

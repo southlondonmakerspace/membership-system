@@ -20,11 +20,4 @@ app.get( '/logout', function( req, res ) {
 	res.redirect( '/' );
 } );
 
-app.post( '/auth/browserid', passport.authenticate( 'persona', {
-	failureRedirect: '/login',
-	successRedirect: '/migration',
-	failureFlash: true,
-	successFlash: true
-} ) );
-
 module.exports = app;

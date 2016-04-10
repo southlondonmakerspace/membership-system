@@ -8,9 +8,9 @@
 	
 	<p><strong>Email:</strong> {{ user.email }}</p>
 
-	<p><strong>Tag:</strong> {{ user.tag_id | default('No tag associated') }}</p>
+	<p><strong>Address:</strong> {{ user.address | replace('\r\n', ', ', 'gim') }}</p>
 
-	<p><strong>Address:</strong> {{ user.address }}</p>
+	<p><strong>Tag:</strong> {{ user.tag_id | default('No tag associated') }}</p>
 
 	<p>
 		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/profile/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a>

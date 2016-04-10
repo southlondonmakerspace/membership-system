@@ -40,6 +40,18 @@ function authentication( app ) {
 	passport.deserializeUser( function( data, done ) {
 		Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 			if ( user != null ) {
+				var permissions = [];
+
+				for ( var p = 0; p < user.permissions.length; p++ ) {
+					if ( user.permissions[p].date_added <= new Date() ) {
+						if ( user.permissions[p].date_expires == undefined || user.permissions[p].date_expires > new Date() ) {
+							permissions.push( user.permissions[p].permission.slug );
+						}
+					}
+				}
+
+				user.quickPermissions = permissions;
+
 				return done( null, user );
 			} else {
 				return done( null, false, { message: 'Please login' } );
@@ -110,16 +122,8 @@ function canAdmin( req ) {
 }
 
 function checkPermission( req, permission ) {
-	if ( req.user == undefined ) return;
-	for ( var p = 0; p < req.user.permissions.length; p++ ) {
-		if ( req.user.permissions[p].permission.slug == permission ) {
-			if ( req.user.permissions[p].date_added <= new Date() ) {
-				if ( req.user.permissions[p].date_expires == undefined || req.user.permissions[p].date_expires > new Date() ) {
-					return true;
-				}
-			}
-		}
-	}
+	if ( req.user == undefined ) return false;
+	if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return true;
 	return false;
 }
 

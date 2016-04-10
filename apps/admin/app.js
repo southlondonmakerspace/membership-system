@@ -88,7 +88,44 @@ members.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
 } );
 
 members.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
-	req.flash( 'error', 'Not yet implemented.' );
+	Permissions.findOne( { slug: req.body.permission }, function( err, permission ) {
+		if ( permission != undefined ) {
+			var new_permission = {
+				permission: permission._id
+			}
+
+			new_permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
+
+			if ( req.body.expiry_date != '' && req.body.expiry_time != '' )
+				new_permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
+
+			if ( new_permission.date_added >= new_permission.date_expires ) {
+				req.flash( 'warning', 'Expiry date must not be the same as or before the start date' );
+				res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+				return;
+			}
+
+			Members.update( { _id: req.params.id }, {
+				$push: {
+					permissions: new_permission
+				}
+			}, function ( status ) {
+				console.log( status );
+			} );
+		} else {
+			req.flash( 'warning', 'Invalid permission selected' );
+		}
+		res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+	} );
+} );
+
+members.get( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res ) {
+	req.flash( 'info', 'Not yet implemented' );
+	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+} );
+
+members.get( '/:id/permissions/:index/revoke', auth.isAdmin, function( req, res ) {
+	req.flash( 'info', 'Not yet implemented' );
 	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 } );
 

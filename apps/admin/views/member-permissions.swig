@@ -21,12 +21,12 @@
 				</p>
 				<p>
 					<label>Start: </label><br />
-					<input type="time" name="start_date" value="{{ now | date('H:i') }}" class="form-control" style="display: inline; width: auto;"  />
+					<input type="time" name="start_time" value="{{ now | date('H:i') }}" class="form-control" style="display: inline; width: auto;"  />
 					<input type="date" name="start_date" value="{{ now | date('Y-m-d') }}" class="form-control" style="display: inline; width: auto;"  />
 				</p>
 				<p>
 					<label>Expires: </label><br />
-					<input type="time" name="expiry_date" class="form-control" style="display: inline; width: auto;"  />
+					<input type="time" name="expiry_time" class="form-control" style="display: inline; width: auto;"  />
 					<input type="date" name="expiry_date" class="form-control" style="display: inline; width: auto;"  />
 				</p>
 				<p>

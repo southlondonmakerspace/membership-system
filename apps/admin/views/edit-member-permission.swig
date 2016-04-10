@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
 {% set title = 'Update Member Permission' %}
-{% set heading = 'Update "' + member.fullname + '" Permission' %}
+{% set heading = 'Update Permission' %}
 {% set activeApp = 'admin' %}
 
 {% block content %}

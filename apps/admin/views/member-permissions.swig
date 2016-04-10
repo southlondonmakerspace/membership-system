@@ -9,30 +9,8 @@
 			<div class="page-header">
 				<h3>Grant Permission</h3>
 			</div>
-			<form method="post">
-				<p>
-					<label for="permission">Permission: </label>
-					<select class="form-control" id="permission" name="permission">
-						<option disabled selected>&mdash;</option>
-						{% for permission in permissions %}
-							<option value="{{ permission.slug }}">{{ permission.name }}</option>
-						{% endfor %}
-					</select>
-				</p>
-				<p>
-					<label>Start: </label><br />
-					<input type="time" name="start_time" value="{{ now | date('H:i') }}" class="form-control" style="display: inline; width: auto;"  />
-					<input type="date" name="start_date" value="{{ now | date('Y-m-d') }}" class="form-control" style="display: inline; width: auto;"  />
-				</p>
-				<p>
-					<label>Expires: </label><br />
-					<input type="time" name="expiry_time" class="form-control" style="display: inline; width: auto;"  />
-					<input type="date" name="expiry_date" class="form-control" style="display: inline; width: auto;"  />
-				</p>
-				<p>
-					<button class="btn btn-primary">Grant</button>
-				</p>
-			</form>
+			{% set action = 'Grant' %}
+			{% include 'partials/member-permission-form.swig' %}
 		</div>
 		<div class="col-md-8">
 			<div class="page-header">

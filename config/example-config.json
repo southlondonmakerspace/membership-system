@@ -35,6 +35,7 @@
 		{ "path": "join" },
 		{ "path": "activate" },
 		{ "path": "login" },
-		{ "path": "password-reset" }
+		{ "path": "password-reset" },
+		{ "path": "api" }
 	]
 }

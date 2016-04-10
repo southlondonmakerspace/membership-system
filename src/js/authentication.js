@@ -15,19 +15,19 @@ var crypto = require( 'crypto' );
 function authentication( app ) {
 	// Add support for local authentication
 	passport.use( new LocalStrategy( function( email, password, done ) {
-			Members.findOne( { email: email } ).populate( 'permissions.permission' ).exec( function( err, user ) {
+			Members.findOne( { email: email }, function( err, user ) {
 				if ( user != null ) {
 					var password_hash = generatePassword( password, user.password_salt ).hash;
 					if ( password_hash == user.password_hash ) {
 						if ( user.activated ) {
-							return done( null, { _id: user._id }, { message: 'User login successful' } );
+							return done( null, { _id: user._id }, { message: 'Login successful' } );
 						} else {
 							return done( null, false, { message: 'Account not activated' } );
 						}
 					}
-					return done( null, false, { message: 'Unauthorised user' } );
+					return done( null, false, { message: 'Login unsuccessful' } );
 				} else {
-					return done( null, false, { message: 'Unauthorised user' } );
+					return done( null, false, { message: 'Login unsuccessful' } );
 				}
 			} );
 		}
@@ -38,7 +38,7 @@ function authentication( app ) {
 	} );
 
 	passport.deserializeUser( function( data, done ) {
-		Members.findById( data._id, function( err, user ) {
+		Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 			if ( user != null ) {
 				return done( null, user );
 			} else {
@@ -63,7 +63,7 @@ function generatePassword( password, salt ) {
 
 function superAdmin( email ) {
 	if ( config.superadmins.indexOf( email ) != -1 ) {
-		console.log( "SUPER ADMIN!" );
+		//console.log( "SUPER ADMIN!" );
 		return true;
 	}
 	return false;
@@ -86,38 +86,58 @@ function loggedIn( req ) {
 function activeMember( req ) {
 	// Check user is logged in
 	var status = loggedIn( req );
-	if ( ! status || superAdmin( req.user.email ) ) {
+	if ( ! status ) {
 		return status;
 	} else {
-		console.log( req.user.permissions );
+		if ( checkPermission( req, 'member' ) ) return true;
+		if ( checkPermission( req, 'trustee' ) ) return true;
+		if ( checkPermission( req, 'admin' ) ) return true;
+		if ( superAdmin( req.user.email ) ) return true;
 	}
+	return -2;
 }
 
 function canAdmin( req ) {
 	// Check user is logged in
 	var status = loggedIn( req );
-	if ( ! status || superAdmin( req.user.email ) ) {
+	if ( ! status ) {
 		return status;
 	} else {
-		console.log( req.user.permissions );
+		if ( checkPermission( req, 'trustee' ) ) return true;
+		console.log( 'not a trustee' );
+		if ( checkPermission( req, 'admin' ) ) return true;
+		console.log( 'not an admin' );
+		if ( superAdmin( req.user.email ) ) return true;
+		console.log( 'not a super admin' );
 	}
+	return -3;
+}
+
+function checkPermission( req, permission ) {
+	if ( req.user == undefined ) return;
+	for ( var p = 0; p < req.user.permissions.length; p++ ) {
+		if ( req.user.permissions[p].permission.slug == permission ) {
+			if ( req.user.permissions[p].date_added <= new Date() ) {
+				if ( req.user.permissions[p].date_expires == undefined || req.user.permissions[p].date_expires > new Date() ) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 function isLoggedIn( req, res, next ) {
 	var status = loggedIn( req );
-	console.log( status );
 	switch ( status ) {
 		case true:
-			console.log( "Logged in and activated" );
 			return next();
 		case -1:
-			console.log( "Logged in and not activated" );
 			req.flash( 'warning', 'Your account is not yet activated' );
 			res.redirect( '/' );
 			return;
 		default:
 		case false:
-			console.log( "Not logged in" );
 			req.flash( 'error', 'You must be logged in first' );
 			res.redirect( '/login' );
 			return;
@@ -126,24 +146,19 @@ function isLoggedIn( req, res, next ) {
 
 function isMember( req, res, next ) {
 	var status = activeMember( req );
-	console.log( status );
 	switch ( status ) {
 		case true:
-			console.log( "Logged in and activated" );
 			return next();
 		case -1:
-			console.log( "Logged in and not activated" );
 			req.flash( 'warning', 'Your account is not yet activated' );
 			res.redirect( '/' );
 			return;
 		case -2:
-			console.log( "Inactive member" );
 			req.flash( 'warning', 'Your membership is inactive' );
 			res.redirect( '/profile' );
 			return;
 		default:
 		case false:
-			console.log( "Not logged in" );
 			req.flash( 'error', 'You must be logged in first' );
 			res.redirect( '/login' );
 			return;
@@ -152,29 +167,24 @@ function isMember( req, res, next ) {
 
 function isAdmin( req, res, next ) {
 	var status = canAdmin( req );
-	console.log( status );
+	console.log( 'status: ' + status );
 	switch ( status ) {
 		case true:
-			console.log( "Logged in and activated" );
 			return next();
 		case -1:
-			console.log( "Logged in and not activated" );
 			req.flash( 'warning', 'Your account is not yet activated' );
 			res.redirect( '/' );
 			return;
 		case -2:
-			console.log( "Inactive member" );
 			req.flash( 'warning', 'Your membership is inactive' );
 			res.redirect( '/profile' );
 			return;
 		case -3:
-			console.log( "Not an admin" );
 			req.flash( 'warning', 'You do not have access to this area' );
 			res.redirect( '/profile' );
 			return;
 		default:
 		case false:
-			console.log( "Not logged in" );
 			req.flash( 'error', 'You must be logged in first' );
 			res.redirect( '/login' );
 			return;
@@ -186,19 +196,3 @@ module.exports.generatePassword = generatePassword;
 module.exports.isLoggedIn = isLoggedIn;
 module.exports.isMember = isMember;
 module.exports.isAdmin = isAdmin;
-
-
-/*
-
-
-function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() && req.user != undefined && req.user.migrated == null ) {
-		return next();
-	} else if ( req.isAuthenticated() ) {
-		res.redirect( '/migration' );
-		return;		
-	}
-	req.flash( 'error', 'Please login first' );
-	res.redirect( '/login' );
-}
-*/

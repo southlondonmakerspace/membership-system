@@ -4,7 +4,8 @@
 
 var config = require( '../../config/config.json' );
 
-var database = require( './database');
+var Permissions = require( '../../src/js/database' ).Permissions,
+	Members = require( '../../src/js/database' ).Members;;
 
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy;
@@ -14,7 +15,7 @@ var crypto = require( 'crypto' );
 function authentication( app ) {
 	// Add support for local authentication
 	passport.use( new LocalStrategy( function( email, password, done ) {
-			database.Members.findOne( { email: email } ).populate( 'permissions.permission' ).exec( function( err, user ) {
+			Members.findOne( { email: email } ).populate( 'permissions.permission' ).exec( function( err, user ) {
 				if ( user != null ) {
 					var password_hash = generatePassword( password, user.password_salt ).hash;
 					if ( password_hash == user.password_hash ) {
@@ -37,23 +38,13 @@ function authentication( app ) {
 	} );
 
 	passport.deserializeUser( function( data, done ) {
-		if ( data.legacy ) {
-			database.LegacyMembers.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
-				if ( user != null ) {
-					return done( null, user );
-				} else {
-					return done( null, false, { message: 'Please login' } );
-				}
-			} );
-		} else {
-			database.Members.findById( data._id, function( err, user ) {
-				if ( user != null ) {
-					return done( null, user );
-				} else {
-					return done( null, false, { message: 'Please login' } );
-				}
-			} );
-		}
+		Members.findById( data._id, function( err, user ) {
+			if ( user != null ) {
+				return done( null, user );
+			} else {
+				return done( null, false, { message: 'Please login' } );
+			}
+		} );
 	} );
 
 	// Include support for passport and sessions

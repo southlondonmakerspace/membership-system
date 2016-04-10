@@ -75,6 +75,12 @@ members.post( '/:id/edit', auth.isAdmin, function( req, res ) {
 members.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
 			res.locals.breadcrumb.push( {
 				name: member.fullname,
 				url: '/admin/members/' + member._id + '/edit'
@@ -192,10 +198,27 @@ members.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res 
 	} );
 } );
 
-members.get( '/:id/permissions/:index/revoke', auth.isAdmin, function( req, res ) {
+members.get( '/:mid/permissions/:pid/revoke', auth.isAdmin, function( req, res ) {
+	Members.findOne( { _id: req.params.mid }, function( err, member ) {
+		if ( member == undefined ) {
+			req.flash( 'warning', 'Member not found' );
+			res.redirect( '/admin/members' );
+			return;
+		}
+		
+		if ( member.permissions.id( req.params.pid ) == undefined ) {
+			req.flash( 'warning', 'Permission not found' );
+			res.redirect( '/admin/members' );
+			return;
+		}
 
-	req.flash( 'info', 'Not yet implemented' );
-	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+		member.permissions.pull( { _id: req.params.pid } );
+
+		member.save( function ( err ) {
+			req.flash( 'success', 'Permission removed' );
+			res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
+		} );
+	} );
 } );
 
 app.use( '/members', members );

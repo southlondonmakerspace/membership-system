@@ -10,7 +10,7 @@
 			<tr>
 				<th>First name</th>
 				<th>Last name</th>
-				<th>Username</th>
+				<th>Email</th>
 				<th>Status</th>
 				<th></th>
 			</tr>
@@ -20,7 +20,7 @@
 				<tr>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
-					<td>{{ member.username }}</td>
+					<td>{{ member.email }}</td>
 					<td>{% include 'partials/status.swig' %}</td>
 					<td><a href="/admin/members/{{ member._id | raw }}/edit"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/admin/members/{{ member._id | raw }}/permissions"><span class="glyphicon glyphicon-lock"></span></a></td>
 				</tr>

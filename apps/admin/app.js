@@ -116,7 +116,6 @@ members.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
 					permissions: new_permission
 				}
 			}, function ( status ) {
-				console.log( status );
 			} );
 		} else {
 			req.flash( 'warning', 'Invalid permission selected' );

@@ -1,11 +1,7 @@
 "use strict";
 
 var	express = require( 'express' ),
-	app = express(),
-	passport = require( 'passport' ),
-	Members = require( '../../src/js/database' ).Members;
-
-var crypto = require( 'crypto' );
+	app = express();
 
 var auth = require( '../../src/js/authentication.js' );
 

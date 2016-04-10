@@ -3,8 +3,7 @@
 var	express = require( 'express' ),
 	app = express();
 
-var	passport = require( 'passport' ),
-	Members = require( '../../src/js/database' ).Members,
+var	Members = require( '../../src/js/database' ).Members,
 	authentication = require( '../../src/js/authentication' );
 
 app.set( 'views', __dirname + '/views' );

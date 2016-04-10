@@ -2,7 +2,6 @@
 
 var	express = require( 'express' ),
 	app = express(),
-	passport = require( 'passport' ),
 	Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 

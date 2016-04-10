@@ -120,6 +120,37 @@ members.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
 } );
 
 members.get( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res ) {
+	Permissions.find( function( err, permissions ) {
+		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			if ( member.permissions[req.params.index-1] == undefined ) {
+				req.flash( 'warning', 'Permission not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id + '/edit'
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Permissions',
+				url: '/admin/members/' + member._id + '/permissions'
+			} );
+			res.locals.breadcrumb.push( {
+				name: member.permissions[req.params.index-1].permission.name
+			} );
+			res.render( 'edit-member-permission', { permissions: permissions, member: member, current: member.permissions[req.params.index-1] } );
+		} );
+	} );
+} );
+
+members.post( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res ) {
 	req.flash( 'info', 'Not yet implemented' );
 	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 } );

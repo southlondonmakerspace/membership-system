@@ -151,11 +151,49 @@ members.get( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res 
 } );
 
 members.post( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res ) {
-	req.flash( 'info', 'Not yet implemented' );
-	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+	Members.findOne( { _id: req.params.id }, function( err, member ) {
+		if ( member == undefined ) {
+			req.flash( 'warning', 'Member not found' );
+			res.redirect( '/admin/members' );
+			return;
+		}
+
+		if ( member.permissions[req.params.index-1] == undefined ) {
+			req.flash( 'warning', 'Permission not found' );
+			res.redirect( '/admin/members' );
+			return;
+		}
+
+		Permissions.findOne( { slug: req.body.permission }, function( err, newPermission ) {
+			if ( newPermission == undefined ) {
+				req.flash( 'warning', 'New permission not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			var permission = member.permissions[req.params.index-1];
+			permission.permission = newPermission._id;
+			permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
+
+			if ( req.body.expiry_date != '' && req.body.expiry_time != '' )
+				permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
+
+			if ( permission.date_added >= permission.date_expires ) {
+				req.flash( 'warning', 'Expiry date must not be the same as or before the start date' );
+				res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+				return;
+			}
+
+			member.save( function ( err ) {
+				req.flash( 'success', 'Permission updated' );
+				res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+			} );
+		} );
+	} );
 } );
 
 members.get( '/:id/permissions/:index/revoke', auth.isAdmin, function( req, res ) {
+
 	req.flash( 'info', 'Not yet implemented' );
 	res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 } );

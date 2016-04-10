@@ -63,7 +63,6 @@ function generatePassword( password, salt ) {
 
 function superAdmin( email ) {
 	if ( config.superadmins.indexOf( email ) != -1 ) {
-		//console.log( "SUPER ADMIN!" );
 		return true;
 	}
 	return false;
@@ -104,11 +103,8 @@ function canAdmin( req ) {
 		return status;
 	} else {
 		if ( checkPermission( req, 'trustee' ) ) return true;
-		console.log( 'not a trustee' );
 		if ( checkPermission( req, 'admin' ) ) return true;
-		console.log( 'not an admin' );
 		if ( superAdmin( req.user.email ) ) return true;
-		console.log( 'not a super admin' );
 	}
 	return -3;
 }
@@ -167,7 +163,6 @@ function isMember( req, res, next ) {
 
 function isAdmin( req, res, next ) {
 	var status = canAdmin( req );
-	console.log( 'status: ' + status );
 	switch ( status ) {
 		case true:
 			return next();

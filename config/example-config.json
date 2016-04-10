@@ -28,6 +28,11 @@
 			"showMenu": true
 		},
 		{
+			"title": "Members",
+			"path": "members",
+			"showMenu": true
+		},
+		{
 			"title": "Admin",
 			"path": "admin",
 			"showMenu": true

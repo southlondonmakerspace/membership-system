@@ -1,14 +1,18 @@
 {
 	"port" : 3001,
-	"secret": "random",
+	"secret": "",
 	"globals": {
-		"organisation": "South London Makerspace",
+		"organisation": "",
 		"title": "Membership System"
 	},
-	"mandrill": {
-		"api_key": "",
-		"from_email": "trustees@southlondonmakerspace.org",
-		"from_name": "South London Makerspace"
+	"superadmins": [],
+	"smtp": {
+		"host": "",
+		"port": "",
+		"username": "",
+		"password": "",
+		"from_name": ""
+
 	},
 	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
@@ -19,13 +23,17 @@
 			"showMenu": true
 		},
 		{
+			"title": "Direct Debit",
+			"path": "direct-debit",
+			"showMenu": true
+		},
+		{
 			"title": "Admin",
 			"path": "admin",
 			"showMenu": true
 		},
 		{ "path": "join" },
 		{ "path": "activate" },
-		{ "path": "migration" },
 		{ "path": "login" },
 		{ "path": "password-reset" }
 	]

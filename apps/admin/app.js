@@ -119,16 +119,16 @@ members.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-members.get( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res ) {
+members.get( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
-		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		Members.findOne( { _id: req.params.mid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			if ( member == undefined ) {
 				req.flash( 'warning', 'Member not found' );
 				res.redirect( '/admin/members' );
 				return;
 			}
-
-			if ( member.permissions[req.params.index-1] == undefined ) {
+			
+			if ( member.permissions.id( req.params.pid ) == undefined ) {
 				req.flash( 'warning', 'Permission not found' );
 				res.redirect( '/admin/members' );
 				return;
@@ -143,22 +143,22 @@ members.get( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res 
 				url: '/admin/members/' + member._id + '/permissions'
 			} );
 			res.locals.breadcrumb.push( {
-				name: member.permissions[req.params.index-1].permission.name
+				name: member.permissions.id( req.params.pid ).permission.name
 			} );
-			res.render( 'edit-member-permission', { permissions: permissions, member: member, current: member.permissions[req.params.index-1] } );
+			res.render( 'edit-member-permission', { permissions: permissions, member: member, current: member.permissions.id( req.params.pid ) } );
 		} );
 	} );
 } );
 
-members.post( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id }, function( err, member ) {
+members.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
+	Members.findOne( { _id: req.params.mid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', 'Member not found' );
 			res.redirect( '/admin/members' );
 			return;
 		}
 
-		if ( member.permissions[req.params.index-1] == undefined ) {
+		if ( member.permissions.id( req.params.pid ) == undefined ) {
 			req.flash( 'warning', 'Permission not found' );
 			res.redirect( '/admin/members' );
 			return;
@@ -171,7 +171,7 @@ members.post( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res
 				return;
 			}
 
-			var permission = member.permissions[req.params.index-1];
+			var permission = member.permissions.id( req.params.pid );
 			permission.permission = newPermission._id;
 			permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
 
@@ -180,13 +180,13 @@ members.post( '/:id/permissions/:index/modify', auth.isAdmin, function( req, res
 
 			if ( permission.date_added >= permission.date_expires ) {
 				req.flash( 'warning', 'Expiry date must not be the same as or before the start date' );
-				res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+				res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
 				return;
 			}
 
 			member.save( function ( err ) {
 				req.flash( 'success', 'Permission updated' );
-				res.redirect( '/admin/members/' + req.params.id + '/permissions' );
+				res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
 			} );
 		} );
 	} );

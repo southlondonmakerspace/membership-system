@@ -143,6 +143,7 @@ function isLoggedIn( req, res, next ) {
 			return;
 		default:
 		case false:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 			req.flash( 'error', 'You must be logged in first' );
 			res.redirect( '/login' );
 			return;
@@ -164,6 +165,7 @@ function isMember( req, res, next ) {
 			return;
 		default:
 		case false:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 			req.flash( 'error', 'You must be logged in first' );
 			res.redirect( '/login' );
 			return;
@@ -189,6 +191,7 @@ function isAdmin( req, res, next ) {
 			return;
 		default:
 		case false:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 			req.flash( 'error', 'You must be logged in first' );
 			res.redirect( '/login' );
 			return;

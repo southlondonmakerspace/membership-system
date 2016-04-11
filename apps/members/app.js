@@ -18,8 +18,24 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	Members.find( function( err, members ) {
-		res.render( 'index', { members: members } );
+	Members.find().populate( 'permissions.permission' ).exec( function( err, members ) {
+		var activeMembers = [];
+		for ( var m = 0; m < members.length; m++ ) {
+			if ( members[m].activated ) {
+				var permissions = members[m].permissions;
+				for ( var p = 0; p < permissions.length; p++ ) {
+					if ( permissions[p].permission.slug == 'member'
+						&& permissions[p].date_added <= new Date()
+						&& (
+							permissions[p].date_expires == undefined 
+							|| permissions[p].date_expires > new Date()
+							) ) {
+						activeMembers.push( members[m] );
+					}
+				}
+			}
+		}
+		res.render( 'index', { members: activeMembers } );
 	} );
 } );
 

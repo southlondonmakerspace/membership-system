@@ -90,6 +90,11 @@ var memberSchema = mongoose.Schema( {
 			message: '{VALUE} is not a valid tag ID'
 		}
 	},
+	joined: {
+		type: Date,
+		default: Date.now,
+		required: true
+	},
 	transactions: {
 		type: Array
 	},

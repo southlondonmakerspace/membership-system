@@ -14,7 +14,9 @@ var crypto = require( 'crypto' );
 
 function authentication( app ) {
 	// Add support for local authentication
-	passport.use( new LocalStrategy( function( email, password, done ) {
+	passport.use( new LocalStrategy( {
+		usernameField: 'email'
+	}, function( email, password, done ) {
 			Members.findOne( { email: email }, function( err, user ) {
 				if ( user != null ) {
 					var password_hash = generatePassword( password, user.password_salt ).hash;

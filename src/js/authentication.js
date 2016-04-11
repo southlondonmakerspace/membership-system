@@ -40,7 +40,10 @@ function authentication( app ) {
 	passport.deserializeUser( function( data, done ) {
 		Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 			if ( user != null ) {
-				var permissions = [];
+				var permissions = [ 'loggedIn' ];
+
+				if ( superAdmin( user.email ) )
+					permissions.push( 'superadmin' );
 
 				for ( var p = 0; p < user.permissions.length; p++ ) {
 					if ( user.permissions[p].date_added <= new Date() ) {

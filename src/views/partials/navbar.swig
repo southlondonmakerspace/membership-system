@@ -10,9 +10,7 @@
 			{% if loggedIn %}
 				<ul class="nav navbar-nav">
 					{% for app in apps %}
-						{% if app.showMenu %}
-							<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
-						{% endif %}
+						<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
 					{% endfor %}
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

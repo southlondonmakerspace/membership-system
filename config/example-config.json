@@ -20,22 +20,30 @@
 		{
 			"title": "Profile",
 			"path": "profile",
-			"showMenu": true
+			"permissions": [
+				"loggedIn"
+			]
 		},
 		{
 			"title": "Direct Debit",
 			"path": "direct-debit",
-			"showMenu": true
+			"permissions": [
+				"loggedIn"
+			]
 		},
 		{
 			"title": "Members",
 			"path": "members",
-			"showMenu": true
+			"permissions": [
+				"member", "superadmin", "admin", "trustee"
+			]
 		},
 		{
 			"title": "Admin",
 			"path": "admin",
-			"showMenu": true
+			"permissions": [
+				"superadmin", "admin", "trustee"
+			]
 		},
 		{ "path": "join" },
 		{ "path": "activate" },

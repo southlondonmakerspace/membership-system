@@ -47,9 +47,25 @@ app.use( function( req, res, next ) {
 
 // Load in local variables such as config.globals
 app.use( function( req, res, next ) {
-	if ( req.user )
-		res.locals.loggedIn = true
-	res.locals.apps = config.apps;
+	res.locals.apps = [];
+
+	if ( req.user ) {
+		res.locals.loggedIn = true;
+
+		for ( var a in config.apps ) {
+			var app = config.apps[a];
+			
+			if ( app.permissions != undefined && app.permissions != [] ) {
+				for ( var p in app.permissions ) {
+					if ( req.user.quickPermissions.indexOf( app.permissions[p] ) != -1 ) {
+						res.locals.apps.push( app );
+						break;
+					}
+				}
+			}
+		}
+	}
+
 	res.locals.config = config.globals;
 	res.locals.breadcrumb = [];
 	next();

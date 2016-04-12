@@ -10,11 +10,34 @@
 
 	<p><strong>Address:</strong> {{ user.address | replace('\r\n', ', ', 'gim') }}</p>
 
-	<p><strong>Tag:</strong> {{ user.tag_id | default('No tag associated') }}</p>
-
 	<p>
 		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/profile/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a>
 	</p>
+
+	<hr />
+
+	<h3>Setup</h3>
+
+	<p>New round here? Follow these steps to setup your account...</p>
+
+	<p>
+		{% if true %}
+			<a href="/direct-debit" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
+		{% else %}
+			<a href="/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
+		{% endif %}
+	</p>
+
+
+	<p>
+		{% if user.tag_id == '' %}
+			<a href="/profile/update" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
+		{% else %}
+			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
+		{% endif %}
+	</p>
+
+	<hr />
 
 	{% if user.permissions.length > 0 %}
 		<h3>Permissions</h3>

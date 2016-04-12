@@ -28,6 +28,13 @@
 		{% endif %}
 	</p>
 
+	<p>
+		{% if user.discourse_code != 'activated' %}
+			<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
+		{% else %}
+			<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
+		{% endif %}
+	</p>
 
 	<p>
 		{% if user.tag_id == '' %}

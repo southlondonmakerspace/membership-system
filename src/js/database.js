@@ -98,6 +98,17 @@ var memberSchema = mongoose.Schema( {
 	transactions: {
 		type: Array
 	},
+	discourse_id: {
+		type: String,
+		unique: true
+	},
+	discourse_email: {
+		type: String,
+		unique: true
+	},
+	discourse_code: {
+		type: String	
+	},
 	permissions: [ {
 		permission: {
 			type: ObjectId,

@@ -16,6 +16,12 @@
 	},
 	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
+	"discourse": {
+		"url": "",
+		"api_username": "",
+		"api_key": "",
+		"membership_group": ""
+	},
 	"apps": [
 		{
 			"title": "Profile",

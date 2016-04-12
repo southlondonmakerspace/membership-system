@@ -86,7 +86,8 @@ app.use( '/', require( __dirname + '/src/js/routes' ) );
 
 // Load apps
 for ( var a in config.apps ) {
-	app.use( '/' + config.apps[a].path, require( __dirname + '/apps/' + config.apps[a].path + '/app' ) );
+	var name = ( config.apps[a].name ? config.apps[a].name : config.apps[a].path );
+	app.use( '/' + config.apps[a].path, require( __dirname + '/apps/' + name + '/app' ) );
 }
 
 // Error 404

@@ -20,29 +20,33 @@
 
 	<p>New round here? Follow these steps to setup your account...</p>
 
-	<p>
-		{% if true %}
-			<a href="/direct-debit" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
-		{% else %}
-			<a href="/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
-		{% endif %}
-	</p>
+	<ol style="padding-left: 2em;">
+		<li style="margin-bottom: 1em;"><a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a></li>
 
-	<p>
-		{% if user.discourse_code != 'activated' %}
-			<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
-		{% else %}
-			<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
-		{% endif %}
-	</p>
+		<li style="margin-bottom: 1em;">
+			{% if true %}
+				<a href="/direct-debit" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
+			{% else %}
+				<a href="/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
+			{% endif %}
+		</li>
+		
+		<li style="margin-bottom: 1em;">
+			{% if user.discourse_code != 'activated' %}
+				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
+			{% else %}
+				<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
+			{% endif %}
+		</li>
 
-	<p>
-		{% if user.tag_id == '' %}
-			<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
-		{% else %}
-			<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
-		{% endif %}
-	</p>
+		<li>
+			{% if user.tag_id == '' %}
+				<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
+			{% else %}
+				<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
+			{% endif %}
+		</li>
+	</ol>
 
 	<hr />
 

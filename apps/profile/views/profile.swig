@@ -38,9 +38,9 @@
 
 	<p>
 		{% if user.tag_id == '' %}
-			<a href="/profile/update" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
+			<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
 		{% else %}
-			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
+			<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
 		{% endif %}
 	</p>
 

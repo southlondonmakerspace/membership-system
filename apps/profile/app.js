@@ -38,8 +38,33 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
 		email: req.body.email,
-		tag_id: req.body.tag_id,
 		address: req.body.address
+	};
+
+	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
+		if ( status != null ) {
+			var keys = Object.keys( status.errors );
+			for ( var k in keys ) {
+				var key = keys[k];
+				req.flash( 'danger', status.errors[key].message );
+			}
+		} else {
+			req.flash( 'success', 'Your profile has been updated' );
+		}
+		res.redirect( '/profile' );
+	} );
+} );
+
+app.get( '/tag', auth.isLoggedIn, function( req, res ) {
+	res.locals.breadcrumb.push( {
+		name: "Tag"
+	} );
+	res.render( 'tag', { user: req.user } );
+} );
+
+app.post( '/tag', auth.isLoggedIn, function( req, res ) {
+	var profile = {
+		tag_id: req.body.tag_id
 	};
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {

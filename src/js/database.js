@@ -109,9 +109,17 @@ var memberSchema = mongoose.Schema( {
 	discourse_code: {
 		type: String	
 	},
-	gocardless_id: {
-		type: String,
-		unique: true
+	gocardless: {
+		id: {
+			type: String,
+			unique: true
+		},
+		amount: {
+			type: Number
+		},
+		minimum: {
+			type: Number
+		},
 	},
 	permissions: [ {
 		permission: {

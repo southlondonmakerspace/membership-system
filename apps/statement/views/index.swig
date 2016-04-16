@@ -19,7 +19,7 @@
 					<tr>
 						<td>{{ transaction.date| date('d/m/Y') }}</td>
 						<td>{{ transaction.description }}</td>
-						<td>{{ transaction.status }}</td>
+						<td>{% include 'partials/status.swig' %}</td>
 						<td>{{ transaction.amount }}</td>
 					</tr>
 				{% endfor %}

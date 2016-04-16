@@ -7,7 +7,8 @@
 {% block content %}
 		<p>
 			<a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a></li>
-			<a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Edit Permissions</a></li>
+			<a href="/admin/members/{{ member._id | raw }}/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
+			<a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-tag"></span> Edit Permissions</a></li>
 			<a href="/admin/members/{{ member._id | raw }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-credit-card"></span> Edit Tag</a></li>
 			<a href="/admin/members/{{ member._id | raw }}/direct-debit" class="btn btn-default"><span class="glyphicon glyphicon-piggy-bank"></span> Edit GoCardless</a></li>
 			<a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-book"></span> Edit Discourse</a></li>

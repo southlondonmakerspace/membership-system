@@ -95,9 +95,6 @@ var memberSchema = mongoose.Schema( {
 		default: Date.now,
 		required: true
 	},
-	transactions: {
-		type: Array
-	},
 	discourse: {
 		id: {
 			type: String,

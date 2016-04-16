@@ -5,6 +5,7 @@
 		"organisation": "",
 		"title": "Membership System"
 	},
+	"tag_salt": "",
 	"superadmins": [],
 	"smtp": {
 		"host": "",

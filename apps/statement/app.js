@@ -18,7 +18,6 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	var transactions = [];
 	res.render( 'index', { transactions: req.user.gocardless.transactions } );
 } );
 

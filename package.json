@@ -22,6 +22,7 @@
     "gocardless": "git+https://github.com/gocardless/gocardless-node.git",
     "less": "^2.5.3",
     "mongoose": "^4.2.5",
+    "nodemailer": "^2.3.2",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "request": "^2.70.0",

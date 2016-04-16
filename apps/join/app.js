@@ -3,6 +3,9 @@
 var	express = require( 'express' ),
 	app = express();
 
+var swig = require( 'swig' );
+var nodemailer = require( 'nodemailer' );
+
 var	Members = require( '../../src/js/database' ).Members;
 
 var crypto = require( 'crypto' );
@@ -63,40 +66,29 @@ app.post( '/', function( req, res ) {
 							req.session.join = user;
 							res.redirect( '/join' );
 						} else {
-							// var message = {
-							// 	subject: 'Activation Email – ' + config.globals.organisation,
-							// 	from_email: config.mandrill.from_email,
-							// 	from_name: config.mandrill.from_name,
-							// 	to: [ {
-							// 		email: user.email,
-							// 		name: user.firstname + ' ' + user.lastname,
-							// 	} ],
-							// 	track_opens: true,
-							// 	track_clicks: true,
-							// 	global_merge_vars: [
-							// 		{
-							// 			name: 'NAME',
-							// 			content: user.firstname
-							// 		},
-							// 		{
-							// 			name: 'LINK',
-							// 			content: config.audience + '/activate/' + user.activation_code
-							// 		}
-							// 	]
-							// };
+							var message = {};
+							
+							message.text = swig.renderFile( __dirname + '/email-templates/join.swig', {
+								firstname: req.body.firstname,
+								organisation: config.globals.organisation,
+								activation_url: config.audience + '/activate/' + user.activation_code
+							} );
 
-							// mandrill_client.messages.sendTemplate( {
-							// 	template_name: 'activation-email',
-							// 	template_content: null,
-							// 	message: message
-							// }, function ( e ) {
-								req.flash( 'success', 'Account created, please check your email for a registration link' );
-								res.redirect( '/' );
-							// }, function ( e ) {
-							// 	req.flash( 'danger', 'Your account was created, but there was a problem sending the activation email, please contact: ' + config.mandrill.from_name );
-							// 	res.redirect( '/' );
-							// 	console.log( e );
-							// } );
+							var transporter = nodemailer.createTransport( config.smtp.url );
+
+							message.from = config.smtp.from;
+							message.to = req.body.email;
+							message.subject = 'Activation Email – ' + config.globals.organisation;
+							
+							transporter.sendMail( message, function( err, info ) {
+								if ( err ) {
+									req.flash( 'warning', 'Account created, system was unable to send activation email, please contact the administrator' );
+									res.redirect( '/' );
+								} else {
+									req.flash( 'success', 'Account created, please check your email for a registration link' );
+									res.redirect( '/' );
+								}
+							} );
 						}
 					} );
 				} );

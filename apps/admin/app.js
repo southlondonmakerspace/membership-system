@@ -43,8 +43,8 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 		} );
 	} );
 
-	members.get( '/:id/edit', auth.isAdmin, function( req, res ) {
-		Members.findOne( { _id: req.params.id }, function( err, member ) {
+	members.get( '/:id', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			if ( member == undefined ) {
 				req.flash( 'warning', 'Member not found' );
 				res.redirect( '/admin/members' );
@@ -54,6 +54,25 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 				name: member.fullname
 			} );
 			res.render( 'member', { member: member } );
+		} );
+	} );
+
+
+	members.get( '/:id/update', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Update',
+			} );
+			res.render( 'member-update', { member: member } );
 		} );
 	} );
 
@@ -68,7 +87,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 		Members.update( { _id: req.params.id }, member, function( status ) {
 			req.flash( 'success', 'Members updated' );
-			res.redirect( '/admin/members/' + req.params.id + '/edit' );
+			res.redirect( '/admin/members/' + req.params.id );
 		} );
 	} );
 
@@ -83,7 +102,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 				res.locals.breadcrumb.push( {
 					name: member.fullname,
-					url: '/admin/members/' + member._id + '/edit'
+					url: '/admin/members/' + member._id
 				} );
 				res.locals.breadcrumb.push( {
 					name: 'Permissions'
@@ -141,7 +160,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 				res.locals.breadcrumb.push( {
 					name: member.fullname,
-					url: '/admin/members/' + member._id + '/edit'
+					url: '/admin/members/' + member._id
 				} );
 				res.locals.breadcrumb.push( {
 					name: 'Permissions',
@@ -218,6 +237,36 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 				res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
 			} );
 		} );
+	} );
+
+	members.get( '/:id/tag', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Tag'
+			} );
+			res.render( 'member-tag', { member: member } );
+		} );
+	} );
+
+	members.post( '/:id/tag', auth.isAdmin, function( req, res ) {
+		// Members.update( { _id: req.params.id }, {
+		// 	$push: {
+		// 		permissions: new_permission
+		// 	}
+		// }, function ( status ) {
+		// } );
+		req.flash( 'warning', 'Invalid permission selected' );
+		res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 	} );
 
 	app.use( '/members', members );

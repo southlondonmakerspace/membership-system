@@ -20,7 +20,7 @@
 						<td>{{ transaction.date| date('d/m/Y') }}</td>
 						<td>{{ transaction.description }}</td>
 						<td>{% include 'partials/status.swig' %}</td>
-						<td>{{ transaction.amount }}</td>
+						<td>&pound;{{ transaction.amount }}</td>
 					</tr>
 				{% endfor %}
 			</tbody>

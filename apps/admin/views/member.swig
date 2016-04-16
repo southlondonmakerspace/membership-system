@@ -54,11 +54,17 @@
 		
 		<p><strong>Email:</strong> {{ member.discourse.email }}</p>
 		
+		<p><strong>Activated:</strong> {% if member.discourse.activation_code == 'activated' %}Yes{% else %}No{% endif %}</p>
+		
+		<p><strong>Activation Code:</strong> {% if member.discourse.activation_code != 'activated' %}{{ member.discourse.activation_code }}{% endif %}</p>
+		
 		<div class="page-header">
 			<h3>GoCardless</h3>
 		</div>
 
 		<p><strong>Subscription ID:</strong> {{ member.gocardless.id }}</p>
+
+		<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount }}</p>
 
 		<div class="page-header">
 			<h3>Permissions</h3>
@@ -70,17 +76,10 @@
 					<li>
 						<strong>{{ permission.name }}</strong>
 						{% if permission.description %}
-							<br />{{ permission.description }}
+							<br />{{ permission.description }}<br />
 						{% endif %}
-						{% if permission.date_expires %}
-							<br />
-							{% if now < permission.date_expires %}
-								Expired: 
-							{% elif now < permission.date_expires %}
-								Expires: 
-							{% endif %}
-							{{ permission.date_expires | date('H:i:s d/m/Y') }}
-						{% endif %}
+						<strong>Start date:</strong> {{ permission.date_added | date('H:i:s d/m/Y') }}<br />
+						<strong>Expiry date:</strong> {{ permission.date_expires | date('H:i:s d/m/Y') }}
 					</li>
 				{% endfor %}
 			</ul>

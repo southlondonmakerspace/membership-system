@@ -27,13 +27,13 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	// Not linked or in activation
 	if ( ! req.user.discourse.activation_code ) {
 		findDiscourseUserByEmail( req.user.email, function( user ) {
-			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse.id": user.id,
-				"discourse.email": req.user.email
-			} }, function( err ) {
-			} );
-
 			if ( user != undefined ) {
+				Members.update( { "_id": req.user._id }, { $set: {
+					"discourse.id": user.id,
+					"discourse.email": req.user.email
+				} }, function( err ) {
+				} );
+
 				user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
 			}
 			res.render( 'find', { discourse_user: user } );

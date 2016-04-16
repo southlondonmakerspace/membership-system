@@ -78,7 +78,7 @@ var memberSchema = mongoose.Schema( {
 		type: String,
 		required: true
 	},
-	tag_id: {
+	tag: {
 		type: String,
 		unique: true,
 		required: false,

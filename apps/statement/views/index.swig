@@ -4,7 +4,7 @@
 {% set heading = 'Statement' %}
 
 {% block content %}
-	{% if transations.length > 0 %}
+	{% if transactions.length > 0 %}
 		<table class="table table-striped table-hover table-condensed">
 			<thead>
 				<tr>

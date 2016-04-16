@@ -53,7 +53,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: member.fullname
 			} );
-			res.render( 'edit-member', { member: member } );
+			res.render( 'member', { member: member } );
 		} );
 	} );
 

@@ -11,7 +11,11 @@ var config = require( '../../config/config.json' );
 app.set( 'views', __dirname + '/../views' );
 
 app.get( '/', function ( req, res ) {
-	res.render( 'index' );
+	if ( ! req.user ) {
+		res.render( 'index' );
+	} else {
+		res.redirect( '/profile' );
+	}
 } );
 
 app.get( '/logout', function( req, res ) {

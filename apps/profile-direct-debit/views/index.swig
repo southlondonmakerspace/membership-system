@@ -11,7 +11,7 @@
 
 		<p>They will securely guide you through the process of setting up a recurring monthly direct debit of your chosen amount below</p>
 
-		<form action="/direct-debit/setup" method="post">
+		<form action="/profile/direct-debit/setup" method="post">
 			<p>
 				<label for="amount">Amount: </label>
 				<div class="input-group">
@@ -26,6 +26,6 @@
 		</form>
 	{% else %}
 		<p>Your direct debit is setup for &pound;{{ gocardless.amount }}, if you wish to make changes cancel it and setup a new direct debit.</p>
-		<a href="/direct-debit/cancel" class="btn btn-danger">Cancel Direct Debit</a>
+		<a href="/profile/direct-debit/cancel" class="btn btn-danger">Cancel Direct Debit</a>
 	{% endif %}
 {% endblock %}

@@ -123,6 +123,26 @@ var memberSchema = mongoose.Schema( {
 		minimum: {
 			type: Number
 		},
+		transactions: [ {
+			date: {
+				type: Date
+			},
+			description: {
+				type: String
+			},
+			bill_id: {
+				type: String
+			},
+			subscription_id: {
+				type: String
+			},
+			amount: {
+				type: Number
+			},
+			status: {
+				type: String
+			}
+		} ]
 	},
 	permissions: [ {
 		permission: {

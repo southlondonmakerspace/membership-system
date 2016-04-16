@@ -64,7 +64,7 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 	var profile = {
-		tag_id: req.body.tag_id
+		tag: req.body.tag
 	};
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {

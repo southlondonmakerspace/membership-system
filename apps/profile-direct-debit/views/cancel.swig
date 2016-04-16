@@ -9,7 +9,7 @@
 	<form method="post">
 		<p>
 			<button class="btn btn-danger" role="button">Yes, cancel my direct debit</button>
-			<a href="/direct-debit" class="btn btn-default">No</a>
+			<a href="/profile/direct-debit" class="btn btn-default">No</a>
 		</p>
 	</form>
 {% endblock %}

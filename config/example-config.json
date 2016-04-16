@@ -22,6 +22,14 @@
 		"api_key": "",
 		"membership_group": ""
 	},
+	"gocardless": {
+		"appId": "",
+		"appSecret": "",
+		"token": "",
+		"merchantId": "",
+        "sandbox": false,
+		"minimum": 20
+	},
 	"apps": [
 		{
 			"title": "Profile",
@@ -31,10 +39,18 @@
 			]
 		},
 		{
-			"title": "Direct Debit",
-			"path": "direct-debit",
+			"name": "profile-discourse",
+			"path": "profile/discourse"
+		},
+		{
+			"name": "profile-direct-debit",
+			"path": "profile/direct-debit"
+		},
+		{
+			"title": "Statement",
+			"path": "statement",
 			"permissions": [
-				"loggedIn"
+				"member", "superadmin", "admin", "trustee"
 			]
 		},
 		{

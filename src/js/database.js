@@ -98,16 +98,19 @@ var memberSchema = mongoose.Schema( {
 	transactions: {
 		type: Array
 	},
-	discourse_id: {
-		type: String,
-		unique: true
-	},
-	discourse_email: {
-		type: String,
-		unique: true
-	},
-	discourse_code: {
-		type: String	
+	discourse: {
+		id: {
+			type: String,
+			unique: true
+		},
+		email: {
+			type: String,
+			unique: true
+		},
+		activation_code: {
+			type: String	
+		},
+			
 	},
 	gocardless: {
 		id: {

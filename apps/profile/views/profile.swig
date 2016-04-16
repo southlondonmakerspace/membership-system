@@ -32,7 +32,7 @@
 		</li>
 		
 		<li style="margin-bottom: 1em;">
-			{% if user.discourse_code != 'activated' %}
+			{% if user.discourse.activation_code != 'activated' %}
 				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
 			{% else %}
 				<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>

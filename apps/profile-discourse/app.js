@@ -25,11 +25,11 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	// Not linked or in activation
-	if ( ! req.user.discourse_code ) {
+	if ( ! req.user.discourse.activation_code ) {
 		findDiscourseUserByEmail( req.user.email, function( user ) {
 			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse_id": user.id,
-				"discourse_email": req.user.email
+				"discourse.id": user.id,
+				"discourse.email": req.user.email
 			} }, function( err ) {
 			} );
 
@@ -39,12 +39,12 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			res.render( 'find', { discourse_user: user } );
 		} );
 	// Linked, not activated
-	} else if ( req.user.discourse_code != 'activated' && req.user.discourse_id ) {
+	} else if ( req.user.discourse.activation_code != 'activated' && req.user.discourse.id ) {
 		res.render( 'activate', { activation_code: req.query.code } );
 
 	// Linked 
-	} else if ( req.user.discourse_code == 'activated' ) {
-		findDiscourseUserByEmail( req.user.discourse_email, function( user ) {
+	} else if ( req.user.discourse.activation_code == 'activated' ) {
+		findDiscourseUserByEmail( req.user.discourse.email, function( user ) {
 			user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
 			res.render( 'linked', { discourse_user: user } );
 		} );
@@ -52,15 +52,15 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/link', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.user.discourse_code ) {
+	if ( ! req.user.discourse.activation_code ) {
 		crypto.randomBytes( 10, function( ex, code ) {
 			code = code.toString( 'hex' );
 			
 			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse_code": code
+				"discourse.activation_code": code
 			} }, function ( error ) {} );
 
-			findDiscourseUserByEmail( req.user.discourse_email, function ( user ) {
+			findDiscourseUserByEmail( req.user.discourse.email, function ( user ) {
 				sendDiscourseActivationMessage( user.username, code );
 			} );
 			
@@ -74,9 +74,9 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.activation_code != '' ) {
-		if ( req.body.activation_code == req.user.discourse_code ) {
+		if ( req.body.activation_code == req.user.discourse.activation_code ) {
 			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse_code": 'activated'
+				"discourse.activation_code": 'activated'
 			} }, function ( error ) {} );
 			req.flash( 'info', 'Discourse user linked' );
 			return res.redirect( '/profile/discourse' );

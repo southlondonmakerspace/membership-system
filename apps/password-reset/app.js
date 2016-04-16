@@ -3,6 +3,9 @@
 var	express = require( 'express' ),
 	app = express();
 
+var swig = require( 'swig' );
+var nodemailer = require( 'nodemailer' );
+
 var	Members = require( '../../src/js/database' ).Members;
 
 var crypto = require( 'crypto' );
@@ -20,41 +23,27 @@ app.post( '/', function( req, res ) {
 		if ( user ) {
 			crypto.randomBytes( 10, function( ex, code ) {
 				var password_reset_code = code.toString( 'hex' );
-				// Members.update( { _id: user._id }, { $set: { password_reset_code: password_reset_code } }, function ( status ) {
-				// 	var message = {
-				// 		subject: 'Password Reset – ' + config.globals.organisation,
-				// 		from_email: config.mandrill.from_email,
-				// 		from_name: config.mandrill.from_name,
-				// 		to: [ {
-				// 			email: user.email,
-				// 			name: user.firstname + ' ' + user.lastname,
-				// 		} ],
-				// 		track_opens: true,
-				// 		track_clicks: true,
-				// 		global_merge_vars: [
-				// 			{
-				// 				name: 'NAME',
-				// 				content: user.firstname
-				// 			},
-				// 			{
-				// 				name: 'USERNAME',
-				// 				content: user.username
-				// 			},
-				// 			{
-				// 				name: 'LINK',
-				// 				content: config.audience + '/password-reset/code/' + password_reset_code
-				// 			}
-				// 		]
-				// 	};
 
-				// 	mandrill_client.messages.sendTemplate( {
-				// 		template_name: 'password-reset',
-				// 		template_content: null,
-				// 		message: message
-				// 	}, function ( e ) {
-				// 	}, function ( e ) {
-				// 	} );
-				// } );
+				user.password_reset_code = password_reset_code;
+				user.save( function( err ) {
+				} );
+
+				var message = {};
+							
+				message.text = swig.renderFile( __dirname + '/email-templates/reset.swig', {
+					firstname: user.firstname,
+					organisation: config.globals.organisation,
+					reset_url: config.audience + '/password-reset/code/' + password_reset_code
+				} );
+
+				var transporter = nodemailer.createTransport( config.smtp.url );
+
+				message.from = config.smtp.from;
+				message.to = user.email;
+				message.subject = 'Password Reset – ' + config.globals.organisation;
+				
+				transporter.sendMail( message, function( err, info ) {
+				} );
 			} );
 		}
 		req.flash( 'success', 'If there is an account associated with the email address you will receive an email shortly' );

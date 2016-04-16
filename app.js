@@ -6,11 +6,10 @@ var body = require( 'body-parser' ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),
-
 	app = express(),
 	http = require( 'http' ).Server( app );
 
-// handle authentication
+// Handle authentication
 require( __dirname + '/src/js/authentication' )( app );
 
 // Setup static route
@@ -20,7 +19,7 @@ app.use( express.static( __dirname + '/static' ) );
 app.use( body.json() );
 app.use( body.urlencoded( { extended: true } ) );
 
-// handle sessions
+// Handle sessions
 require( __dirname + '/src/js/sessions' )( app );
 
 // Include support for notifications

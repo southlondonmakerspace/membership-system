@@ -293,13 +293,4 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 	app.use( '/permissions', permissions );
 
-/*
- *	SETTINGS
- */
-
-	 app.get( '/settings', auth.isAdmin, function( req, res ) {
-	 	req.flash( 'info', 'This feature has not yet been implemented.' );
-	 	res.redirect( '/admin' );
-	 } );
-
 module.exports = app;

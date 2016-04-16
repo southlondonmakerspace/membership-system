@@ -96,6 +96,8 @@
 			<table class="table table-striped table-hover table-condensed">
 				<thead>
 					<tr>
+						<th>Bill ID</th>
+						<th>Subscription ID</th>
 						<th>Date</th>
 						<th>Description</th>
 						<th>Status</th>
@@ -105,7 +107,9 @@
 				<tbody>
 					{% for transaction in transactions %}
 						<tr>
-							<td>{{ transaction.date| date('d/m/Y') }}</td>
+							<td>{{ transaction.bill_id }}</td>
+							<td>{{ transaction.subscription_id }}</td>
+							<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
 							<td>{{ transaction.description }}</td>
 							<td>{% include '../../statement/views/partials/status.swig' %}</td>
 							<td>&pound;{{ transaction.amount }}</td>

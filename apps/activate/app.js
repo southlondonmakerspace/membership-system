@@ -54,6 +54,7 @@ app.post( '/' , function( req, res ) {
 				password_hash: password_hash
 			}, {
 				$set: {
+					activation_code: null,
 					activated: true
 				}
 			}, function ( status ) {

@@ -336,7 +336,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 				res.locals.breadcrumb.push( {
 					name: member.permissions.id( req.params.pid ).permission.name
 				} );
-				res.render( 'edit-member-permission', { permissions: permissions, member: member, current: member.permissions.id( req.params.pid ) } );
+				res.render( 'member-permission', { permissions: permissions, member: member, current: member.permissions.id( req.params.pid ) } );
 			} );
 		} );
 	} );
@@ -366,13 +366,16 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 				permission.permission = newPermission._id;
 				permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
 
-				if ( req.body.expiry_date != '' && req.body.expiry_time != '' )
+				if ( req.body.expiry_date != '' && req.body.expiry_time != '' ) {
 					permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
 
-				if ( permission.date_added >= permission.date_expires ) {
-					req.flash( 'warning', 'Expiry date must not be the same as or before the start date' );
-					res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
-					return;
+					if ( permission.date_added >= permission.date_expires ) {
+						req.flash( 'warning', 'Expiry date must not be the same as or before the start date' );
+						res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
+						return;
+					}
+				} else {
+					permission.date_expires = null;
 				}
 
 				member.save( function ( err ) {

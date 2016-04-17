@@ -76,7 +76,8 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.activation_code != '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {
 			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse.activated": true
+				"discourse.activated": true,
+				"discourse.activation_code": null
 			} }, function ( error ) {} );
 			req.flash( 'info', 'Discourse user linked' );
 			return res.redirect( '/profile/discourse' );

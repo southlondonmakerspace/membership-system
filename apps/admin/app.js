@@ -244,7 +244,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 		}
 
 		Members.update( { _id: req.params.id }, { $set: member }, function( status ) {
-			req.flash( 'success', 'Discourse updated' );
+			req.flash( 'success', 'GoCardless updated' );
 			res.redirect( '/admin/members/' + req.params.id );
 		} );
 	} );

@@ -29,7 +29,7 @@
 		<tbody>
 			{% for member in members %}
 			
-				<tr title="View Member" data-href="/admin/members/{{ member.id | raw }}" style="cursor: pointer;">
+				<tr title="View Member " data-href="/admin/members/{{ member.id | raw }}" style="cursor: pointer;">
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>

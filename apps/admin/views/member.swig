@@ -85,7 +85,11 @@
 							<br />{{ permission.description }}<br />
 						{% endif %}
 						<strong>Start date:</strong> {{ permission.date_added | date('H:i:s d/m/Y') }}<br />
-						<strong>Expiry date:</strong> {{ permission.date_expires | date('H:i:s d/m/Y') }}
+						<strong>Expiry date:</strong> {% if permission.date_expires %}
+							{{ permission.date_expires | date('H:i:s d/m/Y') }}
+						{% else %}
+							Indefinite
+						{% endif %}
 					</li>
 				{% endfor %}
 			</ul>

@@ -1,4 +1,4 @@
-"use strict";
+	"use strict";
 
 var	express = require( 'express' ),
 	app = express(),
@@ -39,11 +39,11 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			res.render( 'find', { discourse_user: user } );
 		} );
 	// Linked, not activated
-	} else if ( req.user.discourse.activation_code != 'activated' && req.user.discourse.id ) {
+	} else if ( ! req.user.discourse.activated && req.user.discourse.id ) {
 		res.render( 'activate', { activation_code: req.query.code } );
 
 	// Linked 
-	} else if ( req.user.discourse.activation_code == 'activated' ) {
+	} else if ( req.user.discourse.activated ) {
 		findDiscourseUserByEmail( req.user.discourse.email, function( user ) {
 			user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
 			res.render( 'linked', { discourse_user: user } );
@@ -76,7 +76,7 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.activation_code != '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {
 			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse.activation_code": 'activated'
+				"discourse.activated": true
 			} }, function ( error ) {} );
 			req.flash( 'info', 'Discourse user linked' );
 			return res.redirect( '/profile/discourse' );

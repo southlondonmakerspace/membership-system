@@ -55,9 +55,11 @@
 		
 		<p><strong>Email:</strong> {{ member.discourse.email }}</p>
 		
-		<p><strong>Activated:</strong> {% if member.discourse.activation_code == 'activated' %}Yes{% else %}No{% endif %}</p>
+		<p><strong>Activated:</strong> {{ member.discourse.activated }}</p>
 		
-		<p><strong>Activation Code:</strong> {% if member.discourse.activation_code != 'activated' %}{{ member.discourse.activation_code }}{% endif %}</p>
+		<p><strong>Activation Code:</strong> {{ member.discourse.activation_code }}</p>
+
+		<p><a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		
 		<div class="page-header">
 			<h3>GoCardless</h3>

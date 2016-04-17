@@ -31,6 +31,9 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 	var members = express();
 	members.set( 'views', __dirname + '/views' );
 
+	// Members
+	//////////
+
 	members.use( function( req, res, next ) {
 		res.locals.breadcrumb.push( {
 			name: "Members",
@@ -45,6 +48,9 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 		} );
 	} );
 
+	// Member
+	/////////
+
 	members.get( '/:id', auth.isAdmin, function( req, res ) {
 		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			if ( member == undefined ) {
@@ -55,10 +61,12 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: member.fullname
 			} );
-			res.render( 'member', { member: member } );
+			res.render( 'member', { member: member, audience: config.audience, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
 	} );
 
+	// Update Member
+	////////////////
 
 	members.get( '/:id/update', auth.isAdmin, function( req, res ) {
 		Members.findOne( { _id: req.params.id }, function( err, member ) {
@@ -78,17 +86,23 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 		} );
 	} );
 
-	members.post( '/:id/edit', auth.isAdmin, function( req, res ) {
+	members.post( '/:id/update', auth.isAdmin, function( req, res ) {
 		var member = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
 			email: req.body.email,
-			tag_id: req.body.tag_id,
 			address: req.body.address
 		};
 
 		Members.update( { _id: req.params.id }, member, function( status ) {
-			req.flash( 'success', 'Members updated' );
+			req.flash( 'success', 'Profile updated' );
+			res.redirect( '/admin/members/' + req.params.id );
+		} );
+	} );
+
+	// Member Activation
+	////////////////////
+
 	members.get( '/:id/activation', auth.isAdmin, function( req, res ) {
 		Members.findOne( { _id: req.params.id }, function( err, member ) {
 			if ( member == undefined ) {
@@ -106,9 +120,137 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 			res.render( 'member-activation', { member: member } );
 		} );
 	} );
+
+	members.post( '/:id/activation', auth.isAdmin, function( req, res ) {
+		var member = {
+			activated: ( req.body.activated ? true : false )
+		};
+
+		if ( req.body.activated ) {
+			member.activation_code = null;
+		}
+
+		Members.update( { _id: req.params.id }, member, function( status ) {
+			req.flash( 'success', 'Activation updated' );
 			res.redirect( '/admin/members/' + req.params.id );
 		} );
 	} );
+
+	// Member Tag
+	/////////////
+
+	members.get( '/:id/tag', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Tag'
+			} );
+			res.render( 'member-tag', { member: member } );
+		} );
+	} );
+
+	members.post( '/:id/tag', auth.isAdmin, function( req, res ) {
+		var hashed_tag = auth.hashCard( req.body.tag );
+		var profile = {
+			tag: req.body.tag,
+			tag_hashed: hashed_tag
+		};
+
+		Members.update( { _id: req.params.id }, { $set: profile }, { runValidators: true }, function( status ) {
+			if ( status != null ) {
+				var keys = Object.keys( status.errors );
+				for ( var k in keys ) {
+					var key = keys[k];
+					req.flash( 'danger', status.errors[key].message );
+				}
+			} else {
+				req.flash( 'success', 'Tag updated' );
+			}
+			res.redirect( '/admin/members/' + req.params.id );
+		} );
+	} );
+
+	// Member Discourse
+	///////////////////
+
+	members.get( '/:id/discourse', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Discourse'
+			} );
+			res.render( 'member-discourse', { member: member } );
+		} );
+	} );
+
+	members.post( '/:id/discourse', auth.isAdmin, function( req, res ) {
+		var member = {
+			'discourse.id': req.body.id,
+			'discourse.email': req.body.email,
+			'discourse.activated': ( req.body.activated ? true : false )
+		}
+
+		Members.update( { _id: req.params.id }, { $set: member }, function( status ) {
+			req.flash( 'success', 'Discourse updated' );
+			res.redirect( '/admin/members/' + req.params.id );
+		} );
+	} );
+
+	// Member GoCardless
+	////////////////////
+
+	members.get( '/:id/gocardless', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'GoCardless'
+			} );
+			res.render( 'member-gocardless', { member: member, minimum: config.gocardless.minimum } );
+		} );
+	} );
+
+	members.post( '/:id/gocardless', auth.isAdmin, function( req, res ) {
+		var member = {
+			'gocardless.id': req.body.id,
+			'gocardless.amount': req.body.amount,
+			'gocardless.minimum': req.body.minimum
+		}
+
+		Members.update( { _id: req.params.id }, { $set: member }, function( status ) {
+			req.flash( 'success', 'Discourse updated' );
+			res.redirect( '/admin/members/' + req.params.id );
+		} );
+	} );
+
+	// Member Permissions
+	/////////////////////
 
 	members.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
 		Permissions.find( function( err, permissions ) {
@@ -130,6 +272,9 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 			} );
 		} );
 	} );
+
+	// Grant Member Permission
+	//////////////////////////
 
 	members.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
 		Permissions.findOne( { slug: req.body.permission }, function( err, permission ) {
@@ -161,6 +306,9 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 			res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 		} );
 	} );
+
+	// Modify Member Permission
+	///////////////////////////
 
 	members.get( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 		Permissions.find( function( err, permissions ) {
@@ -235,6 +383,9 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 		} );
 	} );
 
+	// Revoke Member Permission
+	///////////////////////////
+
 	members.get( '/:mid/permissions/:pid/revoke', auth.isAdmin, function( req, res ) {
 		Members.findOne( { _id: req.params.mid }, function( err, member ) {
 			if ( member == undefined ) {
@@ -256,74 +407,6 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 				res.redirect( '/admin/members/' + req.params.mid + '/permissions' );
 			} );
 		} );
-	} );
-
-	members.get( '/:id/tag', auth.isAdmin, function( req, res ) {
-		Members.findOne( { _id: req.params.id }, function( err, member ) {
-			if ( member == undefined ) {
-				req.flash( 'warning', 'Member not found' );
-				res.redirect( '/admin/members' );
-				return;
-			}
-
-			res.locals.breadcrumb.push( {
-				name: member.fullname,
-				url: '/admin/members/' + member._id
-			} );
-			res.locals.breadcrumb.push( {
-				name: 'Tag'
-			} );
-			res.render( 'member-tag', { member: member } );
-		} );
-	} );
-
-	members.get( '/:id/discourse', auth.isAdmin, function( req, res ) {
-		Members.findOne( { _id: req.params.id }, function( err, member ) {
-			if ( member == undefined ) {
-				req.flash( 'warning', 'Member not found' );
-				res.redirect( '/admin/members' );
-				return;
-			}
-
-			res.locals.breadcrumb.push( {
-				name: member.fullname,
-				url: '/admin/members/' + member._id
-			} );
-			res.locals.breadcrumb.push( {
-				name: 'Discourse'
-			} );
-			res.render( 'member-discourse', { member: member } );
-		} );
-	} );
-
-	members.get( '/:id/gocardless', auth.isAdmin, function( req, res ) {
-		Members.findOne( { _id: req.params.id }, function( err, member ) {
-			if ( member == undefined ) {
-				req.flash( 'warning', 'Member not found' );
-				res.redirect( '/admin/members' );
-				return;
-			}
-
-			res.locals.breadcrumb.push( {
-				name: member.fullname,
-				url: '/admin/members/' + member._id
-			} );
-			res.locals.breadcrumb.push( {
-				name: 'GoCardless'
-			} );
-			res.render( 'member-gocardless', { member: member, minimum: config.gocardless.minimum } );
-		} );
-	} );
-
-	members.post( '/:id/tag', auth.isAdmin, function( req, res ) {
-		// Members.update( { _id: req.params.id }, {
-		// 	$push: {
-		// 		permissions: new_permission
-		// 	}
-		// }, function ( status ) {
-		// } );
-		req.flash( 'warning', 'Invalid permission selected' );
-		res.redirect( '/admin/members/' + req.params.id + '/permissions' );
 	} );
 
 	app.use( '/members', members );

@@ -5,9 +5,10 @@
 {% set activeApp = 'admin' %}
 
 {% block content %}
-	<ul>
-		<li><a href="/admin/members">Members</a></li>
-		<li><a href="/admin/permissions">Permissions</a></li>
-		<li><a href="/admin/settings">Settings</a></li>
-	</ul>
+	<p>
+		<a href="/admin/members" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-user"></span> Members</a></li>
+	</p>
+	<p>
+		<a href="/admin/permissions" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-lock"></span> Permissions</a>
+	</p>
 {% endblock %}

@@ -8,13 +8,14 @@ var Members = require( './database' ).Members;
 
 var config = require( '../../config/config.json' );
 
-var mandrill = require( 'mandrill-api/mandrill' ),
-	mandrill_client = new mandrill.Mandrill( config.mandrill.api_key );
-
 app.set( 'views', __dirname + '/../views' );
 
 app.get( '/', function ( req, res ) {
-	res.render( 'index' );
+	if ( ! req.user ) {
+		res.render( 'index' );
+	} else {
+		res.redirect( '/profile' );
+	}
 } );
 
 app.get( '/logout', function( req, res ) {
@@ -22,12 +23,5 @@ app.get( '/logout', function( req, res ) {
 	req.flash( 'success', 'Logged out' );
 	res.redirect( '/' );
 } );
-
-app.post( '/auth/browserid', passport.authenticate( 'persona', {
-	failureRedirect: '/login',
-	successRedirect: '/migration',
-	failureFlash: true,
-	successFlash: true
-} ) );
 
 module.exports = app;

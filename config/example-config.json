@@ -1,32 +1,77 @@
 {
 	"port" : 3001,
-	"secret": "random",
+	"secret": "",
 	"globals": {
-		"organisation": "South London Makerspace",
+		"organisation": "",
 		"title": "Membership System"
 	},
-	"mandrill": {
-		"api_key": "",
-		"from_email": "trustees@southlondonmakerspace.org",
-		"from_name": "South London Makerspace"
+	"tag_salt": "",
+	"superadmins": [],
+	"smtp": {
+		"host": "",
+		"port": "",
+		"username": "",
+		"password": "",
+		"from_name": ""
+
 	},
 	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
+	"discourse": {
+		"url": "",
+		"api_username": "",
+		"api_key": "",
+		"membership_group": ""
+	},
+	"gocardless": {
+		"appId": "",
+		"appSecret": "",
+		"token": "",
+		"merchantId": "",
+        "sandbox": false,
+		"minimum": 20
+	},
 	"apps": [
 		{
 			"title": "Profile",
 			"path": "profile",
-			"showMenu": true
+			"permissions": [
+				"loggedIn"
+			]
+		},
+		{
+			"name": "profile-discourse",
+			"path": "profile/discourse"
+		},
+		{
+			"name": "profile-direct-debit",
+			"path": "profile/direct-debit"
+		},
+		{
+			"title": "Statement",
+			"path": "statement",
+			"permissions": [
+				"member", "superadmin", "admin", "trustee"
+			]
+		},
+		{
+			"title": "Members",
+			"path": "members",
+			"permissions": [
+				"member", "superadmin", "admin", "trustee"
+			]
 		},
 		{
 			"title": "Admin",
 			"path": "admin",
-			"showMenu": true
+			"permissions": [
+				"superadmin", "admin", "trustee"
+			]
 		},
 		{ "path": "join" },
 		{ "path": "activate" },
-		{ "path": "migration" },
 		{ "path": "login" },
-		{ "path": "password-reset" }
+		{ "path": "password-reset" },
+		{ "path": "api" }
 	]
 }

@@ -30,17 +30,6 @@ var permissionsSchema = mongoose.Schema( {
 	}
 } );
 
-var legacySchema = mongoose.Schema( {
-	email: String,
-	name: String,
-	address: String,
-	card_id: String,
-	migrated: {
-		type: Boolean,
-		default: false
-	}
-} );
-
 var memberSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
@@ -48,10 +37,16 @@ var memberSchema = mongoose.Schema( {
 		required: true,
 		unique: true
 	},
-	username: {
+	email: {
 		type: String,
 		required: true,
-		unique: true
+		unique: true,
+		validate: {
+			validator: function ( v ) {
+				return /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,}/.test( v );
+			},
+			message: '{VALUE} is not a valid email address'
+		}
 	},
 	password_hash: {
 		type: String,
@@ -79,25 +74,12 @@ var memberSchema = mongoose.Schema( {
 		type: String,
 		required: true
 	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-		validate: {
-			validator: function ( v ) {
-				return /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,}/.test( v );
-			},
-			message: '{VALUE} is not a valid email address'
-		}
-	},
 	address: {
 		type: String,
 		required: true
 	},
-	tag_id: {
+	tag: {
 		type: String,
-		unique: true,
-		required: false,
 		validate: {
 			validator: function ( v ) {
 				if ( v == '' ) return true;
@@ -106,8 +88,65 @@ var memberSchema = mongoose.Schema( {
 			message: '{VALUE} is not a valid tag ID'
 		}
 	},
-	transactions: {
-		type: Array
+	tag_hashed: {
+		type: String,
+		unique: true,
+		required: false
+	},
+	joined: {
+		type: Date,
+		default: Date.now,
+		required: true
+	},
+	discourse: {
+		id: {
+			type: String,
+			unique: true
+		},
+		email: {
+			type: String,
+			unique: true
+		},
+		activated: {
+			type: Boolean,
+			default: false
+		},
+		activation_code: {
+			type: String	
+		},
+			
+	},
+	gocardless: {
+		id: {
+			type: String,
+			unique: true
+		},
+		amount: {
+			type: Number
+		},
+		minimum: {
+			type: Number
+		},
+		transactions: [ {
+			date: {
+				type: Date
+			},
+			description: {
+				type: String
+			},
+			bill_id: {
+				type: String
+			},
+			subscription_id: {
+				type: String
+			},
+			amount: {
+				type: Number
+			},
+			status: {
+				type: String
+			}
+		} ]
 	},
 	permissions: [ {
 		permission: {
@@ -136,9 +175,7 @@ memberSchema.virtual( 'fullname' ).get( function() {
 } );
 
 exports.permissionsSchema = permissionsSchema;
-exports.legacySchema = legacySchema;
 exports.memberSchema = memberSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
-exports.LegacyMembers = mongoose.model( 'LegacyMembers', exports.legacySchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );

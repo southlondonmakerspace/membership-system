@@ -6,23 +6,15 @@
 {% block content %}
 	<form method="post">
 		<p>
-			<label for="username">Username:</label> <input type="text" value="{{ user.username }}" id="username" name="username" class="form-control" required />
+			<label for="email">Email:</label> <input type="email" value="{{ user.email }}" id="email" name="email" class="form-control" required />
 		</p>
-		
+
 		<p>
 			<label for="firstname">First Name:</label> <input type="text" value="{{ user.firstname }}" id="firstname" name="firstname" class="form-control" required />
 		</p>
 
 		<p>
 			<label for="lastname">Last Name:</label> <input type="text" value="{{ user.lastname }}" id="lastname" name="lastname" class="form-control" required />
-		</p>
-		
-		<p>
-			<label for="email">Email:</label> <input type="email" value="{{ user.email }}" id="email" name="email" class="form-control" required />
-		</p>
-
-		<p>
-			<label for="tag_id">Tag:</label> <input type="text" value="{{ user.tag_id }}" id="tag_id" name="tag_id" class="form-control" />
 		</p>
 
 		<p>

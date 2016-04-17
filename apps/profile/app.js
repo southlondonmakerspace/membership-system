@@ -1,13 +1,15 @@
 "use strict";
 
 var	express = require( 'express' ),
-	app = express(),
-	passport = require( 'passport' ),
-	Members = require( '../../src/js/database' ).Members;
+	app = express();
+
+var Members = require( '../../src/js/database' ).Members;
 
 var crypto = require( 'crypto' );
 
-var authentication = require( '../../src/js/authentication' );
+var config = require( '../../config/config.json' );
+
+var auth = require( '../../src/js/authentication.js' );
 
 app.set( 'views', __dirname + '/views' );
 
@@ -20,26 +22,24 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', ensureAuthenticated, function( req, res ) {
+app.get( '/', auth.isLoggedIn, function( req, res ) {
 	Members.findById( req.user._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 		res.render( 'profile', { user: user } );
 	} )
 } );
 
-app.get( '/update', ensureAuthenticated, function( req, res ) {
+app.get( '/update', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: "Update"
 	} );
 	res.render( 'update', { user: req.user } );
 } );
 
-app.post( '/update', ensureAuthenticated, function( req, res ) {
+app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	var profile = {
-		username: req.body.username,
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
 		email: req.body.email,
-		tag_id: req.body.tag_id,
 		address: req.body.address
 	};
 
@@ -57,38 +57,67 @@ app.post( '/update', ensureAuthenticated, function( req, res ) {
 	} );
 } );
 
-app.get( '/change-password', ensureAuthenticated, function( req, res ) {
+app.get( '/tag', auth.isLoggedIn, function( req, res ) {
+	res.locals.breadcrumb.push( {
+		name: "Tag"
+	} );
+	res.render( 'tag', { user: req.user } );
+} );
+
+app.post( '/tag', auth.isLoggedIn, function( req, res ) {
+	var hashed_tag = auth.hashCard( req.body.tag );
+	var profile = {
+		tag: req.body.tag,
+		tag_hashed: hashed_tag
+	};
+
+	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
+		if ( status != null ) {
+			var keys = Object.keys( status.errors );
+			for ( var k in keys ) {
+				var key = keys[k];
+				req.flash( 'danger', status.errors[key].message );
+			}
+		} else {
+			req.flash( 'success', 'Your profile has been updated' );
+		}
+		res.redirect( '/profile/tag' );
+	} );
+} );
+
+app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: "Change Password"
 	} );
 	res.render( 'change-password' );
 } );
 
-app.post( '/change-password', ensureAuthenticated, function( req, res ) {
+app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		var password_hash = authentication.generatePassword( req.body.current, user.password_salt ).hash;
-		if ( password_hash != user.password_hash ) {
-			req.flash( 'danger', 'Current password is wrong' );
-			res.redirect( '/profile/change-password' );
-			return;
-		}
+		auth.hashPassword( req.body.current, user.password_salt, function( hash ) {
+			if ( hash != user.password_hash ) {
+				req.flash( 'danger', 'Current password is wrong' );
+				res.redirect( '/profile/change-password' );
+				return;
+			}
 
-		if ( req.body.new != req.body.verify ) {
-			req.flash( 'danger', 'Passwords did not match' );
-			res.redirect( '/profile/change-password' );
-			return;
-		}
+			var passwordRequirements = auth.passwordRequirements( req.body.new );
+			if ( passwordRequirements != true ) {
+				req.flash( 'danger', passwordRequirements );
+				res.redirect( '/profile/change-password' );
+				return;
+			}
 
-		// Generate user salt
-		crypto.randomBytes( 256, function( ex, salt ) {
-			var password_salt = salt.toString( 'hex' );
+			if ( req.body.new != req.body.verify ) {
+				req.flash( 'danger', 'Passwords did not match' );
+				res.redirect( '/profile/change-password' );
+				return;
+			}
 
-			// Generate password hash
-			crypto.pbkdf2( req.body.new, password_salt, 1000, 512, 'sha512', function( err, hash ) {
-				var password_hash = hash.toString( 'hex' );
+			auth.generatePassword( req.body.new, function( password ) {
 				Members.update( { _id: user._id }, { $set: {
-					password_hash: password_hash,
-					password_salt: password_salt,
+					password_salt: password.salt,
+					password_hash: password.hash,
 					password_reset_code: null,
 				} }, function( status ) {
 					req.flash( 'success', 'Password changed' );
@@ -100,15 +129,3 @@ app.post( '/change-password', ensureAuthenticated, function( req, res ) {
 } );
 
 module.exports = app;
-
-function ensureAuthenticated( req, res, next ) {
-	if ( req.isAuthenticated() && req.user != undefined && req.user.migrated == null ) {
-		return next();
-	} else if ( req.isAuthenticated() ) {
-		res.redirect( '/migration' );
-		return;		
-	}
-
-	req.flash( 'error', 'Please login first' );
-	res.redirect( '/login' );
-}

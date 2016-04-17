@@ -18,9 +18,15 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', passport.authenticate( 'local', {
 	failureRedirect: '/login',
-	successRedirect: '/profile',
 	failureFlash: true,
 	successFlash: true
-} ) );
+} ), function (req, res ) {
+	if ( req.session.requestedUrl != undefined ) {
+		res.redirect( req.session.requestedUrl );
+		delete req.session.requestedUrl;
+	} else {
+		res.redirect( '/profile' );
+	}
+} );
 
 module.exports = app;

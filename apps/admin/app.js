@@ -7,6 +7,8 @@ var	express = require( 'express' ),
 
 var auth = require( '../../src/js/authentication.js' );
 
+var config = require( '../../config/config.json' );
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
@@ -292,7 +294,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'GoCardless'
 			} );
-			res.render( 'member-gocardless', { member: member } );
+			res.render( 'member-gocardless', { member: member, minimum: config.gocardless.minimum } );
 		} );
 	} );
 

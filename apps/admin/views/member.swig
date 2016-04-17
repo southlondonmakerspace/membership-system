@@ -5,18 +5,7 @@
 {% set activeApp = 'admin' %}
 
 {% block content %}
-		<p>
-			<a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a></li>
-			<a href="/admin/members/{{ member._id | raw }}/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
-			<a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-tag"></span> Edit Permissions</a></li>
-			<a href="/admin/members/{{ member._id | raw }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-credit-card"></span> Edit Tag</a></li>
-			<a href="/admin/members/{{ member._id | raw }}/direct-debit" class="btn btn-default"><span class="glyphicon glyphicon-piggy-bank"></span> Edit GoCardless</a></li>
-			<a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-book"></span> Edit Discourse</a></li>
-		</p>
 
-		<div class="page-header">
-			<h3>Profile</h3>
-		</div>
 		<p><strong>First Name:</strong> {{ member.firstname }}</p>
 		
 		<p><strong>Last Name:</strong> {{ member.lastname }}</p>
@@ -24,6 +13,8 @@
 		<p><strong>Email:</strong> {{ member.email }}
 		
 		<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
+
+		<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/admin/members/{{ member._id | raw }}/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></p>
 		
 		<div class="page-header">
 			<h3>Membership System</h3>
@@ -46,6 +37,8 @@
 		<p><strong>Tag:</strong> {{ member.tag }}</p>
 		
 		<p><strong>Hashed Tag:</strong> {{ member.tag_hashed }}</p>
+
+		<p><a href="/admin/members/{{ member._id | raw }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		
 		<div class="page-header">
 			<h3>Discourse</h3>
@@ -74,6 +67,9 @@
 		<div class="page-header">
 			<h3>Permissions</h3>
 		</div>
+
+		<p><a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+
 		{% if member.permissions.length > 0 %}
 			<ul>
 				{% for permission in member.permissions %}

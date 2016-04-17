@@ -26,9 +26,12 @@
 		
 		<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
 		
-		<p><strong>Activation Code:</strong> {{ member.activation_code }}</p>
+		<p><strong>Activation Code:</strong> {{ member.activation_code }} {% if member.activation_code %}&mdash; {{ audience }}/activate/{{ member.activation_code }}{% endif %}
+		</p>
 		
-		<p><strong>Password Reset Code:</strong> {{ member.password_reset_code }}</p>
+		<p><strong>Password Reset Code:</strong> {{ member.password_reset_code }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
+
+		<p><a href="/admin/members/{{ member._id | raw }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
 		<div class="page-header">
 			<h3>Tag</h3>
@@ -50,7 +53,7 @@
 		
 		<p><strong>Activated:</strong> {{ member.discourse.activated }}</p>
 		
-		<p><strong>Activation Code:</strong> {{ member.discourse.activation_code }}</p>
+		<p><strong>Activation Code:</strong> {{ member.discourse.activation_code }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
 
 		<p><a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		
@@ -62,13 +65,15 @@
 
 		<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount }}</p>
 
+		<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum }}</p>
+
 		<p><a href="/admin/members/{{ member._id | raw }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
 		<div class="page-header">
 			<h3>Permissions</h3>
 		</div>
 
-		<p><a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+		<p><strong>Super Admin:</strong> {% if superadmin %}Yes{% else %}No{% endif %} &mdash; <em>Can only be edited in config</em></p>
 
 		{% if member.permissions.length > 0 %}
 			<ul>
@@ -87,6 +92,8 @@
 		{% else %}
 			<p>User has no permissions</p>
 		{% endif %}
+
+		<p><a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
 		<div class="page-header">
 			<h3>Transactions</h3>

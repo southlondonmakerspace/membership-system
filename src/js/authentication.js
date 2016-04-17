@@ -198,8 +198,16 @@ function isAdmin( req, res, next ) {
 	}
 }
 
+function hashCard( id ) {
+	var md5 = crypto.createHash( 'md5' );
+	md5.update( config.tag_salt );
+	md5.update( id.toLowerCase() );
+	return md5.digest( 'hex' );
+}
+
 module.exports = authentication;
 module.exports.generatePassword = generatePassword;
 module.exports.isLoggedIn = isLoggedIn;
 module.exports.isMember = isMember;
 module.exports.isAdmin = isAdmin;
+module.exports.hashCard = hashCard;

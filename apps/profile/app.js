@@ -65,7 +65,7 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/tag', auth.isLoggedIn, function( req, res ) {
-	var hashed_tag = hashCard( req.body.tag );
+	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
 		tag: req.body.tag,
 		tag_hashed: hashed_tag
@@ -126,12 +126,5 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 		} );
 	} );
 } );
-
-function hashCard( id ) {
-	var md5 = crypto.createHash( 'md5' );
-	md5.update( config.tag_salt );
-	md5.update( id.toLowerCase() );
-	return md5.digest( 'hex' );
-}
 
 module.exports = app;

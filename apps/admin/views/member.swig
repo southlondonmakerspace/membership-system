@@ -16,6 +16,8 @@
 
 		<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/admin/members/{{ member._id | raw }}/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></p>
 		
+		<div class="user-info-section">
+		
 		<div class="page-header">
 			<h3>Membership System</h3>
 		</div>
@@ -32,7 +34,11 @@
 		<p><strong>Password Reset Code:</strong> {{ member.password_reset_code }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
 
 		<p><a href="/admin/members/{{ member._id | raw }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
-
+		
+		</div>
+		
+		<div class="user-info-section">
+		
 		<div class="page-header">
 			<h3>Tag</h3>
 		</div>
@@ -42,6 +48,10 @@
 		<p><strong>Hashed Tag:</strong> {{ member.tag_hashed }}</p>
 
 		<p><a href="/admin/members/{{ member._id | raw }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+		
+		</div>
+		
+		<div class="user-info-section">
 		
 		<div class="page-header">
 			<h3>Discourse</h3>
@@ -57,6 +67,10 @@
 
 		<p><a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		
+		</div>
+		
+		<div class="user-info-section">
+		
 		<div class="page-header">
 			<h3>GoCardless</h3>
 		</div>
@@ -69,6 +83,10 @@
 
 		<p><a href="/admin/members/{{ member._id | raw }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
+		</div>
+		
+		<div class="user-info-section">
+		
 		<div class="page-header">
 			<h3>Permissions</h3>
 		</div>
@@ -98,6 +116,10 @@
 		{% endif %}
 
 		<p><a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+		
+		</div>
+		
+		<div class="user-info-section">
 
 		<div class="page-header">
 			<h3>Transactions</h3>
@@ -131,4 +153,7 @@
 		{% else %}
 			<p>You have no transaction history at this time.</p>
 		{% endif %}
+		
+		</div>
+		
 {% endblock %}

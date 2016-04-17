@@ -8,8 +8,6 @@ var config = require( '../../config/config.json' );
 
 var Members = require( '../../src/js/database' ).Members;
 
-var crypto = require( 'crypto' );
-
 var auth = require( '../../src/js/authentication.js' );
 
 app.set( 'views', __dirname + '/views' );
@@ -25,7 +23,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	// Not linked or in activation
-	if ( ! req.user.discourse.activation_code ) {
+	if ( ! req.user.discourse.activated && ! req.user.discourse.activation_code ) {
 		findDiscourseUserByEmail( req.user.email, function( user ) {
 			if ( user != undefined ) {
 				Members.update( { "_id": req.user._id }, { $set: {
@@ -39,7 +37,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			res.render( 'find', { discourse_user: user } );
 		} );
 	// Linked, not activated
-	} else if ( ! req.user.discourse.activated && req.user.discourse.id ) {
+	} else if ( ! req.user.discourse.activated ) {
 		res.render( 'activate', { activation_code: req.query.code } );
 
 	// Linked 
@@ -53,7 +51,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.user.discourse.activation_code ) {
-		crypto.randomBytes( 10, function( ex, code ) {
+		auth.generateActivationCode( function( code ) {
 			code = code.toString( 'hex' );
 			
 			Members.update( { "_id": req.user._id }, { $set: {

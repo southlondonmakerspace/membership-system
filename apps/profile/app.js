@@ -94,36 +94,30 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		var password_hash = auth.generatePassword( req.body.current, user.password_salt ).hash;
-		if ( password_hash != user.password_hash ) {
-			req.flash( 'danger', 'Current password is wrong' );
-			res.redirect( '/profile/change-password' );
-			return;
-		}
+		auth.hashPassword( req.body.current, user.password_salt, function( hash ) {
+			if ( hash != user.password_hash ) {
+				req.flash( 'danger', 'Current password is wrong' );
+				res.redirect( '/profile/change-password' );
+				return;
+			}
 
-		var passwordRequirements = auth.passwordRequirements( req.body.new );
-		if ( passwordRequirements != true ) {
-			req.flash( 'danger', passwordRequirements );
-			res.redirect( '/profile/change-password' );
-			return;
-		}
+			var passwordRequirements = auth.passwordRequirements( req.body.new );
+			if ( passwordRequirements != true ) {
+				req.flash( 'danger', passwordRequirements );
+				res.redirect( '/profile/change-password' );
+				return;
+			}
 
-		if ( req.body.new != req.body.verify ) {
-			req.flash( 'danger', 'Passwords did not match' );
-			res.redirect( '/profile/change-password' );
-			return;
-		}
+			if ( req.body.new != req.body.verify ) {
+				req.flash( 'danger', 'Passwords did not match' );
+				res.redirect( '/profile/change-password' );
+				return;
+			}
 
-		// Generate user salt
-		crypto.randomBytes( 256, function( ex, salt ) {
-			var password_salt = salt.toString( 'hex' );
-
-			// Generate password hash
-			crypto.pbkdf2( req.body.new, password_salt, 1000, 512, 'sha512', function( err, hash ) {
-				var password_hash = hash.toString( 'hex' );
+			auth.generatePassword( req.body.new, function( password ) {
 				Members.update( { _id: user._id }, { $set: {
-					password_hash: password_hash,
-					password_salt: password_salt,
+					password_salt: password.salt,
+					password_hash: password.hash,
 					password_reset_code: null,
 				} }, function( status ) {
 					req.flash( 'success', 'Password changed' );

@@ -23,8 +23,8 @@ app.get( '/' , function( req, res ) {
 app.post( '/', function( req, res ) {
 	Members.findOne( { email: req.body.email }, function( err, user ) {
 		if ( user ) {
-			crypto.randomBytes( 10, function( ex, code ) {
-				var password_reset_code = code.toString( 'hex' );
+			auth.generateActivationCode( function( code ) {
+				var password_reset_code = code;
 
 				user.password_reset_code = password_reset_code;
 				user.save( function( err ) {
@@ -77,22 +77,15 @@ app.post( '/change-password', function( req, res ) {
 				return;
 			}
 
-			// Generate user salt
-			crypto.randomBytes( 256, function( ex, salt ) {
-				var password_salt = salt.toString( 'hex' );
-
-				// Generate password hash
-				crypto.pbkdf2( req.body.password, password_salt, 1000, 512, 'sha512', function( err, hash ) {
-					var password_hash = hash.toString( 'hex' );
-					Members.update( { _id: user._id }, { $set: {
-						password_hash: password_hash,
-						password_salt: password_salt,
-						password_reset_code: null,
-					} }, function( status ) {
-						req.session.passport = { user: { _id: user._id } };
-						req.flash( 'success', 'Password changed' );
-						res.redirect( '/profile' );
-					} );
+			auth.generatePassword( req.body.password, function( password ) {
+				Members.update( { _id: user._id }, { $set: {
+					password_salt: password.salt,
+					password_hash: password.hash,
+					password_reset_code: null,
+				} }, function( status ) {
+					req.session.passport = { user: { _id: user._id } };
+					req.flash( 'success', 'Password changed' );
+					res.redirect( '/profile' );
 				} );
 			} );
 		} else {

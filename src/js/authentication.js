@@ -19,15 +19,16 @@ function authentication( app ) {
 	}, function( email, password, done ) {
 			Members.findOne( { email: email }, function( err, user ) {
 				if ( user != null ) {
-					var password_hash = generatePassword( password, user.password_salt ).hash;
-					if ( password_hash == user.password_hash ) {
-						if ( user.activated ) {
-							return done( null, { _id: user._id }, { message: 'Login successful' } );
-						} else {
-							return done( null, false, { message: 'Account not activated' } );
+					hashPassword( password, user.password_salt, function( hash ) {
+						if ( hash == user.password_hash ) {
+							if ( user.activated ) {
+								return done( null, { _id: user._id }, { message: 'Login successful' } );
+							} else {
+								return done( null, false, { message: 'Account not activated' } );
+							}
 						}
-					}
-					return done( null, false, { message: 'Login unsuccessful' } );
+						return done( null, false, { message: 'Login unsuccessful' } );
+					} );
 				} else {
 					return done( null, false, { message: 'Login unsuccessful' } );
 				}
@@ -69,13 +70,33 @@ function authentication( app ) {
 	app.use( passport.session() );
 }
 
-function generatePassword( password, salt ) {
-	if ( ! salt ) salt = crypto.randomBytes( 256 ).toString( 'hex' );
-	var hash = crypto.pbkdf2Sync( password, salt, 1000, 512, 'sha512' ).toString( 'hex' )
-	return {
-		salt: salt,
-		hash: hash
-	};
+function generateActivationCode( callback ) {
+	crypto.randomBytes( 10, function( ex, code ) {
+		callback( code.toString( 'hex' ) );
+	} );
+}
+
+function generateSalt( callback ) {
+	crypto.randomBytes( 256, function( ex, salt ) {
+		callback( salt.toString( 'hex' ) );
+	} );
+}
+
+function hashPassword( password, salt, callback ) {
+	crypto.pbkdf2( password, salt, 1000, 512, 'sha512', function( err, hash ) {
+		callback( hash.toString( 'hex' ) );
+	} );
+}
+
+function generatePassword( password, callback ) {
+	generateSalt( function( salt ) {
+		hashPassword( password, salt, function( hash ) {
+			callback( {
+				salt: salt,
+				hash: hash
+			} );
+		} );
+	} );
 }
 
 function superAdmin( email ) {
@@ -222,7 +243,10 @@ function passwordRequirements( password ) {
 }
 
 module.exports = authentication;
+module.exports.generateSalt = generateSalt;
 module.exports.generatePassword = generatePassword;
+module.exports.generateActivationCode = generateActivationCode;
+module.exports.hashPassword = hashPassword;
 module.exports.isLoggedIn = isLoggedIn;
 module.exports.isMember = isMember;
 module.exports.isAdmin = isAdmin;

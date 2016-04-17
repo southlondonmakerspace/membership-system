@@ -8,7 +8,7 @@ var nodemailer = require( 'nodemailer' );
 
 var	Members = require( '../../src/js/database' ).Members;
 
-var crypto = require( 'crypto' );
+var auth = require( '../../src/js/authentication.js' );
 
 var config = require( '../../config/config.json' );
 
@@ -44,53 +44,50 @@ app.post( '/', function( req, res ) {
 		}
 
 		// Generate email code salt
-		crypto.randomBytes( 10, function( ex, code ) {
-			user.activation_code = code.toString( 'hex' );
+		auth.generateActivationCode( function( code ) {
+			user.activation_code = code;
+			auth.generatePassword( req.body.password, function( password ) {
+				user.password_salt = password.salt;
+				user.password_hash = password.hash;
 
-			// Generate user salt
-			crypto.randomBytes( 256, function( ex, salt ) {
-				user.password_salt = salt.toString( 'hex' );
+				console.log( user );
 
-				// Generate password hash
-				crypto.pbkdf2( req.body.password, user.password_salt, 1000, 512, 'sha512', function( err, hash ) {
-					user.password_hash = hash.toString( 'hex' );
-
-					// Store new member
-					new Members( user ).save( function( status ) {
-						if ( status != null && status.errors != undefined ) {
-							var keys = Object.keys( status.errors );
-							for ( var k in keys ) {
-								var key = keys[k];
-								req.flash( 'danger', status.errors[key].message );
-							}
-							req.session.join = user;
-							res.redirect( '/join' );
-						} else {
-							var message = {};
-							
-							message.text = swig.renderFile( __dirname + '/email-templates/join.swig', {
-								firstname: req.body.firstname,
-								organisation: config.globals.organisation,
-								activation_url: config.audience + '/activate/' + user.activation_code
-							} );
-
-							var transporter = nodemailer.createTransport( config.smtp.url );
-
-							message.from = config.smtp.from;
-							message.to = req.body.email;
-							message.subject = 'Activation Email – ' + config.globals.organisation;
-							
-							transporter.sendMail( message, function( err, info ) {
-								if ( err ) {
-									req.flash( 'warning', 'Account created, system was unable to send activation email, please contact the administrator' );
-									res.redirect( '/' );
-								} else {
-									req.flash( 'success', 'Account created, please check your email for a registration link' );
-									res.redirect( '/' );
-								}
-							} );
+				// Store new member
+				new Members( user ).save( function( status ) {
+					console.log( status );
+					if ( status != null && status.errors != undefined ) {
+						var keys = Object.keys( status.errors );
+						for ( var k in keys ) {
+							var key = keys[k];
+							req.flash( 'danger', status.errors[key].message );
 						}
-					} );
+						req.session.join = user;
+						res.redirect( '/join' );
+					} else {
+						var message = {};
+						
+						message.text = swig.renderFile( __dirname + '/email-templates/join.swig', {
+							firstname: req.body.firstname,
+							organisation: config.globals.organisation,
+							activation_url: config.audience + '/activate/' + user.activation_code
+						} );
+
+						var transporter = nodemailer.createTransport( config.smtp.url );
+
+						message.from = config.smtp.from;
+						message.to = req.body.email;
+						message.subject = 'Activation Email – ' + config.globals.organisation;
+						
+						transporter.sendMail( message, function( err, info ) {
+							if ( err ) {
+								req.flash( 'warning', 'Account created, system was unable to send activation email, please contact the administrator' );
+								res.redirect( '/' );
+							} else {
+								req.flash( 'success', 'Account created, please check your email for a registration link' );
+								res.redirect( '/' );
+							}
+						} );
+					}
 				} );
 			} );
 		} );

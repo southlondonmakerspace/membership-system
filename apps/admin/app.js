@@ -258,6 +258,24 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 		} );
 	} );
 
+	members.get( '/:id/discourse', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Discourse'
+			} );
+			res.render( 'member-discourse', { member: member } );
+		} );
+	} );
 	members.post( '/:id/tag', auth.isAdmin, function( req, res ) {
 		// Members.update( { _id: req.params.id }, {
 		// 	$push: {

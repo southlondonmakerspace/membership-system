@@ -80,8 +80,6 @@ var memberSchema = mongoose.Schema( {
 	},
 	tag: {
 		type: String,
-		unique: true,
-		required: false,
 		validate: {
 			validator: function ( v ) {
 				if ( v == '' ) return true;

@@ -81,7 +81,7 @@ app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 		} else {
 			req.flash( 'success', 'Your profile has been updated' );
 		}
-		res.redirect( '/profile' );
+		res.redirect( '/profile/tag' );
 	} );
 } );
 

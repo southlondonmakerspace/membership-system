@@ -364,7 +364,12 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 				var permission = member.permissions.id( req.params.pid );
 				permission.permission = newPermission._id;
-				permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
+
+				if ( req.body.start_date != '' && req.body.start_time != '' ) { 
+					permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
+				} else {
+					permission.date_added = new Date();
+				}
 
 				if ( req.body.expiry_date != '' && req.body.expiry_time != '' ) {
 					permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );

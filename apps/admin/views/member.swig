@@ -69,6 +69,8 @@
 
 		<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount }}</p>
 
+		<p><a href="/admin/members/{{ member._id | raw }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+
 		<div class="page-header">
 			<h3>Permissions</h3>
 		</div>

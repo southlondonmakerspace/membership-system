@@ -39,7 +39,7 @@
 						<a title="Change Password" href="/admin/members/{{ member._id | raw }}/change-password"><span class="glyphicon glyphicon-lock"></span></a>
 						<a title="Edit Permissions" href="/admin/members/{{ member._id | raw }}/permissions"><span class="glyphicon glyphicon-tag"></span></a>
 						<a title="Edit Tag" href="/admin/members/{{ member._id | raw }}/tag"><span class="glyphicon glyphicon-credit-card"></span></a>
-						<a title="Edit GoCardless" href="/admin/members/{{ member._id | raw }}/direct-debit"><span class="glyphicon glyphicon-piggy-bank"></span></a>
+						<a title="Edit GoCardless" href="/admin/members/{{ member._id | raw }}/gocardless"><span class="glyphicon glyphicon-piggy-bank"></span></a>
 						<a title="Edit Discourse" href="/admin/members/{{ member._id | raw }}/discourse"><span class="glyphicon glyphicon-book"></span></a>
 					</td>
 				</tr>

@@ -23,7 +23,7 @@
 			<label for="minimum">Minimum: </label>
 			<div class="input-group">
 				<div class="input-group-addon">&pound;</div>
-				<input id="minimum" name="minimum" type="number" class="form-control" placeholder="{{ minimum }}" />
+				<input id="minimum" name="minimum" type="number" class="form-control" placeholder="{{ minimum }}" value="{{ member.gocardless.minimum }}" />
 				<div class="input-group-addon">.00</div>
 			</div>
 		</p>

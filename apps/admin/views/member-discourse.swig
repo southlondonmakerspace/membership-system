@@ -14,11 +14,7 @@
 		</p>
 
 		<p>
-			<label for="activation_code">Activation Code:</label> <input type="text" value="{{ member.discourse.activation_code }}" id="activation_code" name="activation_code" class="form-control" />
-		</p>
-
-		<p>
-			<label for="activated">Activated:</label> <input type="checkbox" value="{{ member.discourse.activated }}" id="activated" name="activated" class="form-control" />
+			<label for="activated">Activated:</label> <input type="checkbox" value="{{ member.discourse.activated }}" {% if member.discourse.activated %}checked{% endif %} id="activated" name="activated" class="form-control" />
 		</p>
 
 		<p>

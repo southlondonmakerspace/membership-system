@@ -89,6 +89,23 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 		Members.update( { _id: req.params.id }, member, function( status ) {
 			req.flash( 'success', 'Members updated' );
+	members.get( '/:id/activation', auth.isAdmin, function( req, res ) {
+		Members.findOne( { _id: req.params.id }, function( err, member ) {
+			if ( member == undefined ) {
+				req.flash( 'warning', 'Member not found' );
+				res.redirect( '/admin/members' );
+				return;
+			}
+			res.locals.breadcrumb.push( {
+				name: member.fullname,
+				url: '/admin/members/' + member._id
+			} );
+			res.locals.breadcrumb.push( {
+				name: 'Activation',
+			} );
+			res.render( 'member-activation', { member: member } );
+		} );
+	} );
 			res.redirect( '/admin/members/' + req.params.id );
 		} );
 	} );

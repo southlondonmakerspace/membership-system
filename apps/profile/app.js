@@ -94,9 +94,16 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		var password_hash = authentication.generatePassword( req.body.current, user.password_salt ).hash;
+		var password_hash = auth.generatePassword( req.body.current, user.password_salt ).hash;
 		if ( password_hash != user.password_hash ) {
 			req.flash( 'danger', 'Current password is wrong' );
+			res.redirect( '/profile/change-password' );
+			return;
+		}
+
+		var passwordRequirements = auth.passwordRequirements( req.body.new );
+		if ( passwordRequirements != true ) {
+			req.flash( 'danger', passwordRequirements );
 			res.redirect( '/profile/change-password' );
 			return;
 		}

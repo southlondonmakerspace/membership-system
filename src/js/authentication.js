@@ -205,9 +205,26 @@ function hashCard( id ) {
 	return md5.digest( 'hex' );
 }
 
+function passwordRequirements( password ) {
+	if ( password.length < 8 )
+		return "Password must be at least 8 characters long";
+
+	if ( password.match( /\d/g ) == null )
+		return "Password must contain at least 1 number"
+
+	if ( password.match( /[A-Z]/g ) == null )
+		return "Password must contain at least 1 uppercase letter"
+
+	if ( password.match( /[a-z]/g ) == null )
+		return "Password must contain at least 1 lowercase letter"
+
+	return true;
+}
+
 module.exports = authentication;
 module.exports.generatePassword = generatePassword;
 module.exports.isLoggedIn = isLoggedIn;
 module.exports.isMember = isMember;
 module.exports.isAdmin = isAdmin;
 module.exports.hashCard = hashCard;
+module.exports.passwordRequirements = passwordRequirements;

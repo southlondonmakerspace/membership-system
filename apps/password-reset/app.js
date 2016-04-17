@@ -12,6 +12,8 @@ var crypto = require( 'crypto' );
 
 var config = require( '../../config/config.json' );
 
+var auth = require( '../../src/js/authentication.js' );
+
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/' , function( req, res ) {
@@ -64,6 +66,13 @@ app.post( '/change-password', function( req, res ) {
 		if ( user ) {
 			if ( req.body.password != req.body.verify ) {
 				req.flash( 'danger', 'Passwords did not match' );
+				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
+				return;
+			}
+
+			var passwordRequirements = auth.passwordRequirements( req.body.password );
+			if ( passwordRequirements != true ) {
+				req.flash( 'danger', passwordRequirements );
 				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
 				return;
 			}

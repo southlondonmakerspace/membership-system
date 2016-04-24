@@ -6,7 +6,8 @@ var mongoose = require( 'mongoose' ),
 exports.connect = function( url ) {
 	mongoose.connect( url );
 	var db = mongoose.connection;
-	db.on( 'error', console.error.bind( console, 'connection error' ) );
+	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
+	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
 }
 
 var permissionsSchema = mongoose.Schema( {

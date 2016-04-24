@@ -1,8 +1,15 @@
 "use strict";
 
+var __config = __dirname + '/config/config.json';
+var __static = __dirname + '/static';
+var __src = __dirname + '/src';
+var __apps = __dirname + '/apps';
+var __views = __src + '/views';
+var __js = __src + '/js';
+
 var body = require( 'body-parser' ),
-	config = require( __dirname + '/config/config.json' ),
-	database = require( __dirname + '/src/js/database').connect( config.mongo ),
+	config = require( __config ),
+	database = require( __js + '/database').connect( config.mongo ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),
@@ -15,26 +22,26 @@ var apps = [];
 console.log( "Starting..." );
 
 // Handle authentication
-require( __dirname + '/src/js/authentication' )( app );
+require( __js + '/authentication' )( app );
 
 // Setup static route
-app.use( express.static( __dirname + '/static' ) );
+app.use( express.static( __static ) );
 
 // Enable support for form post data
 app.use( body.json() );
 app.use( body.urlencoded( { extended: true } ) );
 
 // Handle sessions
-require( __dirname + '/src/js/sessions' )( app );
+require( __js + '/sessions' )( app );
 
 // Include support for notifications
 app.use( flash() );
-app.use( require( __dirname + '/src/js/quickflash' ) );
+app.use( require( __js + '/quickflash' ) );
 
 // Load apps
-var files = fs.readdirSync( __dirname + '/apps' );
+var files = fs.readdirSync( __apps );
 for ( var f in files ) {
-	var file = __dirname + '/apps/' + files[f];
+	var file = __apps + '/' + files[f];
 	if ( fs.statSync( file ).isDirectory() ) {
 		var config_file = file + '/config.json';
 		if ( fs.existsSync( config_file ) ) {
@@ -47,14 +54,14 @@ for ( var f in files ) {
 }
 
 // Load in local variables such as config.globals
-app.use( require( __dirname + '/src/js/template-locals' )( config, apps ) );
+app.use( require( __js + '/template-locals' )( config, apps ) );
 
 // Use SWIG to render pages
 app.engine( 'swig', swig.renderFile );
-app.set( 'views', __dirname + '/src/views' );
+app.set( 'views', __views );
 app.set( 'view engine', 'swig' );
-app.set( 'view cache', false ); // Disables cache
-swig.setDefaults( { cache: false } ); // Disables cache
+app.set( 'view cache', false );
+swig.setDefaults( { cache: false } );
 
 // Route apps
 for ( var a in apps ) {

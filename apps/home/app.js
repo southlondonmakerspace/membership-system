@@ -3,7 +3,7 @@
 var	express = require( 'express' ),
 	app = express();
 
-app.set( 'views', __dirname + '/../views' );
+app.set( 'views', __dirname + '/views' );
 
 app.get( '/', function ( req, res ) {
 	if ( ! req.user ) {
@@ -13,4 +13,4 @@ app.get( '/', function ( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) { return app; };

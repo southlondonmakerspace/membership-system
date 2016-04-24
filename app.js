@@ -108,10 +108,6 @@ app.set( 'view engine', 'swig' );
 app.set( 'view cache', false ); // Disables cache
 swig.setDefaults( { cache: false } ); // Disables cache
 
-// Route top level app
-app.use( '/', require( __dirname + '/src/js/routes' ) );
-console.log( "	Route: /" );
-
 // Route apps
 for ( var a in apps ) {
 	var _app = apps[a];

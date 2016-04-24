@@ -57,12 +57,8 @@ app.post( '/', function( req, res ) {
 			auth.generatePassword( req.body.password, function( password ) {
 				user.password_salt = password.salt;
 				user.password_hash = password.hash;
-
-				console.log( user );
-
 				// Store new member
 				new Members( user ).save( function( status ) {
-					console.log( status );
 					if ( status != null && status.errors != undefined ) {
 						var keys = Object.keys( status.errors );
 						for ( var k in keys ) {

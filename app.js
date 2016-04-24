@@ -29,25 +29,7 @@ require( __dirname + '/src/js/sessions' )( app );
 
 // Include support for notifications
 app.use( flash() );
-app.use( function( req, res, next ) {
-	var flash = req.flash(),
-		flashes = [],
-		types = Object.keys( flash );
-
-	for ( var t in types ) {
-		var key = types[ t ];
-		var messages = flash[ key ];
-		for ( var m in messages ) {
-			var message = messages[ m ];
-			flashes.push( {
-				type: key == 'error' ? 'danger' : key,
-				message: message
-			} );
-		}
-	}
-	res.locals.flashes = flashes;
-	next();
-} )
+app.use( require( __dirname + '/src/js/quickflash' ) )
 
 // Load apps
 var files = fs.readdirSync( __dirname + '/apps' );

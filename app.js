@@ -7,7 +7,12 @@ var body = require( 'body-parser' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),
 	app = express(),
-	http = require( 'http' ).Server( app );
+	http = require( 'http' ).Server( app ),
+	fs = require( 'fs' );
+
+var apps = [];
+
+console.log( "Starting..." );
 
 // Handle authentication
 require( __dirname + '/src/js/authentication' )( app );
@@ -44,14 +49,28 @@ app.use( function( req, res, next ) {
 	next();
 } )
 
+// Load apps
+var files = fs.readdirSync( __dirname + '/apps' );
+for ( var f in files ) {
+	var file = __dirname + '/apps/' + files[f];
+	if ( fs.statSync( file ).isDirectory() ) {
+		var config_file = file + '/config.json';
+		if ( fs.existsSync( config_file ) ) {
+			var output = JSON.parse( fs.readFileSync( config_file ) );
+			output.app = file + '/app.js';
+			apps.push( output );
+		}
+	}
+}
+
 // Load in local variables such as config.globals
 app.use( function( req, res, next ) {
 	// Process which apps should be shown in menu
 	res.locals.apps = [];
 	if ( req.user ) {
 		res.locals.loggedIn = true;
-		for ( var a in config.apps ) {
-			var app = config.apps[a];
+		for ( var a in apps ) {
+			var app = apps[a];
 			if ( app.permissions != undefined && app.permissions != [] ) {
 				for ( var p in app.permissions ) {
 					if ( req.user.quickPermissions.indexOf( app.permissions[p] ) != -1 ) {
@@ -80,13 +99,14 @@ app.set( 'view engine', 'swig' );
 app.set( 'view cache', false ); // Disables cache
 swig.setDefaults( { cache: false } ); // Disables cache
 
-// Load top level app
+// Route top level app
 app.use( '/', require( __dirname + '/src/js/routes' ) );
+console.log( "	Route: /" );
 
-// Load apps
-for ( var a in config.apps ) {
-	var name = ( config.apps[a].name ? config.apps[a].name : config.apps[a].path );
-	app.use( '/' + config.apps[a].path, require( __dirname + '/apps/' + name + '/app' ) );
+// Route apps
+for ( var a in apps ) {
+	console.log( "	Route: /" + apps[a].path );
+	app.use( '/' + apps[a].path, require( apps[a].app ) );
 }
 
 // Error 404
@@ -94,6 +114,9 @@ app.get( '*', function( req, res ) {
 	res.status( 404 );
 	res.render( '404' );
 } );
+console.log( "	Route: *" );
 
 // Start server
-app.listen( config.port );
+var listener = app.listen( config.port, function () {
+	console.log( "Server started on: " + listener.address().address + listener.address().port );
+} );

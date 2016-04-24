@@ -3,5 +3,6 @@
 	"path": "members",
 	"permissions": [
 		"member", "superadmin", "admin", "trustee"
-	]
+	],
+	"menu": "main"
 }

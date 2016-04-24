@@ -1,4 +1,5 @@
 {
 	"title": "Activate",
-	"path": "activate"
+	"path": "activate",
+	"menu": "none"
 }

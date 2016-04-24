@@ -1,4 +1,8 @@
 {
 	"title": "Login",
-	"path": "login"
+	"path": "login",
+	"permissions": [
+		"loggedOut"
+	],
+	"menu": "secondary"
 }

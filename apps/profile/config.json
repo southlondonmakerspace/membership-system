@@ -3,5 +3,6 @@
 	"path": "profile",
 	"permissions": [
 		"loggedIn"
-	]
+	],
+	"menu": "main"
 }

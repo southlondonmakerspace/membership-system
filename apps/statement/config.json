@@ -3,5 +3,6 @@
 	"path": "statement",
 	"permissions": [
 		"member", "superadmin", "admin", "trustee"
-	]
+	],
+	"menu": "main"
 }

@@ -1,4 +1,5 @@
 {
 	"title": "API",
-	"path": "api"
+	"path": "api",
+	"menu": "none"
 }

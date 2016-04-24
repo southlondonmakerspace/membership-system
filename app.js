@@ -57,6 +57,7 @@ for ( var f in files ) {
 		var config_file = file + '/config.json';
 		if ( fs.existsSync( config_file ) ) {
 			var output = JSON.parse( fs.readFileSync( config_file ) );
+			output.uid = files[f];
 			output.app = file + '/app.js';
 			apps.push( output );
 		}
@@ -105,8 +106,9 @@ console.log( "	Route: /" );
 
 // Route apps
 for ( var a in apps ) {
-	console.log( "	Route: /" + apps[a].path );
-	app.use( '/' + apps[a].path, require( apps[a].app ) );
+	var _app = apps[a];
+	console.log( "	Route: /" + _app.path );
+	app.use( '/' + _app.path, require( _app.app )( _app ) );
 }
 
 // Error 404

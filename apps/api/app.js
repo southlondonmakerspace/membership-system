@@ -7,11 +7,7 @@ var config = require( '../../config/config.json' );
 
 var Members = require( '../../src/js/database' ).Members;
 
-app.get( '/', function( req, res ) {
-	var response = [ 'API not yet implemented' ];
-	res.setHeader( 'Content-Type', 'application/json' );
-	res.send( JSON.stringify( response ) );
-} );
+var app_config = {};
 
 app.get( '/permission/:slug/:tag', function( req, res ) {
 	if ( config.api_key == req.query.api_key  ) {
@@ -44,4 +40,7 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

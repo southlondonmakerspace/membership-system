@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Profile' %}
-{% set heading = 'Profile' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
 	<p><strong>Name:</strong> {{ user.fullname }}</p>

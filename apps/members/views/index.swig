@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Members' %}
-{% set heading = 'Members' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
 	<p>Active members: {{ members.length }}</p>

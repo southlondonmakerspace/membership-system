@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Activate' %}
-{% set heading = 'Activate' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
 	<p>Before you can activate your account, please enter your password.</p>

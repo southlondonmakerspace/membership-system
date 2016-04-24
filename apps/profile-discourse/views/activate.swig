@@ -1,6 +1,6 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Discourse' %}
+{% set title = app.title %}
 {% set heading = 'Activate Discourse Link' %}
 
 {% block content %}

@@ -10,12 +10,15 @@ var Members = require( '../../src/js/database' ).Members;
 
 var auth = require( '../../src/js/authentication.js' );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
+	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
-		name: "Discourse",
-		url: "/discourse"
+		name: app_config.title,
+		url: app.mountpath
 	} );
 	res.locals.activeApp = 'profile';
 	next();
@@ -67,7 +70,7 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	} else {
 		req.flash( 'warning', 'Activation code has already been sent' );
 	}
-	res.redirect( '/profile/discourse' );
+	res.redirect( app.mountpath );
 } );
 
 app.post( '/activate', auth.isLoggedIn, function( req, res ) {
@@ -78,11 +81,11 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 				"discourse.activation_code": null
 			} }, function ( error ) {} );
 			req.flash( 'info', 'Discourse user linked' );
-			return res.redirect( '/profile/discourse' );
+			return res.redirect( app.mountpath );
 		}
 	}
 	req.flash( 'warning', 'You must enter a valid activation code' );
-	res.redirect( '/profile/discourse' );
+	res.redirect( app.mountpath );
 } );
 
 function findDiscourseUserByEmail( email, callback ) {
@@ -122,7 +125,10 @@ function sendDiscourseActivationMessage( username, code ) {
 	} );
 }
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};
 
 // PUT /groups/41/members.json (FORM: usernames: *)
 // DELETE /groups/41/members.json (FORM: user_id: *)

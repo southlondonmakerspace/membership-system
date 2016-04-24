@@ -10,12 +10,16 @@ var auth = require( '../../src/js/authentication.js' ),
 
 var gocardless = require( 'gocardless' )( config.gocardless );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
+	console.log( app.mountpath );
+	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
-		name: "Direct Debit",
-		url: "/profile/profile/direct-debit"
+		name: app_config.title,
+		url: app.mountpath
 	} );
 	res.locals.activeApp = 'profile';
 	next();
@@ -24,7 +28,7 @@ app.use( function( req, res, next ) {
 app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.amount < ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum ) ) {
 		req.flash( 'danger', 'Minimum direct debit amount is £' + config.gocardless.minimum );
-		return res.redirect( '/profile/direct-debit' );
+		return res.redirect( app.mountpath );
 	}
 
 	var url = gocardless.subscription.newUrl( {
@@ -52,7 +56,7 @@ app.get( '/confirm', auth.isLoggedIn, function( req, res ) {
 		if ( err ) return res.end( 401, err );
 		Members.update( { _id: req.user._id }, { $set: { "gocardless.id": req.query.resource_id } }, function ( err ) {
 			req.flash( 'success', 'Direct Debit setup succesfully' );
-			res.redirect( '/profile/direct-debit' );
+			res.redirect( app.mountpath );
 		} );
 	} );
 } );
@@ -77,11 +81,11 @@ app.post( '/cancel', auth.isLoggedIn, function( req, res ) {
 		if ( response.status == 'cancelled' ) {
 			Members.update( { _id: req.user._id }, { $set: { gocardless: { id: '', amount: '' } } }, function( err ) {
 				req.flash( 'success', 'Direct debit cancelled' );
-				res.redirect( '/profile/direct-debit' );
+				res.redirect( app.mountpath );
 			} );
 		} else {
 			req.flash( 'danger', 'Error cancelling direct debit' );
-			res.redirect( '/profile/direct-debit' );
+			res.redirect( app.mountpath );
 		}
 	} );
 } );
@@ -192,4 +196,7 @@ function upsertTransaction( subscription_id, bill_id, status, amount, callback )
 	} );
 }
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

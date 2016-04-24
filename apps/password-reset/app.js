@@ -14,7 +14,14 @@ var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
+
+app.use( function( req, res, next ) {
+	res.locals.app = app_config;
+	next();
+} );
 
 app.get( '/' , function( req, res ) {
 	res.render( 'reset-password' );
@@ -49,7 +56,7 @@ app.post( '/', function( req, res ) {
 			} );
 		}
 		req.flash( 'success', 'If there is an account associated with the email address you will receive an email shortly' );
-		res.redirect( '/password-reset' );
+		res.redirect( app.mountpath );
 	} );
 } );
 
@@ -66,14 +73,14 @@ app.post( '/change-password', function( req, res ) {
 		if ( user ) {
 			if ( req.body.password != req.body.verify ) {
 				req.flash( 'danger', 'Passwords did not match' );
-				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
+				res.redirect( app.mountpath + '/code/' + req.body.password_reset_code );
 				return;
 			}
 
 			var passwordRequirements = auth.passwordRequirements( req.body.password );
 			if ( passwordRequirements != true ) {
 				req.flash( 'danger', passwordRequirements );
-				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
+				res.redirect( app.mountpath + '/code/' + req.body.password_reset_code );
 				return;
 			}
 
@@ -95,4 +102,7 @@ app.post( '/change-password', function( req, res ) {
 	} );
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

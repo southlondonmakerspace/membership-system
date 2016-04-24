@@ -29,7 +29,7 @@ require( __dirname + '/src/js/sessions' )( app );
 
 // Include support for notifications
 app.use( flash() );
-app.use( require( __dirname + '/src/js/quickflash' ) )
+app.use( require( __dirname + '/src/js/quickflash' ) );
 
 // Load apps
 var files = fs.readdirSync( __dirname + '/apps' );
@@ -47,41 +47,7 @@ for ( var f in files ) {
 }
 
 // Load in local variables such as config.globals
-app.use( function( req, res, next ) {
-	// Process which apps should be shown in menu
-	res.locals.apps = {
-		main: [],
-		secondary: []
-	};
-
-	for ( var a in apps ) {
-		var app = apps[a];
-		if ( app.menu != "none" ) {
-			if ( app.permissions != undefined && app.permissions != [] ) {
-				if ( req.user ) {
-					for ( var p in app.permissions ) {
-						if ( req.user.quickPermissions.indexOf( app.permissions[p] ) != -1 ) {
-							res.locals.apps[ app.menu ].push( app );
-							break;
-						}
-					}
-				} else {
-					if ( app.permissions.indexOf( "loggedOut" ) != -1 )
-						res.locals.apps[ app.menu ].push( app );
-				}
-			}
-		}
-	}
-
-	// Delete login redirect URL if user navigates to anything other than the login page
-	if ( req.originalUrl != '/login' )
-		delete req.session.requestedUrl;
-	
-	// Load config + prepare breadcrumbs
-	res.locals.config = config.globals;
-	res.locals.breadcrumb = [];
-	next();
-} );
+app.use( require( __dirname + '/src/js/template-locals' )( config, apps ) );
 
 // Use SWIG to render pages
 app.engine( 'swig', swig.renderFile );

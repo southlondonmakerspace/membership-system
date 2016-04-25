@@ -99,6 +99,17 @@ var memberSchema = mongoose.Schema( {
 		default: Date.now,
 		required: true
 	},
+	emergency_contact: {
+		firstname: {
+			type: String
+		},
+		lastname: {
+			type: String
+		},
+		telephone: {
+			type: String
+		}
+	},
 	discourse: {
 		id: {
 			type: String,

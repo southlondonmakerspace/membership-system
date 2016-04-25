@@ -43,7 +43,12 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
 		email: req.body.email,
-		address: req.body.address
+		address: req.body.address,
+		emergency_contact: {
+			firstname: req.body.emergency_contact_firstname,
+			lastname: req.body.emergency_contact_lastname,
+			telephone: req.body.emergency_contact_telephone
+		}
 	};
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {

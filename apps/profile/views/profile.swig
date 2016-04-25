@@ -21,7 +21,17 @@
 	<p>New round here? Follow these steps to setup your account...</p>
 
 	<ol style="padding-left: 2em;">
-		<li style="margin-bottom: 1em;"><a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a></li>
+		<li style="margin-bottom: 1em;">
+			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a>
+		</li>
+		
+		<li style="margin-bottom: 1em;">
+			{% if user.emergency_contact.telephone %}
+				<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
+			{% else %}
+				<a href="/profile/update" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Emergency Contact</a>
+			{% endif %}
+		</li>
 
 		<li style="margin-bottom: 1em;">
 			{% if user.gocardless.id == '' %}

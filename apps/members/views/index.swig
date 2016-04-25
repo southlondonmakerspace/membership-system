@@ -11,6 +11,7 @@
 				<th>First name</th>
 				<th>Last name</th>
 				<th>Joined</th>
+				<th>Emergency Contact</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -19,6 +20,7 @@
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.joined | date('d/m/Y') }}</td>
+					<td>{% if member.emergency_contact.telephone %}Yes{% else %}No{% endif %}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

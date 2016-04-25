@@ -11,6 +11,8 @@
 				<h2>{{ member.fullname }}</h2>
 			</div>
 
+			<p><img src="{{ member.gravatar }}?s=150&d=identicon&r=g"></p>
+
 			<p><strong>First Name:</strong> {{ member.firstname }}</p>
 			
 			<p><strong>Last Name:</strong> {{ member.lastname }}</p>

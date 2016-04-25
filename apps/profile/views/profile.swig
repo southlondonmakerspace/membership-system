@@ -4,6 +4,8 @@
 {% set heading = app.title %}
 
 {% block content %}
+	<p><img src="{{ user.gravatar }}?s=150&d=identicon&r=g"></p>
+
 	<p><strong>Name:</strong> {{ user.fullname }}</p>
 	
 	<p><strong>Email:</strong> {{ user.email }}</p>

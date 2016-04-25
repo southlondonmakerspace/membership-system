@@ -1,7 +1,8 @@
 "use strict";
 
 var mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId;
+	ObjectId = mongoose.Schema.ObjectId,
+	crypto = require( 'crypto' );
 
 exports.connect = function( url ) {
 	mongoose.connect( url );
@@ -184,6 +185,11 @@ var memberSchema = mongoose.Schema( {
 
 memberSchema.virtual( 'fullname' ).get( function() {
 	return this.firstname + ' ' + this.lastname;
+} );
+
+memberSchema.virtual( 'gravatar' ).get( function() {
+	var md5 = crypto.createHash( 'md5' ).update( this.email ).digest( 'hex' );
+	return 'http://www.gravatar.com/avatar/' + md5;
 } );
 
 exports.permissionsSchema = permissionsSchema;

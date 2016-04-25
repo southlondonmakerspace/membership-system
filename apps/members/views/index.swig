@@ -8,6 +8,7 @@
 	<table class="table table-striped table-hover table-condensed">
 		<thead>
 			<tr>
+				<th>Gravatar</th>
 				<th>First name</th>
 				<th>Last name</th>
 				<th>Joined</th>
@@ -17,6 +18,7 @@
 		<tbody>
 			{% for member in members %}
 				<tr>
+					<td><img src="{{ member.gravatar }}?s=75&d=identicon&r=g"></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.joined | date('d/m/Y') }}</td>

@@ -6,6 +6,7 @@ var	express = require( 'express' ),
 var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' ),
+	Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 
 var gocardless = require( 'gocardless' )( config.gocardless );
@@ -15,7 +16,6 @@ var app_config = {};
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
-	console.log( app.mountpath );
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
 		name: 'Profile',
@@ -102,34 +102,25 @@ app.post( '/webhook', function( req, res ) {
 			for ( var b in bills ) {
 				var bill = bills[b];
 
-				console.log( bill );
-
-				// SOURCE_ID = subscription
-				// ID = unique payment reference
-
 				switch ( bill.status ) {
 				
 					case 'pending':
-						console.log( 'created' );
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
 						break;
 				
 					case 'paid':
-						console.log( 'paid' );
-						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount, function( result ) {
-							console.log( 'UPSERT: ' + result );
-							// ACTION: Extend members membership privilage
-							// ACTION: check Discourse group
+						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount, function() {
+							grExtendMembership( bill.source_id, function() {
+								// ACTION: check Discourse group
+							} );
 						} );
 						break;
 				
 					case 'failed':
-						console.log( 'failed' );
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
 						break;
 				
 					case 'withdrawn':
-						console.log( 'withdrawn' );
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
 						break;
 				}
@@ -156,9 +147,11 @@ app.post( '/webhook', function( req, res ) {
 	}
 } );
 
+// Update/insert transaction
 function upsertTransaction( subscription_id, bill_id, status, amount, callback ) {
 	Members.findOne( { 'gocardless.id': subscription_id }, function( err, member ) {
-		if ( member == undefined ) callback();
+		if ( member == undefined && typeof callback == 'function' ) callback();
+		if ( member == undefined ) return;
 
 		var transactions = member.gocardless.transactions;
 		var exists;
@@ -193,10 +186,51 @@ function upsertTransaction( subscription_id, bill_id, status, amount, callback )
 		}
 
 		// Save changes
-		member.save( function( err ) { console.log( err ); } );
+		member.save( function( err ) {
+			if ( callback != undefined ) callback();
+		} );
+	} );
+}
 
-		// Report back
-		if ( callback != undefined ) callback();
+// Grant/extend membership
+function grExtendMembership( subscription_id, callback ) {
+	Members.findOne( { 'gocardless.id': subscription_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		if ( member == undefined ) callback();
+
+		var member_permision = member.permissions.filter( function( perm ) {
+			return perm.permission.slug == 'member';
+		} );
+
+		var new_expiry = new Date();
+		new_expiry.setDate( new_expiry.getDate() + 31 );
+
+
+		if ( member_permision.length == 0 ) {
+			Permissions.findOne( { slug: 'member' }, function( err, perm ) {
+				if ( perm == undefined ) return;
+
+				var permission = {
+					permission: perm._id,
+					date_added: new Date(),
+					date_expires: new_expiry
+				}
+				member.permissions.push( permission );
+
+				member.save( function( err ) {
+					callback();
+				} );
+			} );
+		} else {
+			member_permision = member_permision[0];
+
+			if ( member_permision.date_expires < new_expiry ) {
+				member_permision.date_expires = new_expiry;
+			}
+
+			member.save( function( err ) {
+				callback();
+			} );
+		}
 	} );
 }
 

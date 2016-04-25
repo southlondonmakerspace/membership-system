@@ -75,7 +75,7 @@
 			{% for member in members %}
 			
 				<tr title="View Member " data-href="/admin/members/{{ member.id | raw }}" style="cursor: pointer;">
-					<td><img src="{{ member.gravatar }}?s=50&d=identicon&r=g"></td>
+					<td><img style="border-radius: 100%" src="{{ member.gravatar }}?s=50&d=identicon&r=g"></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>

@@ -21,7 +21,7 @@
 			
 			<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/admin/members/{{ member._id | raw }}/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></p>
+			<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 		<div class="col-md-6">
 			<div class="page-header">

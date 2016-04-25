@@ -29,9 +29,9 @@
 		
 		<li style="margin-bottom: 1em;">
 			{% if user.emergency_contact.telephone %}
-				<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
+				<a href="/profile/emergency-contact" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
 			{% else %}
-				<a href="/profile/update" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Emergency Contact</a>
+				<a href="/profile/emergency-contact" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Emergency Contact</a>
 			{% endif %}
 		</li>
 

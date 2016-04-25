@@ -4,5 +4,6 @@
 	"permissions": [
 		"loggedIn"
 	],
-	"menu": "main"
+	"menu": "main",
+	"priority": 4
 }

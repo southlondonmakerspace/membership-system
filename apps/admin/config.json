@@ -4,5 +4,6 @@
 	"permissions": [
 		"superadmin", "admin", "trustee"
 	],
-	"menu": "main"
+	"menu": "main",
+	"priority": 1
 }

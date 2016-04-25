@@ -47,11 +47,16 @@ for ( var f in files ) {
 		if ( fs.existsSync( config_file ) ) {
 			var output = JSON.parse( fs.readFileSync( config_file ) );
 			output.uid = files[f];
+			if ( output.priority == undefined )
+				output.priority = 100;
 			output.app = file + '/app.js';
 			apps.push( output );
 		}
 	}
 }
+apps.sort( function( a, b ) {
+	return a.priority < b.priority;
+} );
 
 // Load in local variables such as config.globals
 app.use( require( __js + '/template-locals' )( config, apps ) );

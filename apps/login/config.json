@@ -4,5 +4,6 @@
 	"permissions": [
 		"loggedOut"
 	],
-	"menu": "secondary"
+	"menu": "secondary",
+	"priority": 2
 }

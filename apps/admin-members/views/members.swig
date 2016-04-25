@@ -50,7 +50,9 @@
 {% endblock %}
 
 {% block content %}
-	<label>Filter: <input id="filter" /></label>
+	<input id="filter" placeholder="Filter" class="form-control" style="max-width: 200px" />
+
+	<hr />
 
 	<table class="table table-striped table-hover table-condensed">
 		<thead>

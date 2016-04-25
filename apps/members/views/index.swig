@@ -45,8 +45,12 @@
 
 {% block content %}
 	<p>Active members: {{ members.length }}</p>
-	
-	<label>Filter: <input id="filter" /></label>
+
+	<hr />
+
+	<input id="filter" placeholder="Filter" class="form-control" style="max-width: 200px" />
+
+	<hr />
 
 	<table class="table table-striped table-hover table-condensed">
 		<thead>

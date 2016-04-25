@@ -17,6 +17,10 @@ app.set( 'views', __dirname + '/views' );
 app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
+		name: 'Profile',
+		url: '/profile'
+	} );
+	res.locals.breadcrumb.push( {
 		name: app_config.title,
 		url: app.mountpath
 	} );

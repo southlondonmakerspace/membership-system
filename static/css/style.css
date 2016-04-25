@@ -1,7 +1,8 @@
-.hello-world {
-  color: red;
-}
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.logo {
+	margin-bottom: 20px;
 }

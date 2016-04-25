@@ -1,92 +1,78 @@
 "use strict";
 
+var __config = __dirname + '/config/config.json';
+var __static = __dirname + '/static';
+var __src = __dirname + '/src';
+var __apps = __dirname + '/apps';
+var __views = __src + '/views';
+var __js = __src + '/js';
+
 var body = require( 'body-parser' ),
-	config = require( __dirname + '/config/config.json' ),
-	database = require( __dirname + '/src/js/database').connect( config.mongo ),
+	config = require( __config ),
+	database = require( __js + '/database').connect( config.mongo ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),
 	app = express(),
-	http = require( 'http' ).Server( app );
+	http = require( 'http' ).Server( app ),
+	fs = require( 'fs' );
+
+var apps = [];
+
+console.log( "Starting..." );
 
 // Handle authentication
-require( __dirname + '/src/js/authentication' )( app );
+require( __js + '/authentication' )( app );
 
 // Setup static route
-app.use( express.static( __dirname + '/static' ) );
+app.use( express.static( __static ) );
 
 // Enable support for form post data
 app.use( body.json() );
 app.use( body.urlencoded( { extended: true } ) );
 
 // Handle sessions
-require( __dirname + '/src/js/sessions' )( app );
+require( __js + '/sessions' )( app );
 
 // Include support for notifications
 app.use( flash() );
-app.use( function( req, res, next ) {
-	var flash = req.flash(),
-		flashes = [],
-		types = Object.keys( flash );
+app.use( require( __js + '/quickflash' ) );
 
-	for ( var t in types ) {
-		var key = types[ t ];
-		var messages = flash[ key ];
-		for ( var m in messages ) {
-			var message = messages[ m ];
-			flashes.push( {
-				type: key == 'error' ? 'danger' : key,
-				message: message
-			} );
+// Load apps
+var files = fs.readdirSync( __apps );
+for ( var f in files ) {
+	var file = __apps + '/' + files[f];
+	if ( fs.statSync( file ).isDirectory() ) {
+		var config_file = file + '/config.json';
+		if ( fs.existsSync( config_file ) ) {
+			var output = JSON.parse( fs.readFileSync( config_file ) );
+			output.uid = files[f];
+			if ( output.priority == undefined )
+				output.priority = 100;
+			output.app = file + '/app.js';
+			apps.push( output );
 		}
 	}
-	res.locals.flashes = flashes;
-	next();
-} )
+}
+apps.sort( function( a, b ) {
+	return a.priority < b.priority;
+} );
 
 // Load in local variables such as config.globals
-app.use( function( req, res, next ) {
-	// Process which apps should be shown in menu
-	res.locals.apps = [];
-	if ( req.user ) {
-		res.locals.loggedIn = true;
-		for ( var a in config.apps ) {
-			var app = config.apps[a];
-			if ( app.permissions != undefined && app.permissions != [] ) {
-				for ( var p in app.permissions ) {
-					if ( req.user.quickPermissions.indexOf( app.permissions[p] ) != -1 ) {
-						res.locals.apps.push( app );
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	// Delete login redirect URL if user navigates to anything other than the login page
-	if ( req.originalUrl != '/login' )
-		delete req.session.requestedUrl;
-	
-	// Load config + prepare breadcrumbs
-	res.locals.config = config.globals;
-	res.locals.breadcrumb = [];
-	next();
-} );
+app.use( require( __js + '/template-locals' )( config, apps ) );
 
 // Use SWIG to render pages
 app.engine( 'swig', swig.renderFile );
-app.set( 'views', __dirname + '/src/views' );
+app.set( 'views', __views );
 app.set( 'view engine', 'swig' );
-app.set( 'view cache', false ); // Disables cache
-swig.setDefaults( { cache: false } ); // Disables cache
+app.set( 'view cache', false );
+swig.setDefaults( { cache: false } );
 
-// Load top level app
-app.use( '/', require( __dirname + '/src/js/routes' ) );
-
-// Load apps
-for ( var a in config.apps ) {
-	var name = ( config.apps[a].name ? config.apps[a].name : config.apps[a].path );
-	app.use( '/' + config.apps[a].path, require( __dirname + '/apps/' + name + '/app' ) );
+// Route apps
+for ( var a in apps ) {
+	var _app = apps[a];
+	console.log( "	Route: /" + _app.path );
+	app.use( '/' + _app.path, require( _app.app )( _app ) );
 }
 
 // Error 404
@@ -94,6 +80,9 @@ app.get( '*', function( req, res ) {
 	res.status( 404 );
 	res.render( '404' );
 } );
+console.log( "	Route: *" );
 
 // Start server
-app.listen( config.port );
+var listener = app.listen( config.port, function () {
+	console.log( "Server started on: " + listener.address().address + listener.address().port );
+} );

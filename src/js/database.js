@@ -1,12 +1,14 @@
 "use strict";
 
 var mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId;
+	ObjectId = mongoose.Schema.ObjectId,
+	crypto = require( 'crypto' );
 
 exports.connect = function( url ) {
 	mongoose.connect( url );
 	var db = mongoose.connection;
-	db.on( 'error', console.error.bind( console, 'connection error' ) );
+	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
+	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
 }
 
 var permissionsSchema = mongoose.Schema( {
@@ -98,6 +100,17 @@ var memberSchema = mongoose.Schema( {
 		default: Date.now,
 		required: true
 	},
+	emergency_contact: {
+		firstname: {
+			type: String
+		},
+		lastname: {
+			type: String
+		},
+		telephone: {
+			type: String
+		}
+	},
 	discourse: {
 		id: {
 			type: String,
@@ -172,6 +185,11 @@ var memberSchema = mongoose.Schema( {
 
 memberSchema.virtual( 'fullname' ).get( function() {
 	return this.firstname + ' ' + this.lastname;
+} );
+
+memberSchema.virtual( 'gravatar' ).get( function() {
+	var md5 = crypto.createHash( 'md5' ).update( this.email ).digest( 'hex' );
+	return 'http://www.gravatar.com/avatar/' + md5;
 } );
 
 exports.permissionsSchema = permissionsSchema;

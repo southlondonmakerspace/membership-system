@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Discourse' %}
-{% set heading = 'Discourse' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
 	<p><img src="{{ discourse_user.avatar }}" /></p>

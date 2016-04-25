@@ -7,21 +7,16 @@
 		</div>
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			{% if loggedIn %}
-				<ul class="nav navbar-nav">
-					{% for app in apps %}
-						<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
-					{% endfor %}
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/logout">Logout</a></li>
-				</ul>
-			{% else %}
-				<ul class="nav navbar-nav navbar-right">
-					<li{% if activeApp == 'login' %} class="active"{% endif %}><a href="/login">Login</a></li>
-					<li{% if activeApp == 'join' %} class="active"{% endif %}><a href="/join">Join</a></li>
-				</ul>
-			{% endif %}
+			<ul class="nav navbar-nav">
+				{% for app in apps.main %}
+					<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
+				{% endfor %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				{% for app in apps.secondary %}
+					<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
+				{% endfor %}
+			</ul>
 		</div>
 	</div>
 </nav>

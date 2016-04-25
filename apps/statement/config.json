@@ -1,0 +1,9 @@
+{
+	"title": "Statement",
+	"path": "statement",
+	"permissions": [
+		"member", "superadmin", "admin", "trustee"
+	],
+	"menu": "main",
+	"priority": 3
+}

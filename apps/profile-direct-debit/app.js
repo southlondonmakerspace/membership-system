@@ -6,16 +6,24 @@ var	express = require( 'express' ),
 var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' ),
+	Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 
 var gocardless = require( 'gocardless' )( config.gocardless );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
+	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
-		name: "Direct Debit",
-		url: "/profile/profile/direct-debit"
+		name: 'Profile',
+		url: '/profile'
+	} );
+	res.locals.breadcrumb.push( {
+		name: app_config.title,
+		url: app.mountpath
 	} );
 	res.locals.activeApp = 'profile';
 	next();
@@ -24,7 +32,7 @@ app.use( function( req, res, next ) {
 app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.amount < ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum ) ) {
 		req.flash( 'danger', 'Minimum direct debit amount is £' + config.gocardless.minimum );
-		return res.redirect( '/profile/direct-debit' );
+		return res.redirect( app.mountpath );
 	}
 
 	var url = gocardless.subscription.newUrl( {
@@ -52,7 +60,7 @@ app.get( '/confirm', auth.isLoggedIn, function( req, res ) {
 		if ( err ) return res.end( 401, err );
 		Members.update( { _id: req.user._id }, { $set: { "gocardless.id": req.query.resource_id } }, function ( err ) {
 			req.flash( 'success', 'Direct Debit setup succesfully' );
-			res.redirect( '/profile/direct-debit' );
+			res.redirect( app.mountpath );
 		} );
 	} );
 } );
@@ -77,11 +85,11 @@ app.post( '/cancel', auth.isLoggedIn, function( req, res ) {
 		if ( response.status == 'cancelled' ) {
 			Members.update( { _id: req.user._id }, { $set: { gocardless: { id: '', amount: '' } } }, function( err ) {
 				req.flash( 'success', 'Direct debit cancelled' );
-				res.redirect( '/profile/direct-debit' );
+				res.redirect( app.mountpath );
 			} );
 		} else {
 			req.flash( 'danger', 'Error cancelling direct debit' );
-			res.redirect( '/profile/direct-debit' );
+			res.redirect( app.mountpath );
 		}
 	} );
 } );
@@ -94,34 +102,25 @@ app.post( '/webhook', function( req, res ) {
 			for ( var b in bills ) {
 				var bill = bills[b];
 
-				console.log( bill );
-
-				// SOURCE_ID = subscription
-				// ID = unique payment reference
-
 				switch ( bill.status ) {
 				
 					case 'pending':
-						console.log( 'created' );
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
 						break;
 				
 					case 'paid':
-						console.log( 'paid' );
-						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount, function( result ) {
-							console.log( 'UPSERT: ' + result );
-							// ACTION: Extend members membership privilage
-							// ACTION: check Discourse group
+						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount, function() {
+							grExtendMembership( bill.source_id, function() {
+								// ACTION: check Discourse group
+							} );
 						} );
 						break;
 				
 					case 'failed':
-						console.log( 'failed' );
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
 						break;
 				
 					case 'withdrawn':
-						console.log( 'withdrawn' );
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
 						break;
 				}
@@ -148,9 +147,11 @@ app.post( '/webhook', function( req, res ) {
 	}
 } );
 
+// Update/insert transaction
 function upsertTransaction( subscription_id, bill_id, status, amount, callback ) {
 	Members.findOne( { 'gocardless.id': subscription_id }, function( err, member ) {
-		if ( member == undefined ) callback();
+		if ( member == undefined && typeof callback == 'function' ) callback();
+		if ( member == undefined ) return;
 
 		var transactions = member.gocardless.transactions;
 		var exists;
@@ -185,11 +186,55 @@ function upsertTransaction( subscription_id, bill_id, status, amount, callback )
 		}
 
 		// Save changes
-		member.save( function( err ) { console.log( err ); } );
-
-		// Report back
-		if ( callback != undefined ) callback();
+		member.save( function( err ) {
+			if ( callback != undefined ) callback();
+		} );
 	} );
 }
 
-module.exports = app;
+// Grant/extend membership
+function grExtendMembership( subscription_id, callback ) {
+	Members.findOne( { 'gocardless.id': subscription_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		if ( member == undefined ) callback();
+
+		var member_permision = member.permissions.filter( function( perm ) {
+			return perm.permission.slug == 'member';
+		} );
+
+		var new_expiry = new Date();
+		new_expiry.setDate( new_expiry.getDate() + 31 );
+
+
+		if ( member_permision.length == 0 ) {
+			Permissions.findOne( { slug: 'member' }, function( err, perm ) {
+				if ( perm == undefined ) return;
+
+				var permission = {
+					permission: perm._id,
+					date_added: new Date(),
+					date_expires: new_expiry
+				}
+				member.permissions.push( permission );
+
+				member.save( function( err ) {
+					callback();
+				} );
+			} );
+		} else {
+			member_permision = member_permision[0];
+
+			if ( member_permision.date_expires < new_expiry ) {
+				member_permision.date_expires = new_expiry;
+			}
+
+			member.save( function( err ) {
+				callback();
+			} );
+		}
+	} );
+}
+
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

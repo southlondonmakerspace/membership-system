@@ -1,4 +1,4 @@
-{% extends 'base.swig' %}
+{% extends '../../../src/views/base.swig' %}
 
 {% block content %}
 	<div class="jumbotron">

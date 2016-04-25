@@ -1,20 +1,40 @@
 {% extends '../../../src/views/base.swig' %}
 
 {% set title = 'Member' %}
-{% set heading = member.fullname %}
 {% set activeApp = 'admin' %}
 
 {% block content %}
 
-	<p><strong>First Name:</strong> {{ member.firstname }}</p>
-	
-	<p><strong>Last Name:</strong> {{ member.lastname }}</p>
-	
-	<p><strong>Email:</strong> {{ member.email }}
-	
-	<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="page-header">
+				<h2>{{ member.fullname }}</h2>
+			</div>
 
-	<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/admin/members/{{ member._id | raw }}/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></p>
+			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&d=identicon&r=g"></p>
+
+			<p><strong>First Name:</strong> {{ member.firstname }}</p>
+			
+			<p><strong>Last Name:</strong> {{ member.lastname }}</p>
+			
+			<p><strong>Email:</strong> {{ member.email }}
+			
+			<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
+
+			<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+		</div>
+		<div class="col-md-6">
+			<div class="page-header">
+				<h3 style="padding-top: 6px;">Emergency Contact</h3>
+			</div>
+
+			<p><strong>First Name:</strong> {{ member.emergency_contact.firstname }}</p>
+			
+			<p><strong>Last Name:</strong> {{ member.emergency_contact.lastname }}</p>
+			
+			<p><strong>Telephone:</strong> {{ member.emergency_contact.telephone }}
+		</div>
+	</div>
 
 	<div class="row">
 		<div class="col-md-6">

@@ -5,7 +5,15 @@ var	express = require( 'express' ),
 
 var	passport = require( 'passport' );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
+
+app.use( function( req, res, next ) {
+	res.locals.app = app_config;
+	res.locals.activeApp = app_config.uid;
+	next();
+} );
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
@@ -17,7 +25,7 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', passport.authenticate( 'local', {
-	failureRedirect: '/login',
+	failureRedirect: app.mountpath,
 	failureFlash: true,
 	successFlash: true
 } ), function (req, res ) {
@@ -29,4 +37,7 @@ app.post( '/', passport.authenticate( 'local', {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

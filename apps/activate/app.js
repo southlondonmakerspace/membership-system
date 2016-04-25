@@ -6,9 +6,12 @@ var	express = require( 'express' ),
 var	Members = require( '../../src/js/database' ).Members,
 	auth = require( '../../src/js/authentication' );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/' , function( req, res ) {
+	res.locals.app = app_config;
 	if ( req.user ) {
 		req.flash( 'warning', 'You are logged in' );
 		res.redirect( '/profile' );
@@ -37,14 +40,14 @@ app.post( '/' , function( req, res ) {
 			
 			if ( user == null ) {
 				req.flash( 'danger', 'Activation code or password did not match' );
-				res.redirect( '/activate/' + req.body.activation_code );
+				res.redirect( app.mountpath + '/' + req.body.activation_code );
 				return;
 			}
 
 			auth.hashPassword( req.body.password, user.password_salt, function( hash ) {
 				if ( user.password_hash != hash ) {
 					req.flash( 'danger', 'Activation code or password did not match' );
-					res.redirect( '/activate/' + req.body.activation_code );
+					res.redirect( app.mountpath + '/' + req.body.activation_code );
 					return;
 				}
 
@@ -66,4 +69,7 @@ app.post( '/' , function( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

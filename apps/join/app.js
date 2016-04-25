@@ -12,7 +12,15 @@ var auth = require( '../../src/js/authentication.js' );
 
 var config = require( '../../config/config.json' );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
+
+app.use( function( req, res, next ) {
+	res.locals.app = app_config;
+	res.locals.activeApp = app_config.uid;
+	next();
+} );
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
@@ -39,7 +47,7 @@ app.post( '/', function( req, res ) {
 		if ( req.body.password != req.body.verify ) {
 			req.flash( 'danger', 'Passwords did not match' );
 			req.session.join = user;
-			res.redirect( '/join' );
+			res.redirect( app.mountpath );
 			return;
 		}
 
@@ -49,12 +57,8 @@ app.post( '/', function( req, res ) {
 			auth.generatePassword( req.body.password, function( password ) {
 				user.password_salt = password.salt;
 				user.password_hash = password.hash;
-
-				console.log( user );
-
 				// Store new member
 				new Members( user ).save( function( status ) {
-					console.log( status );
 					if ( status != null && status.errors != undefined ) {
 						var keys = Object.keys( status.errors );
 						for ( var k in keys ) {
@@ -62,7 +66,7 @@ app.post( '/', function( req, res ) {
 							req.flash( 'danger', status.errors[key].message );
 						}
 						req.session.join = user;
-						res.redirect( '/join' );
+						res.redirect( app.mountpath );
 					} else {
 						var message = {};
 						
@@ -94,4 +98,7 @@ app.post( '/', function( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

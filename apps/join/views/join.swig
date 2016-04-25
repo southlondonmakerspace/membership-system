@@ -1,13 +1,12 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Join' %}
-{% set activeApp = 'join' %}
+{% set title = app.title %}
 
 {% block content %}
 	<div class="row">
 		<div class="col-md-8">
 			<div class="page-header">
-				<h2>Join</h2>
+				<h2>{{ app.title }}</h2>
 			</div>
 			<form method="post">
 				<p>

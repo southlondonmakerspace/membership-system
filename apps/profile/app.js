@@ -11,14 +11,17 @@ var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' );
 
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
+	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
-		name: "Profile",
-		url: "/profile"
+		name: app_config.title,
+		url: app.mountpath
 	} );
-	res.locals.activeApp = 'profile';
+	res.locals.activeApp = app_config.uid;
 	next();
 } );
 
@@ -27,6 +30,9 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 		res.render( 'profile', { user: user } );
 	} )
 } );
+
+// Update Profile
+/////////////////
 
 app.get( '/update', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
@@ -53,9 +59,45 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 		} else {
 			req.flash( 'success', 'Your profile has been updated' );
 		}
-		res.redirect( '/profile' );
+		res.redirect( app.mountpath );
 	} );
 } );
+
+// Emergency Contact
+////////////////////
+
+app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
+	res.locals.breadcrumb.push( {
+		name: "Emergency contact"
+	} );
+	res.render( 'emergency-contact', { user: req.user } );
+} );
+
+app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
+	var profile = {
+		emergency_contact: {
+			firstname: req.body.firstname,
+			lastname: req.body.lastname,
+			telephone: req.body.telephone
+		}
+	};
+
+	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
+		if ( status != null ) {
+			var keys = Object.keys( status.errors );
+			for ( var k in keys ) {
+				var key = keys[k];
+				req.flash( 'danger', status.errors[key].message );
+			}
+		} else {
+			req.flash( 'success', 'Your emergency contact has been updated' );
+		}
+		res.redirect( app.mountpath );
+	} );
+} );
+
+// Tag
+//////
 
 app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
@@ -71,6 +113,9 @@ app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 		tag_hashed: hashed_tag
 	};
 
+	if ( req.body.tag == '' )
+		profile.tag_hashed = '';
+
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {
 			var keys = Object.keys( status.errors );
@@ -81,9 +126,12 @@ app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 		} else {
 			req.flash( 'success', 'Your profile has been updated' );
 		}
-		res.redirect( '/profile/tag' );
+		res.redirect( app.mountpath + '/tag' );
 	} );
 } );
+
+// Change Password
+//////////////////
 
 app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
@@ -97,20 +145,20 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 		auth.hashPassword( req.body.current, user.password_salt, function( hash ) {
 			if ( hash != user.password_hash ) {
 				req.flash( 'danger', 'Current password is wrong' );
-				res.redirect( '/profile/change-password' );
+				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
 
 			var passwordRequirements = auth.passwordRequirements( req.body.new );
 			if ( passwordRequirements != true ) {
 				req.flash( 'danger', passwordRequirements );
-				res.redirect( '/profile/change-password' );
+				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
 
 			if ( req.body.new != req.body.verify ) {
 				req.flash( 'danger', 'Passwords did not match' );
-				res.redirect( '/profile/change-password' );
+				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
 
@@ -121,11 +169,14 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 					password_reset_code: null,
 				} }, function( status ) {
 					req.flash( 'success', 'Password changed' );
-					res.redirect( '/profile' );
+					res.redirect( app.mountpath );
 				} );
 			} );
 		} );
 	} );
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

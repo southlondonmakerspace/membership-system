@@ -1,9 +1,11 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Profile' %}
-{% set heading = 'Profile' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
+	<p><img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=identicon&r=g"></p>
+
 	<p><strong>Name:</strong> {{ user.fullname }}</p>
 	
 	<p><strong>Email:</strong> {{ user.email }}</p>
@@ -21,7 +23,17 @@
 	<p>New round here? Follow these steps to setup your account...</p>
 
 	<ol style="padding-left: 2em;">
-		<li style="margin-bottom: 1em;"><a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a></li>
+		<li style="margin-bottom: 1em;">
+			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a>
+		</li>
+		
+		<li style="margin-bottom: 1em;">
+			{% if user.emergency_contact.telephone %}
+				<a href="/profile/emergency-contact" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
+			{% else %}
+				<a href="/profile/emergency-contact" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Emergency Contact</a>
+			{% endif %}
+		</li>
 
 		<li style="margin-bottom: 1em;">
 			{% if user.gocardless.id == '' %}

@@ -1,7 +1,6 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Login' %}
-{% set activeApp = 'login' %}
+{% set title = app.title %}
 
 {% block scripts %}
 	<script src="https://login.persona.org/include.js" type="text/javascript"></script>
@@ -26,7 +25,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			<div class="page-header">
-				<h2>Login</h2>
+				<h2>{{ app.title }}</h2>
 			</div>
 			<form method="post">
 				<p></p>

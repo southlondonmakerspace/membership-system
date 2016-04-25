@@ -153,6 +153,9 @@ app.post( '/:id/tag', auth.isAdmin, function( req, res ) {
 		tag_hashed: hashed_tag
 	};
 
+	if ( req.body.tag == '' )
+		profile.tag_hashed = '';
+
 	Members.update( { _id: req.params.id }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {
 			var keys = Object.keys( status.errors );

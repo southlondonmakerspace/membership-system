@@ -113,6 +113,9 @@ app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 		tag_hashed: hashed_tag
 	};
 
+	if ( req.body.tag == '' )
+		profile.tag_hashed = '';
+
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {
 			var keys = Object.keys( status.errors );

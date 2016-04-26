@@ -7,6 +7,7 @@ var	express = require( 'express' ),
 var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' ),
+	discourse = require( '../../src/js/discourse.js' ),
 	Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 
@@ -101,25 +102,22 @@ app.post( '/webhook', function( req, res ) {
 				var bill = bills[b];
 
 				switch ( bill.status ) {
-				
-					case 'pending':
-						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
-						break;
-				
 					case 'paid':
-						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount, function() {
-							grExtendMembership( bill.source_id, function() {
-								addToDiscourseGroup( bill.source_id );
+						Members.findOne( { 'gocardless.id': bill.source_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+							upsertTransaction( member, bill.source_id, bill.id, bill.status, bill.amount, function() {
+								grExtendMembership( member, bill.source_id, function() {
+									discourse.addMemberToGroup( member, config.discourse.group );
+								} );
 							} );
 						} );
 						break;
-				
+					
+					case 'pending':
 					case 'failed':
-						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
-						break;
-				
 					case 'withdrawn':
-						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount );
+						Members.findOne( { 'gocardless.id': bill.source_id }, function( err, member ) {
+							upsertTransaction( member, bill.source_id, bill.id, bill.status, bill.amount );
+						} );
 						break;
 				}
 			}
@@ -146,171 +144,87 @@ app.post( '/webhook', function( req, res ) {
 } );
 
 // Update/insert transaction
-function upsertTransaction( subscription_id, bill_id, status, amount, callback ) {
-	Members.findOne( { 'gocardless.id': subscription_id }, function( err, member ) {
-		if ( member == undefined && typeof callback == 'function' ) callback();
-		if ( member == undefined ) return;
+function upsertTransaction( member, subscription_id, bill_id, status, amount, callback ) {
+	if ( member == undefined && typeof callback == 'function' ) callback();
+	if ( member == undefined ) return;
 
-		var transactions = member.gocardless.transactions;
-		var exists;
+	var transactions = member.gocardless.transactions;
+	var exists;
 
-		// Look for existing transaction record
-		for ( var t = 0; t < transactions.length; t++ ) {
-			var transaction = transactions[t];
-			if ( transaction.bill_id == bill_id ) {
-				exists = t;
-				break;
-			}
+	// Look for existing transaction record
+	for ( var t = 0; t < transactions.length; t++ ) {
+		var transaction = transactions[t];
+		if ( transaction.bill_id == bill_id ) {
+			exists = t;
+			break;
 		}
+	}
 
-		var transaction = {};
+	var transaction = {};
 
-		// Update existing
-		if ( exists != null ) {
-			transaction = transactions[exists];
-			transaction.status = status;
+	// Update existing
+	if ( exists != null ) {
+		transaction = transactions[exists];
+		transaction.status = status;
 
-		// Or create new
-		} else {
-			transaction = {
-				date: new Date(),
-				description: 'Membership',
-				bill_id: bill_id,
-				subscription_id: subscription_id,
-				amount: amount,
-				status: status
-			}
-			transactions.push( transaction );
+	// Or create new
+	} else {
+		transaction = {
+			date: new Date(),
+			description: 'Membership',
+			bill_id: bill_id,
+			subscription_id: subscription_id,
+			amount: amount,
+			status: status
 		}
+		transactions.push( transaction );
+	}
 
-		// Save changes
-		member.save( function( err ) {
-			if ( callback != undefined ) callback();
-		} );
+	// Save changes
+	member.save( function( err ) {
+		if ( callback != undefined ) callback();
 	} );
 }
 
 // Grant/extend membership
-function grExtendMembership( subscription_id, callback ) {
-	Members.findOne( { 'gocardless.id': subscription_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == undefined ) callback();
+function grExtendMembership( member, subscription_id, callback ) {
+	if ( member == undefined ) callback();
 
-		var member_permision = member.permissions.filter( function( perm ) {
-			return perm.permission.slug == 'member';
-		} );
+	var member_permision = member.permissions.filter( function( perm ) {
+		return perm.permission.slug == 'member';
+	} );
 
-		var new_expiry = new Date();
-		new_expiry.setDate( new_expiry.getDate() + 31 );
+	var new_expiry = new Date();
+	new_expiry.setDate( new_expiry.getDate() + 31 );
 
 
-		if ( member_permision.length == 0 ) {
-			Permissions.findOne( { slug: 'member' }, function( err, perm ) {
-				if ( perm == undefined ) return;
+	if ( member_permision.length == 0 ) {
+		Permissions.findOne( { slug: 'member' }, function( err, perm ) {
+			if ( perm == undefined ) return;
 
-				var permission = {
-					permission: perm._id,
-					date_added: new Date(),
-					date_expires: new_expiry
-				}
-				member.permissions.push( permission );
-
-				member.save( function( err ) {
-					callback();
-				} );
-			} );
-		} else {
-			member_permision = member_permision[0];
-
-			if ( member_permision.date_expires < new_expiry ) {
-				member_permision.date_expires = new_expiry;
+			var permission = {
+				permission: perm._id,
+				date_added: new Date(),
+				date_expires: new_expiry
 			}
+			member.permissions.push( permission );
 
 			member.save( function( err ) {
 				callback();
 			} );
-		}
-	} );
-}
-
-function findDiscourseUserByEmail( email, callback ) {
-	request.get( config.discourse.url + '/admin/users/list/active.json', {
-		form: {
-			api_username: config.discourse.api_username,
-			api_key: config.discourse.api_key,
-			show_emails: true,
-			filter: email
-		}
-	}, function ( error, response, body ) {
-		if ( response.statusCode == '200 ') {
-			var output = JSON.parse( body );
-			if ( output[0] != undefined ) {
-				return callback( output[0] );
-			}
-		}
-		return callback();
-	} );
-}
-
-function addToDiscourseGroup( subscription_id ) {
-	Members.findOne( { 'gocardless.id': subscription_id }, function( err, member ) {
-		findDiscourseUserByEmail( member.discourse.email, function( user ) {
-			request.put( config.discourse.url + '/groups/' + config.discourse.group.id + '/members.json', {
-				form: {
-					api_username: config.discourse.api_username,
-					api_key: config.discourse.api_key,
-					usernames: user.username
-				}
-			} );
 		} );
-	} );
-}
+	} else {
+		member_permision = member_permision[0];
 
-function removeFromDiscourseGroup( user_id ) {
-	request.delete( config.discourse.url + '/groups/' + config.discourse.group.id + '/members.json', {
-		form: {
-			api_username: config.discourse.api_username,
-			api_key: config.discourse.api_key,
-			user_id: user_id
+		if ( member_permision.date_expires < new_expiry ) {
+			member_permision.date_expires = new_expiry;
 		}
-	} );
-}
 
-function checkUserDiscourse( user_id ) {
-	Members.findOne( { 'discourse.id': user_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == null ) return removeFromDiscourseGroup( user_id );
-		for ( var p = 0; p < member.permissions.length; p++ ) {
-			var perm = member.permissions[p];
-			if ( perm.permission.slug == 'member' ) {
-				if ( perm.date_added < new Date() ) {
-					if ( perm.date_expires > new Date() ) {
-						return;
-					}
-				}
-			}
-			removeFromDiscourseGroup( user_id );
-		}
-	} );
+		member.save( function( err ) {
+			callback();
+		} );
+	}
 }
-
-function checkDiscourseGroup() {
-	console.log( "Checking Discourse group..." );
-	var url = 'https://discourse.southlondonmakerspace.org/groups/' + config.discourse.group.name + '/members.json?limit=9999';
-	request.get( url, {
-		form: {
-			api_username: config.discourse.api_username,
-			api_key: config.discourse.api_key
-		}
-	}, function( err, req, body ) {
-		var users = JSON.parse( body ).members;
-		if ( users.length > 0 ) {
-			for ( var u in users ) {
-				checkUserDiscourse( users[u].id );
-			}
-		}
-	} );
-}
-setTimeout( checkDiscourseGroup, 1000 ); // Now and...
-setInterval( checkDiscourseGroup, 60000*60*3 ); // ...every three hours
 
 module.exports = function( config ) {
 	app_config = config;

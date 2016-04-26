@@ -6,7 +6,8 @@ var	express = require( 'express' ),
 
 var config = require( '../../config/config.json' );
 
-var Members = require( '../../src/js/database' ).Members;
+var discourse = require( '../../src/js/discourse.js' ),
+	Members = require( '../../src/js/database' ).Members;
 
 var auth = require( '../../src/js/authentication.js' );
 
@@ -31,14 +32,13 @@ app.use( function( req, res, next ) {
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	// Not linked or in activation
 	if ( ! req.user.discourse.activated && ! req.user.discourse.activation_code ) {
-		findDiscourseUserByEmail( req.user.email, function( user ) {
+		discourse.getUserByEmail( req.user.email, function( user ) {
 			if ( user != undefined ) {
 				Members.update( { "_id": req.user._id }, { $set: {
 					"discourse.id": user.id,
 					"discourse.email": req.user.email
 				} }, function( err ) {
 				} );
-
 				user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
 			}
 			res.render( 'find', { discourse_user: user } );
@@ -49,7 +49,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 
 	// Linked 
 	} else if ( req.user.discourse.activated ) {
-		findDiscourseUserByEmail( req.user.discourse.email, function( user ) {
+		discourse.getUserByEmail( req.user.discourse.email, function( user ) {
 			user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
 			res.render( 'linked', { discourse_user: user } );
 		} );
@@ -65,8 +65,8 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 				"discourse.activation_code": code
 			} }, function ( error ) {} );
 
-			findDiscourseUserByEmail( req.user.discourse.email, function ( user ) {
-				sendDiscourseActivationMessage( user.username, code );
+			discourse.getUserByEmail( req.user.discourse.email, function( user ) {
+				discourse.sendActivationMessage( user.username, code );
 			} );
 			
 			req.flash( 'info', 'Activation code sent to your Discourse private messages' );
@@ -92,47 +92,7 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	res.redirect( app.mountpath );
 } );
 
-function findDiscourseUserByEmail( email, callback ) {
-	request.get( config.discourse.url + '/admin/users/list/active.json', {
-		form: {
-			api_username: config.discourse.api_username,
-			api_key: config.discourse.api_key,
-			show_emails: true,
-			filter: email
-		}
-	}, function ( error, response, body ) {
-		if ( response.statusCode == '200 ') {
-			var output = JSON.parse( body );
-			if ( output[0] != undefined ) {
-				return callback( output[0] );
-			}
-		}
-		return callback();
-	} );
-}
-
-function sendDiscourseActivationMessage( username, code ) {
-	var message = "Your activation code: **" + code + "**\n\n[Click here to activate](" + config.audience + '/profile/discourse?code=' + code + ")";
-
-	request.post( config.discourse.url + '/posts', {
-		form: {
-			api_username: config.discourse.api_username,
-			api_key: config.discourse.api_key,
-			raw: message,
-			title: "Activation Code",
-			category: "",
-			is_warning: "false",
-			archetype: "private_message",
-			target_usernames: username,
-			nested_post: "true"
-		}
-	} );
-}
-
 module.exports = function( config ) {
 	app_config = config;
 	return app;
 };
-
-// PUT /groups/41/members.json (FORM: usernames: *)
-// DELETE /groups/41/members.json (FORM: user_id: *)

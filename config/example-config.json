@@ -22,7 +22,8 @@
 		"api_key": "",
 		"group": {
 			"id": "",
-			"name": ""
+			"name": "",
+			"permission": ""
 		}
 	},
 	"gocardless": {

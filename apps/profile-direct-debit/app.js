@@ -1,7 +1,8 @@
 "use strict";
 
 var	express = require( 'express' ),
-	app = express();
+	app = express(),
+	request = require( 'request' );
 
 var config = require( '../../config/config.json' );
 
@@ -111,7 +112,7 @@ app.post( '/webhook', function( req, res ) {
 					case 'paid':
 						upsertTransaction( bill.source_id, bill.id, bill.status, bill.amount, function() {
 							grExtendMembership( bill.source_id, function() {
-								// ACTION: check Discourse group
+								addToDiscourseGroup( bill.source_id );
 							} );
 						} );
 						break;
@@ -233,6 +234,86 @@ function grExtendMembership( subscription_id, callback ) {
 		}
 	} );
 }
+
+function findDiscourseUserByEmail( email, callback ) {
+	request.get( config.discourse.url + '/admin/users/list/active.json', {
+		form: {
+			api_username: config.discourse.api_username,
+			api_key: config.discourse.api_key,
+			show_emails: true,
+			filter: email
+		}
+	}, function ( error, response, body ) {
+		if ( response.statusCode == '200 ') {
+			var output = JSON.parse( body );
+			if ( output[0] != undefined ) {
+				return callback( output[0] );
+			}
+		}
+		return callback();
+	} );
+}
+
+function addToDiscourseGroup( subscription_id ) {
+	Members.findOne( { 'gocardless.id': subscription_id }, function( err, member ) {
+		findDiscourseUserByEmail( member.discourse.email, function( user ) {
+			request.put( config.discourse.url + '/groups/' + config.discourse.group.id + '/members.json', {
+				form: {
+					api_username: config.discourse.api_username,
+					api_key: config.discourse.api_key,
+					usernames: user.username
+				}
+			} );
+		} );
+	} );
+}
+
+function removeFromDiscourseGroup( user_id ) {
+	request.delete( config.discourse.url + '/groups/' + config.discourse.group.id + '/members.json', {
+		form: {
+			api_username: config.discourse.api_username,
+			api_key: config.discourse.api_key,
+			user_id: user_id
+		}
+	} );
+}
+
+function checkUserDiscourse( user_id ) {
+	Members.findOne( { 'discourse.id': user_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		if ( member == null ) return removeFromDiscourseGroup( user_id );
+		for ( var p = 0; p < member.permissions.length; p++ ) {
+			var perm = member.permissions[p];
+			if ( perm.permission.slug == 'member' ) {
+				if ( perm.date_added < new Date() ) {
+					if ( perm.date_expires > new Date() ) {
+						return;
+					}
+				}
+			}
+			removeFromDiscourseGroup( user_id );
+		}
+	} );
+}
+
+function checkDiscourseGroup() {
+	console.log( "Checking Discourse group..." );
+	var url = 'https://discourse.southlondonmakerspace.org/groups/' + config.discourse.group.name + '/members.json?limit=9999';
+	request.get( url, {
+		form: {
+			api_username: config.discourse.api_username,
+			api_key: config.discourse.api_key
+		}
+	}, function( err, req, body ) {
+		var users = JSON.parse( body ).members;
+		if ( users.length > 0 ) {
+			for ( var u in users ) {
+				checkUserDiscourse( users[u].id );
+			}
+		}
+	} );
+}
+setTimeout( checkDiscourseGroup, 1000 ); // Now and...
+setInterval( checkDiscourseGroup, 60000*60*3 ); // ...every three hours
 
 module.exports = function( config ) {
 	app_config = config;

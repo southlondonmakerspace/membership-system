@@ -20,7 +20,10 @@
 		"url": "",
 		"api_username": "",
 		"api_key": "",
-		"membership_group": ""
+		"group": {
+			"id": "",
+			"name": ""
+		}
 	},
 	"gocardless": {
 		"appId": "",

@@ -74,12 +74,7 @@
 					{% endif %}
 					{% if permission.date_expires %}
 						<br />
-						{% if now < permission.date_expires %}
-							Expired: 
-						{% elif now < permission.date_expires %}
-							Expires: 
-						{% endif %}
-						{{ permission.date_expires | date('d/m/Y') }}
+						Expiry: {{ permission.date_expires | date('d/m/Y') }}
 					{% endif %}
 				</li>
 			{% endfor %}

@@ -44,10 +44,7 @@ app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 		user: {
 			first_name: req.user.firstname,
 			last_name: req.user.lastname,
-			email: req.user.email,
-			"billing_address1": "TEST",
-			"billing_town": "London",
-			"billing_postcode": "E8 4DQ"
+			email: req.user.email
 		}
 	} );
 

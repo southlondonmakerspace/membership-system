@@ -50,6 +50,12 @@
 {% endblock %}
 
 {% block content %}
+	{% if access == 'superadmin' %}
+		<p><a href="/admin/members/create" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create Member</a></p>
+
+		<hr />
+	{% endif %}
+
 	<input id="filter" placeholder="Filter" class="form-control" style="max-width: 200px" />
 
 	<hr />

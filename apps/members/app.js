@@ -7,6 +7,8 @@ var auth = require( '../../src/js/authentication.js' ),
 	discourse = require( '../../src/js/discourse.js' ),
 	Members = require( '../../src/js/database' ).Members;
 
+var messages = require( '../../src/messages.json' );
+
 var config = require( '../../config/config.json' );
 
 var app_config = {};

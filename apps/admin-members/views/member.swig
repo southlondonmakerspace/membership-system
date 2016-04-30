@@ -63,9 +63,9 @@
 				<h3>Tag</h3>
 			</div>
 			
-			<p><strong>Tag:</strong> {{ member.tag }}</p>
+			<p><strong>Tag:</strong> {{ member.tag.id }}</p>
 			
-			<p><strong>Hashed Tag:</strong> {{ member.tag_hashed }}</p>
+			<p><strong>Hashed Tag:</strong> {{ member.tag.hashed }}</p>
 
 			<p><a href="/admin/members/{{ member.uuid }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>

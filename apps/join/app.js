@@ -57,8 +57,8 @@ app.post( '/', function( req, res ) {
 		auth.generateActivationCode( function( code ) {
 			user.activation_code = code;
 			auth.generatePassword( req.body.password, function( password ) {
-				user.password_salt = password.salt;
-				user.password_hash = password.hash;
+				user.password = password;
+
 				// Store new member
 				new Members( user ).save( function( status ) {
 					if ( status != null && status.errors != undefined ) {

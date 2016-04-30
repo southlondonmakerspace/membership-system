@@ -109,12 +109,12 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
-		tag: req.body.tag,
-		tag_hashed: hashed_tag
+		'tag.id': req.body.tag,
+		'tag.hashed': hashed_tag
 	};
 
 	if ( req.body.tag == '' )
-		profile.tag_hashed = '';
+		profile['tag.hashed'] = '';
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {
@@ -142,8 +142,8 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		auth.hashPassword( req.body.current, user.password_salt, function( hash ) {
-			if ( hash != user.password_hash ) {
+		auth.hashPassword( req.body.current, user.password.salt, function( hash ) {
+			if ( hash != user.password.hash ) {
 				req.flash( 'danger', messages['password-invalid'] );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
@@ -164,9 +164,9 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 
 			auth.generatePassword( req.body.new, function( password ) {
 				Members.update( { _id: user._id }, { $set: {
-					password_salt: password.salt,
-					password_hash: password.hash,
-					password_reset_code: null,
+					'password.salt': password.salt,
+					'password.hash': password.hash,
+					'password.reset_code': null,
 				} }, function( status ) {
 					req.flash( 'success', messages['password-changed'] );
 					res.redirect( app.mountpath );

@@ -52,7 +52,7 @@
 		</li>
 
 		<li>
-			{% if user.tag == '' %}
+			{% if user.tag.id == '' %}
 				<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
 			{% else %}
 				<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>

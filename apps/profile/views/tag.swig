@@ -8,7 +8,7 @@
 		<p>Your membership tag is how you access the space and tools. Once your Direct Debit is setup you can request a tag and enter it's code here.</p>
 
 		<p>
-			<label for="tag">Tag:</label> <input type="text" value="{{ user.tag }}" id="tag" name="tag" class="form-control" />
+			<label for="tag">Tag:</label> <input type="text" value="{{ user.tag.id }}" id="tag" name="tag" class="form-control" />
 		</p>
 
 		<p>

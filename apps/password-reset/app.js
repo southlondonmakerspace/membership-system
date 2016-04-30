@@ -33,9 +33,8 @@ app.post( '/', function( req, res ) {
 			auth.generateActivationCode( function( code ) {
 				var password_reset_code = code;
 
-				user.password_reset_code = password_reset_code;
-				user.save( function( err ) {
-				} );
+				user.password.reset_code = password_reset_code;
+				user.save( function( err ) {} );
 
 				var message = {};
 							
@@ -69,7 +68,7 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 } );
 
 app.post( '/change-password', function( req, res ) {
-	Members.findOne( { password_reset_code: req.body.password_reset_code }, function( err, user ) {
+	Members.findOne( { 'password.reset_code': req.body.password_reset_code }, function( err, user ) {
 		if ( user ) {
 			if ( req.body.password != req.body.verify ) {
 				req.flash( 'danger', messages['password-err-mismatch'] );
@@ -86,9 +85,9 @@ app.post( '/change-password', function( req, res ) {
 
 			auth.generatePassword( req.body.password, function( password ) {
 				Members.update( { _id: user._id }, { $set: {
-					password_salt: password.salt,
-					password_hash: password.hash,
-					password_reset_code: null,
+					'password.salt': password.salt,
+					'password.hash': password.hash,
+					'password.reset_code': null,
 				} }, function( status ) {
 					req.session.passport = { user: { _id: user._id } };
 					req.flash( 'success', messages['password-changed'] );

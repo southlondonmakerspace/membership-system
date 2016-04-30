@@ -151,12 +151,12 @@ app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 app.post( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
-		tag: req.body.tag,
-		tag_hashed: hashed_tag
+		'tag.id': req.body.tag,
+		'tag.hashed': hashed_tag
 	};
 
 	if ( req.body.tag == '' )
-		profile.tag_hashed = '';
+		profile['tag.hashed'] = '';
 
 	Members.update( { uuid: req.params.uuid }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {

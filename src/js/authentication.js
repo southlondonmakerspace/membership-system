@@ -22,8 +22,8 @@ var Authentication = {
 		}, function( email, password, done ) {
 				Members.findOne( { email: email }, function( err, user ) {
 					if ( user != null ) {
-						Authentication.hashPassword( password, user.password_salt, function( hash ) {
-							if ( hash == user.password_hash ) {
+						Authentication.hashPassword( password, user.password.salt, function( hash ) {
+							if ( hash == user.password.hash ) {
 								if ( user.activated || Authentication.superAdmin( user.email ) ) {
 									return done( null, { _id: user._id }, { message: messages['logged-in'] } );
 								} else {

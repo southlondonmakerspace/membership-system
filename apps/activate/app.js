@@ -26,6 +26,8 @@ app.get( '/:activation_code' , function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
+	} else if ( req.params.activation_code.match( /^\w{20}$/ ) == null ) {
+		res.redirect( '/activate' );
 	} else {
 		res.render( 'activate', { activation_code: req.params.activation_code } );
 	}
@@ -35,6 +37,9 @@ app.post( '/' , function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
+	} else if ( req.body.activation_code.match( /^\w{20}$/ ) == null ) {
+		req.flash( 'danger', messages['activation-error'] );
+		res.redirect( '/activate' );
 	} else {
 		Members.findOne( {
 			activation_code: req.body.activation_code,

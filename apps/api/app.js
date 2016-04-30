@@ -25,7 +25,7 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 					if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasPermission = true;
 				}
 
-				if ( isTrustee || ( hasMembership && hasPermission ) )
+				if ( ( isTrustee && hasPermission ) || ( hasMembership && hasPermission ) )
 					grantAccess = true;
 			}
 

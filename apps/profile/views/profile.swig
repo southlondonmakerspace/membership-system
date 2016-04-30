@@ -24,7 +24,7 @@
 
 	<ol style="padding-left: 2em;">
 		<li style="margin-bottom: 1em;">
-			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a>
+			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a> So we know who you are.
 		</li>
 		
 		<li style="margin-bottom: 1em;">
@@ -32,7 +32,7 @@
 				<a href="/profile/emergency-contact" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
 			{% else %}
 				<a href="/profile/emergency-contact" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Emergency Contact</a>
-			{% endif %}
+			{% endif %} In the unlikely event of an accident.
 		</li>
 
 		<li style="margin-bottom: 1em;">
@@ -40,7 +40,7 @@
 				<a href="/profile/direct-debit" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
 			{% else %}
 				<a href="/profile/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
-			{% endif %}
+			{% endif %} So you can pay  your membership fee.
 		</li>
 		
 		<li style="margin-bottom: 1em;">
@@ -48,7 +48,7 @@
 				<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
 			{% else %}
 				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
-			{% endif %}
+			{% endif %} So you can view the members only area on Discourse.
 		</li>
 
 		<li>
@@ -56,7 +56,7 @@
 				<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
 			{% else %}
 				<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
-			{% endif %}
+			{% endif %} So you can use your tag in the space.
 		</li>
 	</ol>
 

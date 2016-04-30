@@ -69,7 +69,7 @@ app.post( '/create', auth.isAdmin, function( req, res ) {
 
 	new Permissions( permission ).save( function( err, permission ) {
 		req.flash( 'success', messages['permission-created'] );
-		res.redirect( app.mountpath + '/' + permission._id + '/edit' );
+		res.redirect( app.mountpath );
 	} );
 } );
 
@@ -97,7 +97,7 @@ app.post( '/:slug/edit', auth.isAdmin, function( req, res ) {
 
 	Permissions.update( { slug: req.params.slug }, permission, function( status ) {
 		req.flash( 'success', messages['permission-update'] );
-		res.redirect( app.mountpath + '/' + req.body.slug + '/edit' );
+		res.redirect( app.mountpath );
 	} );
 } );
 

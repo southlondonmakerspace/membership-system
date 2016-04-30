@@ -61,7 +61,7 @@ app.get( '/confirm', auth.isLoggedIn, function( req, res ) {
 		if ( err ) return res.end( 401, err );
 		Members.update( { _id: req.user._id }, { $set: { "gocardless.id": req.query.resource_id } }, function ( err ) {
 			req.flash( 'success', messages['gocardless-success'] );
-			res.redirect( app.mountpath );
+			res.redirect( '/profile' );
 		} );
 	} );
 } );
@@ -86,11 +86,11 @@ app.post( '/cancel', auth.isLoggedIn, function( req, res ) {
 		if ( response.status == 'cancelled' ) {
 			Members.update( { _id: req.user._id }, { $set: { gocardless: { id: '', amount: '' } } }, function( err ) {
 				req.flash( 'success', messages['gocardless-cancelled'] );
-				res.redirect( app.mountpath );
+				res.redirect( '/profile' );
 			} );
 		} else {
 			req.flash( 'danger', messages['gocardless-cancelled-err'] );
-			res.redirect( app.mountpath );
+			res.redirect( '/profile' );
 		}
 	} );
 } );

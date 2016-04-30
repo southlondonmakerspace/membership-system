@@ -126,7 +126,7 @@ app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 		} else {
 			req.flash( 'success', messages["tag-updated"] );
 		}
-		res.redirect( app.mountpath + '/tag' );
+		res.redirect( app.mountpath );
 	} );
 } );
 

@@ -72,11 +72,12 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 			} );
 			
 			req.flash( 'info', messages['discourse-activation-sent'] );
+			res.redirect( '/profile' );
 		} );
 	} else {
 		req.flash( 'warning', messages['discourse-activation-dupe'] );
+		res.redirect( '/profile' );
 	}
-	res.redirect( app.mountpath );
 } );
 
 app.post( '/activate', auth.isLoggedIn, function( req, res ) {
@@ -91,7 +92,7 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 		}
 	}
 	req.flash( 'warning', messages['discourse-activation-code-err'] );
-	res.redirect( app.mountpath );
+	res.redirect( '/profile' );
 } );
 
 module.exports = function( config ) {

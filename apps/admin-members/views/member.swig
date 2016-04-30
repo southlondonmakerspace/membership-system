@@ -17,7 +17,7 @@
 			
 			<p><strong>Last Name:</strong> {{ member.lastname }}</p>
 			
-			<p><strong>Email:</strong> {{ member.email }}
+			<p><strong>Email:</strong> {{ member.email }}</p>
 			
 			<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
 
@@ -126,7 +126,7 @@
 			{% endfor %}
 		</div>
 	{% else %}
-		<p>User has no permissions</p>
+		<p>Member has no permissions</p>
 	{% endif %}
 
 	<p><a href="/admin/members/{{ member.uuid }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
@@ -161,6 +161,6 @@
 			</tbody>
 		</table>
 	{% else %}
-		<p>You have no transaction history at this time.</p>
+		<p>Member has no transaction history</p>
 	{% endif %}
 {% endblock %}

@@ -51,8 +51,8 @@ app.post( '/' , function( req, res ) {
 				return;
 			}
 
-			auth.hashPassword( req.body.password, user.password_salt, function( hash ) {
-				if ( user.password_hash != hash ) {
+			auth.hashPassword( req.body.password, user.password.salt, function( hash ) {
+				if ( user.password.hash != hash ) {
 					req.flash( 'danger', messages['activation-error'] );
 					res.redirect( app.mountpath + '/' + req.body.activation_code );
 					return;
@@ -60,7 +60,7 @@ app.post( '/' , function( req, res ) {
 
 				Members.update( {
 					_id: user._id,
-					password_hash: hash
+					'password.hash': hash
 				}, {
 					$set: {
 						activation_code: null,

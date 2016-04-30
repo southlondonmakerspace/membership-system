@@ -42,6 +42,24 @@ app.get( '/create', auth.isAdmin, function( req, res ) {
 	res.render( 'create-permission' );
 } );
 
+app.get( '/:slug', auth.isAdmin, function( req, res ) {
+	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( permission == undefined ) {
+			req.flash( 'warning', messages['permission-404'] );
+			res.redirect( app.mountpath );
+			return;
+		}
+	
+		res.locals.breadcrumb.push( {
+			name: permission.name
+		} );
+
+		Members.find( { permissions: { $elemMatch: { permission: permission._id } } }, function( err, members ) {
+			res.render( 'permission', { permission: permission, members: members } );
+		} );
+	} );
+} );
+
 app.post( '/create', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
@@ -55,8 +73,8 @@ app.post( '/create', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:id/edit', auth.isAdmin, function( req, res ) {
-	Permissions.findOne( { _id: req.params.id }, function( err, permission ) {
+app.get( '/:slug/edit', auth.isAdmin, function( req, res ) {
+	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( permission == undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.mountpath );
@@ -70,16 +88,16 @@ app.get( '/:id/edit', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/edit', auth.isAdmin, function( req, res ) {
+app.post( '/:slug/edit', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
 		description: req.body.description
 	};
 
-	Permissions.update( { _id: req.params.id }, permission, function( status ) {
+	Permissions.update( { slug: req.params.slug }, permission, function( status ) {
 		req.flash( 'success', messages['permission-update'] );
-		res.redirect( app.mountpath + '/' + req.params.id + '/edit' );
+		res.redirect( app.mountpath + '/' + req.body.slug + '/edit' );
 	} );
 } );
 

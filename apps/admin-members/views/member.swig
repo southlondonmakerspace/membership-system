@@ -144,36 +144,38 @@
 
 	<p><a href="/admin/members/{{ member.uuid }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
-	<div class="page-header">
-		<h3>Transactions</h3>
-	</div>
-	{% set transactions = member.gocardless.transactions %}
-	{% if transactions.length > 0 %}
-		<table class="table table-striped table-hover table-condensed">
-			<thead>
-				<tr>
-					<th>Bill ID</th>
-					<th>Subscription ID</th>
-					<th>Date</th>
-					<th>Description</th>
-					<th>Status</th>
-					<th>Amount</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for transaction in transactions %}
+	{% if access == 'superadmin' %}
+		<div class="page-header">
+			<h3>Transactions</h3>
+		</div>
+		{% set transactions = member.gocardless.transactions %}
+		{% if transactions.length > 0 %}
+			<table class="table table-striped table-hover table-condensed">
+				<thead>
 					<tr>
-						<td>{{ transaction.bill_id }}</td>
-						<td>{{ transaction.subscription_id }}</td>
-						<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
-						<td>{{ transaction.description }}</td>
-						<td>{% include '../../statement/views/partials/status.swig' %}</td>
-						<td>&pound;{{ transaction.amount }}</td>
+						<th>Bill ID</th>
+						<th>Subscription ID</th>
+						<th>Date</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Amount</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	{% else %}
-		<p>Member has no transaction history</p>
+				</thead>
+				<tbody>
+					{% for transaction in transactions %}
+						<tr>
+							<td>{{ transaction.bill_id }}</td>
+							<td>{{ transaction.subscription_id }}</td>
+							<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
+							<td>{{ transaction.description }}</td>
+							<td>{% include '../../statement/views/partials/status.swig' %}</td>
+							<td>&pound;{{ transaction.amount }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p>Member has no transaction history</p>
+	{% endif %}
 	{% endif %}
 {% endblock %}

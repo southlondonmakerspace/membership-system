@@ -53,6 +53,14 @@ app.post( '/', function( req, res ) {
 			return;
 		}
 
+		var passwordRequirements = auth.passwordRequirements( req.body.password );
+		if ( passwordRequirements != true ) {
+			req.flash( 'danger', passwordRequirements );
+			req.session.join = user;
+			res.redirect( app.mountpath );
+			return;
+		}
+
 		// Generate email code salt
 		auth.generateActivationCode( function( code ) {
 			user.activation_code = code;

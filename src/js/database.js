@@ -40,7 +40,8 @@ var memberSchema = mongoose.Schema( {
 		unique: true
 	},
 	uuid: {
-		type: String ,
+		type: String,
+		unique: true,
 		default: function () { // pseudo uuid4
 			function s4() {
 				return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
@@ -104,7 +105,6 @@ var memberSchema = mongoose.Schema( {
 		},
 		hashed: {
 			type: String,
-			unique: true,
 			required: false
 		}
 	},

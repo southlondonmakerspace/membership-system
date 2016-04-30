@@ -28,11 +28,11 @@
 				<h3 style="padding-top: 6px;">Emergency Contact</h3>
 			</div>
 
-			<p><strong>First Name:</strong> {{ member.emergency_contact.firstname }}</p>
+			<p><strong>First Name:</strong> {{ member.emergency_contact.firstname | default('–')  }}</p>
 			
-			<p><strong>Last Name:</strong> {{ member.emergency_contact.lastname }}</p>
+			<p><strong>Last Name:</strong> {{ member.emergency_contact.lastname | default('–')  }}</p>
 			
-			<p><strong>Telephone:</strong> {{ member.emergency_contact.telephone }}
+			<p><strong>Telephone:</strong> {{ member.emergency_contact.telephone | default('–')  }}
 		</div>
 	</div>
 
@@ -50,10 +50,10 @@
 			
 			<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
 			
-			<p><strong>Activation Code:</strong> {{ member.activation_code }} {% if member.activation_code %}&mdash; {{ audience }}/activate/{{ member.activation_code }}{% endif %}
+			<p><strong>Activation Code:</strong> {{ member.activation_code | default('–') }} {% if member.activation_code %}&mdash; {{ audience }}/activate/{{ member.activation_code }}{% endif %}
 			</p>
 			
-			<p><strong>Password Reset Code:</strong> {{ member.password_reset_code }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
+			<p><strong>Password Reset Code:</strong> {{ member.password_reset_code | default('–') }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
 
 			<p><a href="/admin/members/{{ member.uuid }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
@@ -63,9 +63,9 @@
 				<h3>Tag</h3>
 			</div>
 			
-			<p><strong>Tag:</strong> {{ member.tag.id }}</p>
+			<p><strong>Tag:</strong> {{ member.tag.id | default('–') }}</p>
 			
-			<p><strong>Hashed Tag:</strong> {{ member.tag.hashed }}</p>
+			<p><strong>Hashed Tag:</strong> {{ member.tag.hashed | default('–') }}</p>
 
 			<p><a href="/admin/members/{{ member.uuid }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
@@ -77,13 +77,13 @@
 				<h3>Discourse</h3>
 			</div>
 
-			<p><strong>User ID:</strong> {{ member.discourse.id }}</p>
+			<p><strong>User ID:</strong> {{ member.discourse.id | default('–') }}</p>
 			
-			<p><strong>Email:</strong> {{ member.discourse.email }}</p>
+			<p><strong>Email:</strong> {{ member.discourse.email | default('–') }}</p>
 			
-			<p><strong>Activated:</strong> {{ member.discourse.activated }}</p>
+			<p><strong>Activated:</strong> {% if member.discourse.activated %}Yes{% else %}No{% endif %}</p>
 			
-			<p><strong>Activation Code:</strong> {{ member.discourse.activation_code }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
+			<p><strong>Activation Code:</strong> {{ member.discourse.activation_code | default('–') }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
 
 			<p><a href="/admin/members/{{ member.uuid }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
@@ -93,11 +93,11 @@
 				<h3>GoCardless</h3>
 			</div>
 
-			<p><strong>Subscription ID:</strong> {{ member.gocardless.id }}</p>
+			<p><strong>Subscription ID:</strong> {{ member.gocardless.id | default('–') }}</p>
 
-			<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount }}</p>
+			<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount | default('–') }}</p>
 
-			<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum }}</p>
+			<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum | default('–') }}</p>
 
 			<p><a href="/admin/members/{{ member.uuid }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>

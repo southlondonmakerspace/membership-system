@@ -11,7 +11,7 @@ var app_config = {};
 
 app.get( '/permission/:slug/:tag', function( req, res ) {
 	if ( config.api_key == req.query.api_key  ) {
-		Members.findOne( { tag_hashed: req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			var grantAccess = false;
 			if ( member != undefined ) {
 				var hasMembership = false;

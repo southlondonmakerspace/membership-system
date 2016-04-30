@@ -10,6 +10,8 @@ var	Members = require( '../../src/js/database' ).Members;
 
 var auth = require( '../../src/js/authentication.js' );
 
+var messages = require( '../../src/messages.json' );
+
 var config = require( '../../config/config.json' );
 
 var app_config = {};
@@ -24,7 +26,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'join', { user: req.session.join } );
@@ -34,7 +36,7 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
 		var user = {
@@ -45,7 +47,7 @@ app.post( '/', function( req, res ) {
 		};
 
 		if ( req.body.password != req.body.verify ) {
-			req.flash( 'danger', 'Passwords did not match' );
+			req.flash( 'danger', messages['password-err-mismatch'] );
 			req.session.join = user;
 			res.redirect( app.mountpath );
 			return;
@@ -84,10 +86,10 @@ app.post( '/', function( req, res ) {
 						
 						transporter.sendMail( message, function( err, info ) {
 							if ( err ) {
-								req.flash( 'warning', 'Account created, system was unable to send activation email, please contact the administrator' );
+								req.flash( 'warning', messages['account-created-werr'] );
 								res.redirect( '/' );
 							} else {
-								req.flash( 'success', 'Account created, please check your email for a registration link' );
+								req.flash( 'success', messages['account-created'] );
 								res.redirect( '/' );
 							}
 						} );

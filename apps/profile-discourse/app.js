@@ -4,6 +4,8 @@ var	express = require( 'express' ),
 	app = express(),
 	request= require( 'request' );
 
+var messages = require( '../../src/messages.json' );
+
 var config = require( '../../config/config.json' );
 
 var discourse = require( '../../src/js/discourse.js' ),
@@ -69,10 +71,10 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 				discourse.sendActivationMessage( user.username, code );
 			} );
 			
-			req.flash( 'info', 'Activation code sent to your Discourse private messages' );
+			req.flash( 'info', messages['discourse-activation-sent'] );
 		} );
 	} else {
-		req.flash( 'warning', 'Activation code has already been sent' );
+		req.flash( 'warning', messages['discourse-activation-dupe'] );
 	}
 	res.redirect( app.mountpath );
 } );
@@ -84,11 +86,11 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 				"discourse.activated": true,
 				"discourse.activation_code": null
 			} }, function ( error ) {} );
-			req.flash( 'info', 'Discourse user linked' );
+			req.flash( 'info', messages['discourse-linked'] );
 			return res.redirect( app.mountpath );
 		}
 	}
-	req.flash( 'warning', 'You must enter a valid activation code' );
+	req.flash( 'warning', messages['discourse-activation-code-err'] );
 	res.redirect( app.mountpath );
 } );
 

@@ -4,6 +4,8 @@ var	express = require( 'express' ),
 	app = express(),
 	request = require( 'request' );
 
+var messages = require( '../../src/messages.json' );
+
 var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' ),
@@ -33,7 +35,7 @@ app.use( function( req, res, next ) {
 
 app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.amount < ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum ) ) {
-		req.flash( 'danger', 'Minimum direct debit amount is £' + config.gocardless.minimum );
+		req.flash( 'danger', messages['gocardless-min'] + config.gocardless.minimum );
 		return res.redirect( app.mountpath );
 	}
 
@@ -58,7 +60,7 @@ app.get( '/confirm', auth.isLoggedIn, function( req, res ) {
 	gocardless.confirmResource( req.query, function( err, request, body ) {
 		if ( err ) return res.end( 401, err );
 		Members.update( { _id: req.user._id }, { $set: { "gocardless.id": req.query.resource_id } }, function ( err ) {
-			req.flash( 'success', 'Direct Debit setup succesfully' );
+			req.flash( 'success', messages['gocardless-success'] );
 			res.redirect( app.mountpath );
 		} );
 	} );
@@ -83,11 +85,11 @@ app.post( '/cancel', auth.isLoggedIn, function( req, res ) {
 
 		if ( response.status == 'cancelled' ) {
 			Members.update( { _id: req.user._id }, { $set: { gocardless: { id: '', amount: '' } } }, function( err ) {
-				req.flash( 'success', 'Direct debit cancelled' );
+				req.flash( 'success', messages['gocardless-cancelled'] );
 				res.redirect( app.mountpath );
 			} );
 		} else {
-			req.flash( 'danger', 'Error cancelling direct debit' );
+			req.flash( 'danger', messages['gocardless-cancelled-err'] );
 			res.redirect( app.mountpath );
 		}
 	} );

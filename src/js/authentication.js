@@ -12,6 +12,8 @@ var passport = require( 'passport' ),
 
 var crypto = require( 'crypto' );
 
+var messages = require( '../../src/messages.json' );
+
 var Authentication = {
 	auth: function( app ) {
 		// Add support for local authentication
@@ -23,15 +25,15 @@ var Authentication = {
 						Authentication.hashPassword( password, user.password_salt, function( hash ) {
 							if ( hash == user.password_hash ) {
 								if ( user.activated ) {
-									return done( null, { _id: user._id }, { message: 'Login successful' } );
+									return done( null, { _id: user._id }, { message: messages['logged-in'] } );
 								} else {
-									return done( null, false, { message: 'Account not activated' } );
+									return done( null, false, { message: messages['inactive-account'] } );
 								}
 							}
-							return done( null, false, { message: 'Login unsuccessful' } );
+							return done( null, false, { message: messages['login-failed'] } );
 						} );
 					} else {
-						return done( null, false, { message: 'Login unsuccessful' } );
+						return done( null, false, { message: messages['login-failed'] } );
 					}
 				} );
 			}
@@ -61,7 +63,7 @@ var Authentication = {
 
 					return done( null, user );
 				} else {
-					return done( null, false, { message: 'Please login' } );
+					return done( null, false, { message: messages['login-required'] } );
 				}
 			} );
 		} );
@@ -150,13 +152,13 @@ var Authentication = {
 			case true:
 				return next();
 			case -1:
-				req.flash( 'warning', 'Your account is not yet activated' );
+				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
 			default:
 			case false:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'You must be logged in first' );
+				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );
 				return;
 		}
@@ -167,17 +169,17 @@ var Authentication = {
 			case true:
 				return next();
 			case -1:
-				req.flash( 'warning', 'Your account is not yet activated' );
+				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
 			case -2:
-				req.flash( 'warning', 'Your membership is inactive' );
+				req.flash( 'warning', messages['inactive-membership'] );
 				res.redirect( '/profile' );
 				return;
 			default:
 			case false:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'You must be logged in first' );
+				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );
 				return;
 		}
@@ -188,21 +190,21 @@ var Authentication = {
 			case true:
 				return next();
 			case -1:
-				req.flash( 'warning', 'Your account is not yet activated' );
+				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
 			case -2:
-				req.flash( 'warning', 'Your membership is inactive' );
+				req.flash( 'warning', messages['inactive-membership'] );
 				res.redirect( '/profile' );
 				return;
 			case -3:
-				req.flash( 'warning', 'You do not have access to this area' );
+				req.flash( 'warning', messages['403'] );
 				res.redirect( '/profile' );
 				return;
 			default:
 			case false:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'You must be logged in first' );
+				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );
 				return;
 		}
@@ -215,16 +217,16 @@ var Authentication = {
 	},
 	passwordRequirements: function( password ) {
 		if ( password.length < 8 )
-			return "Password must be at least 8 characters long";
+			return messages['password-err-length'];
 
 		if ( password.match( /\d/g ) == null )
-			return "Password must contain at least 1 number"
+			return messages['password-err-number'];
 
 		if ( password.match( /[A-Z]/g ) == null )
-			return "Password must contain at least 1 uppercase letter"
+			return messages['password-err-letter-up'];
 
 		if ( password.match( /[a-z]/g ) == null )
-			return "Password must contain at least 1 lowercase letter"
+			return messages['password-err-letter-low'];
 
 		return true;
 	}

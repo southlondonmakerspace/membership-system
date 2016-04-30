@@ -12,8 +12,13 @@ var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
-app.get( '/' , function( req, res ) {
+app.use( function( req, res, next ) {
 	res.locals.app = app_config;
+	next();
+} );
+
+
+app.get( '/' , function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );

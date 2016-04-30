@@ -21,7 +21,7 @@
 			
 			<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/admin/members/{{ member.uuid }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 		<div class="col-md-6">
 			<div class="page-header">
@@ -42,7 +42,9 @@
 				<h3>Membership System</h3>
 			</div>
 
-			<p><strong>ID:</strong> {{ member._id | raw }}</p>
+			<p><strong>UUID:</strong> {{ member.uuid }}</p>
+
+			<p><strong>DB ID:</strong> {{ member.uuid }}</p>
 
 			<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
 			
@@ -53,7 +55,7 @@
 			
 			<p><strong>Password Reset Code:</strong> {{ member.password_reset_code }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/admin/members/{{ member.uuid }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 		
 		<div class="col-md-6">
@@ -65,7 +67,7 @@
 			
 			<p><strong>Hashed Tag:</strong> {{ member.tag_hashed }}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/admin/members/{{ member.uuid }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 	</div>
 
@@ -83,7 +85,7 @@
 			
 			<p><strong>Activation Code:</strong> {{ member.discourse.activation_code }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
 
-			<p><a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/admin/members/{{ member.uuid }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 		
 		<div class="col-md-6">
@@ -97,7 +99,7 @@
 
 			<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum }}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/admin/members/{{ member.uuid }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 	</div>
 
@@ -127,7 +129,7 @@
 		<p>User has no permissions</p>
 	{% endif %}
 
-	<p><a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+	<p><a href="/admin/members/{{ member.uuid }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
 	<div class="page-header">
 		<h3>Transactions</h3>

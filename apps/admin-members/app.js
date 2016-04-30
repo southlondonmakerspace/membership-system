@@ -41,8 +41,8 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 // Member
 /////////
 
-app.get( '/:id', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+app.get( '/:uuid', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
@@ -58,8 +58,8 @@ app.get( '/:id', auth.isAdmin, function( req, res ) {
 // Update Member
 ////////////////
 
-app.get( '/:id/update', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id }, function( err, member ) {
+app.get( '/:uuid/update', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', members['member-404'] );
 			res.redirect( app.mountpath );
@@ -67,16 +67,16 @@ app.get( '/:id/update', auth.isAdmin, function( req, res ) {
 		}
 		res.locals.breadcrumb.push( {
 			name: member.fullname,
-			url: '/admin/members/' + member._id
+			url: '/admin/members/' + member.uuid
 		} );
 		res.locals.breadcrumb.push( {
 			name: 'Update',
 		} );
-		res.render( 'member-updated', { member: member } );
+		res.render( 'member-update', { member: member } );
 	} );
 } );
 
-app.post( '/:id/update', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/update', auth.isAdmin, function( req, res ) {
 	var member = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -84,17 +84,17 @@ app.post( '/:id/update', auth.isAdmin, function( req, res ) {
 		address: req.body.address
 	};
 
-	Members.update( { _id: req.params.id }, member, function( status ) {
+	Members.update( { uuid: req.params.uuid }, member, function( status ) {
 		req.flash( 'success', messages['profile-updated'] );
-		res.redirect( app.mountpath + '/' + req.params.id );
+		res.redirect( app.mountpath + '/' + req.params.uuid );
 	} );
 } );
 
 // Member Activation
 ////////////////////
 
-app.get( '/:id/activation', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id }, function( err, member ) {
+app.get( '/:uuid/activation', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
@@ -102,7 +102,7 @@ app.get( '/:id/activation', auth.isAdmin, function( req, res ) {
 		}
 		res.locals.breadcrumb.push( {
 			name: member.fullname,
-			url: '/admin/members/' + member._id
+			url: '/admin/members/' + member.uuid
 		} );
 		res.locals.breadcrumb.push( {
 			name: 'Activation',
@@ -111,7 +111,7 @@ app.get( '/:id/activation', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/activation', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/activation', auth.isAdmin, function( req, res ) {
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};
@@ -120,17 +120,17 @@ app.post( '/:id/activation', auth.isAdmin, function( req, res ) {
 		member.activation_code = null;
 	}
 
-	Members.update( { _id: req.params.id }, member, function( status ) {
+	Members.update( { uuid: req.params.uuid }, member, function( status ) {
 		req.flash( 'success', messages['activation-updated'] );
-		res.redirect( app.mountpath + '/' + req.params.id );
+		res.redirect( app.mountpath + '/' + req.params.uuid );
 	} );
 } );
 
 // Member Tag
 /////////////
 
-app.get( '/:id/tag', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id }, function( err, member ) {
+app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
@@ -139,7 +139,7 @@ app.get( '/:id/tag', auth.isAdmin, function( req, res ) {
 
 		res.locals.breadcrumb.push( {
 			name: member.fullname,
-			url: '/admin/members/' + member._id
+			url: '/admin/members/' + member.uuid
 		} );
 		res.locals.breadcrumb.push( {
 			name: 'Tag'
@@ -148,7 +148,7 @@ app.get( '/:id/tag', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/tag', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
 		tag: req.body.tag,
@@ -158,7 +158,7 @@ app.post( '/:id/tag', auth.isAdmin, function( req, res ) {
 	if ( req.body.tag == '' )
 		profile.tag_hashed = '';
 
-	Members.update( { _id: req.params.id }, { $set: profile }, { runValidators: true }, function( status ) {
+	Members.update( { uuid: req.params.uuid }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {
 			var keys = Object.keys( status.errors );
 			for ( var k in keys ) {
@@ -166,17 +166,17 @@ app.post( '/:id/tag', auth.isAdmin, function( req, res ) {
 				req.flash( 'danger', status.errors[key].message );
 			}
 		} else {
-			req.flash( 'success', message['tag-updated'] );
+			req.flash( 'success', messages['tag-updated'] );
 		}
-		res.redirect( app.mountpath + '/' + req.params.id );
+		res.redirect( app.mountpath + '/' + req.params.uuid );
 	} );
 } );
 
 // Member Discourse
 ///////////////////
 
-app.get( '/:id/discourse', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id }, function( err, member ) {
+app.get( '/:uuid/discourse', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
@@ -185,7 +185,7 @@ app.get( '/:id/discourse', auth.isAdmin, function( req, res ) {
 
 		res.locals.breadcrumb.push( {
 			name: member.fullname,
-			url: '/admin/members/' + member._id
+			url: '/admin/members/' + member.uuid
 		} );
 		res.locals.breadcrumb.push( {
 			name: 'Discourse'
@@ -194,24 +194,24 @@ app.get( '/:id/discourse', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/discourse', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/discourse', auth.isAdmin, function( req, res ) {
 	var member = {
 		'discourse.id': req.body.id,
 		'discourse.email': req.body.email,
 		'discourse.activated': ( req.body.activated ? true : false )
 	}
 
-	Members.update( { _id: req.params.id }, { $set: member }, function( status ) {
+	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', messages['discourse-updated'] );
-		res.redirect( app.mountpath + '/' + req.params.id );
+		res.redirect( app.mountpath + '/' + req.params.uuid );
 	} );
 } );
 
 // Member GoCardless
 ////////////////////
 
-app.get( '/:id/gocardless', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.id }, function( err, member ) {
+app.get( '/:uuid/gocardless', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
@@ -220,7 +220,7 @@ app.get( '/:id/gocardless', auth.isAdmin, function( req, res ) {
 
 		res.locals.breadcrumb.push( {
 			name: member.fullname,
-			url: '/admin/members/' + member._id
+			url: '/admin/members/' + member.uuid
 		} );
 		res.locals.breadcrumb.push( {
 			name: 'GoCardless'
@@ -229,25 +229,25 @@ app.get( '/:id/gocardless', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/gocardless', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/gocardless', auth.isAdmin, function( req, res ) {
 	var member = {
 		'gocardless.id': req.body.id,
 		'gocardless.amount': req.body.amount,
 		'gocardless.minimum': req.body.minimum
 	}
 
-	Members.update( { _id: req.params.id }, { $set: member }, function( status ) {
+	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', messages['gocardless-updated'] );
-		res.redirect( app.mountpath + '/' + req.params.id );
+		res.redirect( app.mountpath + '/' + req.params.uuid );
 	} );
 } );
 
 // Member Permissions
 /////////////////////
 
-app.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
-		Members.findOne( { _id: req.params.id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			if ( member == undefined ) {
 				req.flash( 'warning', messages['member-404'] );
 				res.redirect( app.mountpath );
@@ -256,7 +256,7 @@ app.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
 
 			res.locals.breadcrumb.push( {
 				name: member.fullname,
-				url: '/admin/members/' + member._id
+				url: '/admin/members/' + member.uuid
 			} );
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
@@ -269,11 +269,11 @@ app.get( '/:id/permissions', auth.isAdmin, function( req, res ) {
 // Grant Member Permission
 //////////////////////////
 
-app.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.body.permission }, function( err, permission ) {
 		if ( permission != undefined ) {
 			var new_permission = {
-				permission: permission._id
+				permission: permission.id
 			}
 
 			new_permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
@@ -283,11 +283,11 @@ app.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
 
 			if ( new_permission.date_added >= new_permission.date_expires ) {
 				req.flash( 'warning', messages['permission-expiry-error'] );
-				res.redirect( app.mountpath + '/' + req.params.id + '/permissions' );
+				res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 				return;
 			}
 
-			Members.update( { _id: req.params.id }, {
+			Members.update( { uuid: req.params.uuid }, {
 				$push: {
 					permissions: new_permission
 				}
@@ -296,23 +296,23 @@ app.post( '/:id/permissions', auth.isAdmin, function( req, res ) {
 		} else {
 			req.flash( 'warning', messages['permission-404'] );
 		}
-		res.redirect( app.mountpath + '/' + req.params.id + '/permissions' );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 	} );
 } );
 
 // Modify Member Permission
 ///////////////////////////
 
-app.get( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
-		Members.findOne( { _id: req.params.mid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			if ( member == undefined ) {
 				req.flash( 'warning', messages['member-404'] );
 				res.redirect( app.mountpath );
 				return;
 			}
 			
-			if ( member.permissions.id( req.params.pid ) == undefined ) {
+			if ( member.permissions.id( req.params.id ) == undefined ) {
 				req.flash( 'warning', messages['permission-404'] );
 				res.redirect( app.mountpath );
 				return;
@@ -320,29 +320,29 @@ app.get( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 
 			res.locals.breadcrumb.push( {
 				name: member.fullname,
-				url: '/admin/members/' + member._id
+				url: '/admin/members/' + member.uuid
 			} );
 			res.locals.breadcrumb.push( {
 				name: 'Permissions',
-				url: '/admin/members/' + member._id + '/permissions'
+				url: '/admin/members/' + member.uuid + '/permissions'
 			} );
 			res.locals.breadcrumb.push( {
-				name: member.permissions.id( req.params.pid ).permission.name
+				name: member.permissions.id( req.params.id ).permission.name
 			} );
-			res.render( 'member-permission', { permissions: permissions, member: member, current: member.permissions.id( req.params.pid ) } );
+			res.render( 'member-permission', { permissions: permissions, member: member, current: member.permissions.id( req.params.id ) } );
 		} );
 	} );
 } );
 
-app.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.mid }, function( err, member ) {
+app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
 			return;
 		}
 
-		if ( member.permissions.id( req.params.pid ) == undefined ) {
+		if ( member.permissions.id( req.params.id ) == undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.mountpath );
 			return;
@@ -355,7 +355,7 @@ app.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 				return;
 			}
 
-			var permission = member.permissions.id( req.params.pid );
+			var permission = member.permissions.id( req.params.id );
 			permission.permission = newPermission._id;
 
 			if ( req.body.start_date != '' && req.body.start_time != '' ) { 
@@ -369,7 +369,7 @@ app.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 
 				if ( permission.date_added >= permission.date_expires ) {
 					req.flash( 'warning', messages['permission-expiry-error'] );
-					res.redirect( app.mountpath + '/' + req.params.mid + '/permissions' );
+					res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 					return;
 				}
 			} else {
@@ -378,7 +378,7 @@ app.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 
 			member.save( function ( err ) {
 				req.flash( 'success', messages['permission-updated'] );
-				res.redirect( app.mountpath + '/' + req.params.mid + '/permissions' );
+				res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			} );
 		} );
 	} );
@@ -387,25 +387,25 @@ app.post( '/:mid/permissions/:pid/modify', auth.isAdmin, function( req, res ) {
 // Revoke Member Permission
 ///////////////////////////
 
-app.get( '/:mid/permissions/:pid/revoke', auth.isAdmin, function( req, res ) {
-	Members.findOne( { _id: req.params.mid }, function( err, member ) {
+app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
 			return;
 		}
 		
-		if ( member.permissions.id( req.params.pid ) == undefined ) {
+		if ( member.permissions.id( req.params.id ) == undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.mountpath );
 			return;
 		}
 
-		member.permissions.pull( { _id: req.params.pid } );
+		member.permissions.pull( { _id: req.params.id } );
 
 		member.save( function ( err ) {
 			req.flash( 'success', messages['permission-removed'] );
-			res.redirect( app.mountpath + '/' + req.params.mid + '/permissions' );
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 		} );
 	} );
 } );

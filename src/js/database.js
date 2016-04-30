@@ -39,6 +39,15 @@ var memberSchema = mongoose.Schema( {
 		required: true,
 		unique: true
 	},
+	uuid: {
+		type: String ,
+		default: function () { // pseudo uuid4
+			function s4() {
+				return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
+			};
+			return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+		}
+	},
 	email: {
 		type: String,
 		required: true,

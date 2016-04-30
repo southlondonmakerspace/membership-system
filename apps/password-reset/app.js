@@ -8,7 +8,6 @@ var nodemailer = require( 'nodemailer' );
 
 var	Members = require( '../../src/js/database' ).Members;
 
-var crypto = require( 'crypto' );
 var auth = require( '../../src/js/authentication.js' );
 
 var messages = require( '../../src/messages.json' );

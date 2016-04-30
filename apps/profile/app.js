@@ -5,7 +5,6 @@ var	express = require( 'express' ),
 
 var Members = require( '../../src/js/database' ).Members;
 
-var crypto = require( 'crypto' );
 var messages = require( '../../src/messages.json' );
 
 var config = require( '../../config/config.json' );

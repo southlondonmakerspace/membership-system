@@ -4,7 +4,7 @@
 {% set heading = app.title %}
 
 {% block content %}
-	<p><img src="{{ discourse_user.avatar }}" /></p>
+	<p><img style="border-radius: 100%" src="{{ discourse_user.avatar }}" /></p>
 
 	<p>Hello there <strong>{{ discourse_user.username }}</strong>!</p>
 

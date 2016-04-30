@@ -24,7 +24,7 @@ var Authentication = {
 					if ( user != null ) {
 						Authentication.hashPassword( password, user.password_salt, function( hash ) {
 							if ( hash == user.password_hash ) {
-								if ( user.activated ) {
+								if ( user.activated || Authentication.superAdmin( user.email ) ) {
 									return done( null, { _id: user._id }, { message: messages['logged-in'] } );
 								} else {
 									return done( null, false, { message: messages['inactive-account'] } );

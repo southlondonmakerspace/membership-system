@@ -58,7 +58,7 @@ app.get( '/:uuid', auth.isAdmin, function( req, res ) {
 // Update Member
 ////////////////
 
-app.get( '/:uuid/update', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', members['member-404'] );
@@ -76,7 +76,7 @@ app.get( '/:uuid/update', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/update', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 	var member = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -93,7 +93,7 @@ app.post( '/:uuid/update', auth.isAdmin, function( req, res ) {
 // Member Activation
 ////////////////////
 
-app.get( '/:uuid/activation', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
@@ -111,7 +111,7 @@ app.get( '/:uuid/activation', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/activation', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};
@@ -175,7 +175,7 @@ app.post( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 // Member Discourse
 ///////////////////
 
-app.get( '/:uuid/discourse', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
@@ -194,7 +194,7 @@ app.get( '/:uuid/discourse', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/discourse', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	var member = {
 		'discourse.id': req.body.id,
 		'discourse.email': req.body.email,
@@ -210,7 +210,7 @@ app.post( '/:uuid/discourse', auth.isAdmin, function( req, res ) {
 // Member GoCardless
 ////////////////////
 
-app.get( '/:uuid/gocardless', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
@@ -229,7 +229,7 @@ app.get( '/:uuid/gocardless', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/gocardless', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	var member = {
 		'gocardless.id': req.body.id,
 		'gocardless.amount': req.body.amount,

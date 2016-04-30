@@ -141,6 +141,17 @@ var Authentication = {
 		}
 		return -3;
 	},
+	canSuperAdmin: function( req ) {
+		// Check user is logged in
+		var status = Authentication.loggedIn( req );
+		if ( ! status ) {
+			return status;
+		} else {
+			if ( Authentication.checkPermission( req, 'trustee' ) ) return true;
+			if ( Authentication.superAdmin( req.user.email ) ) return true;
+		}
+		return -3;
+	},
 	checkPermission: function( req, permission ) {
 		if ( req.user == undefined ) return false;
 		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return true;
@@ -186,6 +197,31 @@ var Authentication = {
 	},
 	isAdmin: function( req, res, next ) {
 		var status = Authentication.canAdmin( req );
+		switch ( status ) {
+			case true:
+				return next();
+			case -1:
+				req.flash( 'warning', messages['inactive-account'] );
+				res.redirect( '/' );
+				return;
+			case -2:
+				req.flash( 'warning', messages['inactive-membership'] );
+				res.redirect( '/profile' );
+				return;
+			case -3:
+				req.flash( 'warning', messages['403'] );
+				res.redirect( '/profile' );
+				return;
+			default:
+			case false:
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+				req.flash( 'error', messages['login-required'] );
+				res.redirect( '/login' );
+				return;
+		}
+	},
+	isSuperAdmin: function( req, res, next ) {
+		var status = Authentication.canSuperAdmin( req );
 		switch ( status ) {
 			case true:
 				return next();

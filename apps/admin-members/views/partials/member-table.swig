@@ -11,13 +11,14 @@
 				<th>Last name</th>
 				<th>Email</th>
 				<th>Status</th>
-				<th>Profile</th>
-				<th>Activation</th>
-				<th>Password</th>
 				<th>Tag</th>
-				<th>Discourse</th>
-				<th>GoCardless</th>
 				<th>Permissions</th>
+				{% if access == 'superadmin' %}
+					<th>Profile</th>
+					<th>Activation</th>
+					<th>Discourse</th>
+					<th>GoCardless</th>
+				{% endif %}
 			</tr>
 		</thead>
 		<tbody>
@@ -30,26 +31,25 @@
 					<td>{{ member.email }}</td>
 					<td>{% include 'status.swig' %}</td>
 					<td>
-						<a title="Edit Profile" href="/admin/members/{{ member.uuid }}/update"><span class="glyphicon glyphicon-pencil"></span></a>
-					</td>
-					<td>
-						<a title="Edit Activation" href="/admin/members/{{ member.uuid }}/activation"><span class="glyphicon glyphicon-ok"></span></a>
-					</td>
-					<td>
-						<a title="Change Password" href="/admin/members/{{ member.uuid }}/change-password"><span class="glyphicon glyphicon-lock"></span></a>
-					</td>
-					<td>
 						<a title="Edit Tag" href="/admin/members/{{ member.uuid }}/tag"><span class="glyphicon glyphicon-credit-card"></span></a>
-					</td>
-					<td>
-						<a title="Edit Discourse" href="/admin/members/{{ member.uuid }}/discourse"><span class="glyphicon glyphicon-book"></span></a>
-					</td>
-					<td>
-						<a title="Edit GoCardless" href="/admin/members/{{ member.uuid }}/gocardless"><span class="glyphicon glyphicon-piggy-bank"></span></a>
 					</td>
 					<td>
 						<a title="Edit Permissions" href="/admin/members/{{ member.uuid }}/permissions"><span class="glyphicon glyphicon-tag"></span></a>
 					</td>
+					{% if access == 'superadmin' %}
+						<td>
+							<a title="Edit Profile" href="/admin/members/{{ member.uuid }}/update"><span class="glyphicon glyphicon-pencil"></span></a>
+						</td>
+						<td>
+							<a title="Edit Activation" href="/admin/members/{{ member.uuid }}/activation"><span class="glyphicon glyphicon-ok"></span></a>
+						</td>
+						<td>
+							<a title="Edit Discourse" href="/admin/members/{{ member.uuid }}/discourse"><span class="glyphicon glyphicon-book"></span></a>
+						</td>
+						<td>
+							<a title="Edit GoCardless" href="/admin/members/{{ member.uuid }}/gocardless"><span class="glyphicon glyphicon-piggy-bank"></span></a>
+						</td>
+					{% endif %}
 				</tr>
 			{% endfor %}
 		</tbody>

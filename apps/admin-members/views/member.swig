@@ -44,7 +44,7 @@
 
 			<p><strong>UUID:</strong> {{ member.uuid }}</p>
 
-			<p><strong>DB ID:</strong> {{ member.uuid }}</p>
+			<p><strong>DB ID:</strong> {{ member._id | raw }}</p>
 
 			<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
 			

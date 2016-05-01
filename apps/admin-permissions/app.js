@@ -64,7 +64,11 @@ app.post( '/create', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
-		description: req.body.description
+		description: req.body.description,
+		group: {
+			id: req.body.group_id,
+			name: req.body.group_name
+		}
 	};
 
 	new Permissions( permission ).save( function( err, permission ) {
@@ -92,7 +96,11 @@ app.post( '/:slug/edit', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
-		description: req.body.description
+		description: req.body.description,
+		group: {
+			id: req.body.group_id,
+			name: req.body.group_name
+		}
 	};
 
 	Permissions.update( { slug: req.params.slug }, permission, function( status ) {

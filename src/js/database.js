@@ -29,6 +29,14 @@ var permissionsSchema = mongoose.Schema( {
 	},
 	description: {
 		type: String,
+	},
+	group: {
+		id: {
+			type: String
+		},
+		name: {
+			type: String
+		}
 	}
 } );
 

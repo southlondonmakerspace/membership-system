@@ -23,6 +23,7 @@
 				<th>Name</th>
 				<th>Slug</th>
 				<th>Description</th>
+				<th>Linked to Discourse Group</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -32,6 +33,7 @@
 					<td>{{ permission.name }}</td>
 					<td>{{ permission.slug }}</td>
 					<td>{{ permission.description }}</td>
+					<td>{% if permission.group.id && permission.group.name %}Yes{% else %}No{% endif %}</td>
 					<td><a href="/admin/permissions/{{ permission.slug }}/edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
 				</tr>
 			{% endfor %}

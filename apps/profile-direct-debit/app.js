@@ -108,7 +108,7 @@ app.post( '/webhook', function( req, res ) {
 						Members.findOne( { 'gocardless.id': bill.source_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 							upsertTransaction( member, bill.source_id, bill.id, bill.status, bill.amount, function() {
 								grExtendMembership( member, bill.source_id, function() {
-									discourse.addMemberToGroup( member, config.discourse.group );
+									discourse.grantMember( { _id: member.id } );
 								} );
 							} );
 						} );

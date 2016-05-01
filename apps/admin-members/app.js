@@ -2,6 +2,7 @@
 
 var	express = require( 'express' ),
 	app = express(),
+	discourse = require( '../../src/js/discourse' ),
 	Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 
@@ -353,6 +354,7 @@ app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 					permissions: new_permission
 				}
 			}, function ( status ) {
+				discourse.grantMember( { uuid: req.params.uuid } );
 			} );
 		} else {
 			req.flash( 'warning', messages['permission-404'] );
@@ -440,6 +442,8 @@ app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 			member.save( function ( err ) {
 				req.flash( 'success', messages['permission-updated'] );
 				res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
+				discourse.checkGroups();
+				discourse.grantMember( { uuid: req.params.uuid } );
 			} );
 		} );
 	} );
@@ -467,6 +471,7 @@ app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 		member.save( function ( err ) {
 			req.flash( 'success', messages['permission-removed'] );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
+			discourse.checkGroups();
 		} );
 	} );
 } );

@@ -57,7 +57,7 @@ var Discourse = {
 		} );
 	},
 	removeUserFromGroup: function( discourse_user_id, group ) {
-		console.log( 'Removing user "' + discourse_user_id + '" from Group "' + group.name + '"...' );
+		console.log( 'Removing user "' + discourse_user_id + '" from Group "' + group.name + '".' );
 		request.del( config.discourse.url + '/groups/' + group.id + '/members.json', {
 			form: {
 				api_username: config.discourse.api_username,
@@ -66,25 +66,43 @@ var Discourse = {
 			}
 		} );
 	},
-	checkUser: function( discourse_user_id, group ) {
+	checkDiscourseUser: function( discourse_user_id, permission ) {
 		Members.findOne( { 'discourse.id': discourse_user_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-			if ( member == null ) return Discourse.removeUserFromGroup( discourse_user_id, group );
+			if ( member == null ) return Discourse.removeUserFromGroup( discourse_user_id, permission.group );
 			for ( var p = 0; p < member.permissions.length; p++ ) {
 				var perm = member.permissions[p];
-				if ( perm.permission.slug == group.permission ) {
+				if ( perm.permission.slug == permission.slug ) {
 					if ( perm.date_added < new Date() ) {
-						if ( perm.date_expires > new Date() ) {
+						if ( perm.date_expires == undefined || perm.date_expires > new Date() ) {
 							return;
 						}
 					}
+				} else {
+					continue;
 				}
-				Discourse.removeUserFromGroup( discourse_user_id, group );
+				Discourse.removeUserFromGroup( discourse_user_id, permission.group );
 			}
 		} );
 	},
-	checkGroup: function( group ) {
-		console.log( 'Checking Discourse Group "' + group.name + '"...' );
-		request.get( config.discourse.url + '/groups/' + group.name + '/members.json?limit=9999', {
+	grantMember: function( search ) {
+		Members.findOne( search ).populate( 'permissions.permission' ).exec( function( err, member ) {
+			if ( member == null ) return;
+			for ( var p = 0; p < member.permissions.length; p++ ) {
+				var perm = member.permissions[p];
+				if ( perm.permission.group.id != '' && perm.permission.group.name != '' ) {
+					if ( perm.date_added < new Date() ) {
+						if ( perm.date_expires == undefined || perm.date_expires > new Date() ) {
+							console.log( 'Adding "' + member._id + '" to discourse group "' + perm.permission.group.name + '"' );
+							Discourse.addMemberToGroup( member, perm.permission.group );
+						}
+					}
+				}
+			}
+		} );
+	},
+	checkPermission: function( permission ) {
+		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
+		request.get( config.discourse.url + '/groups/' + permission.group.name + '/members.json?limit=9999', {
 			form: {
 				api_username: config.discourse.api_username,
 				api_key: config.discourse.api_key
@@ -93,17 +111,24 @@ var Discourse = {
 			var users = JSON.parse( body ).members;
 			if ( users.length > 0 ) {
 				for ( var u in users ) {
-					Discourse.checkUser( users[u].id, group );
+					Discourse.checkDiscourseUser( users[u].id, permission );
 				}
 			}
 		} );
 	},
 	checkGroups: function() {
-		Discourse.checkGroup( config.discourse.group );
+		Permissions.find( {
+			'group.id': { $ne: '' },
+			'group.name': { $ne: '' }
+		}, function( err, permissions ) {
+			for ( var p = 0; p < permissions.length; p++ ) {
+				Discourse.checkPermission( permissions[p] );
+			}
+		} );
 	}
 };
 
 setTimeout( Discourse.checkGroups, 1000 ); // Now and...
-setInterval( Discourse.checkGroups, 60000*60*3 ); // ...every three hours
+setInterval( Discourse.checkGroups, 3600000*24 ); // ...every day
 
 module.exports = Discourse;

@@ -22,7 +22,7 @@ var apps = [];
 console.log( "Starting..." );
 
 // Handle authentication
-require( __js + '/authentication' )( app );
+require( __js + '/authentication' ).auth( app );
 
 // Setup static route
 app.use( express.static( __static ) );

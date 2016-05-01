@@ -1,0 +1,56 @@
+{
+	"logged-in": "Login successful",
+	"logged-out": "Logged out",
+	"login-failed": "Login unsuccessful",
+	"login-required": "You must be logged in",
+	"inactive-account": "Account not activated",
+	"already-logged-in": "You are already logged in",
+	"inactive-membership": "Your membership is inactive",
+	"403": "You do not have access to this area",
+
+	"password-changed": "Password changed",
+	"password-invalid": "Incorrect current password",
+	"password-reset-code-err": "Invalid password reset code",
+	"password-err-mismatch": "Passwords did not match",
+	"password-err-length": "Password must be at least 8 characters long",
+	"password-err-number": "Password must contain at least 1 number",
+	"password-err-letter-up": "Password must contain at least 1 uppercase letter",
+	"password-err-letter-low": "Password must contain at least 1 lowercase letter",
+
+	"password-reset": "If there is an account associated with the email address you will receive an email shortly",
+
+	"account-created": "Account created, please check your email for a registration link",
+	"member-created": "Member successful created",
+	"account-created-werr": "Account created, system was unable to send activation email, please contact the administrator",
+
+	"activation-error": "Activation code or password did not match",
+	"activation-success": "You account is now active.",
+	"activation-updated": "Activation updated",
+	
+	"member-404": "Member not found",
+
+	"profile-updated": "Profile updated",
+
+	"emergency-contact-updated": "Emergency contact updated",
+	
+	"permission-404": "Permission not found",
+	"permission-created": "Permission created",
+	"permission-updated": "Permission updated",
+	"permission-removed": "Permission removed",
+	"permission-expiry-error": "Expiry date must not be the same as or before the start date",
+	
+	"tag-updated": "Tag updated",
+	
+	"discourse-updated": "Discourse updated",
+	"discourse-activation-sent": "Activation code sent to your Discourse private messages",
+	"discourse-activation-dupe": "Activation code has already been sent",
+	"discourse-linked": "Discourse user linked",
+	"discourse-activation-code-err": "You must enter a valid activation code",
+	"discouse-id-duplicate": "Discourse ID already associated with another member",
+
+	"gocardless-updated": "GoCardless updated",
+	"gocardless-min": "Minimum direct debit amount is £",
+	"gocardless-success": "Direct Debit setup succesfully",
+	"gocardless-cancelled": "Direct debit cancelled",
+	"gocardless-cancelled-err": "Error cancelling direct debit"
+}

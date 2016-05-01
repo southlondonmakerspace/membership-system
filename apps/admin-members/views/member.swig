@@ -11,29 +11,34 @@
 				<h2>{{ member.fullname }}</h2>
 			</div>
 
-			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&d=identicon&r=g"></p>
+			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&amp;d=identicon&amp;r=g"></p>
 
 			<p><strong>First Name:</strong> {{ member.firstname }}</p>
 			
 			<p><strong>Last Name:</strong> {{ member.lastname }}</p>
 			
-			<p><strong>Email:</strong> {{ member.email }}
+			<p><strong>Email:</strong> {{ member.email }}</p>
 			
-			<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
+			{% if access == 'superadmin' %}
+				<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+				<p><a href="/admin/members/{{ member.uuid }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			{% endif %}
 		</div>
-		<div class="col-md-6">
-			<div class="page-header">
-				<h3 style="padding-top: 6px;">Emergency Contact</h3>
+		{% if access == 'superadmin' %}
+			<div class="col-md-6">
+				<div class="page-header">
+					<h3 style="padding-top: 6px;">Emergency Contact</h3>
+				</div>
+
+				<p><strong>First Name:</strong> {{ member.emergency_contact.firstname | default('–')  }}</p>
+				
+				<p><strong>Last Name:</strong> {{ member.emergency_contact.lastname | default('–')  }}</p>
+				
+				<p><strong>Telephone:</strong> {{ member.emergency_contact.telephone | default('–')  }}
 			</div>
 
-			<p><strong>First Name:</strong> {{ member.emergency_contact.firstname }}</p>
-			
-			<p><strong>Last Name:</strong> {{ member.emergency_contact.lastname }}</p>
-			
-			<p><strong>Telephone:</strong> {{ member.emergency_contact.telephone }}
-		</div>
+		{% endif %}
 	</div>
 
 	<div class="row">
@@ -42,18 +47,24 @@
 				<h3>Membership System</h3>
 			</div>
 
-			<p><strong>ID:</strong> {{ member._id | raw }}</p>
+			<p><strong>UUID:</strong> {{ member.uuid }}</p>
 
-			<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
-			
-			<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
-			
-			<p><strong>Activation Code:</strong> {{ member.activation_code }} {% if member.activation_code %}&mdash; {{ audience }}/activate/{{ member.activation_code }}{% endif %}
-			</p>
-			
-			<p><strong>Password Reset Code:</strong> {{ member.password_reset_code }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
+			{% if access == 'superadmin' %}
+				<p><strong>DB ID:</strong> {{ member._id | raw }}</p>
+			{% endif %}
 
-			<p><a href="/admin/members/{{ member._id | raw }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+				<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
+				
+				<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
+				
+			{% if access == 'superadmin' %}
+				<p><strong>Activation Code:</strong> {{ member.activation_code | default('–') }} {% if member.activation_code %}&mdash; {{ audience }}/activate/{{ member.activation_code }}{% endif %}
+				</p>
+				
+				<p><strong>Password Reset Code:</strong> {{ member.password_reset_code | default('–') }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
+
+				<p><a href="/admin/members/{{ member.uuid }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			{% endif %}
 		</div>
 		
 		<div class="col-md-6">
@@ -61,45 +72,49 @@
 				<h3>Tag</h3>
 			</div>
 			
-			<p><strong>Tag:</strong> {{ member.tag }}</p>
+			<p><strong>Tag:</strong> {{ member.tag.id | default('–') }}</p>
 			
-			<p><strong>Hashed Tag:</strong> {{ member.tag_hashed }}</p>
+			{% if access == 'superadmin' %}
+				<p><strong>Hashed Tag:</strong> {{ member.tag.hashed | default('–') }}</p>
+			{% endif %}
 
-			<p><a href="/admin/members/{{ member._id | raw }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/admin/members/{{ member.uuid }}/tag" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-md-6">
-			<div class="page-header">
-				<h3>Discourse</h3>
+	{% if access == 'superadmin' %}
+		<div class="row">
+			<div class="col-md-6">
+				<div class="page-header">
+					<h3>Discourse</h3>
+				</div>
+
+				<p><strong>User ID:</strong> {{ member.discourse.id | default('–') }}</p>
+				
+				<p><strong>Email:</strong> {{ member.discourse.email | default('–') }}</p>
+				
+				<p><strong>Activated:</strong> {% if member.discourse.activated %}Yes{% else %}No{% endif %}</p>
+				
+				<p><strong>Activation Code:</strong> {{ member.discourse.activation_code | default('–') }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
+
+				<p><a href="/admin/members/{{ member.uuid }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			</div>
+			
+			<div class="col-md-6">
+				<div class="page-header">
+					<h3>GoCardless</h3>
+				</div>
 
-			<p><strong>User ID:</strong> {{ member.discourse.id }}</p>
-			
-			<p><strong>Email:</strong> {{ member.discourse.email }}</p>
-			
-			<p><strong>Activated:</strong> {{ member.discourse.activated }}</p>
-			
-			<p><strong>Activation Code:</strong> {{ member.discourse.activation_code }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
+				<p><strong>Subscription ID:</strong> {{ member.gocardless.id | default('–') }}</p>
 
-			<p><a href="/admin/members/{{ member._id | raw }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
-		</div>
-		
-		<div class="col-md-6">
-			<div class="page-header">
-				<h3>GoCardless</h3>
+				<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount | default('–') }}</p>
+
+				<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum | default('–') }}</p>
+
+				<p><a href="/admin/members/{{ member.uuid }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			</div>
-
-			<p><strong>Subscription ID:</strong> {{ member.gocardless.id }}</p>
-
-			<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount }}</p>
-
-			<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum }}</p>
-
-			<p><a href="/admin/members/{{ member._id | raw }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 		</div>
-	</div>
+	{% endif %}
 
 	<div class="page-header">
 		<h3>Permissions</h3>
@@ -124,41 +139,43 @@
 			{% endfor %}
 		</div>
 	{% else %}
-		<p>User has no permissions</p>
+		<p>Member has no permissions</p>
 	{% endif %}
 
-	<p><a href="/admin/members/{{ member._id | raw }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+	<p><a href="/admin/members/{{ member.uuid }}/permissions" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 
-	<div class="page-header">
-		<h3>Transactions</h3>
-	</div>
-	{% set transactions = member.gocardless.transactions %}
-	{% if transactions.length > 0 %}
-		<table class="table table-striped table-hover table-condensed">
-			<thead>
-				<tr>
-					<th>Bill ID</th>
-					<th>Subscription ID</th>
-					<th>Date</th>
-					<th>Description</th>
-					<th>Status</th>
-					<th>Amount</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for transaction in transactions %}
+	{% if access == 'superadmin' %}
+		<div class="page-header">
+			<h3>Transactions</h3>
+		</div>
+		{% set transactions = member.gocardless.transactions %}
+		{% if transactions.length > 0 %}
+			<table class="table table-striped table-hover table-condensed">
+				<thead>
 					<tr>
-						<td>{{ transaction.bill_id }}</td>
-						<td>{{ transaction.subscription_id }}</td>
-						<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
-						<td>{{ transaction.description }}</td>
-						<td>{% include '../../statement/views/partials/status.swig' %}</td>
-						<td>&pound;{{ transaction.amount }}</td>
+						<th>Bill ID</th>
+						<th>Subscription ID</th>
+						<th>Date</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Amount</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	{% else %}
-		<p>You have no transaction history at this time.</p>
+				</thead>
+				<tbody>
+					{% for transaction in transactions %}
+						<tr>
+							<td>{{ transaction.bill_id }}</td>
+							<td>{{ transaction.subscription_id }}</td>
+							<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
+							<td>{{ transaction.description }}</td>
+							<td>{% include '../../statement/views/partials/status.swig' %}</td>
+							<td>&pound;{{ transaction.amount }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p>Member has no transaction history</p>
+	{% endif %}
 	{% endif %}
 {% endblock %}

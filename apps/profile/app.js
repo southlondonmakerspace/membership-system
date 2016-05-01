@@ -5,7 +5,7 @@ var	express = require( 'express' ),
 
 var Members = require( '../../src/js/database' ).Members;
 
-var crypto = require( 'crypto' );
+var messages = require( '../../src/messages.json' );
 
 var config = require( '../../config/config.json' );
 
@@ -57,7 +57,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 				req.flash( 'danger', status.errors[key].message );
 			}
 		} else {
-			req.flash( 'success', 'Your profile has been updated' );
+			req.flash( 'success', messages['profile-updated'] );
 		}
 		res.redirect( app.mountpath );
 	} );
@@ -90,7 +90,7 @@ app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 				req.flash( 'danger', status.errors[key].message );
 			}
 		} else {
-			req.flash( 'success', 'Your emergency contact has been updated' );
+			req.flash( 'success', messages['emergency-contact-updated'] );
 		}
 		res.redirect( app.mountpath );
 	} );
@@ -109,12 +109,12 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
-		tag: req.body.tag,
-		tag_hashed: hashed_tag
+		'tag.id': req.body.tag,
+		'tag.hashed': hashed_tag
 	};
 
 	if ( req.body.tag == '' )
-		profile.tag_hashed = '';
+		profile['tag.hashed'] = '';
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status != null ) {
@@ -124,9 +124,9 @@ app.post( '/tag', auth.isLoggedIn, function( req, res ) {
 				req.flash( 'danger', status.errors[key].message );
 			}
 		} else {
-			req.flash( 'success', 'Your profile has been updated' );
+			req.flash( 'success', messages["tag-updated"] );
 		}
-		res.redirect( app.mountpath + '/tag' );
+		res.redirect( app.mountpath );
 	} );
 } );
 
@@ -142,9 +142,9 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		auth.hashPassword( req.body.current, user.password_salt, function( hash ) {
-			if ( hash != user.password_hash ) {
-				req.flash( 'danger', 'Current password is wrong' );
+		auth.hashPassword( req.body.current, user.password.salt, function( hash ) {
+			if ( hash != user.password.hash ) {
+				req.flash( 'danger', messages['password-invalid'] );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
@@ -157,18 +157,18 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 			}
 
 			if ( req.body.new != req.body.verify ) {
-				req.flash( 'danger', 'Passwords did not match' );
+				req.flash( 'danger', messages['password-mismatch'] );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
 
 			auth.generatePassword( req.body.new, function( password ) {
 				Members.update( { _id: user._id }, { $set: {
-					password_salt: password.salt,
-					password_hash: password.hash,
-					password_reset_code: null,
+					'password.salt': password.salt,
+					'password.hash': password.hash,
+					'password.reset_code': null,
 				} }, function( status ) {
-					req.flash( 'success', 'Password changed' );
+					req.flash( 'success', messages['password-changed'] );
 					res.redirect( app.mountpath );
 				} );
 			} );

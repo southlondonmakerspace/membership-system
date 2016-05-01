@@ -6,6 +6,11 @@
 {% block scripts %}
 	{% parent %}
 	<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$("tr[data-href]").click(function() {
+				window.document.location = $(this).data("href");
+			});
+		});
 		jQuery( document ).ready( function () {
 			jQuery.extend( jQuery.expr[":"], {
 				"containsIN": function(elem, i, match, array ) {
@@ -64,7 +69,7 @@
 		</thead>
 		<tbody>
 			{% for member in members %}
-				<tr>
+				<tr title="View Member " data-href="/members/{{ member.uuid }}" style="cursor: pointer;">
 					<td><img style="border-radius: 100%" src="{{ member.gravatar }}?s=75&d=identicon&r=g"></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>

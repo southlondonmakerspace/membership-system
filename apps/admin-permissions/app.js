@@ -7,6 +7,8 @@ var	express = require( 'express' ),
 
 var auth = require( '../../src/js/authentication.js' );
 
+var messages = require( '../../src/messages.json' );
+
 var config = require( '../../config/config.json' );
 
 var app_config = {};
@@ -40,23 +42,45 @@ app.get( '/create', auth.isAdmin, function( req, res ) {
 	res.render( 'create-permission' );
 } );
 
+app.get( '/:slug', auth.isAdmin, function( req, res ) {
+	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( permission == undefined ) {
+			req.flash( 'warning', messages['permission-404'] );
+			res.redirect( app.mountpath );
+			return;
+		}
+	
+		res.locals.breadcrumb.push( {
+			name: permission.name
+		} );
+
+		Members.find( { permissions: { $elemMatch: { permission: permission._id } } }, function( err, members ) {
+			res.render( 'permission', { permission: permission, members: members } );
+		} );
+	} );
+} );
+
 app.post( '/create', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
-		description: req.body.description
+		description: req.body.description,
+		group: {
+			id: req.body.group_id,
+			name: req.body.group_name
+		}
 	};
 
 	new Permissions( permission ).save( function( err, permission ) {
-		req.flash( 'success', 'Permission created' );
-		res.redirect( app.mountpath + '/' + permission._id + '/edit' );
+		req.flash( 'success', messages['permission-created'] );
+		res.redirect( app.mountpath );
 	} );
 } );
 
-app.get( '/:id/edit', auth.isAdmin, function( req, res ) {
-	Permissions.findOne( { _id: req.params.id }, function( err, permission ) {
+app.get( '/:slug/edit', auth.isAdmin, function( req, res ) {
+	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( permission == undefined ) {
-			req.flash( 'warning', 'Permission not found' );
+			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.mountpath );
 			return;
 		}
@@ -68,16 +92,20 @@ app.get( '/:id/edit', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/edit', auth.isAdmin, function( req, res ) {
+app.post( '/:slug/edit', auth.isAdmin, function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
-		description: req.body.description
+		description: req.body.description,
+		group: {
+			id: req.body.group_id,
+			name: req.body.group_name
+		}
 	};
 
-	Permissions.update( { _id: req.params.id }, permission, function( status ) {
-		req.flash( 'success', 'Permission updated' );
-		res.redirect( app.mountpath + '/' + req.params.id + '/edit' );
+	Permissions.update( { slug: req.params.slug }, permission, function( status ) {
+		req.flash( 'success', messages['permission-update'] );
+		res.redirect( app.mountpath );
 	} );
 } );
 

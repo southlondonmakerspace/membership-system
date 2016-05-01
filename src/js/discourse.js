@@ -57,6 +57,7 @@ var Discourse = {
 		} );
 	},
 	removeUserFromGroup: function( discourse_user_id, group ) {
+		console.log( 'Removing user "' + discourse_user_id + '" from Group "' + group.name + '"...' );
 		request.del( config.discourse.url + '/groups/' + group.id + '/members.json', {
 			form: {
 				api_username: config.discourse.api_username,
@@ -82,6 +83,7 @@ var Discourse = {
 		} );
 	},
 	checkGroup: function( group ) {
+		console.log( 'Checking Discourse Group "' + group.name + '"...' );
 		request.get( config.discourse.url + '/groups/' + group.name + '/members.json?limit=9999', {
 			form: {
 				api_username: config.discourse.api_username,

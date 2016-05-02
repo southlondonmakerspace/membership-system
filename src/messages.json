@@ -21,7 +21,6 @@
 
 	"account-created": "Account created, please check your email for a registration link",
 	"member-created": "Member successful created",
-	"account-created-werr": "Account created, system was unable to send activation email, please contact the administrator",
 
 	"activation-error": "Activation code or password did not match",
 	"activation-success": "You account is now active.",
@@ -49,8 +48,14 @@
 	"discouse-id-duplicate": "Discourse ID already associated with another member",
 
 	"gocardless-updated": "GoCardless updated",
-	"gocardless-min": "Minimum direct debit amount is £",
-	"gocardless-success": "Direct Debit setup succesfully",
-	"gocardless-cancelled": "Direct debit cancelled",
-	"gocardless-cancelled-err": "Error cancelling direct debit"
+	"gocardless-subscription-success": "Subscription setup succesfully",
+	"gocardless-subscription-min": "Minimum direct debit amount is £",
+	"gocardless-subscription-invalid-day": "Subscription payment date must be between 1st and 28th of the month or last day of the month",
+	"gocardless-subscription-err": "Error setting up subscription",
+	"gocardless-subscription-cancelled": "Subscription cancelled",
+	"gocardless-subscription-cancellation-err": "Error cancelling subscription",
+	"gocardless-mandate-success": "Subscription setup succesfully",
+	"gocardless-mandate-err": "Error setting up Direct Debit mandate",
+	"gocardless-mandate-cancelled": "Direct Debit mandate cancelled",
+	"gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate"
 }

@@ -258,7 +258,8 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	var member = {
-		'discourse.id': req.body.id,
+		'discourse.mandate_id': req.body.mandate_id,
+		'discourse.subscription_id': req.body.subscription_id,
 		'discourse.email': req.body.email,
 		'discourse.activated': ( req.body.activated ? true : false )
 	}

@@ -105,7 +105,9 @@
 					<h3>GoCardless</h3>
 				</div>
 
-				<p><strong>Subscription ID:</strong> {{ member.gocardless.id | default('–') }}</p>
+				<p><strong>Mandate ID:</strong> {{ member.gocardless.mandate_id | default('–') }}</p>
+
+				<p><strong>Subscription ID:</strong> {{ member.gocardless.subscription_id | default('–') }}</p>
 
 				<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount | default('–') }}</p>
 

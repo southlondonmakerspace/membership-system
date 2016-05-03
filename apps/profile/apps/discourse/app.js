@@ -2,7 +2,8 @@
 
 var	express = require( 'express' ),
 	app = express(),
-	request= require( 'request' );
+	request= require( 'request' ),
+	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var messages = require( '../../../../src/messages.json' );
 
@@ -76,7 +77,7 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-app.post( '/activate', auth.isLoggedIn, function( req, res ) {
+app.post( '/activate', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	if ( req.body.activation_code != '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {
 			Members.update( { "_id": req.user._id }, { $set: {

@@ -1,7 +1,8 @@
 "use strict";
 
 var	express = require( 'express' ),
-	app = express();
+	app = express(),
+	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var	passport = require( 'passport' );
 
@@ -26,7 +27,7 @@ app.get( '/' , function( req, res ) {
 	}
 } );
 
-app.post( '/', passport.authenticate( 'local', {
+app.post( '/', formBodyParser, passport.authenticate( 'local', {
 	failureRedirect: app.mountpath,
 	failureFlash: true,
 	successFlash: true

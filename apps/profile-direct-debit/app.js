@@ -2,7 +2,9 @@
 
 var	express = require( 'express' ),
 	app = express(),
-	request = require( 'request' );
+	request = require( 'request' ),
+	bodyParser = require( 'body-parser' ),
+	formBodyParser = bodyParser.urlencoded( { extended: true } );
 
 var messages = require( '../../src/messages.json' );
 
@@ -112,7 +114,7 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
+app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum );
 
 	if ( req.body.amount < min ) {

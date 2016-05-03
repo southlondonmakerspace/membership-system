@@ -27,10 +27,6 @@ require( __js + '/authentication' ).auth( app );
 // Setup static route
 app.use( express.static( __static ) );
 
-// Enable support for form post data
-app.use( body.json() );
-app.use( body.urlencoded( { extended: true } ) );
-
 // Handle sessions
 require( __js + '/sessions' )( app );
 

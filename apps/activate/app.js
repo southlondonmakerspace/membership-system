@@ -1,7 +1,8 @@
 "use strict";
 
 var	express = require( 'express' ),
-	app = express();
+	app = express(),
+	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var	Members = require( '../../src/js/database' ).Members,
 	auth = require( '../../src/js/authentication' );
@@ -38,7 +39,7 @@ app.get( '/:activation_code' , function( req, res ) {
 	}
 } );
 
-app.post( '/' , function( req, res ) {
+app.post( '/', formBodyParser, function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );

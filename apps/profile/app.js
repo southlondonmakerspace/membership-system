@@ -1,7 +1,8 @@
 "use strict";
 
 var	express = require( 'express' ),
-	app = express();
+	app = express(),
+	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var Members = require( '../../src/js/database' ).Members;
 
@@ -41,7 +42,7 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 	res.render( 'update', { user: req.user } );
 } );
 
-app.post( '/update', auth.isLoggedIn, function( req, res ) {
+app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var profile = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -73,7 +74,7 @@ app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 	res.render( 'emergency-contact', { user: req.user } );
 } );
 
-app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
+app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var profile = {
 		emergency_contact: {
 			firstname: req.body.firstname,
@@ -106,7 +107,7 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 	res.render( 'tag', { user: req.user } );
 } );
 
-app.post( '/tag', auth.isLoggedIn, function( req, res ) {
+app.post( '/tag', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
 		'tag.id': req.body.tag,
@@ -140,7 +141,7 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 	res.render( 'change-password' );
 } );
 
-app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
+app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		auth.hashPassword( req.body.current, user.password.salt, function( hash ) {
 			if ( hash != user.password.hash ) {

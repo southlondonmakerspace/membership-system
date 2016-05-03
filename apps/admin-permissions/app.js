@@ -2,7 +2,9 @@
 
 var	express = require( 'express' ),
 	app = express(),
-	Permissions = require( '../../src/js/database' ).Permissions,
+	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+
+var Permissions = require( '../../src/js/database' ).Permissions,
 	Members = require( '../../src/js/database' ).Members;
 
 var auth = require( '../../src/js/authentication.js' );
@@ -60,7 +62,7 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/create', auth.isAdmin, function( req, res ) {
+app.post( '/create', [ auth.isAdmin, formBodyParser ], function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
@@ -92,7 +94,7 @@ app.get( '/:slug/edit', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:slug/edit', auth.isAdmin, function( req, res ) {
+app.post( '/:slug/edit', [ auth.isAdmin, formBodyParser ], function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,

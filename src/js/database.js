@@ -173,7 +173,7 @@ var memberSchema = mongoose.Schema( {
 			description: {
 				type: String
 			},
-			bill_id: {
+			payment_id: {
 				type: String
 			},
 			subscription_id: {

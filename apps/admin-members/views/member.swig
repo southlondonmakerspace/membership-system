@@ -155,7 +155,7 @@
 			<table class="table table-striped table-hover table-condensed">
 				<thead>
 					<tr>
-						<th>Bill ID</th>
+						<th>Payment ID</th>
 						<th>Subscription ID</th>
 						<th>Date</th>
 						<th>Description</th>
@@ -166,7 +166,7 @@
 				<tbody>
 					{% for transaction in transactions %}
 						<tr>
-							<td>{{ transaction.bill_id }}</td>
+							<td>{{ transaction.payment_id }}</td>
 							<td>{{ transaction.subscription_id }}</td>
 							<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
 							<td>{{ transaction.description }}</td>

@@ -6,7 +6,7 @@
 {% block content %}
 	<form method="post">
 		<p>
-			<label for="tag">Tag:</label> <input type="text" value="{{ member.tag }}" id="tag" name="tag" class="form-control" />
+			<label for="tag">Tag:</label> <input type="text" value="{{ member.tag.id }}" id="tag" name="tag" class="form-control" />
 		</p>
 
 		<p>

@@ -7,14 +7,12 @@
 		"title": "Membership System"
 	},
 	"tag_salt": "",
-	"superadmins": [],
-	"smtp": {
-		"host": "",
-		"port": "",
-		"username": "",
-		"password": "",
-		"from_name": ""
+	"superadmins": [
 
+	],
+	"smtp": {
+		"from": "",
+		"url": "smtp://"
 	},
 	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
@@ -22,7 +20,11 @@
 		"url": "",
 		"api_username": "",
 		"api_key": "",
-		"membership_group": ""
+		"group": {
+			"id": "",
+			"name": "",
+			"permission": ""
+		}
 	},
 	"gocardless": {
 		"appId": "",
@@ -31,48 +33,5 @@
 		"merchantId": "",
         "sandbox": false,
 		"minimum": 20
-	},
-	"apps": [
-		{
-			"title": "Profile",
-			"path": "profile",
-			"permissions": [
-				"loggedIn"
-			]
-		},
-		{
-			"name": "profile-discourse",
-			"path": "profile/discourse"
-		},
-		{
-			"name": "profile-direct-debit",
-			"path": "profile/direct-debit"
-		},
-		{
-			"title": "Statement",
-			"path": "statement",
-			"permissions": [
-				"member", "superadmin", "admin", "trustee"
-			]
-		},
-		{
-			"title": "Members",
-			"path": "members",
-			"permissions": [
-				"member", "superadmin", "admin", "trustee"
-			]
-		},
-		{
-			"title": "Admin",
-			"path": "admin",
-			"permissions": [
-				"superadmin", "admin", "trustee"
-			]
-		},
-		{ "path": "join" },
-		{ "path": "activate" },
-		{ "path": "login" },
-		{ "path": "password-reset" },
-		{ "path": "api" }
-	]
+	}
 }

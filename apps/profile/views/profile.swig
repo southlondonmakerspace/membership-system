@@ -1,9 +1,11 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Profile' %}
-{% set heading = 'Profile' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
+	<p><img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=identicon&r=g"></p>
+
 	<p><strong>Name:</strong> {{ user.fullname }}</p>
 	
 	<p><strong>Email:</strong> {{ user.email }}</p>
@@ -21,14 +23,26 @@
 	<p>New round here? Follow these steps to setup your account...</p>
 
 	<ol style="padding-left: 2em;">
-		<li style="margin-bottom: 1em;"><a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a></li>
+		<li style="margin-bottom: 1em;">
+			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a> So we know who you are.
+		</li>
+		
+		<li style="margin-bottom: 1em;">
+			{% if user.emergency_contact.telephone %}
+				<a href="/profile/emergency-contact" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
+			{% else %}
+				<a href="/profile/emergency-contact" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Emergency Contact</a>
+			{% endif %} In the unlikely event of an accident.
+		</li>
 
 		<li style="margin-bottom: 1em;">
-			{% if user.gocardless.id == '' %}
+			{% if user.gocardless.mandate_id == '' %}
 				<a href="/profile/direct-debit" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
+			{% elseif user.gocardless.subscription_id == '' %}
+				<a href="/profile/direct-debit" class="btn btn-warning"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
 			{% else %}
 				<a href="/profile/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
-			{% endif %}
+			{% endif %} So you can pay  your membership fee.
 		</li>
 		
 		<li style="margin-bottom: 1em;">
@@ -36,15 +50,15 @@
 				<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
 			{% else %}
 				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
-			{% endif %}
+			{% endif %} So you can view the members only area on Discourse.
 		</li>
 
 		<li>
-			{% if user.tag == '' %}
+			{% if user.tag.id == '' %}
 				<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
 			{% else %}
 				<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
-			{% endif %}
+			{% endif %} So you can use your tag in the space.
 		</li>
 	</ol>
 
@@ -62,12 +76,7 @@
 					{% endif %}
 					{% if permission.date_expires %}
 						<br />
-						{% if now < permission.date_expires %}
-							Expired: 
-						{% elif now < permission.date_expires %}
-							Expires: 
-						{% endif %}
-						{{ permission.date_expires | date('d/m/Y') }}
+						Expiry: {{ permission.date_expires | date('d/m/Y') }}
 					{% endif %}
 				</li>
 			{% endfor %}

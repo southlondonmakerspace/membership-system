@@ -8,13 +8,20 @@ var nodemailer = require( 'nodemailer' );
 
 var	Members = require( '../../src/js/database' ).Members;
 
-var crypto = require( 'crypto' );
+var auth = require( '../../src/js/authentication.js' );
+
+var messages = require( '../../src/messages.json' );
 
 var config = require( '../../config/config.json' );
 
-var auth = require( '../../src/js/authentication.js' );
+var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
+
+app.use( function( req, res, next ) {
+	res.locals.app = app_config;
+	next();
+} );
 
 app.get( '/' , function( req, res ) {
 	res.render( 'reset-password' );
@@ -26,9 +33,8 @@ app.post( '/', function( req, res ) {
 			auth.generateActivationCode( function( code ) {
 				var password_reset_code = code;
 
-				user.password_reset_code = password_reset_code;
-				user.save( function( err ) {
-				} );
+				user.password.reset_code = password_reset_code;
+				user.save( function( err ) {} );
 
 				var message = {};
 							
@@ -48,8 +54,8 @@ app.post( '/', function( req, res ) {
 				} );
 			} );
 		}
-		req.flash( 'success', 'If there is an account associated with the email address you will receive an email shortly' );
-		res.redirect( '/password-reset' );
+		req.flash( 'success', messages['password-reset'] );
+		res.redirect( app.mountpath );
 	} );
 } );
 
@@ -62,37 +68,40 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 } );
 
 app.post( '/change-password', function( req, res ) {
-	Members.findOne( { password_reset_code: req.body.password_reset_code }, function( err, user ) {
+	Members.findOne( { 'password.reset_code': req.body.password_reset_code }, function( err, user ) {
 		if ( user ) {
 			if ( req.body.password != req.body.verify ) {
-				req.flash( 'danger', 'Passwords did not match' );
-				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
+				req.flash( 'danger', messages['password-err-mismatch'] );
+				res.redirect( app.mountpath + '/code/' + req.body.password_reset_code );
 				return;
 			}
 
 			var passwordRequirements = auth.passwordRequirements( req.body.password );
 			if ( passwordRequirements != true ) {
 				req.flash( 'danger', passwordRequirements );
-				res.redirect( '/password-reset/code/' + req.body.password_reset_code );
+				res.redirect( app.mountpath + '/code/' + req.body.password_reset_code );
 				return;
 			}
 
 			auth.generatePassword( req.body.password, function( password ) {
 				Members.update( { _id: user._id }, { $set: {
-					password_salt: password.salt,
-					password_hash: password.hash,
-					password_reset_code: null,
+					'password.salt': password.salt,
+					'password.hash': password.hash,
+					'password.reset_code': null,
 				} }, function( status ) {
 					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', 'Password changed' );
+					req.flash( 'success', messages['password-changed'] );
 					res.redirect( '/profile' );
 				} );
 			} );
 		} else {
-			req.flash( 'danger', 'Invalid password reset code' );
+			req.flash( 'danger', messages['password-reset-code-err'] );
 			res.redirect( '/login' );
 		}
 	} );
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

@@ -1,0 +1,9 @@
+{
+	"title": "Join",
+	"path": "join",
+	"permissions": [
+		"loggedOut"
+	],
+	"menu": "secondary",
+	"priority": 1
+}

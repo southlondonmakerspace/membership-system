@@ -6,17 +6,10 @@
 {% block content %}
 	<form method="post">
 		<p>
-			<label for="id">Subscription ID:</label> <input type="text" value="{{ member.gocardless.id }}" id="id" name="id" class="form-control" />
+			<label for="mandate_id">Mandate ID:</label> <input type="text" value="{{ member.gocardless.mandate_id }}" id="mandate_id" name="mandate_id" class="form-control" />
 		</p>
-		
 		<p>
-			<label for="amount">Amount: </label>
-			<div class="input-group">
-				<div class="input-group-addon">&pound;</div>
-				<input id="amount" name="amount" type="number" class="form-control" value="{{ member.gocardless.amount }}" />
-				<div class="input-group-addon">.00</div>
-			</div>
-			<em>Editing this will not change the users subscription amount in GoCardless.</em>
+			<label for="subscription_id">Subscription ID:</label> <input type="text" value="{{ member.gocardless.subscription_id }}" id="subscription_id" name="subscription_id" class="form-control" />
 		</p>
 		
 		<p>

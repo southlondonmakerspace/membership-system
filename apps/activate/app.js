@@ -6,11 +6,21 @@ var	express = require( 'express' ),
 var	Members = require( '../../src/js/database' ).Members,
 	auth = require( '../../src/js/authentication' );
 
+var messages = require( '../../src/messages.json' );
+
+var app_config = {};
+
 app.set( 'views', __dirname + '/views' );
+
+app.use( function( req, res, next ) {
+	res.locals.app = app_config;
+	next();
+} );
+
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'activate' );
@@ -19,8 +29,10 @@ app.get( '/' , function( req, res ) {
 
 app.get( '/:activation_code' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
+	} else if ( req.params.activation_code.match( /^\w{20}$/ ) == null ) {
+		res.redirect( '/activate' );
 	} else {
 		res.render( 'activate', { activation_code: req.params.activation_code } );
 	}
@@ -28,29 +40,32 @@ app.get( '/:activation_code' , function( req, res ) {
 
 app.post( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
+	} else if ( req.body.activation_code.match( /^\w{20}$/ ) == null ) {
+		req.flash( 'danger', messages['activation-error'] );
+		res.redirect( '/activate' );
 	} else {
 		Members.findOne( {
 			activation_code: req.body.activation_code,
 		}, function ( err, user ) {
 			
 			if ( user == null ) {
-				req.flash( 'danger', 'Activation code or password did not match' );
-				res.redirect( '/activate/' + req.body.activation_code );
+				req.flash( 'danger', messages['activation-error'] );
+				res.redirect( app.mountpath + '/' + req.body.activation_code );
 				return;
 			}
 
-			auth.hashPassword( req.body.password, user.password_salt, function( hash ) {
-				if ( user.password_hash != hash ) {
-					req.flash( 'danger', 'Activation code or password did not match' );
-					res.redirect( '/activate/' + req.body.activation_code );
+			auth.hashPassword( req.body.password, user.password.salt, function( hash ) {
+				if ( user.password.hash != hash ) {
+					req.flash( 'danger', messages['activation-error'] );
+					res.redirect( app.mountpath + '/' + req.body.activation_code );
 					return;
 				}
 
 				Members.update( {
 					_id: user._id,
-					password_hash: hash
+					'password.hash': hash
 				}, {
 					$set: {
 						activation_code: null,
@@ -58,7 +73,7 @@ app.post( '/' , function( req, res ) {
 					}
 				}, function ( status ) {
 					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', 'You account is now active.' )
+					req.flash( 'success', messages['activation-success'] )
 					res.redirect( '/profile' );
 				} )
 			} );
@@ -66,4 +81,7 @@ app.post( '/' , function( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

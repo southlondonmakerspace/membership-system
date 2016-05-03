@@ -4,16 +4,24 @@ var	express = require( 'express' ),
 	app = express();
 
 var auth = require( '../../src/js/authentication.js' ),
+	discourse = require( '../../src/js/discourse.js' ),
 	Members = require( '../../src/js/database' ).Members;
+
+var messages = require( '../../src/messages.json' );
+
+var config = require( '../../config/config.json' );
+
+var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
+	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
-		name: "Members",
-		url: "/members"
+		name: app_config.title,
+		url: app.mountpath
 	} );
-	res.locals.activeApp = 'members';
+	res.locals.activeApp = app_config.uid;
 	next();
 } );
 
@@ -35,8 +43,29 @@ app.get( '/', auth.isMember, function( req, res ) {
 				}
 			}
 		}
-		res.render( 'index', { members: activeMembers } );
+		res.render( 'members', { members: activeMembers } );
 	} );
 } );
 
-module.exports = app;
+app.get( '/:uuid', auth.isMember, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		if ( member == undefined ) {
+			req.flash( 'warning', messages['member-404'] );
+			res.redirect( app.mountpath );
+			return;
+		}
+		res.locals.breadcrumb.push( {
+			name: member.fullname
+		} );
+
+		discourse.getUserByEmail( member.discourse.email, function( discourse ) {
+			res.render( 'member', { member: member, discourse: discourse, discourse_path: config.discourse.url } );
+		} );
+	} );
+} );
+
+
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

@@ -1,11 +1,11 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Discourse' %}
+{% set title = app.title %}
 {% set heading = 'Find Discourse User' %}
 
 {% block content %}
 	{% if discourse_user %}
-		<p><img src="{{ discourse_user.avatar }}" /></p>
+		<p><img style="border-radius: 100%" src="{{ discourse_user.avatar }}" /></p>
 
 		<p>Hello there, are you <strong>{{ discourse_user.username }}</strong>?</p>
 

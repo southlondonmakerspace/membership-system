@@ -10,13 +10,23 @@ var	Members = require( '../../src/js/database' ).Members;
 
 var auth = require( '../../src/js/authentication.js' );
 
+var messages = require( '../../src/messages.json' );
+
 var config = require( '../../config/config.json' );
+
+var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
+app.use( function( req, res, next ) {
+	res.locals.app = app_config;
+	res.locals.activeApp = app_config.uid;
+	next();
+} );
+
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'join', { user: req.session.join } );
@@ -26,7 +36,7 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', 'You are logged in' );
+		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
 		var user = {
@@ -37,9 +47,17 @@ app.post( '/', function( req, res ) {
 		};
 
 		if ( req.body.password != req.body.verify ) {
-			req.flash( 'danger', 'Passwords did not match' );
+			req.flash( 'danger', messages['password-err-mismatch'] );
 			req.session.join = user;
-			res.redirect( '/join' );
+			res.redirect( app.mountpath );
+			return;
+		}
+
+		var passwordRequirements = auth.passwordRequirements( req.body.password );
+		if ( passwordRequirements != true ) {
+			req.flash( 'danger', passwordRequirements );
+			req.session.join = user;
+			res.redirect( app.mountpath );
 			return;
 		}
 
@@ -47,14 +65,10 @@ app.post( '/', function( req, res ) {
 		auth.generateActivationCode( function( code ) {
 			user.activation_code = code;
 			auth.generatePassword( req.body.password, function( password ) {
-				user.password_salt = password.salt;
-				user.password_hash = password.hash;
-
-				console.log( user );
+				user.password = password;
 
 				// Store new member
 				new Members( user ).save( function( status ) {
-					console.log( status );
 					if ( status != null && status.errors != undefined ) {
 						var keys = Object.keys( status.errors );
 						for ( var k in keys ) {
@@ -62,7 +76,7 @@ app.post( '/', function( req, res ) {
 							req.flash( 'danger', status.errors[key].message );
 						}
 						req.session.join = user;
-						res.redirect( '/join' );
+						res.redirect( app.mountpath );
 					} else {
 						var message = {};
 						
@@ -78,15 +92,10 @@ app.post( '/', function( req, res ) {
 						message.to = req.body.email;
 						message.subject = 'Activation Email – ' + config.globals.organisation;
 						
-						transporter.sendMail( message, function( err, info ) {
-							if ( err ) {
-								req.flash( 'warning', 'Account created, system was unable to send activation email, please contact the administrator' );
-								res.redirect( '/' );
-							} else {
-								req.flash( 'success', 'Account created, please check your email for a registration link' );
-								res.redirect( '/' );
-							}
-						} );
+						req.flash( 'success', messages['account-created'] );
+						res.redirect( '/' );
+						
+						transporter.sendMail( message, function( err, info ) {} );
 					}
 				} );
 			} );
@@ -94,4 +103,7 @@ app.post( '/', function( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

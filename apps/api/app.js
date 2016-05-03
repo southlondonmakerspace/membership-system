@@ -7,15 +7,11 @@ var config = require( '../../config/config.json' );
 
 var Members = require( '../../src/js/database' ).Members;
 
-app.get( '/', function( req, res ) {
-	var response = [ 'API not yet implemented' ];
-	res.setHeader( 'Content-Type', 'application/json' );
-	res.send( JSON.stringify( response ) );
-} );
+var app_config = {};
 
 app.get( '/permission/:slug/:tag', function( req, res ) {
 	if ( config.api_key == req.query.api_key  ) {
-		Members.findOne( { tag_hashed: req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+		Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			var grantAccess = false;
 			if ( member != undefined ) {
 				var hasMembership = false;
@@ -29,7 +25,7 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 					if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasPermission = true;
 				}
 
-				if ( isTrustee || ( hasMembership && hasPermission ) )
+				if ( ( isTrustee && hasPermission ) || ( hasMembership && hasPermission ) )
 					grantAccess = true;
 			}
 
@@ -44,4 +40,7 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 	}
 } );
 
-module.exports = app;
+module.exports = function( config ) {
+	app_config = config;
+	return app;
+};

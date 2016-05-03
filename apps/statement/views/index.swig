@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Statement' %}
-{% set heading = 'Statement' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
 	{% if transactions.length > 0 %}

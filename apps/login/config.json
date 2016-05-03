@@ -1,0 +1,9 @@
+{
+	"title": "Login",
+	"path": "login",
+	"permissions": [
+		"loggedOut"
+	],
+	"menu": "secondary",
+	"priority": 2
+}

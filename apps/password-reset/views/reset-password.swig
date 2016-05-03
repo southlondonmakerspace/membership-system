@@ -1,7 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
-{% set title = 'Reset Password' %}
-{% set heading = 'Reset Password' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 
 {% block content %}
 	<p>

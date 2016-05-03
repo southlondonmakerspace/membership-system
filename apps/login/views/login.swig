@@ -48,7 +48,7 @@
 			<div class="page-header">
 				<h2>Join</h2>
 			</div>
-			<p>If you are a new around here why not join?</p>
+			<p>If you are new around here why not join?</p>
 			<p>
 				<a class="btn btn-default" href="/join">Join</a>
 			</p>

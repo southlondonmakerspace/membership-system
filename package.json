@@ -19,7 +19,6 @@
     "express": "^4.13.3",
     "express-flash": "git://github.com/RGBboy/express-flash.git",
     "express-session": "^1.12.1",
-    "gocardless": "git+https://github.com/gocardless/gocardless-node.git",
     "less": "^2.5.3",
     "mongoose": "^4.2.5",
     "nodemailer": "^2.3.2",

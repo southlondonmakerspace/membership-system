@@ -92,15 +92,10 @@ app.post( '/', function( req, res ) {
 						message.to = req.body.email;
 						message.subject = 'Activation Email – ' + config.globals.organisation;
 						
-						transporter.sendMail( message, function( err, info ) {
-							if ( err ) {
-								req.flash( 'warning', messages['account-created-werr'] );
-								res.redirect( '/' );
-							} else {
-								req.flash( 'success', messages['account-created'] );
-								res.redirect( '/' );
-							}
-						} );
+						req.flash( 'success', messages['account-created'] );
+						res.redirect( '/' );
+						
+						transporter.sendMail( message, function( err, info ) {} );
 					}
 				} );
 			} );

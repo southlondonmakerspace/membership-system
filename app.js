@@ -9,7 +9,7 @@ var __js = __src + '/js';
 
 var body = require( 'body-parser' ),
 	config = require( __config ),
-	database = require( __js + '/database').connect( config.mongo ),
+	database = require( __js + '/database' ).connect( config.mongo ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig'),

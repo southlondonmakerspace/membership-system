@@ -36,8 +36,10 @@
 		</li>
 
 		<li style="margin-bottom: 1em;">
-			{% if user.gocardless.id == '' %}
+			{% if user.gocardless.mandate_id == '' %}
 				<a href="/profile/direct-debit" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
+			{% elseif user.gocardless.subscription_id == '' %}
+				<a href="/profile/direct-debit" class="btn btn-warning"><span class="glyphicon glyphicon-unchecked"></span> Direct Debit</a>
 			{% else %}
 				<a href="/profile/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
 			{% endif %} So you can pay  your membership fee.

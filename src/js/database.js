@@ -151,12 +151,17 @@ var memberSchema = mongoose.Schema( {
 			
 	},
 	gocardless: {
-		id: {
-			type: String,
-			unique: true
+		redirect_flow_id: {
+			type: String
 		},
-		amount: {
-			type: Number
+		mandate_id: {
+			type: String
+		},
+		subscription_id: {
+			type: String
+		},
+		session_token: {
+			type: String
 		},
 		minimum: {
 			type: Number

@@ -5,7 +5,7 @@
 
 {% block content %}
 
-	<p>The process of setting up your Direct Debit is a simple first we need you to setup a Direct Debit Mandate online with GoCardless our payment processor to allow us to setup a montly subscription.</p>
+	<p>Setting up your Direct Debit is simple. First, setup a Direct Debit Mandate with our payment processor GoCardless which will allow us to setup a montly subscription.</p>
 	
 	<a href="/profile/direct-debit/setup-mandate" class="btn btn-primary">Setup Mandate</a>
 {% endblock %}

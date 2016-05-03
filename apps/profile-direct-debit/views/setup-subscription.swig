@@ -4,11 +4,13 @@
 {% set heading = 'Setup Subscription' %}
 
 {% block content %}
-	<p>You've setup a Direct Debit Mandate, that authorises us to collect money from your account through GoCardless, but now we need to setup a monthly subscription against your mandate.</p>
+	<p>You've setup a Direct Debit Mandate, which authorises us to collect money from your account</p>
+	<p>Now we need to setup a monthly subscription.</p>
 	
 	<form action="/profile/direct-debit/create-subscription" method="post">
 		<p>
 			<label for="amount">Amount: </label>
+			<p>The standard rate is £20 per month. If you can't afford this, please <a href="mailto:trustees@southlondonmakerspace.org?Subject=Discount"email trustees@southlondonmakerspace.org</a> and we can arrange a discount. If you'd like to pay <em>more</em> than £20 then you are very welcome!</p>
 			<div class="input-group">
 				<div class="input-group-addon">&pound;</div>
 				<input id="amount" name="amount" type="number" class="form-control" value="{{ amount }}" min="{{ amount }}" />
@@ -16,6 +18,7 @@
 			</div>
 		</p>
 		
+		<p>(Placeholder text to explain how we handle the initial charge period before your regular charge date. We need to figure that out)</p>
 		<p>
 			<label for="day_of_month">Day of month: </label>
 			<select id="day_of_month" name="day_of_month" class="form-control">

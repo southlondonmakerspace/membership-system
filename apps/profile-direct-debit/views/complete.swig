@@ -4,7 +4,7 @@
 {% set heading = 'Direct Debit' %}
 
 {% block content %}
-	<p>Your Direct Debit mandate and subscription are setup, if you wish to make changes to the subscription you can cancel it and set it up again.</p>
+	<p>Your Direct Debit mandate and subscription are set up. If you wish to make changes to the subscription, you must cancel it and set it up again.</p>
 	
 	<a href="/profile/direct-debit/cancel-subscription" class="btn btn-danger">Cancel Subscription</a>
 {% endblock %}

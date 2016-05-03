@@ -4,7 +4,8 @@
 {% set heading = 'Activate Discourse Link' %}
 
 {% block content %}
-	<p>We've sent an activation link to your discourse Private Messaged, please click the link or copy the code to link your accounts.</p>
+	<p>We've sent an activation link to your Discourse Private Messages</p>
+	<p>Please click the link or copy the code to link your accounts.</p>
 
 	<form method="post" action="/profile/discourse/activate">
 		<p>

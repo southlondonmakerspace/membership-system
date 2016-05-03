@@ -10,7 +10,7 @@
 	<form action="/profile/direct-debit/create-subscription" method="post">
 		<p>
 			<label for="amount">Amount: </label>
-			<p>The standard rate is £20 per month. If you can't afford this, please <a href="mailto:trustees@southlondonmakerspace.org?Subject=Discount"email trustees@southlondonmakerspace.org</a> and we can arrange a discount. If you'd like to pay <em>more</em> than £20 then you are very welcome!</p>
+			<p>The standard rate is £20 per month. If you can't afford this, please <a href="mailto:trustees@southlondonmakerspace.org?Subject=Discount">email trustees@southlondonmakerspace.org</a> and we can arrange a discount. If you'd like to pay <em>more</em> than £20 then you are very welcome!</p>
 			<div class="input-group">
 				<div class="input-group-addon">&pound;</div>
 				<input id="amount" name="amount" type="number" class="form-control" value="{{ amount }}" min="{{ amount }}" />

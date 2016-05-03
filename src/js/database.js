@@ -215,6 +215,7 @@ memberSchema.virtual( 'fullname' ).get( function() {
 
 memberSchema.virtual( 'gravatar' ).get( function() {
 	var md5 = crypto.createHash( 'md5' ).update( this.email ).digest( 'hex' );
+	return '//www.gravatar.com/avatar/' + md5;
 } );
 
 exports.permissionsSchema = permissionsSchema;

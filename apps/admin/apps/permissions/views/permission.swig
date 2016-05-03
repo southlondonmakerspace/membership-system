@@ -1,4 +1,4 @@
-{% extends '../../../src/views/base.swig' %}
+{% extends '../../../../../src/views/base.swig' %}
 
 {% set title = 'Permission' %}
 {% set heading = permission.name %}
@@ -20,5 +20,5 @@
 	
 	<hr />
 
-	{% include '../../admin-members/views/partials/member-table.swig' %}
+	{% include '../../members/views/partials/member-table.swig' %}
 {% endblock %}

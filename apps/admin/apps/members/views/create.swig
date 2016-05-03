@@ -1,4 +1,4 @@
-{% extends '../../../src/views/base.swig' %}
+{% extends '../../../../../src/views/base.swig' %}
 
 {% set title = 'Create Member' %}
 {% set heading = 'Create Member' %}

@@ -1,4 +1,4 @@
-{% extends '../../../src/views/base.swig' %}
+{% extends '../../../../../src/views/base.swig' %}
 
 {% set title = 'Edit Permission' %}
 {% set heading = 'Edit "' + permission.name + '" Permission' %}

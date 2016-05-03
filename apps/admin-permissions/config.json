@@ -1,8 +1,0 @@
-{
-	"title": "Permissions",
-	"path": "admin/permissions",
-	"permissions": [
-		"superadmin", "admin", "trustee"
-	],
-	"menu": "none"
-}

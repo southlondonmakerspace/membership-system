@@ -1,5 +1,7 @@
 "use strict";
 
+var __apps = __dirname + '/apps';
+
 var	fs = require( 'fs' ),
 	express = require( 'express' ),
 	app = express();
@@ -27,10 +29,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 	res.render( 'admin' );
 } );
 
-module.exports = function( config ) {
-	app_config = config;
-
-	var __apps = __dirname + '/apps';
+function loadApps() {
 	var files = fs.readdirSync( __apps );
 	for ( var f in files ) {
 		var file = __apps + '/' + files[f];
@@ -52,6 +51,10 @@ module.exports = function( config ) {
 		console.log( "	  Sub route: /" + _app.path );
 		app.use( '/' + _app.path, require( _app.app )( _app ) );
 	}
+}
 
+module.exports = function( config ) {
+	app_config = config;
+	loadApps();
 	return app;
 };

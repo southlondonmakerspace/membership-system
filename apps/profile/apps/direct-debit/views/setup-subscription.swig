@@ -1,4 +1,4 @@
-{% extends '../../../src/views/base.swig' %}
+{% extends '../../../../../src/views/base.swig' %}
 
 {% set title = 'Direct Debit' %}
 {% set heading = 'Setup Subscription' %}

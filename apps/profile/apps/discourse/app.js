@@ -4,14 +4,14 @@ var	express = require( 'express' ),
 	app = express(),
 	request= require( 'request' );
 
-var messages = require( '../../src/messages.json' );
+var messages = require( '../../../../src/messages.json' );
 
-var config = require( '../../config/config.json' );
+var config = require( '../../../../config/config.json' );
 
-var discourse = require( '../../src/js/discourse.js' ),
-	Members = require( '../../src/js/database' ).Members;
+var discourse = require( '../../../../src/js/discourse.js' ),
+	Members = require( '../../../../src/js/database' ).Members;
 
-var auth = require( '../../src/js/authentication.js' );
+var auth = require( '../../../../src/js/authentication.js' );
 
 var app_config = {};
 
@@ -20,12 +20,8 @@ app.set( 'views', __dirname + '/views' );
 app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
-		name: 'Profile',
-		url: '/profile'
-	} );
-	res.locals.breadcrumb.push( {
 		name: app_config.title,
-		url: app.mountpath
+		url: app.parent.mountpath + app.mountpath
 	} );
 	res.locals.activeApp = 'profile';
 	next();
@@ -72,11 +68,11 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 			} );
 			
 			req.flash( 'info', messages['discourse-activation-sent'] );
-			res.redirect( '/profile' );
+			res.redirect( app.parent.mountpath );
 		} );
 	} else {
 		req.flash( 'warning', messages['discourse-activation-dupe'] );
-		res.redirect( '/profile' );
+		res.redirect( app.parent.mountpath );
 	}
 } );
 
@@ -88,11 +84,11 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 				"discourse.activation_code": null
 			} }, function ( error ) {} );
 			req.flash( 'info', messages['discourse-linked'] );
-			return res.redirect( app.mountpath );
+			return res.redirect( app.parent.mountpath + app.mountpath );
 		}
 	}
 	req.flash( 'warning', messages['discourse-activation-code-err'] );
-	res.redirect( '/profile' );
+	res.redirect( app.parent.mountpath );
 } );
 
 module.exports = function( config ) {

@@ -4,6 +4,7 @@ var	express = require( 'express' ),
 	app = express(),
 	request = require( 'request' ),
 	bodyParser = require( 'body-parser' ),
+	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	formBodyParser = bodyParser.urlencoded( { extended: true } );
 
 var messages = require( '../../../../src/messages.json' );
@@ -170,21 +171,104 @@ app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-var rawBodyParser = bodyParser.text( { type: 'application/json' } );
-app.post( '/webhook', rawBodyParser, function( req, res ) {
-	console.log( typeof req.body );
+app.post( '/webhook', textBodyParser, function( req, res ) {
 	if ( req.headers['webhook-signature'] != undefined && req.headers['content-type'] == 'application/json' ) {
 		GoCardless.validateWebhook( req.headers['webhook-signature'], req.body, function( valid ) {
 			if ( valid ) {
+				var events = JSON.parse( req.body ).events;
+
+				for ( var e in events ) {
+					handleResourceEvent( events[e] );
+				}
+
 				res.sendStatus( 200 );
 			} else {
 				res.sendStatus( 498 );
 			}
 		} );
 	} else {
-		res.sendStatus( 403 );
+		res.sendStatus( 498 );
 	}
 } );
+
+function handleResourceEvent( event ) {
+	switch ( event.resource_type ) {
+		case 'mandates':
+			console.log( 'mandate' );
+			handleMandateEvent( event );
+			break;
+		case 'subscriptions':
+			console.log( 'subscription' );
+			handleSubscriptionEvent( event );
+			break;
+		case 'payments':
+			console.log( 'payment' );
+			handlePaymentEvent( event );
+			break;
+	}
+	console.log( event );
+}
+
+function handleMandateEvent( event ) {
+	switch( event.action ) {
+		case 'created':
+			console.log( 'created' );
+			break;
+		case 'submitted':
+			console.log( 'submitted' );
+			break;
+		case 'active':
+			console.log( 'active' );
+			break;
+		case 'cancelled':
+			console.log( 'cancelled' );
+			break;
+		case 'failed':
+			console.log( 'failed' );
+			break;
+		case 'expired':
+			console.log( 'expired' );
+			break;
+	}
+	console.log( event );
+}
+
+function handleSubscriptionEvent( event ) {
+	switch( event.action ) {
+		case 'created':
+			console.log( 'created' );
+			break;
+		case 'cancelled':
+			console.log( 'cancelled' );
+			break;
+		default:
+	}
+}
+
+function handlePaymentEvent( event ) {
+	switch( event.action ) {
+		case 'created': // Pending
+			console.log( 'created' );
+			break;
+		case 'submitted': // Processing
+			console.log( 'submitted' );
+			break;
+		case 'confirmed': // Collected
+			console.log( 'confirmed' );
+			break;
+		case 'cancelled': // Cancelled
+			console.log( 'cancelled' );
+			break;
+		case 'failed': // Failed
+			console.log( 'failed' );
+			break;
+		case 'paid_out': // Received
+			console.log( 'paid_out' );
+			break;
+		default:
+	}
+	console.log( event );
+}
 
 module.exports = function( config ) {
 	app_config = config;

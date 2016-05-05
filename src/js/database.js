@@ -133,21 +133,13 @@ var memberSchema = mongoose.Schema( {
 		}
 	},
 	discourse: {
-		id: {
-			type: String,
-			unique: true
-		},
-		email: {
-			type: String,
-			unique: true
-		},
+		id: String,
+		email: String,
 		activated: {
 			type: Boolean,
 			default: false
 		},
-		activation_code: {
-			type: String	
-		},
+		activation_code: String,
 			
 	},
 	gocardless: {
@@ -173,7 +165,7 @@ var memberSchema = mongoose.Schema( {
 			description: {
 				type: String
 			},
-			bill_id: {
+			payment_id: {
 				type: String
 			},
 			subscription_id: {

@@ -27,10 +27,6 @@ require( __js + '/authentication' ).auth( app );
 // Setup static route
 app.use( express.static( __static ) );
 
-// Enable support for form post data
-app.use( body.json() );
-app.use( body.urlencoded( { extended: true } ) );
-
 // Handle sessions
 require( __js + '/sessions' )( app );
 
@@ -83,6 +79,6 @@ app.get( '*', function( req, res ) {
 console.log( "	Route: *" );
 
 // Start server
-var listener = app.listen( config.port, function () {
-	console.log( "Server started on: " + listener.address().address + listener.address().port );
+var listener = app.listen( config.port ,config.host, function () {
+	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );

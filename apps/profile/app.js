@@ -1,7 +1,11 @@
 "use strict";
 
-var	express = require( 'express' ),
-	app = express();
+var __apps = __dirname + '/apps';
+
+var	fs = require( 'fs' ),
+	express = require( 'express' ),
+	app = express(),
+	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var Members = require( '../../src/js/database' ).Members;
 
@@ -11,6 +15,7 @@ var config = require( '../../config/config.json' );
 
 var auth = require( '../../src/js/authentication.js' );
 
+var apps = [];
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -41,7 +46,7 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 	res.render( 'update', { user: req.user } );
 } );
 
-app.post( '/update', auth.isLoggedIn, function( req, res ) {
+app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var profile = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -73,7 +78,7 @@ app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 	res.render( 'emergency-contact', { user: req.user } );
 } );
 
-app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
+app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var profile = {
 		emergency_contact: {
 			firstname: req.body.firstname,
@@ -106,7 +111,7 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 	res.render( 'tag', { user: req.user } );
 } );
 
-app.post( '/tag', auth.isLoggedIn, function( req, res ) {
+app.post( '/tag', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
 		'tag.id': req.body.tag,
@@ -140,7 +145,7 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 	res.render( 'change-password' );
 } );
 
-app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
+app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		auth.hashPassword( req.body.current, user.password.salt, function( hash ) {
 			if ( hash != user.password.hash ) {
@@ -176,7 +181,32 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	} );
 } );
 
+function loadApps() {
+	var files = fs.readdirSync( __apps );
+	for ( var f in files ) {
+		var file = __apps + '/' + files[f];
+		if ( fs.statSync( file ).isDirectory() ) {
+			var config_file = file + '/config.json';
+			if ( fs.existsSync( config_file ) ) {
+				var output = JSON.parse( fs.readFileSync( config_file ) );
+				output.uid = files[f];
+				if ( output.priority == undefined )
+					output.priority = 100;
+				output.app = file + '/app.js';
+				apps.push( output );
+			}
+		}
+	}
+
+	for ( var a in apps ) {
+		var _app = apps[a];
+		console.log( "	  Sub route: /" + _app.path );
+		app.use( '/' + _app.path, require( _app.app )( _app ) );
+	}
+}
+
 module.exports = function( config ) {
 	app_config = config;
+	loadApps();
 	return app;
 };

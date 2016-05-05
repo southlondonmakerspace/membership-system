@@ -79,6 +79,6 @@ app.get( '*', function( req, res ) {
 console.log( "	Route: *" );
 
 // Start server
-var listener = app.listen( config.port, function () {
-	console.log( "Server started on: " + listener.address().address + listener.address().port );
+var listener = app.listen( config.port ,config.host, function () {
+	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );

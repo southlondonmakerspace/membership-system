@@ -1,13 +1,17 @@
 "use strict";
 
+var __root = '../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+
 var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
-var	Members = require( '../../src/js/database' ).Members,
-	auth = require( '../../src/js/authentication' );
+var	Members = require( __js + '/database' ).Members,
+	auth = require( __js + '/authentication' );
 
-var messages = require( '../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
 var app_config = {};
 

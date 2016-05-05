@@ -1,5 +1,10 @@
 "use strict";
 
+var __root = '../../../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+var __config = __root + '/config';
+
 var	express = require( 'express' ),
 	app = express(),
 	request = require( 'request' ),
@@ -7,16 +12,16 @@ var	express = require( 'express' ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	formBodyParser = bodyParser.urlencoded( { extended: true } );
 
-var messages = require( '../../../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
-var config = require( '../../../../config/config.json' );
+var config = require( __config + '/config.json' );
 
-var auth = require( '../../../../src/js/authentication.js' ),
-	discourse = require( '../../../../src/js/discourse.js' ),
-	Permissions = require( '../../../../src/js/database' ).Permissions,
-	Members = require( '../../../../src/js/database' ).Members;
+var auth = require( __js + '/authentication' ),
+	discourse = require( __js + '/discourse' ),
+	Permissions = require( __js + '/database' ).Permissions,
+	Members = require( __js + '/database' ).Members;
 
-var GoCardless = require( '../../../../src/js/gocardless' )( config.gocardless );
+var GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
 var app_config = {};
 

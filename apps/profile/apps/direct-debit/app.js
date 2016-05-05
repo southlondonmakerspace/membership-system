@@ -193,55 +193,10 @@ app.post( '/webhook', textBodyParser, function( req, res ) {
 
 function handleResourceEvent( event ) {
 	switch ( event.resource_type ) {
-		case 'mandates':
-			console.log( 'mandate' );
-			handleMandateEvent( event );
-			break;
-		case 'subscriptions':
-			console.log( 'subscription' );
-			handleSubscriptionEvent( event );
-			break;
 		case 'payments':
 			console.log( 'payment' );
 			handlePaymentEvent( event );
 			break;
-	}
-	console.log( event );
-}
-
-function handleMandateEvent( event ) {
-	switch( event.action ) {
-		case 'created':
-			console.log( 'created' );
-			break;
-		case 'submitted':
-			console.log( 'submitted' );
-			break;
-		case 'active':
-			console.log( 'active' );
-			break;
-		case 'cancelled':
-			console.log( 'cancelled' );
-			break;
-		case 'failed':
-			console.log( 'failed' );
-			break;
-		case 'expired':
-			console.log( 'expired' );
-			break;
-	}
-	console.log( event );
-}
-
-function handleSubscriptionEvent( event ) {
-	switch( event.action ) {
-		case 'created':
-			console.log( 'created' );
-			break;
-		case 'cancelled':
-			console.log( 'cancelled' );
-			break;
-		default:
 	}
 }
 

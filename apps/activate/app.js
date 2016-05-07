@@ -22,7 +22,6 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );

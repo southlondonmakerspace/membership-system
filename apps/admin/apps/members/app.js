@@ -61,7 +61,8 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 				password: password,
 				activated: true,
 				gocardless: {
-					id: req.body.gocardless_id,
+					mandate_id: req.body.gocardless_mandate_id,
+					subscription_id: req.body.gocardless_subscription_id,
 					amount: req.body.gocardless_amount
 				}
 			}
@@ -297,7 +298,8 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	var member = {
-		'gocardless.id': req.body.id,
+		'gocardless.mandate_id': req.body.mandate_id,
+		'gocardless.subscription_id': req.body.subscription_id,
 		'gocardless.amount': req.body.amount,
 		'gocardless.minimum': req.body.minimum
 	}

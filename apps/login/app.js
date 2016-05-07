@@ -1,12 +1,15 @@
 "use strict";
 
+var __root = '../..';
+var __src = __root + '/src';
+
 var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var	passport = require( 'passport' );
 
-var messages = require( '../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
 var app_config = {};
 

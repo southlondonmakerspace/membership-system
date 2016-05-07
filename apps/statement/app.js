@@ -1,10 +1,14 @@
 "use strict";
 
+var __root = '../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+
 var	express = require( 'express' ),
 	app = express();
 
-var auth = require( '../../src/js/authentication.js' ),
-	Members = require( '../../src/js/database' ).Members;
+var auth = require( __js + '/authentication' ),
+	Members = require( __js + '/database' ).Members;
 
 var app_config = {};
 

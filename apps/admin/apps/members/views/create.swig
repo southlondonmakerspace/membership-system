@@ -44,7 +44,11 @@
 		<h3>GoCardless</h3>
 		
 		<p>
-			<label for="gocardless_id">Subscription ID:</label> <input type="text" id="gocardless_id" name="gocardless_id" class="form-control" value="{{ member.gocardless.id }}" />
+			<label for="gocardless_mandate_id">Mandate ID:</label> <input type="text" id="gocardless_mandate_id" name="gocardless_mandate_id" class="form-control" value="{{ member.gocardless.id }}" />
+		</p>
+		
+		<p>
+			<label for="gocardless_subscription_id">Subscription ID:</label> <input type="text" id="gocardless_subscription_id" name="gocardless_subscription_id" class="form-control" value="{{ member.gocardless.id }}" />
 		</p>
 		
 		<p>

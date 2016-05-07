@@ -1,18 +1,23 @@
 "use strict";
 
+var __root = '../../../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+var __config = __root + '/config';
+
 var	express = require( 'express' ),
 	app = express(),
-	discourse = require( '../../../../src/js/discourse' ),
+	discourse = require( __js + '/discourse' ),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
-var	Permissions = require( '../../../../src/js/database' ).Permissions,
-	Members = require( '../../../../src/js/database' ).Members;
+var	Permissions = require( __js + '/database' ).Permissions,
+	Members = require( __js + '/database' ).Members;
 
-var auth = require( '../../../../src/js/authentication.js' );
+var auth = require( __js + '/authentication' );
 
-var messages = require( '../../../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
-var config = require( '../../../../config/config.json' );
+var config = require( __config + '/config.json' );
 
 var app_config = {};
 
@@ -56,7 +61,8 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 				password: password,
 				activated: true,
 				gocardless: {
-					id: req.body.gocardless_id,
+					mandate_id: req.body.gocardless_mandate_id,
+					subscription_id: req.body.gocardless_subscription_id,
 					amount: req.body.gocardless_amount
 				}
 			}
@@ -292,7 +298,8 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	var member = {
-		'gocardless.id': req.body.id,
+		'gocardless.mandate_id': req.body.mandate_id,
+		'gocardless.subscription_id': req.body.subscription_id,
 		'gocardless.amount': req.body.amount,
 		'gocardless.minimum': req.body.minimum
 	}

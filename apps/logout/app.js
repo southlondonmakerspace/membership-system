@@ -1,9 +1,14 @@
 "use strict";
 
+var __root = '../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+var __config = __root + '/config';
+
 var	express = require( 'express' ),
 	app = express();
 
-var messages = require( '../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
 app.get( '/' , function( req, res ) {
 	req.logout();

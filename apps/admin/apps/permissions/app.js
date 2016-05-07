@@ -1,17 +1,22 @@
 "use strict";
 
+var __root = '../../../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+var __config = __root + '/config';
+
 var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
-var Permissions = require( '../../../../src/js/database' ).Permissions,
-	Members = require( '../../../../src/js/database' ).Members;
+var Permissions = require( __js + '/database' ).Permissions,
+	Members = require( __js + '/database' ).Members;
 
-var auth = require( '../../../../src/js/authentication.js' );
+var auth = require( __js + '/authentication' );
 
-var messages = require( '../../../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
-var config = require( '../../../../config/config.json' );
+var config = require( __config + '/config.json' );
 
 var app_config = {};
 

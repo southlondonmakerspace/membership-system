@@ -8,14 +8,14 @@
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			jQuery( '#password' ).popover( {
-				trigger: 'focus', 
+				trigger: 'focus',
 				title: 'Password requirements:',
 				content: '<p class="pw len">8 characters or more</p><p class="pw up">1 or more uppercase letters</p><p class="pw low">1 or more lowercase letters</p><p class="pw num">1 or more numbers</p>',
 				html: true
 			} );
 			jQuery( '#password' ).on( 'keyup paste', function( e ) {
 				var pw = jQuery( this ).val();
-				
+
 				if ( pw.length < 8 ) {
 					jQuery( '.pw.len' ).removeClass( 'pass');
 				} else {

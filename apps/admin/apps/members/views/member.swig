@@ -14,11 +14,11 @@
 			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&amp;d=identicon&amp;r=g"></p>
 
 			<p><strong>First Name:</strong> {{ member.firstname }}</p>
-			
+
 			<p><strong>Last Name:</strong> {{ member.lastname }}</p>
-			
+
 			<p><strong>Email:</strong> {{ member.email }}</p>
-			
+
 			{% if access == 'superadmin' %}
 				<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
 
@@ -32,9 +32,9 @@
 				</div>
 
 				<p><strong>First Name:</strong> {{ member.emergency_contact.firstname | default('–')  }}</p>
-				
+
 				<p><strong>Last Name:</strong> {{ member.emergency_contact.lastname | default('–')  }}</p>
-				
+
 				<p><strong>Telephone:</strong> {{ member.emergency_contact.telephone | default('–')  }}
 			</div>
 
@@ -54,26 +54,26 @@
 			{% endif %}
 
 				<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
-				
+
 				<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
-				
+
 			{% if access == 'superadmin' %}
 				<p><strong>Activation Code:</strong> {{ member.activation_code | default('–') }} {% if member.activation_code %}&mdash; {{ audience }}/activate/{{ member.activation_code }}{% endif %}
 				</p>
-				
+
 				<p><strong>Password Reset Code:</strong> {{ member.password_reset_code | default('–') }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
 
 				<p><a href="/admin/members/{{ member.uuid }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			{% endif %}
 		</div>
-		
+
 		<div class="col-md-6">
 			<div class="page-header">
 				<h3>Tag</h3>
 			</div>
-			
+
 			<p><strong>Tag:</strong> {{ member.tag.id | default('–') }}</p>
-			
+
 			{% if access == 'superadmin' %}
 				<p><strong>Hashed Tag:</strong> {{ member.tag.hashed | default('–') }}</p>
 			{% endif %}
@@ -90,16 +90,16 @@
 				</div>
 
 				<p><strong>User ID:</strong> {{ member.discourse.id | default('–') }}</p>
-				
+
 				<p><strong>Email:</strong> {{ member.discourse.email | default('–') }}</p>
-				
+
 				<p><strong>Activated:</strong> {% if member.discourse.activated %}Yes{% else %}No{% endif %}</p>
-				
+
 				<p><strong>Activation Code:</strong> {{ member.discourse.activation_code | default('–') }} {% if member.discourse.activation_code %}&mdash; {{ audience }}/profile/discourse?code={{ member.discourse.activation_code }}{% endif %}
 
 				<p><a href="/admin/members/{{ member.uuid }}/discourse" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			</div>
-			
+
 			<div class="col-md-6">
 				<div class="page-header">
 					<h3>GoCardless</h3>
@@ -122,10 +122,14 @@
 		<h3>Permissions</h3>
 	</div>
 
-	<p><strong>Super Admin:</strong> {% if superadmin %}Yes{% else %}No{% endif %} &mdash; <em>Can only be edited in config</em></p>
-
-	{% if member.permissions.length > 0 %}
+	{% if member.permissions.length > 0 || superadmin %}
 		<div class="list-group">
+			{% if superadmin %}
+				<span class="list-group-item">
+					<h4 class="list-group-item-heading">Super Admin</h4>
+						<p class="list-group-item-text">Has super admin permission granted in the config.json file.</p>
+				</span>
+			{% endif %}
 			{% for permission in member.permissions %}
 				{% set permission = permission.permission %}
 				<span class="list-group-item">

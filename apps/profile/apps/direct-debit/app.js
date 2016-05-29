@@ -75,7 +75,8 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 
 app.get( '/setup-mandate', auth.isLoggedIn, function( req, res ) {
 	auth.generateActivationCode( function( session_token ) { 
-		GoCardless.createRedirectFlow( 'Membership', session_token, config.audience + app.parent.mountpath + app.mountpath, function( error, redirect_url, body ) {
+		GoCardless.createRedirectFlow( 'Membership + Payments', session_token, config.audience + app.parent.mountpath + app.mountpath, function( error, redirect_url, body ) {
+			console.dir( body );
 			if ( error ) {
 				req.flash( 'danger', messages['gocardless-mandate-err'] );
 				res.redirect( app.parent.mountpath + app.mountpath );
@@ -131,11 +132,8 @@ app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function(
 		return res.redirect( app.parent.mountpath + app.mountpath );
 	}
 
-	var meta = {
-		uuid: req.user.uuid
-	}
-
-	GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', meta, function( error, subscription_id, body ) {
+	GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id, body ) {
+		console.dir( body );
 		if ( error ) {
 			req.flash( 'danger', messages['gocardless-subscription-err'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
@@ -198,6 +196,10 @@ app.post( '/webhook', textBodyParser, function( req, res ) {
 
 function handleResourceEvent( event ) {
 	switch ( event.resource_type ) {
+		case 'subscriptions':
+			console.log( 'subscription' );
+			console.log( event );
+			break;
 		case 'payments':
 			console.log( 'payment' );
 			handlePaymentEvent( event );

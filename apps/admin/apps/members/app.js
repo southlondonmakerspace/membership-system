@@ -262,11 +262,12 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	var member = {
-		'discourse.mandate_id': req.body.mandate_id,
-		'discourse.subscription_id': req.body.subscription_id,
+		'discourse.id': req.body.id,
 		'discourse.email': req.body.email,
 		'discourse.activated': ( req.body.activated ? true : false )
 	}
+
+	if ( req.body.clear ) member['discourse.activation_code'] = null;
 
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', messages['discourse-updated'] );
@@ -329,7 +330,7 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
 			} );
-			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date() } );
+			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date(), superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
 	} );
 } );

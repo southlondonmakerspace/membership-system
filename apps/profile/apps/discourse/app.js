@@ -36,22 +36,21 @@ app.use( function( req, res, next ) {
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	// Not linked or in activation
 	if ( ! req.user.discourse.activated && ! req.user.discourse.activation_code ) {
-		discourse.getUserByEmail( req.user.email, function( user ) {
-			if ( user != undefined ) {
-				Members.update( { "_id": req.user._id }, { $set: {
-					"discourse.id": user.id,
-					"discourse.email": req.user.email
-				} }, function( err ) {
-				} );
-				user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
+		var search = ( req.query.search ? req.query.search : req.user.email );
+		discourse.searchUsers( search, function( users ) {
+			if ( users != undefined ) {
+				for ( var u in users ) {
+					users[u].avatar = config.discourse.url + users[u].avatar_template.replace( '{size}', 100 );
+					users[u].profile_link = config.discourse.url + '/users/' + users[u].username;
+				}
 			}
-			res.render( 'find', { discourse_user: user } );
+			res.render( 'find', { users: users, search: search } );
 		} );
 	// Linked, not activated
 	} else if ( ! req.user.discourse.activated ) {
 		res.render( 'activate', { activation_code: req.query.code } );
 
-	// Linked 
+	// Linked
 	} else if ( req.user.discourse.activated ) {
 		discourse.getUserByEmail( req.user.discourse.email, function( user ) {
 			user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
@@ -60,21 +59,34 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-app.post( '/link', auth.isLoggedIn, function( req, res ) {
+app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 	if ( ! req.user.discourse.activation_code ) {
-		auth.generateActivationCode( function( code ) {
-			code = code.toString( 'hex' );
-			
-			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse.activation_code": code
-			} }, function ( error ) {} );
+		discourse.searchUsers( req.body.search, function( users ) {
+			if ( users != undefined ) {
+				var user = users[ req.body.user ];
+				console.log( user.id );
+				Members.findOne( { "discourse.id": user.id }, function( err, member ) {
+					if ( member ) {
+						req.flash( 'warning', messages['discouse-id-duplicate'] );
+						res.redirect( app.parent.mountpath + app.mountpath );
+					} else {
+						auth.generateActivationCode( function( code ) {
+							code = code.toString( 'hex' );
 
-			discourse.getUserByEmail( req.user.discourse.email, function( user ) {
-				discourse.sendActivationMessage( user.username, code );
-			} );
-			
-			req.flash( 'info', messages['discourse-activation-sent'] );
-			res.redirect( app.parent.mountpath );
+							Members.update( { "_id": req.user._id }, { $set: {
+								"discourse.id": user.id,
+								"discourse.email": user.email,
+								"discourse.activation_code": code
+							} }, function ( error ) {} );
+
+							discourse.sendActivationMessage( user.username, code );
+
+							req.flash( 'info', messages['discourse-activation-sent'] );
+							res.redirect( app.parent.mountpath );
+						} );
+					}
+				} );
+			}
 		} );
 	} else {
 		req.flash( 'warning', messages['discourse-activation-dupe'] );

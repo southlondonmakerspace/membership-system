@@ -8,24 +8,42 @@ var Permissions = require( '../../src/js/database' ).Permissions,
 var request = require( 'request' );
 
 var Discourse = {
-	getUserByEmail: function ( email, callback ) {
+	searchUsers: function ( search, callback ) {
 		request.get( config.discourse.url + '/admin/users/list/active.json', {
 			form: {
 				api_username: config.discourse.api_username,
 				api_key: config.discourse.api_key,
 				show_emails: true,
-				filter: email
+				filter: search
 			}
 		}, function ( error, response, body ) {
 			if ( response.statusCode == '200 ') {
 				var output = JSON.parse( body );
 				if ( output[0] != undefined ) {
-					return callback( output[0] );
+					return callback( output );
 				}
 			}
 			return callback();
 		} );
 	},
+	getUserByEmail: function ( email, callback ) {
+			request.get( config.discourse.url + '/admin/users/list/active.json', {
+				form: {
+					api_username: config.discourse.api_username,
+					api_key: config.discourse.api_key,
+					show_emails: true,
+					filter: email
+				}
+			}, function ( error, response, body ) {
+				if ( response.statusCode == '200 ') {
+					var output = JSON.parse( body );
+					if ( output[0] != undefined ) {
+						return callback( output[0] );
+					}
+				}
+				return callback();
+			} );
+		},
 	sendPrivateMessage:	function ( username, subject, message ) {
 		request.post( config.discourse.url + '/posts', {
 			form: {

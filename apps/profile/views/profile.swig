@@ -7,7 +7,7 @@
 	<p><img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=identicon&r=g"></p>
 
 	<p><strong>Name:</strong> {{ user.fullname }}</p>
-	
+
 	<p><strong>Email:</strong> {{ user.email }}</p>
 
 	<p><strong>Address:</strong> {{ user.address | replace('\r\n', ', ', 'gim') }}</p>
@@ -26,7 +26,7 @@
 		<li style="margin-bottom: 1em;">
 			<a href="/profile/update" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Profile</a> So we know who you are.
 		</li>
-		
+
 		<li style="margin-bottom: 1em;">
 			{% if user.emergency_contact.telephone %}
 				<a href="/profile/emergency-contact" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Emergency Contact</a>
@@ -44,10 +44,12 @@
 				<a href="/profile/direct-debit" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Direct Debit</a>
 			{% endif %} So you can pay  your membership fee.
 		</li>
-		
+
 		<li style="margin-bottom: 1em;">
 			{% if user.discourse.activated %}
 				<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
+			{% elseif ! user.discourse.activated && user.discourse.id != '' %}
+				<a href="/profile/discourse" class="btn btn-warning"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
 			{% else %}
 				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
 			{% endif %} So you can view the members only area on Discourse.

@@ -17,7 +17,16 @@
 				<h3>Permissions</h3>
 			</div>
 			<div class="list-group">
-				{% if member.permissions.length > 0 %}
+				{% if member.permissions.length > 0 || superadmin %}
+					{% if superadmin %}
+						<span class="list-group-item">
+							<h4 class="list-group-item-heading">Super Admin</h4>
+								<p class="list-group-item-text">Has super admin permission granted in the config.json file.</p>
+								<p style="position: absolute; top: 1em; right: 1em;">
+									<small>Requires edit to config.json</small>
+								</p>
+						</span>
+					{% endif %}
 					{% for permission in member.permissions %}
 						<span class="list-group-item">
 							<h4 class="list-group-item-heading">{{ permission.permission.name }}</h4>

@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block content %}
-	<form method="post" action="/password-reset/change-password">
+	<form method="post" action="/password-reset/change-password" style="max-width: 300px;">
 		<p>
 			<label for="password_reset_code">Reset code: </label>
 			<input id="password_reset_code" name="password_reset_code" type="text" value="{{ password_reset_code }}" class="form-control" {% if password_reset_code %}readonly{% endif %} />

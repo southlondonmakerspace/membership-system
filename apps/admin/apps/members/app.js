@@ -267,6 +267,8 @@ app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( r
 		'discourse.activated': ( req.body.activated ? true : false )
 	}
 
+	if ( req.body.clear ) member['discourse.activation_code'] = null;
+
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', messages['discourse-updated'] );
 		res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid );

@@ -18,6 +18,10 @@
 		</p>
 
 		<p>
+	<label for="clear">Clear activation code:</label> <input type="checkbox" id="clear" name="clear" class="form-control" />
+		</p>
+
+		<p>
 			<button class="btn btn-primary">Update</button>
 		</p>
 	</form>

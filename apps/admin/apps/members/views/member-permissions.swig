@@ -28,8 +28,12 @@
 								</p>
 							{% endif %}
 							<p style="position: absolute; top: 1em; right: 1em;">
-								<a href="/admin/members/{{ member.uuid }}/permissions/{{ permission._id | raw }}/modify" style="margin-right: 1em;"><span class="glyphicon glyphicon-pencil"></span></a>
-								<a href="/admin/members/{{ member.uuid }}/permissions/{{ permission._id | raw  }}/revoke"><span class="glyphicon glyphicon-remove"></span></a>
+								{% if ! permission.permission.superadmin_only || access == 'superadmin' %}
+									<a href="/admin/members/{{ member.uuid }}/permissions/{{ permission._id | raw }}/modify" style="margin-right: 1em;"><span class="glyphicon glyphicon-pencil"></span></a>
+									<a href="/admin/members/{{ member.uuid }}/permissions/{{ permission._id | raw  }}/revoke"><span class="glyphicon glyphicon-remove"></span></a>
+								{% else %}
+									<small>Restricted to Super Admins</small>
+								{% endif %}
 							</p>
 						</span>
 					{% endfor %}

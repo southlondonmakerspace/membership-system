@@ -8,9 +8,5 @@
 
 	<p>Hello there <strong>{{ discourse_user.username }}</strong>!</p>
 
-	<p>Your account is linked with Discourse.</p>	
-	
-	<hr />
-
-	<p>If this is not you please email the trustees for help.</p>
+	<p>Your account is linked with Discourse.</p>
 {% endblock %}

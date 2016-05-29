@@ -38,7 +38,6 @@ app.post( '/', formBodyParser, function( req, res ) {
 		if ( user ) {
 			auth.generateActivationCode( function( code ) {
 				var password_reset_code = code;
-
 				user.password.reset_code = password_reset_code;
 				user.save( function( err ) {} );
 

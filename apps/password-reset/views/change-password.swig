@@ -8,14 +8,14 @@
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			jQuery( '#password' ).popover( {
-				trigger: 'focus', 
+				trigger: 'focus',
 				title: 'Password requirements:',
 				content: '<p class="pw len">8 characters or more</p><p class="pw up">1 or more uppercase letters</p><p class="pw low">1 or more lowercase letters</p><p class="pw num">1 or more numbers</p>',
 				html: true
 			} );
 			jQuery( '#password' ).on( 'keyup paste', function( e ) {
 				var pw = jQuery( this ).val();
-				
+
 				if ( pw.length < 8 ) {
 					jQuery( '.pw.len' ).removeClass( 'pass');
 				} else {
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block content %}
-	<form method="post" action="/password-reset/change-password">
+	<form method="post" action="/password-reset/change-password" style="max-width: 300px;">
 		<p>
 			<label for="password_reset_code">Reset code: </label>
 			<input id="password_reset_code" name="password_reset_code" type="text" value="{{ password_reset_code }}" class="form-control" {% if password_reset_code %}readonly{% endif %} />

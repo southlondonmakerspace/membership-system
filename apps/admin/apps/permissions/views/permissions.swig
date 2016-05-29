@@ -24,7 +24,10 @@
 				<th>Slug</th>
 				<th>Description</th>
 				<th>Linked to Discourse Group</th>
-				<th></th>
+				<th>Restricted to Super Admin</th>
+				{% if access == 'superadmin' %}
+						<th></th>
+				{% endif %}
 			</tr>
 		</thead>
 		<tbody>
@@ -34,7 +37,10 @@
 					<td>{{ permission.slug }}</td>
 					<td>{{ permission.description }}</td>
 					<td>{% if permission.group.id && permission.group.name %}Yes{% else %}No{% endif %}</td>
-					<td><a href="/admin/permissions/{{ permission.slug }}/edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
+					<td>{% if permission.superadmin_only %}Yes{% else %}No{% endif %}</td>
+							{% if access == 'superadmin' %}
+								<td><a href="/admin/permissions/{{ permission.slug }}/edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
+					{% endif %}
 				</tr>
 			{% endfor %}
 		</tbody>

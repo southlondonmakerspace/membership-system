@@ -38,7 +38,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/create', auth.isAdmin, function( req, res ) {
+app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
@@ -52,7 +52,7 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
-	
+
 		res.locals.breadcrumb.push( {
 			name: permission.name
 		} );
@@ -63,11 +63,12 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/create', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
 		description: req.body.description,
+		superadmin_only: ( req.body.superadmin_only ? true : false ),
 		group: {
 			id: req.body.group_id,
 			name: req.body.group_name
@@ -80,14 +81,14 @@ app.post( '/create', [ auth.isAdmin, formBodyParser ], function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/edit', auth.isAdmin, function( req, res ) {
+app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( permission == undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
-	
+
 		res.locals.breadcrumb.push( {
 			name: permission.name
 		} );
@@ -95,11 +96,12 @@ app.get( '/:slug/edit', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:slug/edit', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	var permission = {
 		name: req.body.name,
 		slug: req.body.slug,
 		description: req.body.description,
+		superadmin_only: req.body.superadmin_only,
 		group: {
 			id: req.body.group_id,
 			name: req.body.group_name

@@ -27,16 +27,11 @@ var permissionsSchema = mongoose.Schema( {
 		unique: true,
 		required: true
 	},
-	description: {
-		type: String,
-	},
+	description: String,
+	superadmin_only: Boolean,
 	group: {
-		id: {
-			type: String
-		},
-		name: {
-			type: String
-		}
+		id: String,
+		name: String
 	}
 } );
 
@@ -140,7 +135,7 @@ var memberSchema = mongoose.Schema( {
 			default: false
 		},
 		activation_code: String,
-			
+
 	},
 	gocardless: {
 		redirect_flow_id: {

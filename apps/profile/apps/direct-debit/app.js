@@ -196,6 +196,10 @@ app.post( '/webhook', textBodyParser, function( req, res ) {
 
 function handleResourceEvent( event ) {
 	switch ( event.resource_type ) {
+		case 'subscriptions':
+			console.log( 'subscription' );
+			console.log( event );
+			break;
 		case 'payments':
 			console.log( 'payment' );
 			handlePaymentEvent( event );

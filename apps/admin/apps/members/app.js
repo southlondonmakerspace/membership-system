@@ -329,7 +329,7 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
 			} );
-			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date() } );
+			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date(), superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
 	} );
 } );

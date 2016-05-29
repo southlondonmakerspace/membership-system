@@ -340,6 +340,12 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req, res ) {
 	Permissions.findOne( { slug: req.body.permission }, function( err, permission ) {
 		if ( permission != undefined ) {
+			if ( permission.superadmin_only && res.locals.access != 'superadmin' ) {
+				req.flash( 'danger', messages['permission-sa-only'] );
+				res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
+				return;
+			}
+
 			var new_permission = {
 				permission: permission.id
 			}
@@ -380,10 +386,16 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 				res.redirect( app.parent.mountpath + app.mountpath );
 				return;
 			}
-			
+
 			if ( member.permissions.id( req.params.id ) == undefined ) {
 				req.flash( 'warning', messages['permission-404'] );
 				res.redirect( app.parent.mountpath + app.mountpath );
+				return;
+			}
+
+			if ( member.permissions.id( req.params.id ).permission.superadmin_only && res.locals.access != 'superadmin' ) {
+				req.flash( 'danger', messages['permission-sa-only'] );
+				res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
 				return;
 			}
 
@@ -404,7 +416,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], function( req, res ) {
-	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
+	Members.findOne( { uuid: req.params.uuid }).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
@@ -417,6 +429,12 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 			return;
 		}
 
+		if ( member.permissions.id( req.params.id ).permission.superadmin_only && res.locals.access != 'superadmin' ) {
+			req.flash( 'danger', messages['permission-sa-only'] );
+			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
+			return;
+		}
+
 		Permissions.findOne( { slug: req.body.permission }, function( err, newPermission ) {
 			if ( newPermission == undefined ) {
 				req.flash( 'warning', messages['permission-404'] );
@@ -424,10 +442,16 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 				return;
 			}
 
+			if ( newPermission.superadmin_only && res.locals.access != 'superadmin' ) {
+				req.flash( 'danger', messages['permission-sa-only'] );
+				res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
+				return;
+			}
+
 			var permission = member.permissions.id( req.params.id );
 			permission.permission = newPermission._id;
 
-			if ( req.body.start_date != '' && req.body.start_time != '' ) { 
+			if ( req.body.start_date != '' && req.body.start_time != '' ) {
 				permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
 			} else {
 				permission.date_added = new Date();
@@ -459,16 +483,24 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 ///////////////////////////
 
 app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
-	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
+	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( member == undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
-		
+
 		if ( member.permissions.id( req.params.id ) == undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
+			return;
+		}
+
+		console.log( member.permissions.id( req.params.id ).permission );
+
+		if ( member.permissions.id( req.params.id ).permission.superadmin_only && res.locals.access != 'superadmin' ) {
+			req.flash( 'danger', messages['permission-sa-only'] );
+			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;
 		}
 

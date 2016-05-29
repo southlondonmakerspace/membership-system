@@ -25,21 +25,22 @@
 	"activation-error": "Activation code or password did not match",
 	"activation-success": "You account is now active.",
 	"activation-updated": "Activation updated",
-	
+
 	"member-404": "Member not found",
 
 	"profile-updated": "Profile updated",
 
 	"emergency-contact-updated": "Emergency contact updated",
-	
+
 	"permission-404": "Permission not found",
 	"permission-created": "Permission created",
 	"permission-updated": "Permission updated",
 	"permission-removed": "Permission removed",
 	"permission-expiry-error": "Expiry date must not be the same as or before the start date",
-	
+	"permission-sa-only": "Permission can only be administered by super admin users",
+
 	"tag-updated": "Tag updated",
-	
+
 	"discourse-updated": "Discourse updated",
 	"discourse-activation-sent": "Activation code sent to your Discourse private messages",
 	"discourse-activation-dupe": "Activation code has already been sent",

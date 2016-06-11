@@ -27,7 +27,6 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isMember, function( req, res ) {
 	Payments.find( { member: req.user._id }, function( err, payments ) {
-		console.log( payments );
 		res.render( 'index', { payments: payments } );
 	} );
 } );

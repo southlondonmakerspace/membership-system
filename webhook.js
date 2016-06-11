@@ -45,40 +45,25 @@ var listener = app.listen( config.gocardless.port ,config.host, function () {
 } );
 
 function handleResourceEvent( event ) {
-	switch ( event.resource_type ) {
-		case 'payments':
-			console.log( 'payment' );
-			handlePaymentEvent( event );
-			break;
+	if ( event.resource_type == 'payments' ) {
+		switch( event.action ) {
+			case 'created': // Pending
+				createPayment( event );
+				break;
+			case 'submitted': // Processing
+			case 'confirmed': // Collected
+			case 'cancelled': // Cancelled
+			case 'failed': // Failed
+			case 'paid_out': // Received
+				updatePayment( event );
+				break;
+			default:
+		}
+		console.log( event );
 	}
 }
 
-function handlePaymentEvent( event ) {
-	switch( event.action ) {
-		case 'created': // Pending
-			handlePaymentCreatedEvent( event );
-			break;
-		case 'submitted': // Processing
-			console.log( 'submitted' );
-			break;
-		case 'confirmed': // Collected
-			console.log( 'confirmed' );
-			break;
-		case 'cancelled': // Cancelled
-			console.log( 'cancelled' );
-			break;
-		case 'failed': // Failed
-			console.log( 'failed' );
-			break;
-		case 'paid_out': // Received
-			console.log( 'paid_out' );
-			break;
-		default:
-	}
-	console.log( event );
-}
-
-function handlePaymentCreatedEvent( event ) {
+function createPayment( event ) {
 	var payment = {
 		payment_id: event.links.payment,
 		created: new Date( event.created_at ),
@@ -104,59 +89,12 @@ function handlePaymentCreatedEvent( event ) {
 	}
 }
 
-
-// _id
-// payment_id
-// subscription_id
-// member
-// status
-// description
-// amount
-// created
-// updated
-
-// PAYMENT : CREATED
-// { id: 'EV00068K3DNV8D',
-//   created_at: '2016-05-26T04:33:45.917Z',
-//   resource_type: 'payments',
-//   action: 'created',
-//   links: { subscription: 'SB00002TZ8MJQ6', payment: 'PM0001BSY770WF' },
-//   details:
-//    { origin: 'gocardless',
-//      cause: 'payment_created',
-//      description: 'Payment created by a subscription' },
-//   metadata: {} }
-
-// PAYMENT : SUBMITTED
-// {
-//   "id": "EV0006A00YKMK9",
-//   "created_at": "2016-05-27T15:05:57.194Z",
-//   "resource_type": "payments",
-//   "action": "submitted",
-//   "links": {
-//     "payment": "PM0001BSY770WF"
-//   },
-//   "details": {
-//     "origin": "gocardless",
-//     "cause": "payment_submitted",
-//     "description": "Payment submitted to the banks. As a result, it can no longer be cancelled."
-//   },
-//   "metadata": {}
-// }
-
-// PAYMENT : CONFIRMED
-// {
-//   "id": "EV0006GQXZC2PD",
-//   "created_at": "2016-06-02T10:06:37.970Z",
-//   "resource_type": "payments",
-//   "action": "confirmed",
-//   "links": {
-//     "payment": "PM0001BSY770WF"
-//   },
-//   "details": {
-//     "origin": "gocardless",
-//     "cause": "payment_confirmed",
-//     "description": "Enough time has passed since the payment was submitted for the banks to return an error, so this payment is now confirmed."
-//   },
-//   "metadata": {}
-// }
+function updatePayment( event ) {
+	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
+		if ( payment == undefined ) return; // There's nothing left to do here.
+		payment.status = event.details.cause;
+		payment.save( function( err ) {
+			if ( err ) console.log( err );
+		} );
+	} );
+}

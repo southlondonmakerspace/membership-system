@@ -21,6 +21,7 @@
 		"api_key": ""
 	},
 	"gocardless": {
+		"port": 3002,
 		"access_token": "",
 		"secret": "",
 		"sandbox": true,

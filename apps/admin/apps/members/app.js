@@ -11,7 +11,8 @@ var	express = require( 'express' ),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
 var	Permissions = require( __js + '/database' ).Permissions,
-	Members = require( __js + '/database' ).Members;
+	Members = require( __js + '/database' ).Members,
+	Payments = require( __js + '/database' ).Payments;
 
 var auth = require( __js + '/authentication' );
 
@@ -114,10 +115,12 @@ app.get( '/:uuid', auth.isAdmin, function( req, res ) {
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
-		res.locals.breadcrumb.push( {
-			name: member.fullname
+		Payments.find( { member: member._id }, function( err, payments ) {
+			res.locals.breadcrumb.push( {
+				name: member.fullname
+			} );
+			res.render( 'member', { member: member, payments: payments, audience: config.audience, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
-		res.render( 'member', { member: member, audience: config.audience, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 	} );
 } );
 

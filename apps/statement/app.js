@@ -8,7 +8,8 @@ var	express = require( 'express' ),
 	app = express();
 
 var auth = require( __js + '/authentication' ),
-	Members = require( __js + '/database' ).Members;
+	Members = require( __js + '/database' ).Members,
+	Payments = require( __js + '/database' ).Payments;
 
 var app_config = {};
 
@@ -25,7 +26,10 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	res.render( 'index', { transactions: req.user.gocardless.transactions } );
+	Payments.find( { member: req.user._id }, function( err, payments ) {
+		console.log( payments );
+		res.render( 'index', { payments: payments } );
+	} );
 } );
 
 module.exports = function( config ) {

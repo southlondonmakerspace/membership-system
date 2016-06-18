@@ -74,12 +74,12 @@ function createPayment( event ) {
 		payment.subscription_id = event.links.subscription;
 		payment.description = 'Membership';
 
-		Members.findOne( { 'discourse.subscription_id': payment.subscription }, function( err, member ) {
+		Members.findOne( { 'gocardless.subscription_id': payment.subscription_id }, function( err, member ) {
 			if ( member != undefined ) {
 				payment.member = member._id;
 			}
 			new Payments( payment ).save( function( err ) {
-				console.log( err );
+				if ( err ) console.log( err );
 			} );
 		} );
 	} else {

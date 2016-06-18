@@ -49,17 +49,20 @@ function handleResourceEvent( event ) {
 		switch( event.action ) {
 			case 'created': // Pending
 				createPayment( event );
+				
 				break;
-			case 'submitted': // Processing
 			case 'confirmed': // Collected
+				// Discourse link up!
+			case 'submitted': // Processing
 			case 'cancelled': // Cancelled
 			case 'failed': // Failed
 			case 'paid_out': // Received
 				updatePayment( event );
 				break;
 			default:
+				console.log( 'Unknown event: ' );
+				console.log( event );
 		}
-		console.log( event );
 	}
 }
 

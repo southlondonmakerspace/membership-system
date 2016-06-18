@@ -109,8 +109,6 @@
 
 				<p><strong>Subscription ID:</strong> {{ member.gocardless.subscription_id | default('–') }}</p>
 
-				<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount | default('–') }}</p>
-
 				<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum | default('–') }}</p>
 
 				<p><a href="/admin/members/{{ member.uuid }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>

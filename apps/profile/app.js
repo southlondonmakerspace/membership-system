@@ -51,6 +51,14 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.firstname == undefined ||
+		 req.body.lastname == undefined ||
+ 		 req.body.email == undefined ||
+ 		 req.body.address == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			res.redirect( app.mountpath );
+ 			return;
+	}
 	var profile = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -83,6 +91,13 @@ app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.firstname == undefined ||
+		 req.body.lastname == undefined ||
+ 		 req.body.telephone == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			res.redirect( app.mountpath );
+ 			return;
+	}
 	var profile = {
 		emergency_contact: {
 			firstname: req.body.firstname,
@@ -116,6 +131,11 @@ app.get( '/tag', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/tag', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.tag == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			res.redirect( app.mountpath );
+ 			return;
+	}
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
 		'tag.id': req.body.tag,
@@ -150,6 +170,13 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.current == undefined ||
+		 req.body.new == undefined ||
+ 		 req.body.verify == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			res.redirect( app.mountpath );
+ 			return;
+	}
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		auth.hashPassword( req.body.current, user.password.salt, function( hash ) {
 			if ( hash != user.password.hash ) {

@@ -8,7 +8,7 @@
 		<table class="table table-striped table-hover table-condensed">
 			<thead>
 				<tr>
-					<th>Date</th>
+					<th>Charge Date</th>
 					<th>Description</th>
 					<th>Status</th>
 					<th>Amount</th>
@@ -17,7 +17,7 @@
 			<tbody>
 				{% for payment in payments %}
 					<tr>
-						<td>{{ payment.created | date('d/m/Y') }}</td>
+						<td>{{ payment.charge_date | date('d/m/Y') }}</td>
 						<td>{{ payment.description }}</td>
 						<td>{% include 'partials/status.swig' %}</td>
 						<td>{% if payment.amount %}&pound;{{ payment.amount }}{% else %}&mdash;{% endif %}</td>

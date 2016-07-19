@@ -160,6 +160,7 @@
 						<th>Subscription ID</th>
 						<th>Created</th>
 						<th>Updated</th>
+						<th>Charge Date</th>
 						<th>Description</th>
 						<th>Status</th>
 						<th>Amount</th>
@@ -171,7 +172,8 @@
 							<td>{{ payment.payment_id }}</td>
 							<td>{{ payment.subscription_id }}</td>
 							<td>{{ payment.created| date('H:i:s d/m/Y') }}</td>
-							<td>{% if payment.amount %}{{ payment.updated| date('H:i:s d/m/Y') }}{% else %}&mdash;{% endif %}</td>
+						<td>{% if payment.amount %}{{ payment.updated | date('H:i:s d/m/Y') }}{% else %}&mdash;{% endif %}</td>
+							<td>{{ payment.charge_date | date('d/m/Y') }}</td>
 							<td>{{ payment.description }}</td>
 							<td>{% include '../../../../statement/views/partials/status.swig' %}</td>
 							<td>{% if payment.amount %}&pound;{{ payment.amount }}{% else %}&mdash;{% endif %}</td>

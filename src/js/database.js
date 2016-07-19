@@ -206,6 +206,7 @@ var paymentSchema = mongoose.Schema( {
 	description: String,
 	amount: Number,
 	created: Date,
+	charge_date: Date,
 	updated: Date,
 } );
 

@@ -72,7 +72,7 @@ GoCardless.completeRedirectFlow = function ( redirect_flow_id, session_token, ca
 		} else {
 			callback( body );
 		}
-	} );	
+	} );
 };
 
 // Mandate
@@ -140,6 +140,18 @@ GoCardless.createPayment = function ( mandate_id, amount, description, callback 
 	GoCardless.request( 'post', '/payments', data, function ( error, response, body ) {
 		if ( response.statusCode == 201 ) {
 			callback( null, body.payments.id, body );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
+// Payment
+
+GoCardless.getPayment = function ( payment_id, callback ) {
+	GoCardless.request( 'get', '/payments/' + payment_id, {}, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, body.payments );
 		} else {
 			callback( body );
 		}

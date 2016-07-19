@@ -16,6 +16,7 @@ var config = require( __config ),
 	Discourse = require( __js + '/discourse' );
 
 var Members = require( __js + '/database' ).Members;
+var Permissions = require( __js + '/database' ).Permissions;
 var Payments = require( __js + '/database' ).Payments;
 
 console.log( "Starting..." );
@@ -52,7 +53,6 @@ function handleResourceEvent( event ) {
 				createPayment( event );
 				break;
 			case 'confirmed': // Collected
-				updateDiscourse( event );
 				extendMembership( event );
 			case 'submitted': // Processing
 			case 'cancelled': // Cancelled
@@ -71,44 +71,45 @@ function createPayment( event ) {
 	var payment = {
 		payment_id: event.links.payment,
 		created: new Date( event.created_at ),
+		updated: new Date(),
 		status: event.details.cause
 	}
 
-	if ( event.links.subscription != undefined ) {
-		payment.subscription_id = event.links.subscription;
-		payment.description = 'Membership';
+	// Fetch amount
+	GoCardless.getPayment( event.links.payment, function( error, response ) {
+		if ( ! error ) {
+			payment.charge_date = new Date( response.charge_date );
+			var amount = parseInt( response.amount );
+			payment.amount = amount / 100;
+		}
+		if ( event.links.subscription != undefined ) {
+			payment.subscription_id = event.links.subscription;
+			payment.description = 'Membership';
 
-		Members.findOne( { 'gocardless.subscription_id': payment.subscription_id }, function( err, member ) {
-			if ( member != undefined ) {
-				payment.member = member._id;
-			}
-			new Payments( payment ).save( function( err ) {
-				if ( err ) console.log( err );
+			Members.findOne( { 'gocardless.subscription_id': payment.subscription_id }, function( err, member ) {
+				if ( member != undefined ) {
+					payment.member = member._id;
+				}
+				new Payments( payment ).save( function( err ) {
+					if ( err ) console.log( err );
+				} );
 			} );
-		} );
-	} else {
-		new Payments( payment ).save( function( err ) {
-			console.log( "Unlinked payment" );
-		} );
-	}
+		} else {
+			new Payments( payment ).save( function( err ) {
+				console.log( "Unlinked payment" );
+			} );
+		}
+	} );
 }
 
 function updatePayment( event ) {
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
 		if ( payment == undefined ) return; // There's nothing left to do here.
 		payment.status = event.details.cause;
+		payment.updated = new Date();
 		payment.save( function( err ) {
 			if ( err ) console.log( err );
 		} );
-	} );
-}
-
-function updateDiscourse( event ) {
-	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
-		if ( payment == undefined ) return; // There's nothing left to do here.
-		if ( payment.member != undefined ) {
-			Discourse.grantMember( { _id: payment.member } );
-		}
 	} );
 }
 
@@ -117,10 +118,53 @@ function extendMembership( event ) {
 		if ( payment == undefined ) return; // There's nothing left to do here.
 		if ( payment.member != undefined ) {
 			Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+				var foundPermission = false;
 				for ( var p = 0; p < member.permissions.length; p++ ) {
-					console.log( member.permissions[p].permission.slug == 'member' );
+					if ( member.permissions[p].permission.slug == 'member' ) {
+						foundPermission = true;
+						member.permissions[p].date_expires = new Date();
+						member.permissions[p].date_expires.setDate( member.permissions[p].date_expires.getDate() + 36 );
+						console.log( 'Extending "' + member.email + '" membership permission until: ' + member.permissions[p].date_expires );
+					}
+				}
+				if ( ! foundPermission ) grantMembership( member );
+				if ( foundPermission ) {
+					member.save( function ( err ) {
+						if ( err ) {
+							console.log( err );
+						} else {
+							Discourse.grantMember( { _id: payment.member } );
+						}
+					} );
 				}
 			} );
+		}
+	} );
+}
+
+function grantMembership( member ) {
+	Permissions.findOne( { slug: 'member' }, function( err, permission ) {
+		if ( permission != undefined ) {
+			var new_permission = {
+				permission: permission.id,
+				date_added: new Date(),
+				date_expires: new Date()
+			}
+			new_permission.date_expires.setDate( new_permission.date_expires.getDate() + 36 );
+
+			console.log( 'Granting "' + member.email + '" membership permission until: ' + new_permission.date_expires );
+
+			Members.update( { _id: member._id }, {
+				$push: {
+					permissions: new_permission
+				}
+			}, function ( err ) {
+				if ( err ) {
+					console.log( err );
+				} else {
+					Discourse.grantMember( { _id: member._id } );
+				}
+			});
 		}
 	} );
 }

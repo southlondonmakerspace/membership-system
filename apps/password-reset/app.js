@@ -35,7 +35,7 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', formBodyParser, function( req, res ) {
 	if ( req.body.email == undefined ) {
-		req.flash( 'danger', messages['password-reset-error'] );
+		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
 		return;
 	}
@@ -79,7 +79,7 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 
 app.post( '/change-password', formBodyParser, function( req, res ) {
 	if ( req.body.email == undefined ) {
-		req.flash( 'danger', messages['password-reset-error'] );
+		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
 		return;
 	}

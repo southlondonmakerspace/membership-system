@@ -7,6 +7,7 @@
 	"already-logged-in": "You are already logged in",
 	"inactive-membership": "Your membership is inactive",
 	"403": "You do not have access to this area",
+	"information-ommited": "Important information was ommited",
 
 	"password-changed": "Password changed",
 	"password-invalid": "Incorrect current password",
@@ -18,7 +19,6 @@
 	"password-err-letter-low": "Password must contain at least 1 lowercase letter",
 
 	"password-reset": "If there is an account associated with the email address you will receive an email shortly",
-	"password-reset-error": "Important information was ommited",
 
 	"account-created": "Account created, please check your email for a registration link",
 	"member-created": "Member successful created",

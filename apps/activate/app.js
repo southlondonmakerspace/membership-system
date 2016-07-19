@@ -44,7 +44,7 @@ app.get( '/:activation_code' , function( req, res ) {
 
 app.post( '/', formBodyParser, function( req, res ) {
 	if ( req.body.activation_code == undefined || req.body.password ) {
-			req.flash( 'danger', messages['activation-error'] );
+			req.flash( 'danger', messages['information-ommited'] );
 			res.redirect( '/activate' );
 			return;
 	}

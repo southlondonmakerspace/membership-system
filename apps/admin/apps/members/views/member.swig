@@ -109,8 +109,6 @@
 
 				<p><strong>Subscription ID:</strong> {{ member.gocardless.subscription_id | default('–') }}</p>
 
-				<p><strong>Amount:</strong> &pound;{{ member.gocardless.amount | default('–') }}</p>
-
 				<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum | default('–') }}</p>
 
 				<p><a href="/admin/members/{{ member.uuid }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
@@ -152,36 +150,39 @@
 
 	{% if access == 'superadmin' %}
 		<div class="page-header">
-			<h3>Transactions</h3>
+			<h3>Payments</h3>
 		</div>
-		{% set transactions = member.gocardless.transactions %}
-		{% if transactions.length > 0 %}
+		{% if payments.length > 0 %}
 			<table class="table table-striped table-hover table-condensed">
 				<thead>
 					<tr>
 						<th>Payment ID</th>
 						<th>Subscription ID</th>
-						<th>Date</th>
+						<th>Created</th>
+						<th>Updated</th>
+						<th>Charge Date</th>
 						<th>Description</th>
 						<th>Status</th>
 						<th>Amount</th>
 					</tr>
 				</thead>
 				<tbody>
-					{% for transaction in transactions %}
+					{% for payment in payments %}
 						<tr>
-							<td>{{ transaction.payment_id }}</td>
-							<td>{{ transaction.subscription_id }}</td>
-							<td>{{ transaction.date| date('H:i:s d/m/Y') }}</td>
-							<td>{{ transaction.description }}</td>
-							<td>{% include '../../statement/views/partials/status.swig' %}</td>
-							<td>&pound;{{ transaction.amount }}</td>
+							<td>{{ payment.payment_id }}</td>
+							<td>{{ payment.subscription_id }}</td>
+							<td>{{ payment.created| date('H:i:s d/m/Y') }}</td>
+						<td>{% if payment.amount %}{{ payment.updated | date('H:i:s d/m/Y') }}{% else %}&mdash;{% endif %}</td>
+							<td>{{ payment.charge_date | date('d/m/Y') }}</td>
+							<td>{{ payment.description }}</td>
+							<td>{% include '../../../../statement/views/partials/status.swig' %}</td>
+							<td>{% if payment.amount %}&pound;{{ payment.amount }}{% else %}&mdash;{% endif %}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
 			</table>
 		{% else %}
-			<p>Member has no transaction history</p>
+			<p>Member has no payment history</p>
 	{% endif %}
 	{% endif %}
 {% endblock %}

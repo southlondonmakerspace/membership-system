@@ -16,7 +16,9 @@
 {% endblock %}
 
 {% block content %}
-	<p><a href="/admin/permissions/create" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create Permission</a></p>
+	{% if access == 'superadmin' %}
+		<p><a href="/admin/permissions/create" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create Permission</a></p>
+	{% endif %}
 	<table class="table table-striped table-hover table-condensed">
 		<thead>
 			<tr>

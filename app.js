@@ -12,10 +12,12 @@ var body = require( 'body-parser' ),
 	database = require( __js + '/database' ).connect( config.mongo ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
-	swig = require( 'swig'),
+	swig = require( 'swig' ),
 	app = express(),
 	http = require( 'http' ).Server( app ),
 	fs = require( 'fs' );
+
+var Discourse = require( __js + '/discourse' );
 
 var apps = [];
 
@@ -82,3 +84,7 @@ console.log( "	Route: *" );
 var listener = app.listen( config.port ,config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );
+
+// Do regular Discourse group checks
+setTimeout( Discourse.checkGroups, 2500 ); // Now and...
+setInterval( Discourse.checkGroups, 3600000*24 ); // ...every day

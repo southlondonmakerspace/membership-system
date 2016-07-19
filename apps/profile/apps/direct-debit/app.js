@@ -9,7 +9,6 @@ var	express = require( 'express' ),
 	app = express(),
 	request = require( 'request' ),
 	bodyParser = require( 'body-parser' ),
-	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	formBodyParser = bodyParser.urlencoded( { extended: true } );
 
 var messages = require( __src + '/messages.json' );
@@ -74,7 +73,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/setup-mandate', auth.isLoggedIn, function( req, res ) {
-	auth.generateActivationCode( function( session_token ) { 
+	auth.generateActivationCode( function( session_token ) {
 		GoCardless.createRedirectFlow( 'Membership + Payments', session_token, config.audience + app.parent.mountpath + app.mountpath, function( error, redirect_url, body ) {
 			console.dir( body );
 			if ( error ) {
@@ -118,6 +117,12 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.amount == undefined ||
+	 	 req.body.day_of_month == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath );
+		return;
+	}
 	var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum );
 
 	if ( req.body.amount < min ) {
@@ -173,64 +178,6 @@ app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.parent.mountpath + app.mountpath );
 	}
 } );
-
-app.post( '/webhook', textBodyParser, function( req, res ) {
-	if ( req.headers['webhook-signature'] != undefined && req.headers['content-type'] == 'application/json' ) {
-		GoCardless.validateWebhook( req.headers['webhook-signature'], req.body, function( valid ) {
-			if ( valid ) {
-				var events = JSON.parse( req.body ).events;
-
-				for ( var e in events ) {
-					handleResourceEvent( events[e] );
-				}
-
-				res.sendStatus( 200 );
-			} else {
-				res.sendStatus( 498 );
-			}
-		} );
-	} else {
-		res.sendStatus( 498 );
-	}
-} );
-
-function handleResourceEvent( event ) {
-	switch ( event.resource_type ) {
-		case 'subscriptions':
-			console.log( 'subscription' );
-			console.log( event );
-			break;
-		case 'payments':
-			console.log( 'payment' );
-			handlePaymentEvent( event );
-			break;
-	}
-}
-
-function handlePaymentEvent( event ) {
-	switch( event.action ) {
-		case 'created': // Pending
-			console.log( 'created' );
-			break;
-		case 'submitted': // Processing
-			console.log( 'submitted' );
-			break;
-		case 'confirmed': // Collected
-			console.log( 'confirmed' );
-			break;
-		case 'cancelled': // Cancelled
-			console.log( 'cancelled' );
-			break;
-		case 'failed': // Failed
-			console.log( 'failed' );
-			break;
-		case 'paid_out': // Received
-			console.log( 'paid_out' );
-			break;
-		default:
-	}
-	console.log( event );
-}
 
 module.exports = function( config ) {
 	app_config = config;

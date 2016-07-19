@@ -60,6 +60,11 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
+	if ( req.body.search == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath );
+		return;
+	}
 	if ( ! req.user.discourse.activation_code ) {
 		discourse.searchUsers( req.body.search, function( users ) {
 			if ( users != undefined ) {
@@ -95,6 +100,11 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 } );
 
 app.post( '/activate', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.activation_code == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath );
+		return;
+	}
 	if ( req.body.activation_code != '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {
 			Members.update( { "_id": req.user._id }, { $set: {

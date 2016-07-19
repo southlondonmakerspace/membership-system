@@ -41,6 +41,17 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
+	if ( req.body.firstname == undefined ||
+		 req.body.lastname == undefined ||
+ 		 req.body.password == undefined ||
+ 		 req.body.verify == undefined ||
+ 		 req.body.email == undefined ||
+ 		 req.body.address == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			req.session.join = user;
+ 			res.redirect( app.mountpath );
+ 			return;
+	}
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
@@ -85,7 +96,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 						res.redirect( app.mountpath );
 					} else {
 						var message = {};
-						
+
 						message.text = swig.renderFile( __dirname + '/email-templates/join.swig', {
 							firstname: req.body.firstname,
 							organisation: config.globals.organisation,
@@ -97,10 +108,10 @@ app.post( '/', formBodyParser, function( req, res ) {
 						message.from = config.smtp.from;
 						message.to = req.body.email;
 						message.subject = 'Activation Email – ' + config.globals.organisation;
-						
+
 						req.flash( 'success', messages['account-created'] );
 						res.redirect( '/' );
-						
+
 						transporter.sendMail( message, function( err, info ) {} );
 					}
 				} );

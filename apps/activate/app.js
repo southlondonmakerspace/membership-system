@@ -43,6 +43,11 @@ app.get( '/:activation_code' , function( req, res ) {
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
+	if ( req.body.activation_code == undefined || req.body.password ) {
+			req.flash( 'danger', messages['information-ommited'] );
+			res.redirect( '/activate' );
+			return;
+	}
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
@@ -53,7 +58,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 		Members.findOne( {
 			activation_code: req.body.activation_code,
 		}, function ( err, user ) {
-			
+
 			if ( user == null ) {
 				req.flash( 'danger', messages['activation-error'] );
 				res.redirect( app.mountpath + '/' + req.body.activation_code );
@@ -78,7 +83,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 				}, function ( status ) {
 					req.session.passport = { user: { _id: user._id } };
 					req.flash( 'success', messages['activation-success'] )
-					res.redirect( '/profile' );
+					res.redirect( '/profile/direct-debit' );
 				} )
 			} );
 		} );

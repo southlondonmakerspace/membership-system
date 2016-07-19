@@ -34,6 +34,11 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
+	if ( req.body.email == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.mountpath );
+		return;
+	}
 	Members.findOne( { email: req.body.email }, function( err, user ) {
 		if ( user ) {
 			auth.generateActivationCode( function( code ) {
@@ -73,6 +78,11 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 } );
 
 app.post( '/change-password', formBodyParser, function( req, res ) {
+	if ( req.body.email == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.mountpath );
+		return;
+	}
 	Members.findOne( { 'password.reset_code': req.body.password_reset_code }, function( err, user ) {
 		if ( user ) {
 			if ( req.body.password != req.body.verify ) {

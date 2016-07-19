@@ -152,27 +152,7 @@ var memberSchema = mongoose.Schema( {
 		},
 		minimum: {
 			type: Number
-		},
-		transactions: [ {
-			date: {
-				type: Date
-			},
-			description: {
-				type: String
-			},
-			payment_id: {
-				type: String
-			},
-			subscription_id: {
-				type: String
-			},
-			amount: {
-				type: Number
-			},
-			status: {
-				type: String
-			}
-		} ]
+		}
 	},
 	permissions: [ {
 		permission: {
@@ -205,8 +185,35 @@ memberSchema.virtual( 'gravatar' ).get( function() {
 	return '//www.gravatar.com/avatar/' + md5;
 } );
 
+var paymentSchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId() },
+		required: true,
+		unique: true
+	},
+	payment_id: {
+		type: String,
+		required: true,
+		unique: true
+	},
+	subscription_id: String,
+	member: {
+		type: ObjectId,
+		ref: 'Members'
+	},
+	status: String,
+	description: String,
+	amount: Number,
+	created: Date,
+	charge_date: Date,
+	updated: Date,
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
+exports.paymentSchema = paymentSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
+exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );

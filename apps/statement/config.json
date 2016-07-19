@@ -2,7 +2,7 @@
 	"title": "Statement",
 	"path": "statement",
 	"permissions": [
-		"member", "superadmin", "admin", "trustee"
+		"member"
 	],
 	"menu": "main",
 	"priority": 3

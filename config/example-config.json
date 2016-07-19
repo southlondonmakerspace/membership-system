@@ -1,5 +1,6 @@
 {
-	"port" : 3001,
+	"port": 3001,
+	"host": "127.0.0.1",
 	"secret": "",
 	"api_key": "",
 	"globals": {
@@ -7,31 +8,23 @@
 		"title": "Membership System"
 	},
 	"tag_salt": "",
-	"superadmins": [
-
-	],
+	"superadmins": [],
 	"smtp": {
-		"from": "",
-		"url": "smtp://"
+		"from": "Organisation <email@example.com>",
+		"url": "smtp://username:password@smtp.example.com:587"
 	},
 	"mongo": "mongodb://localhost/membership-system",
 	"audience": "http://localhost:3001",
 	"discourse": {
-		"url": "",
+		"url": "https://discourse.example.org",
 		"api_username": "",
-		"api_key": "",
-		"group": {
-			"id": "",
-			"name": "",
-			"permission": ""
-		}
+		"api_key": ""
 	},
 	"gocardless": {
-		"appId": "",
-		"appSecret": "",
-		"token": "",
-		"merchantId": "",
-        "sandbox": false,
+		"port": 3002,
+		"access_token": "",
+		"secret": "",
+		"sandbox": true,
 		"minimum": 20
 	}
 }

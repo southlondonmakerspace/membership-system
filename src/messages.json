@@ -18,6 +18,7 @@
 	"password-err-letter-low": "Password must contain at least 1 lowercase letter",
 
 	"password-reset": "If there is an account associated with the email address you will receive an email shortly",
+	"password-reset-error": "Important information was ommited",
 
 	"account-created": "Account created, please check your email for a registration link",
 	"member-created": "Member successful created",

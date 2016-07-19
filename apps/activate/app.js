@@ -43,6 +43,11 @@ app.get( '/:activation_code' , function( req, res ) {
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
+	if ( req.body.activation_code == undefined || req.body.password ) {
+			req.flash( 'danger', messages['activation-error'] );
+			res.redirect( '/activate' );
+			return;
+	}
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );

@@ -33,13 +33,13 @@ function templateLocals( req, res, next ) {
 		if ( req.user.quickPermissions.indexOf( 'member' ) != -1 ) res.locals.access = 'member';
 		if ( req.user.quickPermissions.indexOf( 'admin' ) != -1 ) res.locals.access = 'admin';
 		if ( req.user.quickPermissions.indexOf( 'superadmin' ) != -1 ) res.locals.access = 'superadmin';
-		if ( req.user.quickPermissions.indexOf( 'trustee' ) != -1 ) res.locals.access = 'superadmin';
+		if ( req.user.quickPermissions.indexOf( 'director' ) != -1 ) res.locals.access = 'superadmin';
 	}
 
 	// Delete login redirect URL if user navigates to anything other than the login page
 	if ( req.originalUrl != '/login' )
 		delete req.session.requestedUrl;
-	
+
 	// Load config + prepare breadcrumbs
 	res.locals.config = config.globals;
 	res.locals.breadcrumb = [];

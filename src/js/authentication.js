@@ -123,7 +123,7 @@ var Authentication = {
 			return status;
 		} else {
 			if ( Authentication.checkPermission( req, 'member' ) ) return true;
-			if ( Authentication.checkPermission( req, 'trustee' ) ) return true;
+			if ( Authentication.checkPermission( req, 'director' ) ) return true;
 			if ( Authentication.checkPermission( req, 'admin' ) ) return true;
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 		}
@@ -135,7 +135,7 @@ var Authentication = {
 		if ( ! status ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'trustee' ) ) return true;
+			if ( Authentication.checkPermission( req, 'director' ) ) return true;
 			if ( Authentication.checkPermission( req, 'admin' ) ) return true;
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 		}
@@ -147,7 +147,7 @@ var Authentication = {
 		if ( ! status ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'trustee' ) ) return true;
+			if ( Authentication.checkPermission( req, 'director' ) ) return true;
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 		}
 		return -3;

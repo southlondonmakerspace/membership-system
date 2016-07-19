@@ -2,7 +2,7 @@
 	"title": "Admin",
 	"path": "admin",
 	"permissions": [
-		"superadmin", "admin", "trustee"
+		"superadmin", "admin", "director"
 	],
 	"menu": "main",
 	"priority": 1

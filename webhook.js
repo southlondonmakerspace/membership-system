@@ -12,7 +12,8 @@ var config = require( __config ),
 	http = require( 'http' ).Server( app ),
 	bodyParser = require( 'body-parser' ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
-	GoCardless = require( __js + '/gocardless' )( config.gocardless );
+	GoCardless = require( __js + '/gocardless' )( config.gocardless ),
+	Discourse = require( __js + '/discourse' );
 
 var Members = require( __js + '/database' ).Members;
 var Payments = require( __js + '/database' ).Payments;
@@ -49,10 +50,10 @@ function handleResourceEvent( event ) {
 		switch( event.action ) {
 			case 'created': // Pending
 				createPayment( event );
-				
 				break;
 			case 'confirmed': // Collected
-				// Discourse link up!
+				updateDiscourse( event );
+				extendMembership( event );
 			case 'submitted': // Processing
 			case 'cancelled': // Cancelled
 			case 'failed': // Failed
@@ -99,5 +100,27 @@ function updatePayment( event ) {
 		payment.save( function( err ) {
 			if ( err ) console.log( err );
 		} );
+	} );
+}
+
+function updateDiscourse( event ) {
+	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
+		if ( payment == undefined ) return; // There's nothing left to do here.
+		if ( payment.member != undefined ) {
+			Discourse.grantMember( { _id: payment.member } );
+		}
+	} );
+}
+
+function extendMembership( event ) {
+	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
+		if ( payment == undefined ) return; // There's nothing left to do here.
+		if ( payment.member != undefined ) {
+			Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+				for ( var p = 0; p < member.permissions.length; p++ ) {
+					console.log( member.permissions[p].permission.slug == 'member' );
+				}
+			} );
+		}
 	} );
 }

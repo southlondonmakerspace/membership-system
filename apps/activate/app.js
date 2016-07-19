@@ -53,7 +53,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 		Members.findOne( {
 			activation_code: req.body.activation_code,
 		}, function ( err, user ) {
-			
+
 			if ( user == null ) {
 				req.flash( 'danger', messages['activation-error'] );
 				res.redirect( app.mountpath + '/' + req.body.activation_code );
@@ -78,7 +78,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 				}, function ( status ) {
 					req.session.passport = { user: { _id: user._id } };
 					req.flash( 'success', messages['activation-success'] )
-					res.redirect( '/profile' );
+					res.redirect( '/profile/direct-debit' );
 				} )
 			} );
 		} );

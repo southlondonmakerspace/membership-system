@@ -17,6 +17,8 @@ var body = require( 'body-parser' ),
 	http = require( 'http' ).Server( app ),
 	fs = require( 'fs' );
 
+var Discourse = require( __js + '/discourse' );
+
 var apps = [];
 
 console.log( "Starting..." );
@@ -82,3 +84,7 @@ console.log( "	Route: *" );
 var listener = app.listen( config.port ,config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );
+
+// Do regular Discourse group checks
+setTimeout( Discourse.checkGroups, 2500 ); // Now and...
+setInterval( Discourse.checkGroups, 3600000*24 ); // ...every day

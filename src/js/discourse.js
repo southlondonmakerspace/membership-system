@@ -146,7 +146,4 @@ var Discourse = {
 	}
 };
 
-setTimeout( Discourse.checkGroups, 1000 ); // Now and...
-setInterval( Discourse.checkGroups, 3600000*24 ); // ...every day
-
 module.exports = Discourse;

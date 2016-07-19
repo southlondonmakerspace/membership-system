@@ -110,7 +110,7 @@ var Discourse = {
 				if ( perm.permission.group.id != '' && perm.permission.group.name != '' ) {
 					if ( perm.date_added < new Date() ) {
 						if ( perm.date_expires == undefined || perm.date_expires > new Date() ) {
-							console.log( 'Adding "' + member._id + '" to discourse group "' + perm.permission.group.name + '"' );
+							console.log( 'Adding "' + member.email + '" to discourse group "' + perm.permission.group.name + '"' );
 							Discourse.addMemberToGroup( member, perm.permission.group );
 						}
 					}
@@ -135,12 +135,22 @@ var Discourse = {
 		} );
 	},
 	checkGroups: function() {
+		// Revoke first
 		Permissions.find( {
 			'group.id': { $ne: '' },
 			'group.name': { $ne: '' }
 		}, function( err, permissions ) {
 			for ( var p = 0; p < permissions.length; p++ ) {
 				Discourse.checkPermission( permissions[p] );
+			}
+		} );
+		// Grant
+		Members.find( {
+			'discourse.id': { $ne: null },
+			'discourse.email': { $ne: null }
+		}, function( err, members ) {
+			for ( var m in members ) {
+				Discourse.grantMember( { _id: members[m]._id } );
 			}
 		} );
 	}

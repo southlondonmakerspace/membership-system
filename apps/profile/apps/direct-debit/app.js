@@ -117,6 +117,12 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+	if ( req.body.amount == undefined ||
+	 	 req.body.day_of_month == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath );
+		return;
+	}
 	var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum );
 
 	if ( req.body.amount < min ) {

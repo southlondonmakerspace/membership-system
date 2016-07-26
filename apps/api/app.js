@@ -21,16 +21,16 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 			if ( member != undefined ) {
 				var hasMembership = false;
 				var hasPermission = false;
-				var isTrustee = false;
-				
+				var isDirector = false;
+
 				for ( var p = 0; p < member.permissions.length; p++ ) {
 					var permission = member.permissions[p];
-					if ( permission.permission.slug == 'trustee' && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) isTrustee = true;
+					if ( permission.permission.slug == 'director' && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) isDirector = true;
 					if ( permission.permission.slug == 'member' && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasMembership = true;
 					if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasPermission = true;
 				}
 
-				if ( ( isTrustee && hasPermission ) || ( hasMembership && hasPermission ) )
+				if ( ( isDirector && hasPermission ) || ( hasMembership && hasPermission ) )
 					grantAccess = true;
 			}
 

@@ -181,11 +181,9 @@ var memberSchema = mongoose.Schema( {
 		}
 	} ]
 } );
-
 memberSchema.virtual( 'fullname' ).get( function() {
 	return this.firstname + ' ' + this.lastname;
 } );
-
 memberSchema.virtual( 'gravatar' ).get( function() {
 	var md5 = crypto.createHash( 'md5' ).update( this.email ).digest( 'hex' );
 	return '//www.gravatar.com/avatar/' + md5;
@@ -216,11 +214,21 @@ var paymentSchema = mongoose.Schema( {
 	updated: Date,
 } );
 
+var historicEventsSchema = mongoose.Schema( {
+	uuid: String,
+	description: String,
+	created: Date,
+	type: String,
+	renumeration: Number
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
+exports.historicEventsSchema = historicEventsSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
+exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvents' );
 exports.mongoose = mongoose;

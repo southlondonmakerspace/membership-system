@@ -16,9 +16,9 @@
 		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/profile/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a>
 	</p>
 
-	<hr />
-
-	<h3>Setup</h3>
+	<div class="page-header">
+		<h3>Setup</h3>
+	</div>
 
 	<p>New round here? Follow these steps to setup your account...</p>
 
@@ -64,24 +64,24 @@
 		</li>
 	</ol>
 
-	<hr />
-
 	{% if user.permissions.length > 0 %}
-		<h3>Permissions</h3>
-		<ul>
+		<div class="page-header">
+			<h3>Permissions</h3>
+		</div>
+		<div class="list-group">
 			{% for permission in user.permissions %}
 				{% set permission = permission.permission %}
-				<li>
-					<strong>{{ permission.name }}</strong>
+				<span class="list-group-item">
+					<h4 class="list-group-item-heading">{{ permission.name }}</h4>
 					{% if permission.description %}
-						<br />{{ permission.description }}
+						<p class="list-group-item-text">{{ permission.description }}</p>
 					{% endif %}
+					<p class="list-group-item-text"><strong>Start date:</strong> {{ permission.date_added | date('H:i:s d/m/Y') }}</p>
 					{% if permission.date_expires %}
-						<br />
-						Expiry: {{ permission.date_expires | date('d/m/Y') }}
+						<p class="list-group-item-text"><strong>Expiry date:</strong> {{ permission.date_expires | date('H:i:s d/m/Y') }}</p>
 					{% endif %}
-				</li>
+				</span>
 			{% endfor %}
-		</ul>
+		</div>
 	{% endif %}
 {% endblock %}

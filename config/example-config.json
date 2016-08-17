@@ -26,5 +26,6 @@
 		"secret": "",
 		"sandbox": true,
 		"minimum": 20
-	}
+	},
+	"password-tries": 1
 }

@@ -9,6 +9,8 @@ exports.connect = function( url ) {
 	var db = mongoose.connection;
 	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
 	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
+
+	return exports;
 }
 
 var permissionsSchema = mongoose.Schema( {
@@ -74,6 +76,10 @@ var memberSchema = mongoose.Schema( {
 		},
 		reset_code: {
 			type: String,
+		},
+		tries: {
+			type: Number,
+			default: 0
 		}
 	},
 	activated: {
@@ -217,3 +223,4 @@ exports.paymentSchema = paymentSchema;
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
+exports.mongoose = mongoose;

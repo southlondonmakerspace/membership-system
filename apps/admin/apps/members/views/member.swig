@@ -63,6 +63,8 @@
 
 				<p><strong>Password Reset Code:</strong> {{ member.password_reset_code | default('–') }} {% if member.password_reset_code %}&mdash; {{ audience }}/password-reset/code/{{ member.password_reset_code }}{% endif %}</p>
 
+				<p><strong>Password Tries:</strong> {{ member.password.tries | default('–') }} / {{ password_tries }} {% if member.password.tries > password_tries %} - Locked{% endif %}</p>
+
 				<p><a href="/admin/members/{{ member.uuid }}/activation" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			{% endif %}
 		</div>

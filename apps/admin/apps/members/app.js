@@ -119,7 +119,7 @@ app.get( '/:uuid', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: member.fullname
 			} );
-			res.render( 'member', { member: member, payments: payments, audience: config.audience, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
+			res.render( 'member', { member: member, payments: payments, audience: config.audience, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ), password_tries: config['password-tries'] } );
 		} );
 	} );
 } );

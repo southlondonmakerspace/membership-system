@@ -27,6 +27,9 @@
 	"activation-success": "You account is now active.",
 	"activation-updated": "Activation updated",
 
+	"account-locked": "Maximum number of password attempts exceeded.",
+	"account-attempts": "There have been % attempts to login to your account. This will decrement once per successful login",
+
 	"member-404": "Member not found",
 
 	"profile-updated": "Profile updated",

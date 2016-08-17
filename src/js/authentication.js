@@ -22,15 +22,28 @@ var Authentication = {
 		}, function( email, password, done ) {
 				Members.findOne( { email: email }, function( err, user ) {
 					if ( user != null ) {
+						if ( user.password.tries >= config['password-tries'] ) {
+							return done( null, false, { message: messages['account-locked'] } );
+						}
+
 						Authentication.hashPassword( password, user.password.salt, function( hash ) {
 							if ( hash == user.password.hash ) {
-								if ( user.activated || Authentication.superAdmin( user.email ) ) {
-									return done( null, { _id: user._id }, { message: messages['logged-in'] } );
-								} else {
+								if ( ! ( user.activated || Authentication.superAdmin( user.email ) ) ) {
 									return done( null, false, { message: messages['inactive-account'] } );
 								}
+
+								user.save( function ( err ) {} );
+								if ( user.password.tries > 0 ) {
+									user.password.tries--;
+									user.save( function ( err ) {} );
+									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', user.password.tries+1 ) } );
+								}
+								return done( null, { _id: user._id }, { message: messages['logged-in'] } );
+							} else {
+								user.password.tries++;
+								user.save( function ( err ) {} );
+								return done( null, false, { message: messages['login-failed'] } );
 							}
-							return done( null, false, { message: messages['login-failed'] } );
 						} );
 					} else {
 						return done( null, false, { message: messages['login-failed'] } );

@@ -78,7 +78,7 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 } );
 
 app.post( '/change-password', formBodyParser, function( req, res ) {
-	if ( req.body.email == undefined ) {
+	if ( req.body.password_reset_code == undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
 		return;
@@ -103,6 +103,7 @@ app.post( '/change-password', formBodyParser, function( req, res ) {
 					'password.salt': password.salt,
 					'password.hash': password.hash,
 					'password.reset_code': null,
+					'password.tries': 0
 				} }, function( status ) {
 					req.session.passport = { user: { _id: user._id } };
 					req.flash( 'success', messages['password-changed'] );

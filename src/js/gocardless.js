@@ -123,6 +123,17 @@ GoCardless.cancelSubscription = function ( subscription_id, callback ) {
 	} );
 };
 
+GoCardless.getSubscription = function ( subscription_id, callback ) {
+	GoCardless.request( 'get', '/subscriptions/' + subscription_id, {}, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, body.subscriptions );
+			console.log( body );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
 // Payment
 
 GoCardless.createPayment = function ( mandate_id, amount, description, callback ) {
@@ -145,8 +156,6 @@ GoCardless.createPayment = function ( mandate_id, amount, description, callback 
 		}
 	} );
 };
-
-// Payment
 
 GoCardless.getPayment = function ( payment_id, callback ) {
 	GoCardless.request( 'get', '/payments/' + payment_id, {}, function ( error, response, body ) {

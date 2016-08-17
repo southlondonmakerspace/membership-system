@@ -9,6 +9,11 @@
 	"403": "You do not have access to this area",
 	"information-ommited": "Important information was ommited",
 
+	"user-duplicate": "Unable to create account",
+	"user-firstname": "First name required",
+	"user-lastname": "Last name required",
+	"user-address": "Address name required",
+
 	"password-changed": "Password changed",
 	"password-invalid": "Incorrect current password",
 	"password-reset-code-err": "Invalid password reset code",

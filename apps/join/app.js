@@ -52,6 +52,7 @@ app.post( '/', formBodyParser, function( req, res ) {
  			res.redirect( app.mountpath );
  			return;
 	}
+
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
@@ -62,6 +63,25 @@ app.post( '/', formBodyParser, function( req, res ) {
 			email: req.body.email,
 			address: req.body.address,
 		};
+
+		if ( req.body.firstname == '' ) {
+			req.flash( 'danger', messages['user-firstname'] );
+			req.session.join = user;
+			res.redirect( app.mountpath );
+			return;
+		}
+		if ( req.body.lastname == '' ) {
+			req.flash( 'danger', messages['user-lastname'] );
+			req.session.join = user;
+			res.redirect( app.mountpath );
+			return;
+		}
+		if ( req.body.address == '' ) {
+			req.flash( 'danger', messages['user-address'] );
+			req.session.join = user;
+			res.redirect( app.mountpath );
+			return;
+		}
 
 		if ( req.body.password != req.body.verify ) {
 			req.flash( 'danger', messages['password-err-mismatch'] );
@@ -81,16 +101,21 @@ app.post( '/', formBodyParser, function( req, res ) {
 		// Generate email code salt
 		auth.generateActivationCode( function( code ) {
 			user.activation_code = code;
+
 			auth.generatePassword( req.body.password, function( password ) {
 				user.password = password;
 
 				// Store new member
 				new Members( user ).save( function( status ) {
-					if ( status != null && status.errors != undefined ) {
-						var keys = Object.keys( status.errors );
-						for ( var k in keys ) {
-							var key = keys[k];
-							req.flash( 'danger', status.errors[key].message );
+					if ( status != null ) {
+						if ( status.errors != undefined ) {
+							var keys = Object.keys( status.errors );
+							for ( var k in keys ) {
+								var key = keys[k];
+								req.flash( 'danger', status.errors[key].message );
+							}
+						} else if ( status.code == 11000 ) {
+							req.flash( 'danger', messages['duplicate-user'] );
 						}
 						req.session.join = user;
 						res.redirect( app.mountpath );

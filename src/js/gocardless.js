@@ -127,7 +127,6 @@ GoCardless.getSubscription = function ( subscription_id, callback ) {
 	GoCardless.request( 'get', '/subscriptions/' + subscription_id, {}, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
 			callback( null, body.subscriptions );
-			console.log( body );
 		} else {
 			callback( body );
 		}

@@ -7,9 +7,7 @@ var config = require( __config ),
 	mongoose = database.mongoose;
 
 var Members = database.Members,
-	Permissions = database.Permissions,
-	Payments = database.Payments;
-
+	Permissions = database.Permissions;
 var GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
 // Figure out permissions
@@ -79,10 +77,13 @@ Users.find( function( err, users ) {
 		};
 
 		// Name
-		var name = user.name.split( ' ' );
+		var name = user.name.trim().split( ' ' );
 		member.firstname = name.shift();
-		if ( name.length > 0 );
+		if ( name.length > 0 ) {
 			member.lastname = name.join( ' ' );
+		} else {
+			member.lastname = ' ';
+		}
 
 		// Tag
 		if ( user.card_id ) {
@@ -115,18 +116,12 @@ Users.find( function( err, users ) {
 			member.gocardless.subscription_id = user.gc_subscription;
 		}
 
-
 		new Members( member ).save( function( status ) {
-			console.log( status );
+			if ( status != null )
+				console.log( status );
 		} );
 	}
 } );
-
-// GoCardless.getSubscription( member.gocardless.subscription_id, function ( err, subscription ) {
-// 	if ( ! err )
-// 		member.mandate_id = subscription.links.mandate;
-// 	console.log( member );
-// } )
 
 function createPermission( id ) {
 	var output = {

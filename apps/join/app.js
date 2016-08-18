@@ -121,12 +121,15 @@ app.post( '/', formBodyParser, function( req, res ) {
 						res.redirect( app.mountpath );
 					} else {
 						var message = {};
-
-						message.text = swig.renderFile( __dirname + '/email-templates/join.swig', {
-							firstname: req.body.firstname,
-							organisation: config.globals.organisation,
+						
+						var options = {
+							firstname: user.firstname,
+							config: config,
 							activation_url: config.audience + '/activate/' + user.activation_code
-						} );
+						};
+
+						message.text = swig.renderFile( __dirname + '/email-templates/join.text.swig', options );
+						message.html = swig.renderFile( __dirname + '/email-templates/join.html.swig', options );
 
 						var transporter = nodemailer.createTransport( config.smtp.url );
 

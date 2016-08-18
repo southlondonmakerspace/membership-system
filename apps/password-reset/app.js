@@ -47,12 +47,14 @@ app.post( '/', formBodyParser, function( req, res ) {
 				user.save( function( err ) {} );
 
 				var message = {};
-
-				message.text = swig.renderFile( __dirname + '/email-templates/reset.swig', {
+				var options = {
 					firstname: user.firstname,
-					organisation: config.globals.organisation,
+					config: config,
 					reset_url: config.audience + '/password-reset/code/' + password_reset_code
-				} );
+				}
+
+				message.text = swig.renderFile( __dirname + '/email-templates/reset.text.swig', options );
+				message.html = swig.renderFile( __dirname + '/email-templates/reset.html.swig', options );
 
 				var transporter = nodemailer.createTransport( config.smtp.url );
 

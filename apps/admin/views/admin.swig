@@ -10,4 +10,7 @@
 	<p>
 		<a href="/admin/permissions" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-lock"></span> Permissions</a>
 	</p>
+	<p>
+		<a href="/admin/transactions" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-scale"></span> Transactions</a>
+	</p>
 {% endblock %}

@@ -185,6 +185,6 @@
 			</table>
 		{% else %}
 			<p>Member has no payment history</p>
-	{% endif %}
+		{% endif %}
 	{% endif %}
 {% endblock %}

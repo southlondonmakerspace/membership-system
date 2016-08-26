@@ -3,7 +3,7 @@
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 			</button>
-			<a class="navbar-brand" href="/"><strong>{{ config.title }}</strong></a>
+			<a class="navbar-brand" href="/"><strong>{{ usersname }}</strong></a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

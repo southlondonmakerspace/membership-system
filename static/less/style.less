@@ -6,3 +6,37 @@ body {
 .logo {
 	margin-bottom: 20px;
 }
+
+.jumbotron {
+
+}
+
+.bg {
+  background: url('/assets/example/bg_blueplane.jpg') no-repeat center center;
+  position: fixed;
+  width: 100%;
+  height: 350px; /*same height as jumbotron */
+  top:0;
+  left:0;
+  z-index: -1;
+}
+
+.jumbotron {
+	position: relative;
+	color: white;
+	text-shadow: #444 0 1px 1px;
+	overflow: hidden;
+	background: transparent;
+
+	.bg {
+		background-image: url( /imgs/jumbo.jpg );
+		background-size: cover;
+		background-position: center;
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		-webkit-filter: blur(2px);
+		filter: blur(2px);
+	}
+}

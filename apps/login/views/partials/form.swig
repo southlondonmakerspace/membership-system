@@ -10,5 +10,6 @@
 	</p>
 	<p>
 		<button class="btn btn-block btn-lg btn-primary" role="button">Login</button>
+		<a class="btn btn-block btn-sm btn-default" href="/password-reset">Forgotten your password?</a>
 	</p>
 </form>

@@ -1,5 +1,7 @@
 {% extends '../../../src/views/base.swig' %}
 
+{% block navbar %}{% endblock %}
+
 {% set title = app.title %}
 
 {% block scripts %}
@@ -23,28 +25,18 @@
 
 {% block content %}
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<div class="page-header">
 				<h2>{{ app.title }}</h2>
 			</div>
-			<form method="post">
-				<p></p>
-				<p>
-					<label for="email">Email: </label>
-					<input id="email" name="email" type="text" class="form-control" />
-				</p>
-				<p>
-					<label for="password">Password: </label>
-					<input id="password" name="password" type="password" class="form-control" />
-				</p>
-				<p>
-					<button class="btn btn-primary" role="button">Login</button>
-					<a class="btn btn-default" href="/password-reset" role="button">Password Reset</a>
-				</p>
-			</form>
+			<div class="row">
+				<div class="col-md-6">
+					{% include 'partials/form.swig' %}
+				</div>
+			</div>
 		</div>
 
-		<div class="col-md-6">
+		<div class="col-md-4">
 			<div class="page-header">
 				<h2>Join</h2>
 			</div>

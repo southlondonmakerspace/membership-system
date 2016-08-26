@@ -15,12 +15,14 @@
 	</head>
 	<body>
 		<div class="container">
-			<img class="logo" src="/imgs/logo.png" />
-			{% include 'partials/navbar.swig' %}
-	    	{% include 'partials/breadcrumb.swig' %}
-	    	{% include 'partials/flash.swig' %}
-	    	{% if heading %}
-	    		<div class="page-header">
+			<a href="/"><img class="logo" src="/imgs/logo.png" /></a>
+			{% block navbar %}
+				{% include 'partials/navbar.swig' %}
+			{% endblock %}
+			{% include 'partials/breadcrumb.swig' %}
+			{% include 'partials/flash.swig' %}
+			{% if heading %}
+				<div class="page-header">
 					<h2>{{ heading }}</h2>
 				</div>
 			{% endif %}

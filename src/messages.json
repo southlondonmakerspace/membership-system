@@ -49,6 +49,7 @@
 	"permission-sa-only": "Permission can only be administered by super admin users",
 	"permission-name-required": "Permissions must have a name",
 	"permission-slug-required": "Permissions must have a slug",
+	"permission-duplicate": "User already has this permission",
 
 	"tag-updated": "Tag updated",
 

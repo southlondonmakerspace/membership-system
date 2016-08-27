@@ -84,6 +84,15 @@ app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+	if ( req.body.firstname == undefined ||
+		 req.body.lastname == undefined ||
+		 req.body.email == undefined ||
+		 req.body.address == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			res.redirect( app.parent.mountpath + app.mountpath );
+ 			return;
+	}
+
 	var member = {
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
@@ -119,6 +128,12 @@ app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+	if ( req.body.activated == undefined ) {
+ 			req.flash( 'danger', messages['information-ommited'] );
+ 			res.redirect( app.parent.mountpath + app.mountpath );
+ 			return;
+	}
+
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};
@@ -156,6 +171,12 @@ app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/tag', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+	if ( req.body.tag == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
 	var hashed_tag = auth.hashCard( req.body.tag );
 	var profile = {
 		'tag.id': req.body.tag,
@@ -202,6 +223,15 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+	if ( req.body.id == undefined ||
+		 req.body.email == undefined ||
+		 req.body.activated == undefined ||
+	 	 req.body.clear == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
 	var member = {
 		'discourse.id': req.body.id,
 		'discourse.email': req.body.email,
@@ -239,10 +269,17 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+	if ( req.body.mandate_id == undefined ||
+		 req.body.subscription_id == undefined ||
+	 	 req.body.minimum == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
 	var member = {
 		'gocardless.mandate_id': req.body.mandate_id,
 		'gocardless.subscription_id': req.body.subscription_id,
-		'gocardless.amount': req.body.amount,
 		'gocardless.minimum': req.body.minimum
 	}
 
@@ -280,6 +317,16 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 //////////////////////////
 
 app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+	if ( req.body.permission == undefined ||
+		 req.body.start_time == undefined ||
+ 		 req.body.start_date == undefined ||
+		 req.body.expiry_time == undefined ||
+		 req.body.expiry_date == undefined ) {
+		req.flash( 'danger', messages['information-ommited'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
 	Permissions.findOne( { slug: req.body.permission }, function( err, permission ) {
 		if ( permission != undefined ) {
 			if ( permission.superadmin_only && res.locals.access != 'superadmin' ) {
@@ -303,17 +350,33 @@ app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req,
 				return;
 			}
 
-			Members.update( { uuid: req.params.uuid }, {
-				$push: {
-					permissions: new_permission
+			Members.findOne( { uuid: req.params.uuid }, function ( err, member ) {
+				var dupe = false;
+				for ( var p = 0; p < member.permissions.length; p++ ) {
+					if ( member.permissions[p].permission.toString() == permission._id.toString() ) {
+						dupe = true;
+						break;
+					}
 				}
-			}, function ( status ) {
-				discourse.grantMember( { uuid: req.params.uuid } );
+				if ( dupe ) {
+					req.flash( 'danger', messages['permission-duplicate'] );
+					res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
+					return;
+				}
+
+				Members.update( { uuid: req.params.uuid }, {
+					$push: {
+						permissions: new_permission
+					}
+				}, function ( status ) {
+					discourse.grantMember( { uuid: req.params.uuid } );
+					res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
+				} );
 			} );
 		} else {
 			req.flash( 'warning', messages['permission-404'] );
+			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
 		}
-		res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
 	} );
 } );
 

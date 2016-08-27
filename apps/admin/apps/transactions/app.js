@@ -35,7 +35,6 @@ app.use( function( req, res, next ) {
 app.get( '/', auth.isAdmin, function( req, res ) {
 	Payments.find().populate( 'member' ).exec( function( err, payments ) {
 		res.render( 'transactions', { payments: payments } );
-		console.log( payments[0].member );
 	} );
 } );
 

@@ -493,8 +493,6 @@ app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 			return;
 		}
 
-		console.log( member.permissions.id( req.params.id ).permission );
-
 		if ( member.permissions.id( req.params.id ).permission.superadmin_only && res.locals.access != 'superadmin' ) {
 			req.flash( 'danger', messages['permission-sa-only'] );
 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );

@@ -43,68 +43,6 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-// Create Member
-////////////////
-
-app.get( '/create', auth.isSuperAdmin, function( req, res ) {
-	res.render( 'create', { member: req.session.create } );
-	delete req.session.create;
-} );
-
-app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	auth.generateActivationCode( function( generated_password ) {
-		auth.generatePassword( generated_password, function( password ) {
-			var member = {
-				email: req.body.email,
-				firstname: req.body.firstname,
-				lastname: req.body.lastname,
-				address: req.body.address,
-				password: password,
-				activated: true,
-				gocardless: {
-					mandate_id: req.body.gocardless_mandate_id,
-					subscription_id: req.body.gocardless_subscription_id,
-					amount: req.body.gocardless_amount
-				}
-			}
-
-			if ( req.body.tag != '' ) {
-				member.tag = {
-					id: req.body.tag,
-					hashed: auth.hashCard( req.body.tag )
-				};
-			}
-
-			if ( req.body.discourse_id != '' && req.body.discourse_email != '' ) {
-				member.discourse = {
-					id: req.body.discourse_id,
-					email: req.body.discourse_email,
-					activated: true
-				};
-			}
-
-			new Members( member ).save( function( status ) {
-				if ( status != null && status.errors != undefined ) {
-					var keys = Object.keys( status.errors );
-					for ( var k in keys ) {
-						var key = keys[k];
-						req.flash( 'danger', status.errors[key].message );
-					}
-					req.session.create = member;
-					res.redirect( app.parent.mountpath + app.mountpath + '/create' );
-				} else if ( status != null && status.code == 11000 ) {
-					req.session.create = member;
-					req.flash( 'danger', messages['discouse-id-duplicate'] );
-					res.redirect( app.parent.mountpath + app.mountpath + '/create' );
-				} else {
-					req.flash( 'success', messages['member-created'] );
-					res.redirect( app.parent.mountpath + app.mountpath + '/create' );
-				}
-			} );
-		} );
-	} );
-} );
-
 // Member
 /////////
 

@@ -22,10 +22,10 @@
 			jQuery( "#filter" ).on( "input", function () {
 				// split the current value of searchInput
 				var data = this.value.split( " " );
-				
+
 				// create a jquery object of the rows
 				var jo = $( "tbody" ).find( "tr" );
-				
+
 				if ( this.value == "" ) {
 					jo.show();
 					return;
@@ -50,15 +50,7 @@
 {% endblock %}
 
 {% block content %}
-	{% if access == 'superadmin' %}
-		<p><a href="/admin/members/create" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create Member</a></p>
-
-		<hr />
-	{% endif %}
-
 	<input id="filter" placeholder="Filter" class="form-control" style="max-width: 200px" />
-
 	<hr />
-
 	{% include 'partials/member-table.swig' %}
 {% endblock %}

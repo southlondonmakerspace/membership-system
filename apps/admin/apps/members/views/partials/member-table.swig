@@ -1,6 +1,6 @@
 {% if members.length > 0 %}
 	<p>Members: {{ members.length }}</p>
-	
+
 	<hr />
 
 	<table class="table table-striped table-hover table-condensed">
@@ -10,7 +10,6 @@
 				<th>First name</th>
 				<th>Last name</th>
 				<th>Email</th>
-				<th>Status</th>
 				<th>Tag</th>
 				<th>Permissions</th>
 				{% if access == 'superadmin' %}
@@ -23,13 +22,12 @@
 		</thead>
 		<tbody>
 			{% for member in members %}
-			
+
 				<tr title="View Member " data-href="/admin/members/{{ member.uuid }}" style="cursor: pointer;">
 					<td><img style="border-radius: 100%" src="{{ member.gravatar }}?s=50&amp;d=identicon&amp;r=g"></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>
-					<td>{% include 'status.swig' %}</td>
 					<td>
 						<a title="Edit Tag" href="/admin/members/{{ member.uuid }}/tag"><span class="glyphicon glyphicon-credit-card"></span></a>
 					</td>

@@ -34,7 +34,7 @@
 			<tbody>
 				{% for payment in payments %}
 					<tr>
-						<td>{{ payment.member.fullname }}</td>
+						<td><a href="/admin/members/{{ payment.member.uuid }}">{{ payment.member.fullname }}</a></td>
 						<td>{{ payment.payment_id }}</td>
 						<td>{{ payment.subscription_id }}</td>
 						<td>{{ payment.created| date('H:i:s d/m/Y') }}</td>

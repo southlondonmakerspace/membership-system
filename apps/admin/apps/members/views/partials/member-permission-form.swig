@@ -1,13 +1,15 @@
 <form method="post">
-	<p>
-		<label for="permission">Permission: </label>
-		<select class="form-control" id="permission" name="permission">
-			<option disabled selected>&mdash;</option>
-			{% for permission in permissions %}
-			<option {% if permission.slug == current.permission.slug %}selected{% endif %} value="{{ permission.slug }}" {% if permission.superadmin_only && access != 'superadmin' %}disabled{% endif %}>{{ permission.name }}{% if permission.superadmin_only && access != 'superadmin' %} &mdash; Restricted to Super Admins{% endif %}</option>
-			{% endfor %}
-		</select>
-	</p>
+	{% if ! partial %}
+		<p>
+			<label for="permission">Permission: </label>
+			<select class="form-control" id="permission" name="permission">
+				<option disabled selected>&mdash;</option>
+				{% for permission in permissions %}
+				<option {% if permission.slug == current.permission.slug %}selected{% endif %} value="{{ permission.slug }}" {% if permission.superadmin_only && access != 'superadmin' %}disabled{% endif %}>{{ permission.name }}{% if permission.superadmin_only && access != 'superadmin' %} &mdash; Restricted to Super Admins{% endif %}</option>
+				{% endfor %}
+			</select>
+		</p>
+	{% endif %}
 	<p>
 		<label>Start: </label><br />
 		{% if current.date_added %}

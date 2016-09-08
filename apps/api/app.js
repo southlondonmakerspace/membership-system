@@ -35,7 +35,9 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 			}
 
 			if ( grantAccess ) {
-				res.sendStatus( 200 );
+				res.send( JSON.stringify( {
+					name: member.fullname
+				} ) );
 			} else {
 				res.sendStatus( 403 );
 			}

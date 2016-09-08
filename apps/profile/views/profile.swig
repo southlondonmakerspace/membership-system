@@ -4,7 +4,7 @@
 {% set heading = app.title %}
 
 {% block content %}
-	<p><img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=identicon&r=g"></p>
+	<p><img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=mm&r=g"></p>
 
 	<p><strong>Name:</strong> {{ user.fullname }}</p>
 

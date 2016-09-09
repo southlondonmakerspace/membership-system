@@ -27,5 +27,6 @@
 		"sandbox": true,
 		"minimum": 20
 	},
-	"password-tries": 1
+	"password-tries": 1,
+	"secret" : "abc123"
 }

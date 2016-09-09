@@ -8,6 +8,6 @@
 
 {% block action %}
 	{% set action = 'Activate' %}
-	{% set url = activate_url %}
+	{% set url = activation_url %}
 	{% include '../../../src/views/partials/action.html.swig' %}
 {% endblock %}

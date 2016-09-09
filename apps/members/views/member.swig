@@ -11,7 +11,7 @@
 				<h2>{{ member.fullname }}</h2>
 			</div>
 
-			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&amp;d=identicon&amp;r=g"></p>
+			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&amp;d=mm&amp;r=g"></p>
 
 			{% if member.discourse.activated %}
 				<p><strong>Discourse:</strong> <a target="_blank" href="{{ discourse_path }}/users/{{ discourse.username }}">@{{ discourse.username }}</a></p>

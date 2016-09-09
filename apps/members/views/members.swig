@@ -21,10 +21,10 @@
 			jQuery( "#filter" ).on( "input", function () {
 				// split the current value of searchInput
 				var data = this.value.split( " " );
-				
+
 				// create a jquery object of the rows
 				var jo = $( "tbody" ).find( "tr" );
-				
+
 				if ( this.value == "" ) {
 					jo.show();
 					return;
@@ -70,7 +70,7 @@
 		<tbody>
 			{% for member in members %}
 				<tr title="View Member " data-href="/members/{{ member.uuid }}" style="cursor: pointer;">
-					<td><img style="border-radius: 100%" src="{{ member.gravatar }}?s=75&d=identicon&r=g"></td>
+					<td><img style="border-radius: 100%" src="{{ member.gravatar }}?s=75&d=mm&r=g"></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.joined | date('d/m/Y') }}</td>

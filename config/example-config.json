@@ -1,7 +1,7 @@
 {
 	"port": 3001,
 	"host": "127.0.0.1",
-	"secret": "",
+	"secret": "abc123",
 	"api_key": "",
 	"globals": {
 		"organisation": "",

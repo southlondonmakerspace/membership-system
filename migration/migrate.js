@@ -58,7 +58,7 @@ var userSchema = mongoose.Schema( {
 	permission: Number // permission level. 0 is none, 50 is admin
 } );
 
-var Users = mongoose.model( 'Users', userSchema, 'Users' );
+var Users = mongoose.model( 'Users', userSchema, 'User' );
 
 Users.find( function( err, users ) {
 	for ( var u = 0; u < users.length; u++ ) {

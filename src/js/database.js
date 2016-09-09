@@ -230,5 +230,5 @@ exports.historicEventsSchema = historicEventsSchema;
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
-exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvents' );
+exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
 exports.mongoose = mongoose;

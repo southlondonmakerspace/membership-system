@@ -49,10 +49,6 @@
 {% endblock %}
 
 {% block content %}
-	<p>Active members: {{ members.length }}</p>
-
-	<hr />
-
 	<input id="filter" placeholder="Filter" class="form-control" style="max-width: 200px; display: inline;" />
 
 	<div class="dropdown" style="display: inline;">
@@ -65,6 +61,10 @@
 			{% endfor %}
 		</ul>
 	</div>
+
+	<hr />
+
+	<p>Members: {{ members.length }}</p>
 
 	<hr />
 

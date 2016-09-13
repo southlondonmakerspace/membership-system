@@ -10,6 +10,7 @@ var	express = require( 'express' ),
 
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
+	Permissions = require( __js + '/database' ).Permissions,
 	Members = require( __js + '/database' ).Members;
 
 var messages = require( __src + '/messages.json' );
@@ -31,25 +32,45 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	Members.find().populate( 'permissions.permission' ).exec( function( err, members ) {
-		var activeMembers = [];
-		for ( var m = 0; m < members.length; m++ ) {
-			if ( members[m].activated ) {
-				var permissions = members[m].permissions;
-				for ( var p = 0; p < permissions.length; p++ ) {
-					if ( permissions[p].permission.slug == 'member'
-						&& permissions[p].date_added <= new Date()
-						&& (
-							permissions[p].date_expires == undefined 
-							|| permissions[p].date_expires > new Date()
-							) ) {
-						activeMembers.push( members[m] );
+	Permissions.find( function( err, allPermissions ) {
+		Members.find().populate( 'permissions.permission' ).exec( function( err, members ) {
+			var filter = {
+				'permissions': {
+					$elemMatch: {
+						'permission': '578fafacb1164a6c76058b19'
+					}
+				}
+			};
+			if ( req.query.permission != undefined )
+				members = members.filter( function( member ) {
+					var matched;
+					for ( var p = 0; p < member.permissions.length; p++ )
+						if ( member.permissions[p].permission.slug == req.query.permission )
+							matched = true;
+					if ( matched )
+						return member;
+					return;
+				} );
+
+			var activeMembers = [];
+			for ( var m = 0; m < members.length; m++ ) {
+				if ( members[m].activated ) {
+					var permissions = members[m].permissions;
+					for ( var p = 0; p < permissions.length; p++ ) {
+						if ( permissions[p].permission.slug == 'member'
+							&& permissions[p].date_added <= new Date()
+							&& (
+								permissions[p].date_expires == undefined
+								|| permissions[p].date_expires > new Date()
+								) ) {
+							activeMembers.push( members[m] );
+						}
 					}
 				}
 			}
-		}
-		res.render( 'members', { members: activeMembers } );
-	} );
+			res.render( 'members', { permissions: allPermissions, members: activeMembers } );
+		} );
+	} )
 } );
 
 app.get( '/:uuid', auth.isMember, function( req, res ) {

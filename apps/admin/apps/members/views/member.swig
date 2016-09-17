@@ -113,6 +113,10 @@
 
 				<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum | default('–') }}</p>
 
+				{% if member.gocardless.next_possible_charge_date %}
+					<p><strong>Earliest charge date:</strong> {{ member.gocardless.next_possible_charge_date | date('d/m/Y') }}</p>
+				{% endif %}
+
 				<p><a href="/admin/members/{{ member.uuid }}/gocardless" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			</div>
 		</div>

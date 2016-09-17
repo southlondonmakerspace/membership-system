@@ -93,7 +93,6 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 app.get( '/setup-mandate', auth.isLoggedIn, function( req, res ) {
 	auth.generateActivationCode( function( session_token ) {
 		GoCardless.createRedirectFlow( 'Membership + Payments', session_token, config.audience + app.parent.mountpath + app.mountpath, function( error, redirect_url, body ) {
-			console.dir( body );
 			if ( error ) {
 				req.flash( 'danger', messages['gocardless-mandate-err'] );
 				res.redirect( app.parent.mountpath + app.mountpath );
@@ -156,7 +155,6 @@ app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function(
 	}
 
 	GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id, body ) {
-		console.dir( body );
 		if ( error ) {
 			req.flash( 'danger', messages['gocardless-subscription-err'] );
 			res.redirect( app.parent.mountpath + app.mountpath );

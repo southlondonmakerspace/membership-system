@@ -77,6 +77,16 @@ GoCardless.completeRedirectFlow = function ( redirect_flow_id, session_token, ca
 
 // Mandate
 
+GoCardless.getMandate = function ( mandate_id, callback ) {
+	GoCardless.request( 'get', '/mandates/' + mandate_id, {}, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, body.mandates );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
 GoCardless.cancelMandate = function ( mandate_id, callback ) {
 	GoCardless.request( 'post', '/mandates/' +  mandate_id + '/actions/cancel', {}, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {

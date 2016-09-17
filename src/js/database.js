@@ -158,6 +158,9 @@ var memberSchema = mongoose.Schema( {
 		},
 		minimum: {
 			type: Number
+		},
+		next_possible_charge_date: {
+			type: Date
 		}
 	},
 	permissions: [ {

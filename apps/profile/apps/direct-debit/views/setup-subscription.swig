@@ -34,7 +34,7 @@
 					<option value='-1'>Last day of the month</option>
 				</select>
 				{% if next_possible_charge_date %}
-					<span id="helpBlock" class="help-block">Due to the processing times involved in collecting Direct Debit payments, the earliest possible charge date is normally about 7 days from when you setup your mandate, we've preselected this date, however some members prefer to wait until next month in order to setup their payment on a more convenient date aligned with their pay day, this will result in a delay to your membership becoming active.</span>
+					<span id="helpBlock" class="help-block">Direct Debits usually take around 7 days to process. Therefore, we've set the charge date to be as early as possible. However if you prefer to pay for your membership on a specific date (eg. the day after payday), please select it here. Note that this will delay the start of your membership.</span>
 				{% endif %}
 			</div>
 		</div>

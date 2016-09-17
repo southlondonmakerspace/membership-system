@@ -1,69 +1,55 @@
 {% extends '../../../../../src/views/base.swig' %}
 
 {% set title = 'Direct Debit' %}
-{% set heading = 'Setup Subscription' %}
+{% set heading = title %}
 
 {% block content %}
-	<p>You've setup a Direct Debit Mandate, which authorises us to collect money from your account</p>
-	<p>Now we need to setup a monthly subscription.</p>
+	<p>You have setup a Direct Debit mandate, which authorises us to collect money from your account, the next step is to setup a monthly subscription.</p>
 
-	<form action="/profile/direct-debit/create-subscription" method="post">
-		<p>
-			<label for="amount">Amount: </label>
-			<p>The standard rate is £20 per month. If you can't afford this, please <a href="mailto:directors@southlondonmakerspace.org?Subject=Discount">email directors@southlondonmakerspace.org</a> and we can arrange a discount. If you'd like to pay <em>more</em> than £20 then you are very welcome!</p>
-			<div class="input-group">
-				<div class="input-group-addon">&pound;</div>
-				<input id="amount" name="amount" type="number" class="form-control" value="{{ amount }}" min="{{ amount }}" />
-				<div class="input-group-addon">.00</div>
+	<div class="page-header">
+		<h3>Subscription</h3>
+	</div>
+	<p>Setting up a subscription will allow us to charge you on a day of your choice each month.</p>
+	<form action="/profile/direct-debit/create-subscription" class="form-horizontal" method="post">
+		<div class="form-group">
+			<label for="amount" class="col-sm-2 control-label">Amount: </label>
+			<div class="col-sm-10">
+				<div class="input-group">
+					<div class="input-group-addon">&pound;</div>
+					<input id="amount" name="amount" type="number" class="form-control" value="{{ amount }}" min="{{ amount }}" />
+					<div class="input-group-addon">.00</div>
+				</div>
+				<span id="helpBlock" class="help-block">
+					Our minimum membership fee is &pound;20 per month. However, if you cannot afford this, please email <a href="mailto:directors@southlondonmakerspace.org?Subject=Discount">directors@southlondonmakerspace.org</a> and we can discuss alternatives. If you feel that the membership is worth more we invite you to pay what you think it's worth.
+				</span>
 			</div>
-		</p>
-
-		<p>(Placeholder text to explain how we handle the initial charge period before your regular charge date. We need to figure that out)</p>
-		<p>
-			<label for="day_of_month">Day of month: </label>
-			<select id="day_of_month" name="day_of_month" class="form-control">
-				<option value='-1'>Last day of the month</option>
-				<option selected>1</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
-				<option>5</option>
-				<option>6</option>
-				<option>7</option>
-				<option>8</option>
-				<option>9</option>
-				<option>10</option>
-				<option>11</option>
-				<option>12</option>
-				<option>13</option>
-				<option>14</option>
-				<option>15</option>
-				<option>16</option>
-				<option>17</option>
-				<option>18</option>
-				<option>19</option>
-				<option>20</option>
-				<option>21</option>
-				<option>22</option>
-				<option>23</option>
-				<option>24</option>
-				<option>25</option>
-				<option>26</option>
-				<option>27</option>
-				<option>28</option>
-			</select>
-		</p>
-
-		<p>
-			<button class="btn btn-primary" role="button">Create Subscription</button>
-		</p>
+		</div>
+		<div class="form-group">
+			<label for="day_of_month" class="col-sm-2 control-label">Day of month: </label>
+			<div class="col-sm-10">
+				<select id="day_of_month" name="day_of_month" class="form-control">
+					{% for date in dates  %}
+						<option {% if date == next_possible_charge_date %}selected{% endif %}>{{ date }}{% if date == next_possible_charge_date %} &mdash; Earlist possible charge date{% endif %}</option>
+					{% endfor %}
+					<option value='-1'>Last day of the month</option>
+				</select>
+				{% if next_possible_charge_date %}
+					<span id="helpBlock" class="help-block">Due to the processing times involved in collecting Direct Debit payments, the earliest possible charge date is normally about 7 days from when you setup your mandate, we've preselected this date, however some members prefer to wait until next month in order to setup their payment on a more convenient date aligned with their pay day, this will result in a delay to your membership becoming active.</span>
+				{% endif %}
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button class="btn btn-primary" role="button">Create Subscription</button>
+			</div>
+		</div>
 	</form>
 
-	<hr />
+	<div class="page-header">
+		<h3>Mandate</h3>
+	</div>
 
-	<h3>Mandate</h3>
+	<p>You can cancel your Direct Debit mandate here or through your bank, this will cancel all pending and future payments.</p>
 
-	<p>Having setup a Direct Debit mandate we can use this to setup payments and subscriptions against your account, you can cancel this here or through your bank.</p>
-
-	<p><a href="/profile/direct-debit/cancel-mandate" class="btn btn-danger">Cancel Mandate</a></p>
+	<p><a href="/profile/direct-debit/cancel-mandate" class="btn btn btn-danger">Cancel Mandate</a></p>
 {% endblock %}

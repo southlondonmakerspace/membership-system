@@ -91,9 +91,7 @@
 					<h3>Discourse</h3>
 				</div>
 
-				<p><strong>User ID:</strong> {{ member.discourse.id | default('–') }}</p>
-
-				<p><strong>Email:</strong> {{ member.discourse.email | default('–') }}</p>
+				<p><strong>Username:</strong> {{ member.discourse.username | default('–') }}</p>
 
 				<p><strong>Activated:</strong> {% if member.discourse.activated %}Yes{% else %}No{% endif %}</p>
 

@@ -223,16 +223,14 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.id == undefined ||
-		 req.body.email == undefined ) {
+	if ( req.body.username == undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	var member = {
-		'discourse.id': req.body.id,
-		'discourse.email': req.body.email,
+		'discourse.username': req.body.username,
 		'discourse.activated': ( req.body.activated ? true : false )
 	}
 

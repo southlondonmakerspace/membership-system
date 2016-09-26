@@ -52,8 +52,8 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 
 	// Linked
 	} else if ( req.user.discourse.activated ) {
-		discourse.getUserByEmail( req.user.discourse.email, function( user ) {
-			user.avatar = config.discourse.url + user.avatar_template.replace( '{size}', 100 );
+		discourse.getUsername( req.user.discourse.username, function( user ) {
+			user.avatar = config.discourse.url + user.user.avatar_template.replace( '{size}', 100 );
 			res.render( 'linked', { discourse_user: user } );
 		} );
 	}
@@ -69,7 +69,6 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 		discourse.searchUsers( req.body.search, function( users ) {
 			if ( users != undefined ) {
 				var user = users[ req.body.user ];
-				console.log( user.id );
 				Members.findOne( { "discourse.id": user.id }, function( err, member ) {
 					if ( member ) {
 						req.flash( 'warning', messages['discouse-id-duplicate'] );
@@ -79,8 +78,7 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 							code = code.toString( 'hex' );
 
 							Members.update( { "_id": req.user._id }, { $set: {
-								"discourse.id": user.id,
-								"discourse.email": user.email,
+								"discourse.username": user.username,
 								"discourse.activation_code": code
 							} }, function ( error ) {} );
 

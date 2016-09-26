@@ -22,11 +22,13 @@ Members.find( function( err, members ) {
 
 function updateDiscourseUsername( member ) {
 	Discourse.searchUsers( member.discourse.email, function( users ) {
-		member.discourse.username = users[0].username;
-		member.save( function ( err ) {
-			if ( err )
-				console.log( err );
-			console.log( member.discourse );
-		} );
+		if ( users != undefined && users.length == 1 ) {
+			member.discourse.username = users[0].username;
+			member.save( function ( err ) {
+				if ( err )
+					console.log( err );
+				console.log( member.discourse );
+			} );
+		}
 	} );
 }

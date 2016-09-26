@@ -10,14 +10,20 @@ var Members = database.Members;
 
 var Discourse = require( __js + '/discourse' );
 
+var checkForMembersTimer;
+var membersToUpdate = [];
+
 Members.find( function( err, members ) {
 	for ( var m = 0; m < members.length; m++ ) {
 		var member = members[m];
 		if (  member.discourse.activated ) {
-			updateDiscourseUsername( member );
+			membersToUpdate.push( member );
 		}
-
 	}
+	checkForMembersTimer = setInterval( function() {
+		if ( membersToUpdate.length > 0 )
+			updateDiscourseUsername( membersToUpdate.pop() );
+	}, 1000 );
 } );
 
 function updateDiscourseUsername( member ) {

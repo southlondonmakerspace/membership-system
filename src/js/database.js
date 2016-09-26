@@ -234,4 +234,5 @@ exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema )
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
 exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
+exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

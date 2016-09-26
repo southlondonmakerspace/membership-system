@@ -86,5 +86,5 @@ var listener = app.listen( config.port ,config.host, function () {
 } );
 
 // Do regular Discourse group checks
-setTimeout( Discourse.checkGroups, 2500 ); // Now and...
-setInterval( Discourse.checkGroups, 3600000*24 ); // ...every day
+Discourse.checkGroups(); // Now and...
+setInterval( Discourse.checkGroups, 900000 ); // ...every 15 minutes

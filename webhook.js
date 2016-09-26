@@ -12,8 +12,7 @@ var config = require( __config ),
 	http = require( 'http' ).Server( app ),
 	bodyParser = require( 'body-parser' ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
-	GoCardless = require( __js + '/gocardless' )( config.gocardless ),
-	Discourse = require( __js + '/discourse' );
+	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
 var Members = require( __js + '/database' ).Members;
 var Permissions = require( __js + '/database' ).Permissions;
@@ -132,8 +131,6 @@ function extendMembership( event ) {
 					member.save( function ( err ) {
 						if ( err ) {
 							console.log( err );
-						} else {
-							Discourse.grantMember( { _id: payment.member } );
 						}
 					} );
 				}
@@ -161,8 +158,6 @@ function grantMembership( member ) {
 			}, function ( err ) {
 				if ( err ) {
 					console.log( err );
-				} else {
-					Discourse.grantMember( { _id: member._id } );
 				}
 			});
 		}

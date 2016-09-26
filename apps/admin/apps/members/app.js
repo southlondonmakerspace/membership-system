@@ -365,7 +365,6 @@ app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req,
 						permissions: new_permission
 					}
 				}, function ( status ) {
-					discourse.grantMember( { uuid: req.params.uuid } );
 					res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
 				} );
 			} );
@@ -467,7 +466,6 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 			req.flash( 'success', messages['permission-updated'] );
 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
 			discourse.checkGroups();
-			discourse.grantMember( { uuid: req.params.uuid } );
 		} );
 	} );
 } );

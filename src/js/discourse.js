@@ -2,10 +2,14 @@
 
 var config = require( '../../config/config.json' );
 
-var Permissions = require( '../../src/js/database' ).Permissions,
-	Members = require( '../../src/js/database' ).Members;
+var Database = require( '../../src/js/database' ),
+	Permissions = Database.Permissions,
+	Members = Database.Members,
+	ObjectId = Database.ObjectId;
 
 var request = require( 'request' );
+
+var api_tasks = [];
 
 var Discourse = {
 	searchUsers: function ( search, callback ) {
@@ -59,30 +63,55 @@ var Discourse = {
 		var message = "Your activation code: **" + code + "**\n\n[Click here to activate](" + config.audience + '/profile/discourse?code=' + code + ")";
 		Discourse.sendPrivateMessage( username, "Activation Code", message );
 	},
-	addMemberToGroup: function ( member, group ) {
-		Discourse.getUsername( member.discourse.username, function( user ) {
-			request.put( config.discourse.url + '/groups/' + group.id + '/members.json', {
-				form: {
-					api_username: config.discourse.api_username,
-					api_key: config.discourse.api_key,
-					usernames: user.user.username
+	checkGroups: function() {
+		api_tasks.push( function() {
+			console.log( 'Check all discourse groups' );
+			Permissions.find( {
+				'group.id': { $ne: '' },
+				'group.name': { $ne: '' }
+			}, function( err, permissions ) {
+				for ( var p = 0; p < permissions.length; p++ ) {
+					Discourse.checkPermission( permissions[p] );
+				}
+			} );
+		} )
+	},
+	checkPermission: function( permission ) {
+		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
+		request.get( config.discourse.url + '/groups/' + permission.group.name + '/members.json?limit=9999', {
+			form: {
+				api_username: config.discourse.api_username,
+				api_key: config.discourse.api_key
+			}
+		}, function( err, req, body ) {
+			var users = JSON.parse( body ).members;
+			var usernames = [];
+			// Check for users to remove
+			if ( users.length > 0 ) {
+				// Loop through discourse users
+				for ( var u in users ) {
+					var user = users[u];
+					usernames.push( user.username )
+					Discourse.checkDiscourseUser( user.username, permission );
+				}
+			}
+			// Check for users to add
+			Members.find( { 'discourse.activated': true, 'permissions': { $elemMatch: { 'permission': permission._id } } } , function( err, members ) {
+				for ( var i = 0; i < members.length; i++ ) {
+					var member = members[i]
+					if ( usernames.indexOf( member.discourse.username ) == -1 ) {
+						Discourse.addUser( member.discourse.username, permission );
+					}
 				}
 			} );
 		} );
 	},
-	removeUserFromGroup: function( discourse_user_id, group ) {
-		console.log( 'Removing user "' + discourse_user_id + '" from Group "' + group.name + '".' );
-		request.del( config.discourse.url + '/groups/' + group.id + '/members.json', {
-			form: {
-				api_username: config.discourse.api_username,
-				api_key: config.discourse.api_key,
-				user_id: discourse_user_id
+	checkDiscourseUser: function( username, permission ) {
+		Members.findOne( { 'discourse.username': username } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+			if ( member == undefined ) {
+				Discourse.removeUser( username, permission );
+				return;
 			}
-		} );
-	},
-	checkDiscourseUser: function( discourse_user_id, permission ) {
-		Members.findOne( { 'discourse.id': discourse_user_id } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-			if ( member == null ) return Discourse.removeUserFromGroup( discourse_user_id, permission.group );
 			for ( var p = 0; p < member.permissions.length; p++ ) {
 				var perm = member.permissions[p];
 				if ( perm.permission.slug == permission.slug ) {
@@ -94,62 +123,41 @@ var Discourse = {
 				} else {
 					continue;
 				}
-				Discourse.removeUserFromGroup( discourse_user_id, permission.group );
+				Discourse.removeUser( username, permission );
 			}
 		} );
 	},
-	grantMember: function( search ) {
-		Members.findOne( search ).populate( 'permissions.permission' ).exec( function( err, member ) {
-			if ( member == null ) return;
-			for ( var p = 0; p < member.permissions.length; p++ ) {
-				var perm = member.permissions[p];
-				if ( perm.permission.group.id != '' && perm.permission.group.name != '' ) {
-					if ( perm.date_added < new Date() ) {
-						if ( perm.date_expires == undefined || perm.date_expires > new Date() ) {
-							console.log( 'Adding "' + member.email + '" to discourse group "' + perm.permission.group.name + '"' );
-							Discourse.addMemberToGroup( member, perm.permission.group );
-						}
+	addUser: function( username, permission ) {
+		api_tasks.push( function() {
+			console.log( 'Adding user "' + username + '" to group "' + permission.group.name + '".' );
+			request.put( config.discourse.url + '/groups/' + permission.group.id + '/members.json', {
+				form: {
+					api_username: config.discourse.api_username,
+					api_key: config.discourse.api_key,
+					usernames: username
+				}
+			} );
+		} );
+	},
+	removeUser: function( username, permission ) {
+		api_tasks.push( function() {
+			console.log( 'Removing user "' + username + '" from group "' + permission.group.name + '".' );
+			Discourse.getUsername( username, function( user ) {
+				request.del( config.discourse.url + '/groups/' + permission.group.id + '/members.json', {
+					form: {
+						api_username: config.discourse.api_username,
+						api_key: config.discourse.api_key,
+						user_id: user.user.id
 					}
-				}
-			}
-		} );
-	},
-	checkPermission: function( permission ) {
-		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
-		request.get( config.discourse.url + '/groups/' + permission.group.name + '/members.json?limit=9999', {
-			form: {
-				api_username: config.discourse.api_username,
-				api_key: config.discourse.api_key
-			}
-		}, function( err, req, body ) {
-			var users = JSON.parse( body ).members;
-			if ( users.length > 0 ) {
-				for ( var u in users ) {
-					Discourse.checkDiscourseUser( users[u].id, permission );
-				}
-			}
-		} );
-	},
-	checkGroups: function() {
-		// Revoke first
-		Permissions.find( {
-			'group.id': { $ne: '' },
-			'group.name': { $ne: '' }
-		}, function( err, permissions ) {
-			for ( var p = 0; p < permissions.length; p++ ) {
-				Discourse.checkPermission( permissions[p] );
-			}
-		} );
-		// Grant
-		Members.find( {
-			'discourse.id': { $ne: null },
-			'discourse.email': { $ne: null }
-		}, function( err, members ) {
-			for ( var m in members ) {
-				Discourse.grantMember( { _id: members[m]._id } );
-			}
+				} );
+			} );
 		} );
 	}
 };
+
+setInterval( function() {
+	if ( api_tasks.length > 0 )
+		api_tasks.pop()();
+}, 250 );
 
 module.exports = Discourse;

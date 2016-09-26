@@ -48,7 +48,7 @@
 		<li style="margin-bottom: 1em;">
 			{% if user.discourse.activated %}
 				<a href="/profile/discourse" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Discourse</a>
-			{% elseif ! user.discourse.activated && user.discourse.id != '' %}
+			{% elseif ! user.discourse.activated && user.discourse.username != '' %}
 				<a href="/profile/discourse" class="btn btn-warning"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
 			{% else %}
 				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>

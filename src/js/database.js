@@ -134,8 +134,7 @@ var memberSchema = mongoose.Schema( {
 		}
 	},
 	discourse: {
-		id: String,
-		email: String,
+		username: String,
 		activated: {
 			type: Boolean,
 			default: false

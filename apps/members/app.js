@@ -84,7 +84,7 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 			name: member.fullname
 		} );
 
-		discourse.getUserByEmail( member.discourse.email, function( discourse ) {
+		discourse.getUsername( member.discourse.username, function( discourse ) {
 			res.render( 'member', { member: member, discourse: discourse, discourse_path: config.discourse.url } );
 		} );
 	} );

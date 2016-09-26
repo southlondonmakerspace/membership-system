@@ -6,11 +6,7 @@
 {% block content %}
 	<form method="post">
 		<p>
-			<label for="id">User ID:</label> <input type="text" value="{{ member.discourse.id }}" id="id" name="id" class="form-control" />
-		</p>
-
-		<p>
-			<label for="email">Email:</label> <input type="text" value="{{ member.discourse.email }}" id="email" name="email" class="form-control" />
+			<label for="id">Username:</label> <input type="text" value="{{ member.discourse.username }}" id="username" name="username" class="form-control" />
 		</p>
 
 		<p>

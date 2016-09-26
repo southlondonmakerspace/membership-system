@@ -26,24 +26,20 @@ var Discourse = {
 			return callback();
 		} );
 	},
-	getUserByEmail: function ( email, callback ) {
-			request.get( config.discourse.url + '/admin/users/list/active.json', {
-				form: {
-					api_username: config.discourse.api_username,
-					api_key: config.discourse.api_key,
-					show_emails: true,
-					filter: email
-				}
-			}, function ( error, response, body ) {
-				if ( response.statusCode == '200 ') {
-					var output = JSON.parse( body );
-					if ( output[0] != undefined ) {
-						return callback( output[0] );
-					}
-				}
-				return callback();
-			} );
-		},
+	getUsername: function( username, callback ) {
+		request.get( config.discourse.url + '/users/' + username + '.json', {
+			form: {
+				api_username: config.discourse.api_username,
+				api_key: config.discourse.api_key
+			}
+		}, function ( error, response, body ) {
+			if ( response != undefined && response.statusCode == '200' ) {
+				var output = JSON.parse( body );
+				return callback( output );
+			}
+			return callback();
+		} );
+	},
 	sendPrivateMessage:	function ( username, subject, message ) {
 		request.post( config.discourse.url + '/posts', {
 			form: {

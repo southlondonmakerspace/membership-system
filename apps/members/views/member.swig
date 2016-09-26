@@ -14,7 +14,7 @@
 			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&amp;d=mm&amp;r=g"></p>
 
 			{% if member.discourse.activated %}
-				<p><strong>Discourse:</strong> <a target="_blank" href="{{ discourse_path }}/users/{{ discourse.username }}">@{{ discourse.username }}</a></p>
+				<p><strong>Discourse:</strong> <a target="_blank" href="{{ discourse_path }}/users/{{ discourse.user.username }}">@{{ discourse.user.username }}</a></p>
 			{% endif %}
 
 			<p><strong>Emergency Contact:</strong> {% if member.emergency_contact.telephone %}Yes, on file{% else %}No, not held{% endif %}</p>

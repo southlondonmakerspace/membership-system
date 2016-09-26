@@ -60,12 +60,12 @@ var Discourse = {
 		Discourse.sendPrivateMessage( username, "Activation Code", message );
 	},
 	addMemberToGroup: function ( member, group ) {
-		Discourse.getUserByEmail( member.discourse.email, function( user ) {
+		Discourse.getUsername( member.discourse.username, function( user ) {
 			request.put( config.discourse.url + '/groups/' + group.id + '/members.json', {
 				form: {
 					api_username: config.discourse.api_username,
 					api_key: config.discourse.api_key,
-					usernames: user.username
+					usernames: user.user.username
 				}
 			} );
 		} );

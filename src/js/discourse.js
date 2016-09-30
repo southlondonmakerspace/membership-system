@@ -137,24 +137,41 @@ var Discourse = {
 		} );
 	},
 	checkDiscourseUser: function( username, permission ) {
-		Members.findOne( { 'discourse.username': username } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-			if ( member == undefined ) {
-				Discourse.removeUser( username, permission );
-				return;
-			}
-			for ( var p = 0; p < member.permissions.length; p++ ) {
-				var perm = member.permissions[p];
-				if ( perm.permission.slug == permission.slug ) {
-					if ( perm.date_added < new Date() ) {
-						if ( perm.date_expires == undefined || perm.date_expires > new Date() ) {
-							return;
+		Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
+			Members.findOne( {
+				'discourse.username': username,
+				$and: [
+					{
+						permissions: {
+							$elemMatch: {
+								permission: membership_permission._id,
+								date_added: { $lte: new Date() },
+								$or: [
+									{ date_expires: null },
+									{ date_expires: { $gt: new Date() } }
+								]
+							}
+						}
+					},
+					{
+						permissions: {
+							$elemMatch: {
+								permission: permission._id,
+								date_added: { $lte: new Date() },
+								$or: [
+									{ date_expires: null },
+									{ date_expires: { $gt: new Date() } }
+								]
+							}
 						}
 					}
-				} else {
-					continue;
+				]
+			} ).populate( 'permissions.permission' ).exec( function( err, member ) {
+				if ( member == undefined ) {
+					Discourse.removeUser( username, permission );
+					return;
 				}
-				Discourse.removeUser( username, permission );
-			}
+			} );
 		} );
 	},
 	addUser: function( username, permission ) {

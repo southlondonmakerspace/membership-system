@@ -57,7 +57,18 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 			name: permission.name
 		} );
 
-		Members.find( { permissions: { $elemMatch: { permission: permission._id } } }, function( err, members ) {
+		Members.find( {
+			permissions: {
+				$elemMatch: {
+					permission: permission._id,
+					date_added: { $lte: new Date() },
+					$or: [
+						{ date_expires: null },
+						{ date_expires: { $gt: new Date() } }
+					]
+				}
+			}
+		}, function( err, members ) {
 			res.render( 'permission', { permission: permission, members: members } );
 		} );
 	} );

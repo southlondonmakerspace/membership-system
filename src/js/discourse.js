@@ -96,13 +96,43 @@ var Discourse = {
 				}
 			}
 			// Check for users to add
-			Members.find( { 'discourse.activated': true, 'permissions': { $elemMatch: { 'permission': permission._id } } } , function( err, members ) {
-				for ( var i = 0; i < members.length; i++ ) {
-					var member = members[i]
-					if ( usernames.indexOf( member.discourse.username ) == -1 ) {
-						Discourse.addUser( member.discourse.username, permission );
+			Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
+				Members.find( {
+					'discourse.activated': true,
+					$and: [
+						{
+							permissions: {
+								$elemMatch: {
+									permission: membership_permission._id,
+									date_added: { $lte: new Date() },
+									$or: [
+										{ date_expires: null },
+										{ date_expires: { $gt: new Date() } }
+									]
+								}
+							}
+						},
+						{
+							permissions: {
+								$elemMatch: {
+									permission: permission._id,
+									date_added: { $lte: new Date() },
+									$or: [
+										{ date_expires: null },
+										{ date_expires: { $gt: new Date() } }
+									]
+								}
+							}
+						}
+					]
+				} , function( err, members ) {
+					for ( var i = 0; i < members.length; i++ ) {
+						var member = members[i]
+						if ( usernames.indexOf( member.discourse.username ) == -1 ) {
+							Discourse.addUser( member.discourse.username, permission );
+						}
 					}
-				}
+				} );
 			} );
 		} );
 	},

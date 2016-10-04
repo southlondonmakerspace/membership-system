@@ -69,25 +69,4 @@
 			{% endif %} So you can use your tag in the space.
 		</li>
 	</ol>
-
-	{% if user.permissions.length > 0 %}
-		<div class="page-header">
-			<h3>Permissions</h3>
-		</div>
-		<div class="list-group">
-			{% for permission in user.permissions %}
-				{% set permission = permission.permission %}
-				<span class="list-group-item">
-					<h4 class="list-group-item-heading">{{ permission.name }}</h4>
-					{% if permission.description %}
-						<p class="list-group-item-text">{{ permission.description }}</p>
-					{% endif %}
-					<p class="list-group-item-text"><strong>Start date:</strong> {{ permission.date_added | date('H:i:s d/m/Y') }}</p>
-					{% if permission.date_expires %}
-						<p class="list-group-item-text"><strong>Expiry date:</strong> {{ permission.date_expires | date('H:i:s d/m/Y') }}</p>
-					{% endif %}
-				</span>
-			{% endfor %}
-		</div>
-	{% endif %}
 {% endblock %}

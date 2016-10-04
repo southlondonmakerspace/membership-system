@@ -45,12 +45,17 @@ app.get( '/', auth.isMember, function( req, res ) {
 						]
 					}
 				}
-			}, function( err, members ) {
+			} ).populate( 'permissions.permission' ).exec( function( err, members ) {
 				if ( req.query.permission != undefined )
 					members = members.filter( function( member ) {
 						var matched;
 						for ( var p = 0; p < member.permissions.length; p++ )
-							if ( member.permissions[p].permission.slug == req.query.permission )
+							if ( member.permissions[p].permission.slug == req.query.permission &&
+								 member.permissions[p].date_added <= new Date() &&
+								 ( member.permissions[p].date_expires >= new Date() ||
+								   member.permissions[p].date_expires == undefined
+							 	 )
+							)
 								matched = true;
 						if ( matched )
 							return member;

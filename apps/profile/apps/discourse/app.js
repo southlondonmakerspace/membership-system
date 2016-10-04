@@ -54,7 +54,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	} else if ( req.user.discourse.activated ) {
 		discourse.getUsername( req.user.discourse.username, function( user ) {
 			user.avatar = config.discourse.url + user.user.avatar_template.replace( '{size}', 100 );
-			res.render( 'linked', { discourse_user: user } );
+			res.render( 'linked', { discourse_user: user, discourse_path: config.discourse.url } );
 		} );
 	}
 } );

@@ -4,17 +4,23 @@
 {% set heading = app.title %}
 
 {% block content %}
-	<p><img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=mm&r=g"></p>
-
-	<p><strong>Name:</strong> {{ user.fullname }}</p>
-
-	<p><strong>Email:</strong> {{ user.email }}</p>
-
-	<p><strong>Address:</strong> {{ user.address | replace('\r\n', ', ', 'gim') }}</p>
-
-	<p>
-		<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a href="/profile/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a>
-	</p>
+	<div class="row">
+		<div class="col-md-2">
+			<img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=mm&r=g">
+		</div>
+		<div class="col-md-2">
+			<p><strong>Name:</strong></p>
+			<p><strong>Email:</strong></p>
+			<p><strong>Address:</strong></p>
+		</div>
+		<div class="col-md-8">
+			<p>{{ user.fullname }}</p>
+			<p>{{ user.email }}</p>
+			<p>{{ user.address | replace('\r\n', ', ', 'gim') }}</p>
+			<p><a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
+			<p><a href="/profile/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a></p>
+		</div>
+	</div>
 
 	<div class="page-header">
 		<h3>Setup</h3>
@@ -63,25 +69,4 @@
 			{% endif %} So you can use your tag in the space.
 		</li>
 	</ol>
-
-	{% if user.permissions.length > 0 %}
-		<div class="page-header">
-			<h3>Permissions</h3>
-		</div>
-		<div class="list-group">
-			{% for permission in user.permissions %}
-				{% set permission = permission.permission %}
-				<span class="list-group-item">
-					<h4 class="list-group-item-heading">{{ permission.name }}</h4>
-					{% if permission.description %}
-						<p class="list-group-item-text">{{ permission.description }}</p>
-					{% endif %}
-					<p class="list-group-item-text"><strong>Start date:</strong> {{ permission.date_added | date('H:i:s d/m/Y') }}</p>
-					{% if permission.date_expires %}
-						<p class="list-group-item-text"><strong>Expiry date:</strong> {{ permission.date_expires | date('H:i:s d/m/Y') }}</p>
-					{% endif %}
-				</span>
-			{% endfor %}
-		</div>
-	{% endif %}
 {% endblock %}

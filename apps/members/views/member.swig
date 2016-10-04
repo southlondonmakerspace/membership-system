@@ -5,19 +5,27 @@
 
 {% block content %}
 
+	<div class="page-header">
+		<h2>{{ member.fullname }}</h2>
+	</div>
+
 	<div class="row">
-		<div class="col-md-12">
-			<div class="page-header">
-				<h2>{{ member.fullname }}</h2>
-			</div>
-
+		<div class="col-md-2">
 			<p><img style="border-radius: 100%" src="{{ member.gravatar }}?s=150&amp;d=mm&amp;r=g"></p>
-
+		</div>
+		<div class="col-md-2">
 			{% if member.discourse.activated %}
-				<p><strong>Discourse:</strong> <a target="_blank" href="{{ discourse_path }}/users/{{ discourse.user.username }}">@{{ discourse.user.username }}</a></p>
+				<p><strong>Discourse:</strong></p>
 			{% endif %}
 
-			<p><strong>Emergency Contact:</strong> {% if member.emergency_contact.telephone %}Yes, on file{% else %}No, not held{% endif %}</p>
+			<p><strong>Emergency Contact:</strong></p>
+		</div>
+		<div class="col-md-8">
+			{% if member.discourse.activated %}
+				<p><a target="_blank" href="{{ discourse_path }}/users/{{ discourse.user.username }}">@{{ discourse.user.username }}</a></p>
+			{% endif %}
+
+			<p>{% if member.emergency_contact.telephone %}On file{% else %}Not held{% endif %}</p>
 		</div>
 	</div>
 

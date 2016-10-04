@@ -52,8 +52,8 @@
 	<input id="filter" placeholder="Filter" class="form-control" style="max-width: 200px; display: inline;" />
 
 	<div class="dropdown" style="display: inline;">
-		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Filter by permissions <span class="caret"></span></button>
-		<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+		<button class="btn btn-default dropdown-toggle" type="button" id="filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Filter by permissions <span class="caret"></span></button>
+		<ul class="dropdown-menu" aria-labelledby="filter">
 			<li><a href="/members">Show all</a></li>
 			<li role="separator" class="divider"></li>
 			{% for permission in permissions %}

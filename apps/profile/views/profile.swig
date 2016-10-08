@@ -8,12 +8,12 @@
 		<div class="col-md-2">
 			<img style="border-radius: 100%" src="{{ user.gravatar }}?s=150&d=mm&r=g">
 		</div>
-		<div class="col-md-2">
-			<p><strong>Name:</strong></p>
-			<p><strong>Email:</strong></p>
-			<p><strong>Address:</strong></p>
+		<div class="col-md-1">
+			<p class="pull-right"><strong>Name:</strong></p>
+			<p class="pull-right"><strong>Email:</strong></p>
+			<p class="pull-right"><strong>Address:</strong></p>
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-9">
 			<p>{{ user.fullname }}</p>
 			<p>{{ user.email }}</p>
 			<p>{{ user.address | replace('\r\n', ', ', 'gim') }}</p>

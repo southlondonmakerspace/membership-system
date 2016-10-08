@@ -32,7 +32,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isAdmin, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	Payments.find().populate( 'member' ).exec( function( err, payments ) {
 		res.render( 'transactions', { payments: payments } );
 	} );

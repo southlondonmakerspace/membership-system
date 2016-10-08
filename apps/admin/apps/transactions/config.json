@@ -1,4 +1,5 @@
 {
 	"title": "Transactions",
-	"path": "transactions"
+	"path": "transactions",
+	"permissions": [ "superadmin", "director" ]
 }

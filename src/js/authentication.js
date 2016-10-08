@@ -73,7 +73,14 @@ var Authentication = {
 					}
 
 					user.quickPermissions = permissions;
-
+					user.setup = false;
+					if ( user.emergency_contact.telephone ||
+						 user.gocardless.mandate_id == '' ||
+						 user.gocardless.subscription_id == '' ||
+						 ! user.discourse.activated ||
+						 user.discourse.username == '' ||
+						 user.tag.id == '' )
+						user.setup = true;
 					return done( null, user );
 				} else {
 					return done( null, false, { message: messages['login-required'] } );

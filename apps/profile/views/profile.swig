@@ -25,6 +25,7 @@
 			<p>
 				<a href="/profile/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a>
 				<a href="/profile/change-password" class="btn btn-default"><span class="glyphicon glyphicon-lock"></span> Change Password</a>
+				<a href="http://en.gravatar.com/" target="_blank" class="btn btn-default"><span class="glyphicon glyphicon-camera"></span> Avatar</a>
 				<a href="/profile/emergency-contact" class="btn btn-default"><span class="glyphicon glyphicon-exclamation-sign"></span> Emergency Contact</a>
 				<a href="/profile/direct-debit" class="btn btn-default"><span class="glyphicon glyphicon-piggy-bank"></span> Direct Debit</a>
 				<a href="/profile/discourse" class="btn btn-default"><span class="glyphicon glyphicon-book"></span> Link Discourse</a>

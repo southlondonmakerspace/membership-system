@@ -32,6 +32,12 @@ var Authentication = {
 									return done( null, false, { message: messages['inactive-account'] } );
 								}
 
+								if ( user.password.reset_code != null ) {
+									user.password.reset_code = null;
+									user.save( function ( err ) {} );
+									return done( null, { _id: user._id }, { message: messages['password-reset-attempt'] } );
+								}
+
 								if ( user.password.tries > 0 ) {
 									var attempts = user.password.tries;
 									user.password.tries = 0;

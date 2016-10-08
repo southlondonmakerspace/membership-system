@@ -6,6 +6,7 @@ function templateLocals( req, res, next ) {
 		main: [],
 		secondary: []
 	};
+	res.locals.subapps = {};
 
 	for ( var a in apps ) {
 		var app = apps[a];
@@ -22,23 +23,22 @@ function templateLocals( req, res, next ) {
 					if ( app.permissions.indexOf( "loggedOut" ) != -1 )
 						res.locals.apps[ app.menu ].push( app );
 				}
+				res.locals.subapps[ app.uid ] = [];
 			}
 			if ( app.subapps.length > 0 ) {
 				for ( var s in app.subapps ) {
 					var subapp = app.subapps[s];
 					if ( subapp.permissions != undefined && subapp.permissions != [] ) {
 						if ( req.user ) {
-							var keep = false;
 							for ( var p in subapp.permissions ) {
 								if ( req.user.quickPermissions.indexOf( subapp.permissions[p] ) != -1 ) {
-									keep = true;
+									res.locals.subapps[ app.uid ].push( subapp );
 									break;
 								}
 							}
-							if ( ! keep ) {
-								app.subapps.splice( s, 1 );
-							}
 						}
+					} else if ( req.user ) {
+						res.locals.subapps[ app.uid ].push( subapp );
 					}
 				}
 			}

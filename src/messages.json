@@ -24,6 +24,7 @@
 	"password-err-letter-low": "Password must contain at least 1 lowercase letter",
 
 	"password-reset": "If there is an account associated with the email address you will receive an email shortly",
+	"password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled.",
 
 	"account-created": "Account created, please check your email for a registration link",
 	"member-created": "Member successful created",
@@ -33,7 +34,7 @@
 	"activation-updated": "Activation updated",
 
 	"account-locked": "Maximum number of password attempts exceeded.",
-	"account-attempts": "There have been % attempts to login to your account. This will decrement once per successful login",
+	"account-attempts": "There has been % attempt(s) to login to your account since you last logged in.",
 
 	"member-404": "Member not found",
 

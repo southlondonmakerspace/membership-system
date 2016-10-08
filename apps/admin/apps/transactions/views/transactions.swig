@@ -37,8 +37,8 @@
 						<td><a href="/admin/members/{{ payment.member.uuid }}">{{ payment.member.fullname }}</a></td>
 						<td><a href="https://manage.gocardless.com/payments/{{ payment.payment_id }}" target="_blank">{{ payment.payment_id }}</a></td>
 						<td><a href="https://manage.gocardless.com/subscriptions/{{ payment.subscription_id }}" target="_blank">{{ payment.subscription_id }}</a></td>
-						<td>{{ payment.created| date('H:i:s d/m/Y') }}</td>
-					<td>{% if payment.amount %}{{ payment.updated | date('H:i:s d/m/Y') }}{% else %}&mdash;{% endif %}</td>
+						<td>{{ payment.created| date('H:i d/m/Y') }}</td>
+					<td>{% if payment.amount %}{{ payment.updated | date('H:i d/m/Y') }}{% else %}&mdash;{% endif %}</td>
 						<td>{{ payment.charge_date | date('d/m/Y') }}</td>
 						<td>{{ payment.description }}</td>
 						<td>{% include '../../../../profile/apps/statement/views/partials/status.swig' %}</td>

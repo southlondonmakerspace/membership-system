@@ -32,11 +32,17 @@ var Authentication = {
 									return done( null, false, { message: messages['inactive-account'] } );
 								}
 
-								user.save( function ( err ) {} );
-								if ( user.password.tries > 0 ) {
-									user.password.tries--;
+								if ( user.password.reset_code != null ) {
+									user.password.reset_code = null;
 									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', user.password.tries+1 ) } );
+									return done( null, { _id: user._id }, { message: messages['password-reset-attempt'] } );
+								}
+
+								if ( user.password.tries > 0 ) {
+									var attempts = user.password.tries;
+									user.password.tries = 0;
+									user.save( function ( err ) {} );
+									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', attempts ) } );
 								}
 								return done( null, { _id: user._id }, { message: messages['logged-in'] } );
 							} else {
@@ -60,6 +66,9 @@ var Authentication = {
 			Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 				if ( user != null ) {
 					var permissions = [ 'loggedIn' ];
+
+					user.last_seen = new Date();
+					user.save( function( err ) {} );
 
 					if ( Authentication.superAdmin( user.email ) )
 						permissions.push( 'superadmin' );

@@ -182,7 +182,8 @@ var memberSchema = mongoose.Schema( {
 		date_expires: {
 			type: Date
 		}
-	} ]
+	} ],
+	last_seen: Date
 } );
 memberSchema.virtual( 'fullname' ).get( function() {
 	return this.firstname + ' ' + this.lastname;

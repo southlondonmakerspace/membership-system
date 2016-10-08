@@ -33,7 +33,7 @@
 	"activation-updated": "Activation updated",
 
 	"account-locked": "Maximum number of password attempts exceeded.",
-	"account-attempts": "There have been % attempts to login to your account. This will decrement once per successful login",
+	"account-attempts": "There has been % attempt(s) to login to your account since you last logged in.",
 
 	"member-404": "Member not found",
 

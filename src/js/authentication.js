@@ -32,11 +32,11 @@ var Authentication = {
 									return done( null, false, { message: messages['inactive-account'] } );
 								}
 
-								user.save( function ( err ) {} );
 								if ( user.password.tries > 0 ) {
-									user.password.tries--;
+									var attempts = user.password.tries;
+									user.password.tries = 0;
 									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', user.password.tries+1 ) } );
+									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', attempts ) } );
 								}
 								return done( null, { _id: user._id }, { message: messages['logged-in'] } );
 							} else {

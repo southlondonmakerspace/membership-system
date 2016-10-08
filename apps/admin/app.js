@@ -10,7 +10,7 @@ var __apps = __dirname + '/apps';
 var	fs = require( 'fs' ),
 	express = require( 'express' ),
 	app = express();
-	
+
 var auth = require( __js + '/authentication' );
 
 var config = require( __config + '/config.json' );
@@ -31,35 +31,10 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isAdmin, function( req, res ) {
-	res.render( 'admin' );
+	res.redirect( '/admin/members' );
 } );
-
-function loadApps() {
-	var files = fs.readdirSync( __apps );
-	for ( var f in files ) {
-		var file = __apps + '/' + files[f];
-		if ( fs.statSync( file ).isDirectory() ) {
-			var config_file = file + '/config.json';
-			if ( fs.existsSync( config_file ) ) {
-				var output = JSON.parse( fs.readFileSync( config_file ) );
-				output.uid = files[f];
-				if ( output.priority == undefined )
-					output.priority = 100;
-				output.app = file + '/app.js';
-				apps.push( output );
-			}
-		}
-	}
-
-	for ( var a in apps ) {
-		var _app = apps[a];
-		console.log( "	  Sub route: /" + _app.path );
-		app.use( '/' + _app.path, require( _app.app )( _app ) );
-	}
-}
 
 module.exports = function( config ) {
 	app_config = config;
-	loadApps();
 	return app;
 };

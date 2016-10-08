@@ -9,7 +9,23 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				{% for app in apps.main %}
-					<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
+					{% if app.subapps.length > 0 %}
+						<li class="dropdown{% if activeApp == app.path %} active{% endif %}">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.title }} <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								{% if ! app.hidden %}
+									<li><a href="/{{ app.path }}">{{ app.title }}</a></li>
+								{% endif %}
+								{% for subapp in app.subapps %}
+									{% if ! subapp.hidden %}
+										<li><a href="/{{ app.path }}/{{ subapp.path }}">{{ subapp.title }}</a></li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</li>
+					{% else %}
+						<li{% if activeApp == app.path %} class="active"{% endif %}><a href="/{{ app.path }}">{{ app.title }}</a></li>
+					{% endif %}
 				{% endfor %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">

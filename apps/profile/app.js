@@ -212,32 +212,7 @@ app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req
 	} );
 } );
 
-function loadApps() {
-	var files = fs.readdirSync( __apps );
-	for ( var f in files ) {
-		var file = __apps + '/' + files[f];
-		if ( fs.statSync( file ).isDirectory() ) {
-			var config_file = file + '/config.json';
-			if ( fs.existsSync( config_file ) ) {
-				var output = JSON.parse( fs.readFileSync( config_file ) );
-				output.uid = files[f];
-				if ( output.priority == undefined )
-					output.priority = 100;
-				output.app = file + '/app.js';
-				apps.push( output );
-			}
-		}
-	}
-
-	for ( var a in apps ) {
-		var _app = apps[a];
-		console.log( "	  Sub route: /" + _app.path );
-		app.use( '/' + _app.path, require( _app.app )( _app ) );
-	}
-}
-
 module.exports = function( config ) {
 	app_config = config;
-	loadApps();
 	return app;
 };

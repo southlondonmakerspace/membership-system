@@ -1,6 +1,6 @@
 "use strict";
 
-var __root = '../..';
+var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
 var __config = __root + '/config';
@@ -41,11 +41,6 @@ app.get( '/', auth.isMember, function( req, res ) {
 		res.render( 'permissions', { permissions: permissions } );
 	} );
 } );
-
-app.get( '/:uuid', auth.isMember, function( req, res ) {
-
-} );
-
 
 module.exports = function( config ) {
 	app_config = config;

@@ -55,6 +55,8 @@
 
 				<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
 
+				<p><strong>Last seen:</strong> {{ member.last_seen | date("H:i:s d/m/Y") }}</p>
+
 				<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
 
 			{% if access == 'superadmin' %}

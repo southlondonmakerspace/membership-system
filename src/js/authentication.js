@@ -61,6 +61,9 @@ var Authentication = {
 				if ( user != null ) {
 					var permissions = [ 'loggedIn' ];
 
+					user.last_seen = new Date();
+					user.save( function( err ) {} );
+
 					if ( Authentication.superAdmin( user.email ) )
 						permissions.push( 'superadmin' );
 

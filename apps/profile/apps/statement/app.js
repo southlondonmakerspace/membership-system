@@ -1,6 +1,6 @@
 "use strict";
 
-var __root = '../..';
+var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
 
@@ -22,7 +22,7 @@ app.use( function( req, res, next ) {
 		name: app_config.title,
 		url: app.mountpath
 	} );
-	res.locals.activeApp = app_config.uid;
+	res.locals.activeApp = 'profile';
 	next();
 } );
 

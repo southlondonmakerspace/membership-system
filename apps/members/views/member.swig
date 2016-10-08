@@ -15,10 +15,10 @@
 		</div>
 		<div class="col-md-2">
 			{% if member.discourse.activated %}
-				<p><strong>Discourse:</strong></p>
+				<p class="pull-right"><strong>Discourse:</strong></p>
 			{% endif %}
 
-			<p><strong>Emergency Contact:</strong></p>
+			<p class="pull-right"><strong>Emergency Contact:</strong></p>
 		</div>
 		<div class="col-md-8">
 			{% if member.discourse.activated %}

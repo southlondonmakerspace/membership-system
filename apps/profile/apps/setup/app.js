@@ -6,13 +6,12 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
-var Payments = require( __js + '/database' ).Payments,
+var auth = require( __js + '/authentication' ),
+	discourse = require( __js + '/discourse' ),
+	Permissions = require( __js + '/database' ).Permissions,
 	Members = require( __js + '/database' ).Members;
-
-var auth = require( __js + '/authentication' );
 
 var messages = require( __src + '/messages.json' );
 
@@ -26,16 +25,14 @@ app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
 		name: app_config.title,
-		url: app.parent.mountpath + app.mountpath
+		url: app.mountpath
 	} );
-	res.locals.activeApp = 'admin';
+	res.locals.activeApp = app_config.uid;
 	next();
 } );
 
-app.get( '/', auth.isAdmin, function( req, res ) {
-	Payments.find().populate( 'member' ).exec( function( err, payments ) {
-		res.render( 'transactions', { payments: payments } );
-	} );
+app.get( '/', auth.isLoggedIn, function( req, res ) {
+	res.render( 'setup', { user: req.user } );
 } );
 
 module.exports = function( config ) {

@@ -1,4 +1,5 @@
 {
 	"title": "Discourse",
-	"path": "discourse"
+	"path": "discourse",
+	"hidden": true
 }

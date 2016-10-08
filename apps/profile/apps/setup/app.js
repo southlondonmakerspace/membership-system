@@ -32,9 +32,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	Members.findById( req.user._id, function( err, user ) {
-		res.render( 'setup', { user: user } );
-	} )
+	res.render( 'setup', { user: req.user } );
 } );
 
 module.exports = function( config ) {

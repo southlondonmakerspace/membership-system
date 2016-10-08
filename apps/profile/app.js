@@ -35,9 +35,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	Members.findById( req.user._id, function( err, user ) {
-		res.render( 'profile', { user: user } );
-	} )
+	res.render( 'profile', { user: req.user } );
 } );
 
 // Update Profile

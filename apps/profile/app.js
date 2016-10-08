@@ -35,7 +35,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	Members.findById( req.user._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
+	Members.findById( req.user._id, function( err, user ) {
 		res.render( 'profile', { user: user } );
 	} )
 } );

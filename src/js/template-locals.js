@@ -23,6 +23,25 @@ function templateLocals( req, res, next ) {
 						res.locals.apps[ app.menu ].push( app );
 				}
 			}
+			if ( app.subapps.length > 0 ) {
+				for ( var s in app.subapps ) {
+					var subapp = app.subapps[s];
+					if ( subapp.permissions != undefined && subapp.permissions != [] ) {
+						if ( req.user ) {
+							var keep = false;
+							for ( var p in subapp.permissions ) {
+								if ( req.user.quickPermissions.indexOf( subapp.permissions[p] ) != -1 ) {
+									keep = true;
+									break;
+								}
+							}
+							if ( ! keep ) {
+								app.subapps.splice( s, 1 );
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

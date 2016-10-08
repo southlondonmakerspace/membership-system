@@ -1,4 +1,4 @@
-	"use strict";
+"use strict";
 
 var __root = '../../../..';
 var __src = __root + '/src';

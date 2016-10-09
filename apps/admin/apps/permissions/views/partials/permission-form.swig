@@ -38,6 +38,11 @@
 	</p>
 
 	<p>
+		<label for="group_order">Primary Group Order: </label>
+		<input id="group_order" name="group_order" type="text" value="{{ permission.group.order }}" class="form-control" />
+	</p>
+
+	<p>
 		<button class="btn btn-primary">{{ action }}</button>
 	</p>
 </form>

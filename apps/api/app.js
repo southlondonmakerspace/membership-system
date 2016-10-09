@@ -10,7 +10,10 @@ var	express = require( 'express' ),
 
 var config = require( __config + '/config.json' );
 
-var Members = require( __js + '/database' ).Members;
+var database = require( __js + '/database' ),
+	Permissions = database.Permissions,
+	Members = database.Members,
+	Events = database.Events;
 
 var app_config = {};
 
@@ -35,6 +38,13 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 			}
 
 			if ( grantAccess ) {
+				// Log access
+				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
+					new Events( {
+						member: member._id,
+						permission: permission._id
+					} ).save( function( status ) {} );
+				} )
 				res.send( JSON.stringify( {
 					name: member.fullname
 				} ) );

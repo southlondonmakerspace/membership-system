@@ -5,6 +5,11 @@
 	</p>
 
 	<p>
+		<label for="event">Event: </label>
+		<input id="event" name="event" type="text" value="{{ permission.event_name }}" class="form-control" />
+	</p>
+
+	<p>
 		<label for="slug">Slug: </label>
 		<input id="slug" name="slug" type="text" value="{{ permission.slug }}" required class="form-control" />
 	</p>

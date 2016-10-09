@@ -2,7 +2,8 @@
 
 var mongoose = require( 'mongoose' ),
 	ObjectId = mongoose.Schema.ObjectId,
-	crypto = require( 'crypto' );
+	crypto = require( 'crypto' ),
+	moment = require( 'moment' );
 
 exports.connect = function( url ) {
 	mongoose.connect( url );
@@ -34,7 +35,8 @@ var permissionsSchema = mongoose.Schema( {
 	group: {
 		id: String,
 		name: String
-	}
+	},
+	event_name: String
 } );
 
 var memberSchema = mongoose.Schema( {
@@ -226,14 +228,43 @@ var historicEventsSchema = mongoose.Schema( {
 	renumeration: Number
 } );
 
+var eventsSchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId() },
+		required: true,
+		unique: true
+	},
+	happened: {
+		type: Date,
+		default: Date.now,
+		required: true
+	},
+	member: {
+		type: ObjectId,
+		ref: 'Members'
+	},
+	permission: {
+		type: ObjectId,
+		ref: 'Permissions'
+	},
+	action: String
+} );
+eventsSchema.virtual( 'happened_relative' ).get( function() {
+	return moment( this.happened ).fromNow();
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
 exports.historicEventsSchema = historicEventsSchema;
+exports.eventsSchema = eventsSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
 exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
+exports.Events = mongoose.model( 'Events', exports.eventsSchema );
+
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

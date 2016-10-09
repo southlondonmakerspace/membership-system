@@ -55,7 +55,7 @@
 
 				<p><strong>Joined:</strong> {{ member.joined | date("H:i:s d/m/Y") }}</p>
 
-				<p><strong>Last seen:</strong> {{ member.last_seen | date("H:i:s d/m/Y") }}</p>
+				<p><strong>Last seen:</strong> {% if member.last_seen %}{{ member.last_seen | date("H:i:s d/m/Y") }}{% else %}–{% endif %}</p>
 
 				<p><strong>Activated:</strong> {% if member.activated %}Yes{% else %}No{% endif %}</p>
 

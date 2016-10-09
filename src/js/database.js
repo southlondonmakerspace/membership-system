@@ -34,7 +34,8 @@ var permissionsSchema = mongoose.Schema( {
 	superadmin_only: Boolean,
 	group: {
 		id: String,
-		name: String
+		name: String,
+		order: Number
 	},
 	event_name: String
 } );

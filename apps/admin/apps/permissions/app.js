@@ -103,7 +103,8 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 		superadmin_only: ( req.body.superadmin_only ? true : false ),
 		group: {
 			id: req.body.group_id,
-			name: req.body.group_name
+			name: req.body.group_name,
+			order: req.body.group_order
 		}
 	};
 
@@ -157,7 +158,8 @@ app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, r
 		superadmin_only: req.body.superadmin_only,
 		group: {
 			id: req.body.group_id,
-			name: req.body.group_name
+			name: req.body.group_name,
+			order: req.body.group_order
 		}
 	};
 

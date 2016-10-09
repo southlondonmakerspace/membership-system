@@ -130,4 +130,6 @@ var listener = app.listen( config.port ,config.host, function () {
 
 // Do regular Discourse group checks
 Discourse.checkGroups(); // Now and...
-setInterval( Discourse.checkGroups, 900000 ); // ...every 15 minutes
+Discourse.checkPrimaryGroups();
+setInterval( Discourse.checkGroups, 15*60*1000 ); // ...every 15 minutes
+setInterval( Discourse.checkPrimaryGroups, 60*60*1000 ); // ...every hour

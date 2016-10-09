@@ -174,6 +174,50 @@ var Discourse = {
 			} );
 		} );
 	},
+	checkPrimaryGroups: function() {
+		Members.find( {
+			'discourse.activated': true,
+			permissions: {
+				$elemMatch: {
+					date_added: { $lte: new Date() },
+					$or: [
+						{ date_expires: null },
+						{ date_expires: { $gt: new Date() } }
+					]
+				}
+			}
+		} ).populate( 'permissions.permission' ).exec( function( err, members ) {
+			for ( var m = 0; m < members.length; m++ ) {
+				var member = members[m];
+				member.permissions = member.permissions.filter( function ( perm ) {
+					if ( perm.permission.group.order == undefined ) return false;
+					return true;
+				} ).sort( function ( a, b ) {
+					if ( a.permission.group.order > b.permission.group.order ) return 1;
+					if ( a.permission.group.order < b.permission.group.order ) return -1;
+					return 0;
+				} )
+
+				if ( member.permissions.length >= 1 ) {
+					Discourse.setPrimaryGroup( member.discourse.username, member.permissions[0].permission );
+				}
+			}
+		} );
+	},
+	setPrimaryGroup: function( username, permission ) {
+		api_tasks.push( function() {
+			console.log( 'Setting user "' + username + '" primary group to "' + permission.group.name + '".' );
+			Discourse.getUsername( username, function( user ) {
+				request.put( config.discourse.url + '/admin/users/' + user.user.id + '/primary_group', {
+					form: {
+						api_username: config.discourse.api_username,
+						api_key: config.discourse.api_key,
+						primary_group_id: permission.group.id
+					}
+				} );
+			} );
+		} );
+	},
 	addUser: function( username, permission ) {
 		api_tasks.push( function() {
 			console.log( 'Adding user "' + username + '" to group "' + permission.group.name + '".' );

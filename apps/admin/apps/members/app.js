@@ -38,7 +38,7 @@ app.use( function( req, res, next ) {
 //////////
 
 app.get( '/', auth.isAdmin, function( req, res ) {
-	Members.find( function( err, members ) {
+	Members.find().sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
 		res.render( 'members', { members: members } );
 	} );
 } );

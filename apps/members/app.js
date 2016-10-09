@@ -45,7 +45,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 						]
 					}
 				}
-			} ).populate( 'permissions.permission' ).exec( function( err, members ) {
+			} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).populate( 'permissions.permission' ).exec( function( err, members ) {
 				if ( req.query.permission != undefined )
 					members = members.filter( function( member ) {
 						var matched;

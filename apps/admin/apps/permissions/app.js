@@ -76,7 +76,8 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 
 app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	if ( req.body.name == undefined ||
-		 req.body.slug == undefined ) {
+		 req.body.event == undefined ||
+ 		 req.body.slug == undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
@@ -96,6 +97,7 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 
 	var permission = {
 		name: req.body.name,
+		event_name: req.body.event,
 		slug: req.body.slug,
 		description: req.body.description,
 		superadmin_only: ( req.body.superadmin_only ? true : false ),
@@ -128,7 +130,8 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	if ( req.body.name == undefined ||
-		 req.body.slug == undefined ) {
+		 req.body.event == undefined ||
+ 		 req.body.slug == undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
@@ -148,6 +151,7 @@ app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, r
 
 	var permission = {
 		name: req.body.name,
+		event_name: req.body.event,
 		slug: req.body.slug,
 		description: req.body.description,
 		superadmin_only: req.body.superadmin_only,

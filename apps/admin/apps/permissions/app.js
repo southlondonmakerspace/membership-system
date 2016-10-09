@@ -68,7 +68,7 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 					]
 				}
 			}
-		}, function( err, members ) {
+		} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
 			res.render( 'permission', { permission: permission, members: members } );
 		} );
 	} );

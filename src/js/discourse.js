@@ -74,7 +74,7 @@ var Discourse = {
 					Discourse.checkPermission( permissions[p] );
 				}
 			} );
-		} )
+			} )
 	},
 	checkPermission: function( permission ) {
 		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
@@ -208,13 +208,14 @@ var Discourse = {
 		api_tasks.push( function() {
 			console.log( 'Setting user "' + username + '" primary group to "' + permission.group.name + '".' );
 			Discourse.getUsername( username, function( user ) {
-				request.put( config.discourse.url + '/admin/users/' + user.user.id + '/primary_group', {
-					form: {
-						api_username: config.discourse.api_username,
-						api_key: config.discourse.api_key,
-						primary_group_id: permission.group.id
-					}
-				} );
+				if ( user != undefined )
+					request.put( config.discourse.url + '/admin/users/' + user.user.id + '/primary_group', {
+						form: {
+							api_username: config.discourse.api_username,
+							api_key: config.discourse.api_key,
+							primary_group_id: permission.group.id
+						}
+					} );
 			} );
 		} );
 	},

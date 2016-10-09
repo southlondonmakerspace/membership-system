@@ -107,9 +107,9 @@
 					<h3>GoCardless</h3>
 				</div>
 
-				<p><strong>Mandate ID:</strong> {{ member.gocardless.mandate_id | default('–') }}</p>
+				<p><strong>Mandate ID:</strong> {% if member.gocardless.mandate_id %}<a href="https://manage.gocardless.com/mandates/{{ member.gocardless.mandate_id }}">{{ member.gocardless.mandate_id }}</a>{% else %}&mdash;{% endif %}</p>
 
-				<p><strong>Subscription ID:</strong> {{ member.gocardless.subscription_id | default('–') }}</p>
+				<p><strong>Subscription ID:</strong> {% if member.gocardless.subscription_id %}<a href="https://manage.gocardless.com/subscriptions/{{ member.gocardless.subscription_id }}">{{ member.gocardless.subscription_id }}</a>{% else %}&mdash;{% endif %}</p>
 
 				<p><strong>Minimum:</strong> &pound;{{ member.gocardless.minimum | default('–') }}</p>
 

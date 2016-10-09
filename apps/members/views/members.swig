@@ -1,7 +1,6 @@
 {% extends '../../../src/views/base.swig' %}
 
 {% set title = app.title %}
-{% set heading = app.title %}
 
 {% block scripts %}
 	{% parent %}

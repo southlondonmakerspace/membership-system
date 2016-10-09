@@ -45,7 +45,8 @@ app.get( '/', auth.isMember, function( req, res ) {
 						]
 					}
 				}
-			} ).populate( 'permissions.permission' ).exec( function( err, members ) {
+			} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).populate( 'permissions.permission' ).exec( function( err, members ) {
+				var singlePermission;
 				if ( req.query.permission != undefined )
 					members = members.filter( function( member ) {
 						var matched;
@@ -55,13 +56,18 @@ app.get( '/', auth.isMember, function( req, res ) {
 								 ( member.permissions[p].date_expires >= new Date() ||
 								   member.permissions[p].date_expires == undefined
 							 	 )
-							)
+							) {
 								matched = true;
+								singlePermission = member.permissions[p].permission;
+							}
 						if ( matched )
 							return member;
 						return;
 					} );
-				res.render( 'members', { permissions: allPermissions, members: members } );
+				var heading = res.locals.app.title;
+				if ( singlePermission != undefined )
+					heading += ': "' + singlePermission.name + '"';
+				res.render( 'members', { heading: heading, permissions: allPermissions, members: members } );
 			} );
 		} )
 	} );

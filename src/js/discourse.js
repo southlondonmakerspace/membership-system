@@ -84,6 +84,8 @@ var Discourse = {
 				api_key: config.discourse.api_key
 			}
 		}, function( err, req, body ) {
+			if ( body == undefined )
+				return;
 			var users = JSON.parse( body ).members;
 			var usernames = [];
 			// Check for users to remove

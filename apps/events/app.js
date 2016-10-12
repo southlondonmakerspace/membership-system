@@ -31,8 +31,37 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	Events.find().populate( 'member' ).populate( 'permission' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
-		res.render( 'events', { events: events } );
+	var startDate = new Date();
+	startDate.setDate( 1 );
+
+	if ( req.query.month != undefined && req.query.year != undefined ) {
+		startDate.setMonth( req.query.month - 1 );
+		startDate.setYear( req.query.year );
+	}
+	var endDate = new Date( startDate );
+	endDate.setMonth( startDate.getMonth() + 1 );
+	var search = {
+		happened: {
+			$gte: startDate,
+			$lt: endDate
+		}
+	}
+	Events.find( search ).populate( 'member' ).populate( 'permission' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
+		for ( var e = 1; e < events.length; e++ ) {
+			var event = events[e];
+			var prevEvent = events[e-1];
+			if ( event.happened.getDate() != prevEvent.happened.getDate() )
+				event.split = true;
+		}
+		var previousDate = new Date( startDate );
+		previousDate.setMonth( startDate.getMonth() - 1 );
+		res.render( 'events', {
+			events: events,
+			now: new Date(),
+			previous: previousDate,
+			next: endDate,
+			searchDate: startDate
+		} );
 	} )
 } );
 

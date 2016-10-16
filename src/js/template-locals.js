@@ -76,6 +76,10 @@ function templateLocals( req, res, next ) {
 	res.locals.usersname = config.globals.title;
 	if ( req.user != undefined ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
+
+	// Now
+	res.locals.now = new Date();
+
 	next();
 };
 

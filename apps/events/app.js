@@ -57,7 +57,6 @@ app.get( '/', auth.isMember, function( req, res ) {
 		previousDate.setMonth( startDate.getMonth() - 1 );
 		res.render( 'events', {
 			events: events,
-			now: new Date(),
 			previous: previousDate,
 			next: endDate,
 			searchDate: startDate

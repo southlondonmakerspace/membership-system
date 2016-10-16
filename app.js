@@ -127,8 +127,3 @@ console.log( "	Route: *" );
 var listener = app.listen( config.port ,config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );
-
-// Do regular Discourse group checks
-Discourse.checkGroups(); // Now and...
-setInterval( Discourse.checkGroups, 15*60*1000 ); // ...every 15 minutes
-setInterval( Discourse.checkPrimaryGroups, 6*60*60*1000 ); // ...every 6 hours

@@ -28,3 +28,21 @@ npm start
 
 By default it will then be available on `http://localhost:3001/`
 The port is configurable in the  `config/config.json`
+Creating Apps
+===
+
+The system is built around modular apps. If you're looking to add functionality to the site the best way to do this would by adding an app to the site rather than modifying it's base. This means you're unlikely to mess anything up.
+
+As an example, let's add a login page.
+
+Stub out your app structure within `app/`, this will include:
+
+```
+apps/
+  login/
+    views/
+    app.js
+    config.js
+```
+
+Check out these files to get an idea of how each of these should be structure.

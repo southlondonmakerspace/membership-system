@@ -1,9 +1,12 @@
 "use strict";
 
+var __config = __dirname + '/config/config.json';
 var __src = __dirname + '/src';
 var __js = __src + '/js';
 
-var Discourse = require( __js + '/discourse' );
+var config = require( __config ),
+	database = require( __js + '/database' ).connect( config.mongo ),
+	Discourse = require( __js + '/discourse' );
 
 console.log( "Starting..." );
 

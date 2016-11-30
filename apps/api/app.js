@@ -12,6 +12,7 @@ var config = require( __config + '/config.json' );
 
 var database = require( __js + '/database' ),
 	Permissions = database.Permissions,
+	Activities = database.Activities,
 	Members = database.Members,
 	Events = database.Events;
 
@@ -52,6 +53,24 @@ app.get( '/permission/:slug/:tag', function( req, res ) {
 				res.sendStatus( 403 );
 			}
 		} );
+	} else {
+		res.sendStatus( 403 );
+	}
+} );
+
+app.get( '/event/:slug', function( req, res ) {
+	if ( config.api_key == req.query.api_key  ) {
+		Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
+			if ( activity != undefined ) {
+				new Events( {
+					activity: activity._id
+				} ).save( function( status ) {
+					res.sendStatus( 200 );
+				} );
+			} else {
+				res.sendStatus( 404 );
+			}
+		} )
 	} else {
 		res.sendStatus( 403 );
 	}

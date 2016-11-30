@@ -1,7 +1,7 @@
 {% extends '../../../../../src/views/base.swig' %}
 
-{% set title = 'Members' %}
-{% set heading = 'Members' %}
+{% set title = app.title %}
+{% set heading = app.title %}
 {% set activeApp = 'admin' %}
 
 {% block scripts %}

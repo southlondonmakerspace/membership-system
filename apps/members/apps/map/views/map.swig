@@ -1,0 +1,38 @@
+{% extends '../../../../../src/views/base.swig' %}
+
+{% set title = app.title %}
+
+{% block content %}
+	<div id="map" class="col-m-12" style="height: 40em;"></div>
+	<script type="text/javascript">
+		var map;
+		var markers = [];
+		var heatmapData = [];
+		function initMap() {
+			map = new google.maps.Map( document.getElementById( 'map' ), {
+				center: { lat: 51.4511044, lng: -0.1018774 },
+				zoom: 13
+			});
+			jQuery.getJSON('/members/map/data.json', function( data ) {
+				for( var d in data ) {
+					var pos = new google.maps.LatLng( data[d].lat, data[d].lng );
+					heatmapData.push( pos );
+					/*addMarker( pos );*/
+				}
+				var heatmap = new google.maps.visualization.HeatmapLayer( {
+					data: heatmapData,
+					radius: 50
+				} );
+				heatmap.setMap(map);
+			} )
+		}
+		function addMarker( pos ) {
+			var marker = new google.maps.Marker( {
+				map: map,
+				position: pos
+			} );
+			markers.push( marker );
+		}
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWYuDWHlWLgIXyfVnJlLaFbbVD-hpDxrM&callback=initMap&libraries=visualization" async defer></script>
+{% endblock %}

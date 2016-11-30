@@ -4,6 +4,7 @@
 	"permissions": [
 		"member"
 	],
+	"hidden": true,
 	"menu": "main",
 	"priority": 3
 }

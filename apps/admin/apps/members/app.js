@@ -10,6 +10,9 @@ var	express = require( 'express' ),
 	discourse = require( __js + '/discourse' ),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
+var PostcodesIO = require( 'postcodesio-client' ),
+	postcodes = new PostcodesIO();
+
 var	Permissions = require( __js + '/database' ).Permissions,
 	Members = require( __js + '/database' ).Members,
 	Payments = require( __js + '/database' ).Payments;
@@ -93,16 +96,33 @@ app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req,
  			return;
 	}
 
-	var member = {
-		firstname: req.body.firstname,
-		lastname: req.body.lastname,
-		email: req.body.email,
-		address: req.body.address
-	};
+	var postcode = '';
+	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-	Members.update( { uuid: req.params.uuid }, member, function( status ) {
-		req.flash( 'success', messages['profile-updated'] );
-		res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid );
+	if ( results != undefined ) {
+		postcode = results[0];
+	}
+	postcodes.lookup( postcode, function( err, data ) {
+		var member = {
+			firstname: req.body.firstname,
+			lastname: req.body.lastname,
+			email: req.body.email,
+			address: req.body.address
+		};
+
+		if ( data != undefined ) {
+			member.postcode_coordinates = {
+				lat: data.latitude,
+				lng: data.longitude,
+			}
+		} else {
+			member.postcode_coordinates = null;
+		}
+
+		Members.update( { uuid: req.params.uuid }, member, function( status ) {
+			req.flash( 'success', messages['profile-updated'] );
+			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid );
+		} );
 	} );
 } );
 

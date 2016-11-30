@@ -22,6 +22,10 @@
 			{% if access == 'superadmin' %}
 				<p><strong>Address:</strong> {{ member.address | replace('\r\n', ', ', 'gim') }}</p>
 
+				<p><strong>Lat:</strong> {{ member.postcode_coordinates.lat | default('–') }}</p>
+
+				<p><strong>Lng:</strong> {{ member.postcode_coordinates.lng | default('–') }}</p>
+
 				<p><a href="/admin/members/{{ member.uuid }}/update" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a></p>
 			{% endif %}
 		</div>

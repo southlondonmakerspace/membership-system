@@ -104,6 +104,10 @@ var memberSchema = mongoose.Schema( {
 		type: String,
 		required: true
 	},
+	postcode_coordinates: {
+		lat: Number,
+		lng: Number
+	},
 	tag: {
 		id: {
 			type: String,

@@ -9,6 +9,9 @@ var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
+var PostcodesIO = require( 'postcodesio-client' ),
+	postcodes = new PostcodesIO();
+
 var swig = require( 'swig' );
 var nodemailer = require( 'nodemailer' );
 
@@ -98,50 +101,67 @@ app.post( '/', formBodyParser, function( req, res ) {
 			return;
 		}
 
-		// Generate email code salt
-		auth.generateActivationCode( function( code ) {
-			user.activation_code = code;
+		var postcode = '';
+		var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-			auth.generatePassword( req.body.password, function( password ) {
-				user.password = password;
+		if ( results != undefined ) {
+			postcode = results[0];
+		}
+		postcodes.lookup( postcode, function( err, data ) {
+			if ( data != undefined ) {
+				user.postcode_coordinates = {
+					lat: data.latitude,
+					lng: data.longitude,
+				}
+			} else {
+				user.postcode_coordinates = null;
+			}
 
-				// Store new member
-				new Members( user ).save( function( status ) {
-					if ( status != null ) {
-						if ( status.errors != undefined ) {
-							var keys = Object.keys( status.errors );
-							for ( var k in keys ) {
-								var key = keys[k];
-								req.flash( 'danger', status.errors[key].message );
+			// Generate email code salt
+			auth.generateActivationCode( function( code ) {
+				user.activation_code = code;
+
+				auth.generatePassword( req.body.password, function( password ) {
+					user.password = password;
+
+					// Store new member
+					new Members( user ).save( function( status ) {
+						if ( status != null ) {
+							if ( status.errors != undefined ) {
+								var keys = Object.keys( status.errors );
+								for ( var k in keys ) {
+									var key = keys[k];
+									req.flash( 'danger', status.errors[key].message );
+								}
+							} else if ( status.code == 11000 ) {
+								req.flash( 'danger', messages['duplicate-user'] );
 							}
-						} else if ( status.code == 11000 ) {
-							req.flash( 'danger', messages['duplicate-user'] );
+							req.session.join = user;
+							res.redirect( app.mountpath );
+						} else {
+							var message = {};
+
+							var options = {
+								firstname: user.firstname,
+								config: config,
+								activation_url: config.audience + '/activate/' + user.activation_code
+							};
+
+							message.text = swig.renderFile( __dirname + '/email-templates/join.text.swig', options );
+							message.html = swig.renderFile( __dirname + '/email-templates/join.html.swig', options );
+
+							var transporter = nodemailer.createTransport( config.smtp.url );
+
+							message.from = config.smtp.from;
+							message.to = req.body.email;
+							message.subject = 'Activation Email – ' + config.globals.organisation;
+
+							req.flash( 'success', messages['account-created'] );
+							res.redirect( '/' );
+
+							transporter.sendMail( message, function( err, info ) {} );
 						}
-						req.session.join = user;
-						res.redirect( app.mountpath );
-					} else {
-						var message = {};
-						
-						var options = {
-							firstname: user.firstname,
-							config: config,
-							activation_url: config.audience + '/activate/' + user.activation_code
-						};
-
-						message.text = swig.renderFile( __dirname + '/email-templates/join.text.swig', options );
-						message.html = swig.renderFile( __dirname + '/email-templates/join.html.swig', options );
-
-						var transporter = nodemailer.createTransport( config.smtp.url );
-
-						message.from = config.smtp.from;
-						message.to = req.body.email;
-						message.subject = 'Activation Email – ' + config.globals.organisation;
-
-						req.flash( 'success', messages['account-created'] );
-						res.redirect( '/' );
-
-						transporter.sendMail( message, function( err, info ) {} );
-					}
+					} );
 				} );
 			} );
 		} );

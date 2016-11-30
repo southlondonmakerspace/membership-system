@@ -1,4 +1,4 @@
-{% extends '../../../src/views/base.swig' %}
+{% extends '../../../../../src/views/base.swig' %}
 
 {% set title = 'Member' %}
 {% set activeApp = 'members' %}
@@ -36,7 +36,7 @@
 	{% if member.permissions.length > 0 %}
 		<div class="list-group">
 			{% for permission in member.permissions %}
-				{% include '../../../src/views/partials/permission.swig' %}
+				{% include '../../../../../src/views/partials/permission.swig' %}
 			{% endfor %}
 		</div>
 	{% else %}

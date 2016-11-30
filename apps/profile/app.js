@@ -11,6 +11,9 @@ var	fs = require( 'fs' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
+var PostcodesIO = require( 'postcodesio-client' ),
+	postcodes = new PostcodesIO();
+
 var Members = require( __js + '/database' ).Members;
 
 var messages = require( __src + '/messages.json' );
@@ -57,25 +60,45 @@ app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
  			res.redirect( app.mountpath );
  			return;
 	}
-	var profile = {
-		firstname: req.body.firstname,
-		lastname: req.body.lastname,
-		email: req.body.email,
-		address: req.body.address
-	};
 
-	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status != null ) {
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
+	var postcode = '';
+	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
+
+	if ( results != undefined ) {
+		postcode = results[0];
+	}
+	postcodes.lookup( postcode, function( err, data ) {
+		var profile = {
+			firstname: req.body.firstname,
+			lastname: req.body.lastname,
+			email: req.body.email,
+			address: req.body.address
+		};
+
+		if ( data != undefined ) {
+			profile.postcode_coordinates = {
+				lat: data.latitude,
+				lng: data.longitude,
 			}
 		} else {
-			req.flash( 'success', messages['profile-updated'] );
+			profile.postcode_coordinates = null;
 		}
-		res.redirect( app.mountpath );
+
+		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
+			if ( status != null ) {
+				var keys = Object.keys( status.errors );
+				for ( var k in keys ) {
+					var key = keys[k];
+					req.flash( 'danger', status.errors[key].message );
+				}
+			} else {
+				req.flash( 'success', messages['profile-updated'] );
+			}
+			res.redirect( app.mountpath );
+		} );
 	} );
+
+
 } );
 
 // Emergency Contact

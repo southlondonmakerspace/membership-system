@@ -1,4 +1,4 @@
-{% extends '../../../src/views/base.swig' %}
+{% extends '../../../../../src/views/base.swig' %}
 
 {% set title = app.title %}
 
@@ -56,7 +56,7 @@
 			<li><a href="/members">Show all</a></li>
 			<li role="separator" class="divider"></li>
 			{% for permission in permissions %}
-				<li><a href="/members?permission={{ permission.slug }}">{{ permission.name }}</a></li>
+				<li><a href="/members/list?permission={{ permission.slug }}">{{ permission.name }}</a></li>
 			{% endfor %}
 		</ul>
 	</div>
@@ -79,7 +79,7 @@
 		</thead>
 		<tbody>
 			{% for member in members %}
-				<tr title="View Member " data-href="/members/{{ member.uuid }}" style="cursor: pointer;">
+				<tr title="View Member " data-href="/members/list/{{ member.uuid }}" style="cursor: pointer;">
 					<td><img style="border-radius: 100%" src="{{ member.gravatar }}?s=75&d=mm&r=g"></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>

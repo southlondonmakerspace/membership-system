@@ -34,5 +34,5 @@
 			markers.push( marker );
 		}
 	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWYuDWHlWLgIXyfVnJlLaFbbVD-hpDxrM&callback=initMap&libraries=visualization" async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key={{ config.google_map_key }}&callback=initMap&libraries=visualization" async defer></script>
 {% endblock %}

@@ -6,7 +6,7 @@
 {% block content %}
 	<div class="panel panel-default">
 		<div class="panel-body">
-			This is a heatmap of current members.
+			Unlike the <a href="/members/map">Members Heatmap</a>, this shows all users, active or otherwise, that includes current members, lapsed members, and those who signed up but never became a member. It gives an idea of the catchment area of the space.
 		</div>
 	</div>
 	<div id="map" class="col-m-12" style="height: 40em;"></div>
@@ -19,7 +19,7 @@
 				center: { lat: 51.4511044, lng: -0.1018774 },
 				zoom: 12
 			});
-			jQuery.getJSON('/members/map/data.json', function( data ) {
+			jQuery.getJSON('/admin/catchment/data.json', function( data ) {
 				for( var d in data ) {
 					var pos = new google.maps.LatLng( data[d].lat, data[d].lng );
 					heatmapData.push( pos );

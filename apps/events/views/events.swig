@@ -16,8 +16,11 @@
 			</nav>
 		</div>
 		<div class="col-md-9">
-			{% set relative = true %}
 				{% for event in events %}
+					{% if now.getDay() == event.happened.getDay() %}
+						{% set relative = true %}
+					{% endif %}
+
 					{% if loop.first || event.split %}
 						{% if event.split %}
 							{% set relative = false %}

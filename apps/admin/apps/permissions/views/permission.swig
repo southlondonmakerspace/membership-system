@@ -1,6 +1,6 @@
 {% extends '../../../../../src/views/base.swig' %}
 
-{% set title = 'Permission' %}
+{% set title = app.title %}
 {% set heading = permission.name %}
 {% set activeApp = 'admin' %}
 
@@ -17,7 +17,7 @@
 
 {% block content %}
 	<p>Members with the "{{ permission.name }}" permission.</p>
-	
+
 	<hr />
 
 	{% include '../../members/views/partials/member-table.swig' %}

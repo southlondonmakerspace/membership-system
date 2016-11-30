@@ -46,7 +46,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 			$lt: endDate
 		}
 	}
-	Events.find( search ).populate( 'member' ).populate( 'permission' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
+	Events.find( search ).populate( 'member' ).populate( 'permission' ).populate( 'activity' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
 		for ( var e = 1; e < events.length; e++ ) {
 			var event = events[e];
 			var prevEvent = events[e-1];

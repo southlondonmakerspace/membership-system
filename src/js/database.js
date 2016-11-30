@@ -253,10 +253,33 @@ var eventsSchema = mongoose.Schema( {
 		type: ObjectId,
 		ref: 'Permissions'
 	},
+	activity: {
+		type: ObjectId,
+		ref: 'Activities'
+	},
 	action: String
 } );
 eventsSchema.virtual( 'happened_relative' ).get( function() {
 	return moment( this.happened ).fromNow();
+} );
+
+var activitySchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId() },
+		required: true,
+		unique: true
+	},
+	name: {
+		type: String,
+		required: true
+	},
+	slug: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	event_name: String
 } );
 
 exports.permissionsSchema = permissionsSchema;
@@ -264,12 +287,14 @@ exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
 exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
+exports.activitySchema = activitySchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
 exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
+exports.Activities = mongoose.model( 'Activities', exports.activitySchema );
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

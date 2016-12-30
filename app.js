@@ -17,8 +17,6 @@ var body = require( 'body-parser' ),
 	http = require( 'http' ).Server( app ),
 	fs = require( 'fs' );
 
-var Discourse = require( __js + '/discourse' );
-
 var apps = [];
 
 console.log( "Starting..." );

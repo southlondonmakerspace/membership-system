@@ -141,45 +141,6 @@ app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( r
 	} );
 } );
 
-// Tag
-//////
-
-app.get( '/tag', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Tag"
-	} );
-	res.render( 'tag', { user: req.user } );
-} );
-
-app.post( '/tag', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
-	if ( req.body.tag == undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.mountpath );
- 			return;
-	}
-	var hashed_tag = auth.hashCard( req.body.tag );
-	var profile = {
-		'tag.id': req.body.tag,
-		'tag.hashed': hashed_tag
-	};
-
-	if ( req.body.tag == '' )
-		profile['tag.hashed'] = '';
-
-	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status != null ) {
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
-			}
-		} else {
-			req.flash( 'success', messages["tag-updated"] );
-		}
-		res.redirect( app.mountpath );
-	} );
-} );
-
 // Change Password
 //////////////////
 

@@ -29,7 +29,6 @@
 				<a href="/profile/emergency-contact" class="btn btn-default"><span class="glyphicon glyphicon-exclamation-sign"></span> Emergency Contact</a>
 				<a href="/profile/direct-debit" class="btn btn-default"><span class="glyphicon glyphicon-piggy-bank"></span> Direct Debit</a>
 				<a href="/profile/discourse" class="btn btn-default"><span class="glyphicon glyphicon-book"></span> Link Discourse</a>
-				<a href="/profile/tag" class="btn btn-default"><span class="glyphicon glyphicon-credit-card"></span> Tag</a>
 			</p>
 		</div>
 	</div>

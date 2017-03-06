@@ -66,8 +66,7 @@ function templateLocals( req, res, next ) {
 			req.user.gocardless.mandate_id == '' ||
 			req.user.gocardless.subscription_id == '' ||
 			! req.user.discourse.activated ||
-			req.user.discourse.username == '' ||
-			req.user.tag.id == ''
+			req.user.discourse.username == ''
 		) )
 		res.locals.userSetup = false;
 

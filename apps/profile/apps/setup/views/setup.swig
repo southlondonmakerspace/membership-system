@@ -36,13 +36,5 @@
 				<a href="/profile/discourse" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Discourse</a>
 			{% endif %} So you can view the members only area on Discourse.
 		</li>
-
-		<li>
-			{% if user.tag.id == '' %}
-				<a href="/profile/tag" class="btn btn-danger"><span class="glyphicon glyphicon-unchecked"></span> Tag</a>
-			{% else %}
-				<a href="/profile/tag" class="btn btn-success"><span class="glyphicon glyphicon-check"></span> Tag</a>
-			{% endif %} So you can use your tag in the space.
-		</li>
 	</ol>
 {% endblock %}

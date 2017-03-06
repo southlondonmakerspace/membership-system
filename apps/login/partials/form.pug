@@ -1,0 +1,9 @@
+form( method="post", action="/login" )
+	p
+		label( for="email" ) Email:
+		input( name="email", type="text" )#email.form-control
+	p
+		label( for="password" ) Password:
+		input( name="password", type="password" )#password.form-control
+	p
+		button( role="button" ).btn.btn-lg.btn-primary Login

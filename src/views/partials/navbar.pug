@@ -1,0 +1,29 @@
+nav.navbar.navbar-default
+	.container-fluid
+		.navbar-header
+		button( type="button", data-toggle="collapse", data-target="menu", aria-expanded="false" ).navbar-toggle.collapsed
+			span.glyphicon.glyphicon-menu-hamburger
+			|  Menu
+		a.navbar-brand( href="/" )
+			strong #{ usersname }
+		.collapse.navbar-collapse#menu
+			ul.nav.navbar-nav
+				each app, a in apps.main
+					if subapps[app.uid].length > 0
+						li.dropdown( class=( activeApp == app.path ? "active" : "" ) )
+								a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle #{ app.title }
+									span.caret
+								ul.dropdown-menu
+									unless app.hidden
+										li
+											a( href="/" + app.path ) #{ app.title }
+									each subapp, s in subapps[app.uid]
+										unless subapp.hidden
+											li
+												a( href="/" + app.path + "/" + subapp.path ) #{ subapp.title }
+					else
+						li( class=( activeApp == app.path ? "active" : "" ) )
+							a( href="/" + app.path ) #{ app.title }
+			ul.nav.navbar-nav.navbar-right
+				each app, a in apps.secondary
+					li: a( href="/" + app.path ) #{ app.title }

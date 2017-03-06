@@ -1,3 +1,5 @@
+var moment = require( 'moment' );
+
 var config, apps = [];
 
 function templateLocals( req, res, next ) {
@@ -66,8 +68,7 @@ function templateLocals( req, res, next ) {
 			req.user.gocardless.mandate_id == '' ||
 			req.user.gocardless.subscription_id == '' ||
 			! req.user.discourse.activated ||
-			req.user.discourse.username == '' ||
-			req.user.tag.id == ''
+			req.user.discourse.username == ''
 		) )
 		res.locals.userSetup = false;
 
@@ -79,7 +80,8 @@ function templateLocals( req, res, next ) {
 
 	// Now
 	res.locals.now = new Date();
-
+	res.locals.moment = moment;
+	
 	next();
 };
 

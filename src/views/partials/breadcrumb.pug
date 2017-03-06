@@ -1,0 +1,8 @@
+if breadcrumb.length > 0
+	ol.breadcrumb
+		li: a( href="/" ) Home
+		each crumb, c in breadcrumb
+			if crumb.url && c < breadcrumb.length - 1
+				li: a( href=crumb.url ) #{ crumb.name }
+			else
+				li #{ crumb.name }

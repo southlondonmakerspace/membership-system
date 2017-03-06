@@ -1,0 +1,11 @@
+extends ../../../src/views/email.html.pug
+
+block content
+	p Hello #{ firstname },
+	p Thanks for setting up your #{ config.globals.organisation } membership account!
+	p Now to confirm your email, just click Activate below, and follow the instructions.
+
+block action
+	- action = 'Activate'
+	- url = activation_url
+	include ../../../src/views/partials/action.html.pug

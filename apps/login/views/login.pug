@@ -1,0 +1,20 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block navbar
+
+block contents
+	.row
+		.col-md-8
+			.page-header
+				h2 #{ app.title }
+			.row
+				.col-md-6
+					include partials/form.pug
+		.col-md-4
+			.page-header
+				h2 Join
+			p If you are new around here why not join?
+			a.btn.btn-default( href="/join" ) Join

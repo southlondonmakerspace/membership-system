@@ -2,8 +2,7 @@
 
 var mongoose = require( 'mongoose' ),
 	ObjectId = mongoose.Schema.ObjectId,
-	crypto = require( 'crypto' ),
-	moment = require( 'moment' );
+	crypto = require( 'crypto' );
 
 exports.connect = function( url ) {
 	mongoose.connect( url );
@@ -258,9 +257,6 @@ var eventsSchema = mongoose.Schema( {
 		ref: 'Activities'
 	},
 	action: String
-} );
-eventsSchema.virtual( 'happened_relative' ).get( function() {
-	return moment( this.happened ).fromNow();
 } );
 
 var activitySchema = mongoose.Schema( {

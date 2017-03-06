@@ -12,7 +12,7 @@ var	express = require( 'express' ),
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
 
-var swig = require( 'swig' );
+var pug = require( 'pug' );
 var nodemailer = require( 'nodemailer' );
 
 var	Members = require( __js + '/database' ).Members;
@@ -38,7 +38,12 @@ app.get( '/' , function( req, res ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
-		res.render( 'join', { user: req.session.join } );
+		var user = {
+			firstname: '',
+			lastname: '',
+			email: ''
+		}
+		res.render( 'join', { user: req.session.join ? req.session.join : user } );
 		delete req.session.join;
 	}
 } );
@@ -147,8 +152,8 @@ app.post( '/', formBodyParser, function( req, res ) {
 								activation_url: config.audience + '/activate/' + user.activation_code
 							};
 
-							message.text = swig.renderFile( __dirname + '/email-templates/join.text.swig', options );
-							message.html = swig.renderFile( __dirname + '/email-templates/join.html.swig', options );
+							message.text = pug.renderFile( __dirname + '/email-templates/join.text.pug', options );
+							message.html = pug.renderFile( __dirname + '/email-templates/join.html.pug', options );
 
 							var transporter = nodemailer.createTransport( config.smtp.url );
 

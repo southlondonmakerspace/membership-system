@@ -1,0 +1,21 @@
+extends ../../../src/views/base.pug
+
+
+
+block navbar
+	.jumbotron
+		h1 Welcome...
+		p South London Makerspace is a social community workshop.
+		p: a( href="http://southlondonmakerspace.org/about", target="_blank").btn.btn-lg.btn-primary Find out more
+		.bg
+
+block contents
+	.row
+		.col-md-6
+			.page-header
+				h2 Join
+			p: a( href="/join" ).btn.btn-primary.btn-block.btn-lg Join Now
+		.col-md-6
+			.page-header
+				h2 Login
+			include ../../login/views/partials/form.pug

@@ -148,12 +148,6 @@ app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.activated == undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.parent.mountpath + app.mountpath );
- 			return;
-	}
-
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};

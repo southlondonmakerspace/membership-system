@@ -8,6 +8,8 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
+var moment = require( 'moment' );
+
 var config = require( __config + '/config.json' );
 
 var database = require( __js + '/database' ),
@@ -70,6 +72,49 @@ app.get( '/event/:slug', function( req, res ) {
 			} else {
 				res.sendStatus( 404 );
 			}
+		} )
+	} else {
+		res.sendStatus( 403 );
+	}
+} );
+
+app.get( '/events', function( req, res ) {
+	res.setHeader('Content-Type', 'application/json');
+	if ( config.api_key == req.query.api_key  ) {
+		if ( ! req.query.since ) return res.sendStatus( 404 );
+		var date = moment( req.query.since );
+		if ( ! date.isValid() ) return res.sendStatus( 404 );
+		var limit = 10;
+		if ( req.query.limit ) {
+			var raw_limit = parseInt( req.query.limit );
+			if ( req.query.limit > 0 && req.query.limit < 50 )
+				limit = raw_limit;
+		}
+		Events.find( { happened: { $gt: date.toDate() } } ).limit( limit ).sort( { happened: 'asc' } ).populate( 'member' ).populate( 'permission' ).exec( function( err, events ) {
+			var output = {
+				now: new Date(),
+				since: date.toDate(),
+				limit: limit,
+				events: []
+			};
+			for ( var e in events ) {
+				var event = events[e];
+				var output_event = {
+					date: event.happened,
+					user: {
+						fullname: event.member.fullname,
+						firstname: event.member.firstname,
+						lastname: event.member.lastname,
+						gravatar: event.member.gravatar
+					},
+					permission: {
+						name: event.permission.name,
+						action: event.permission.event_name
+					}
+				}
+				output.events.push( output_event );
+			}
+			res.send( JSON.stringify( output ) );
 		} )
 	} else {
 		res.sendStatus( 403 );

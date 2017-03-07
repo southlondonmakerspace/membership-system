@@ -1,0 +1,11 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Update Member Permission'
+	- heading = 'Update "' + current.permission.name + '" Permission'
+	- activeApp = 'admin'
+
+block contents
+	- action = 'Update'
+	- partial = true
+	include partials/member-permission-form.pug

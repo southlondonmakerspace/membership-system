@@ -3,10 +3,10 @@ span.list-group-item( class=( permission.date_added > now || permission.date_exp
 	if permission.permission.description
 		p.list-group-item-text #{ permission.permission.description }
 	p.list-group-item-text Valid&nbsp;
-		time( datetime=moment( permission.date_added, moment.ISO_8601 ), title=moment( permission.date_added ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( permission.date_added ).format( 'd/m/Y' ) }
+		time( datetime=moment( permission.date_added, moment.ISO_8601 ), title=moment( permission.date_added ).format( 'HH:mm:ss DD/MM/Y' ) ) #{ moment( permission.date_added ).format( 'DD/MM/Y' ) }
 		if permission.date_expires
 			|  &mdash;
-			time( datetime=moment( permission.date_expires, moment.ISO_8601 ), title=moment( permission.date_expires ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( permission.date_expires ).format( 'd/m/Y' ) }
+			time( datetime=moment( permission.date_expires, moment.ISO_8601 ), title=moment( permission.date_expires ).format( 'HH:mm:ss DD/MM/Y' ) ) #{ moment( permission.date_expires ).format( 'DD/MM/Y' ) }
 
 		else
 			|  onwards

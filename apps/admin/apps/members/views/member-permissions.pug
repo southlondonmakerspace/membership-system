@@ -1,0 +1,29 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Permissions'
+	- activeApp = 'admin'
+
+block contents
+	.row
+		.col-md-4
+			.page-header
+				h3 Grant Permission
+			- action = 'Grant'
+			include partials/member-permission-form.pug
+		.col-md-8
+			.page-header
+				h3 Permissions
+			.list-group
+				if member.permissions.length > 0 || superadmin
+					if superadmin
+						span.list-group-item
+							h4.list-group-item-heading Super Admin
+								p.list-group-item-text Has super admin permission granted in the config.json file.
+								p( style="position: absolute; top: 1em; right: 1em;" )
+									small Requires edit to config.json
+					- admin_area = true
+					each permission, p in member.permissions
+						include ../../../../../src/views/partials/permission.pug
+				else
+					p This member has no permissions.

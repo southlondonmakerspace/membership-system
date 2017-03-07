@@ -1,0 +1,13 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Tag'
+	- heading = title
+	- activeApp = 'admin'
+
+block contents
+	form( method="post" )
+		p
+			label( for="tag" ) Tag:
+			input( type="tag", value=member.tag.id, name="tag" )#tag.form-control
+		p: button.btn.btn-primary Update

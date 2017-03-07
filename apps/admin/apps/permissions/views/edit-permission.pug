@@ -1,0 +1,10 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Edit Permission'
+	- heading = 'Edit "' + permission.name + '" Permission'
+	- activeApp = 'admin'
+
+block contents
+	- action = 'Update'
+	include partials/permission-form.pug

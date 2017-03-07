@@ -12,7 +12,7 @@ block contents
 				|  Profile
 			|  So we know who you are.
 		li( style="margin-bottom: 1em;" )
-			a( href="/profile/emergency-contact" ).btn( class=( user.emergency_contact.telephone ? "btn-success" : "btn-danger" ) )
+			a( href="/profile/emergency-contact", class=( user.emergency_contact.telephone ? "btn-success" : "btn-danger" ) ).btn
 				span.glyphicon( class=( user.emergency_contact.telephone ? "glyphicon-check" : "glyphicon-unchecked" ) )
 				|  Emergency Contact
 			|  In the unlikely event of an accident.

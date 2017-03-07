@@ -1,0 +1,11 @@
+extends ../../../src/views/email.html.pug
+
+block content
+	p Hello #{ firstname },
+	p Someone has requested a password reset email on your account.
+	p To change your password, just click below, and follow the instructions.
+
+block action
+	- action = 'Change Password'
+	-url = reset_url
+	include ../../../src/views/partials/action.html.pug

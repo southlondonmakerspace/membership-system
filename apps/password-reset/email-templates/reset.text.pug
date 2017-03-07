@@ -1,0 +1,12 @@
+extends ../../../src/views/email.text.pug
+
+block content
+	| Hello #{ firstname },
+	| #{'\n'}
+	| Someone has requested a password reset email on your account.
+	| #{'\n'}
+	| To change your password, just click below, and follow the instructions.
+block action
+	- action = 'Change Password'
+	- url = reset_url
+	include ../../../src/views/partials/action.text.pug

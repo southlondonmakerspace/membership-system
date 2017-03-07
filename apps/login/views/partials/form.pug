@@ -1,9 +1,9 @@
 form( method="post", action="/login" )
 	p
 		label( for="email" ) Email:
-		input#email( name="email", type="text" ).form-control
+		input( name="email", type="text" )#email.form-control
 	p
 		label( for="password" ) Password:
-		input#password( name="password", type="password" ).form-control
+		input( name="password", type="password" )#password.form-control
 	p
-		button.btn.btn-lg.btn-primary( role="button" ) Login
+		button( role="button" ).btn.btn-lg.btn-primary Login

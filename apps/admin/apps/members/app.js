@@ -148,12 +148,6 @@ app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.activated == undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.parent.mountpath + app.mountpath );
- 			return;
-	}
-
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};
@@ -485,7 +479,6 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 		member.save( function ( err ) {
 			req.flash( 'success', messages['permission-updated'] );
 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
-			discourse.checkGroups();
 		} );
 	} );
 } );
@@ -518,7 +511,6 @@ app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 		member.save( function ( err ) {
 			req.flash( 'success', messages['permission-removed'] );
 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
-			discourse.checkGroups();
 		} );
 	} );
 } );

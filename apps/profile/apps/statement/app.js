@@ -20,7 +20,7 @@ app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
 		name: app_config.title,
-		url: app.mountpath
+		url: app.parent.mountpath + app.mountpath
 	} );
 	res.locals.activeApp = 'profile';
 	next();

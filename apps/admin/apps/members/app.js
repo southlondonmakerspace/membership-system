@@ -479,7 +479,6 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 		member.save( function ( err ) {
 			req.flash( 'success', messages['permission-updated'] );
 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
-			discourse.checkGroups();
 		} );
 	} );
 } );
@@ -512,7 +511,6 @@ app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 		member.save( function ( err ) {
 			req.flash( 'success', messages['permission-removed'] );
 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
-			discourse.checkGroups();
 		} );
 	} );
 } );

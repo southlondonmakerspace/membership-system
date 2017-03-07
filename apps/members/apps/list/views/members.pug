@@ -75,7 +75,7 @@ block contents
 						img( style="border-radius: 100%", src=member.gravatar + "?s=75&d=mm&r=g" )
 					td #{ member.firstname }
 					td #{ member.lastname }
-					td #{ moment( member.joined ).format( 'd/m/Y' ) }
+					td #{ moment( member.joined ).format( 'DD/MM/YYYY' ) }
 					td
 						if member.emergency_contact.telephone
 							| Yes

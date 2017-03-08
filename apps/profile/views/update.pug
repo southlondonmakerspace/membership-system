@@ -1,0 +1,23 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Profile"
+	- heading = title
+
+block contents
+	form( method="post" )
+		p
+			label( for="email" ) Email:
+			input( type="email", value=user.email, name="email", required )#email.form-control
+		p
+			label( for="firstname" ) First Name:
+			input( type="text", value=user.firstname, name="firstname", required )#firstname.form-control
+		p
+			label( for="lastname" ) Last Name:
+			input( type="text", value=user.lastname, name="lastname", required )#lastname.form-control
+		p
+			label( for="address" ) Address:
+				br/
+			textarea( rows="4", name="address", required )#address.form-control #{ user.address }
+		p
+			button.btn.btn-primary Update

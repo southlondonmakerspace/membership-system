@@ -1,0 +1,23 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'GoCardless'
+	- heading = title
+	- activeApp = 'admin'
+
+block contents
+	form( method="post" )
+		p
+			label( for="mandate_id" ) Mandate ID:
+			input( type="mandate_id", value=member.gocardless.mandate_id, name="mandate_id" )#mandate_id.form-control
+		p
+			label( for="subscription_id" ) Subscription ID:
+			input( type="subscription_id", value=member.gocardless.subscription_id, name="subscription_id" )#subscription_id.form-control
+		p
+			label( for="minimum" ) Minimum:
+			.input-group
+				.input-group-addon £
+				input( type="number", value=member.gocardless.minimum, placeholder=minimum name="minimum" )#minimum.form-control
+				.input-group-addon .00
+		p
+		p: button.btn.btn-primary Update

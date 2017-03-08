@@ -1,0 +1,10 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Create Permission'
+	- heading = title
+	- activeApp = 'admin'
+
+block contents
+	- action = 'Create'
+	include partials/permission-form.pug

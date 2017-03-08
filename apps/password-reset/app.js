@@ -9,7 +9,7 @@ var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
-var swig = require( 'swig' );
+var pug = require( 'pug' );
 var nodemailer = require( 'nodemailer' );
 
 var	Members = require( __js + '/database' ).Members;
@@ -53,8 +53,8 @@ app.post( '/', formBodyParser, function( req, res ) {
 					reset_url: config.audience + '/password-reset/code/' + password_reset_code
 				}
 
-				message.text = swig.renderFile( __dirname + '/email-templates/reset.text.swig', options );
-				message.html = swig.renderFile( __dirname + '/email-templates/reset.html.swig', options );
+				message.text = pug.renderFile( __dirname + '/email-templates/reset.text.pug', options );
+				message.html = pug.renderFile( __dirname + '/email-templates/reset.html.pug', options );
 
 				var transporter = nodemailer.createTransport( config.smtp.url );
 

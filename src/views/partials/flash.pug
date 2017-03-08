@@ -1,0 +1,6 @@
+unless userSetup
+	.alert.alert-info You need to finish setting up your account
+		a( href="/profile/setup", style="margin-top:-.3em;margin-right:-.3em" ).btn.btn-sm.btn-primary.pull-right Finish Setup
+if flashes
+	each flash, f in flashes
+		.alert( class="alert-" + flash.type ) #{ flash.message }

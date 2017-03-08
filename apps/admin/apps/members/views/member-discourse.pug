@@ -1,0 +1,19 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Discourse'
+	- heading = title
+	- activeApp = 'admin'
+
+block contents
+	form( method="post" )
+		p
+			label( for="username" ) Username:
+			input( type="username", value=member.discourse.username, name="username" )#username.form-control
+		p
+			label( for="activated" ) Activated:
+			input( type="checkbox", name="activated", checked=member.discourse.activated, value="true" )#activated.form-control
+		p
+			label( for="clear" ) Clear activation code:
+			input( type="checkbox", name="clear", value="true" )#clear.form-control
+		p: button.btn.btn-primary Update

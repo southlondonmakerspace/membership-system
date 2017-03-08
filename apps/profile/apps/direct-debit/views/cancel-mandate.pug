@@ -1,0 +1,12 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Direct Debit'
+	- heading = 'Cancel Direct Debit Mandate'
+
+block contents
+	p Are you sure you want to cancel your Direct Debit mandate?
+	form( method="post" )
+		p
+			button( role="button" ).btn.btn-danger Yes, cancel my Direct Debit mandate
+			a( href="/profile/direct-debit" ).btn.btn-default No

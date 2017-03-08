@@ -1,0 +1,14 @@
+if event.member && event.permission
+	a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
+	a( href="/members/?permission=" + event.permission.slug )  #{ event.permission.event_name }
+else if event.activity
+	#{ event.activity.event_name }
+else
+	#{ event.action }
+
+if relative
+	span.badge
+		time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( event.happened ).fromNow() }
+else
+	span.badge
+		time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm:ss' ) }

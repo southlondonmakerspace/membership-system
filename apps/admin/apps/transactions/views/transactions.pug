@@ -1,0 +1,48 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Transactions'
+	- heading = title
+	- activeApp = 'admin'
+
+block append js
+	script( type="text/javascript" ).
+		jQuery(document).ready(function($) {
+			$("tr[data-href]").click(function() {
+				window.document.location = $(this).data("href");
+			});
+		});
+
+block contents
+	if payments.length > 0
+		table.table.table-striped.table-hover.table-condensed
+			thead
+				tr
+					th User
+					th Payment ID
+					th Subscription ID
+					th Created
+					th Updated
+					th Charge Date
+					th Description
+					th Status
+					th Amount
+			tbody
+				each payment, p in payments
+					tr
+						if payment.member
+							td: a( href="/admin/members/" + payment.member.uuid ) #{ payment.member.fullname }
+						else
+							td –
+						td: a( href="https://manage.gocardless.com/payments/" + payment.payment_id, target="_blank" ) #{ payment.payment_id }
+						td: a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id, target="_blank" ) #{ payment.subscription_id }
+						td #{ moment( payment.created ).format( 'HH:mm DD/MM/YYYY' ) }
+						td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm DD/MM/YYYY' ) : '–' }
+						td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
+						td #{ payment.description }
+						td
+							include ../../../../profile/apps/statement/views/partials/status.pug
+						td #{ payment.amount ? '£' + payment.amount : '–' }
+
+	else
+		p There is no transaction history

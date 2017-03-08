@@ -1,0 +1,49 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeApp = 'admin'
+
+block append js
+	script( type="text/javascript" ).
+		jQuery(document).ready(function($) {
+			$("tr[data-href]").click(function() {
+				window.document.location = $(this).data("href");
+			});
+		});
+
+block contents
+	if access == 'superadmin'
+		p: a( href="/admin/permissions/create" ).btn.btn-default
+			span.glyphicon.glyphicon-plus
+			|  Create Permission
+	table.table.table-striped.table-hover.table-condensed
+		thead
+			tr
+				th Name
+				th Slug
+				th Description
+				th Linked to Discourse Group
+				th Restricted to Super Admin
+				if access == 'superadmin'
+					th
+		tbody
+			each permission, p in permissions
+				tr( data-href="/admin/permissions/" + permission.slug, style="cursor: pointer;" )
+					td #{ permission.name }
+					td #{ permission.slug }
+					td #{ permission.description }
+					td
+						if permission.group.id && permission.group.name
+							| Yes
+						else
+							| No
+					td
+						if permission.superadmin_only
+							| Yes
+						else
+							| No
+						if access == 'superadmin'
+							td: a( href="/admin/permissions/" + permission.slug + "/edit" )
+								span.glyphicon.glyphicon-pencil

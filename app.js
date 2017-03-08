@@ -12,7 +12,6 @@ var body = require( 'body-parser' ),
 	database = require( __js + '/database' ).connect( config.mongo ),
 	express = require( 'express' ),
 	flash = require( 'express-flash' ),
-	swig = require( 'swig' ),
 	app = express(),
 	http = require( 'http' ).Server( app ),
 	fs = require( 'fs' );
@@ -91,12 +90,10 @@ apps.sort( function( a, b ) {
 // Load in local variables such as config.globals
 app.use( require( __js + '/template-locals' )( config, apps ) );
 
-// Use SWIG to render pages
-app.engine( 'swig', swig.renderFile );
+// Use PUG to render pages
 app.set( 'views', __views );
-app.set( 'view engine', 'swig' );
+app.set( 'view engine', 'pug' );
 app.set( 'view cache', false );
-swig.setDefaults( { cache: false } );
 
 // Route apps
 for ( var a in apps ) {

@@ -1,0 +1,19 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Emergency Contact"
+	- heading = title
+
+block contents
+	form( method="post" )
+		p
+			label( for="firstname" ) First Name:
+			input( type="text", value=user.emergency_contact.firstname, name="firstname" )#firstname.form-control
+		p
+			label( for="lastname" ) Last Name:
+			input( type="text", value=user.emergency_contact.lastname, name="lastname" )#lastname.form-control
+		p
+			label( for="telephone" ) Telephone:
+			input( type="text", value=user.emergency_contact.telephone, name="telephone" )#telephone.form-control
+		p
+			button.btn.btn-primary Update

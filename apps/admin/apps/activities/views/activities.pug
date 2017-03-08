@@ -1,0 +1,27 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeApp = 'admin'
+
+block contents
+	if access == 'superadmin'
+		p: a( href="/admin/activities/create" ).btn.btn-default
+			span.glyphicon.glyphicon-plus
+			|  Create Activity
+	table.table.table-striped.table-condensed
+		thead
+			tr
+				th Name
+				th Slug
+				if access == 'superadmin'
+					th
+		tbody
+			each activity, a in activities
+				tr
+					td #{ activity.name }
+					td #{ activity.slug }
+					if access == 'superadmin'
+						td: a( href="/admin/activities/" + activity.slug + "/edit" )
+							span.glyphicon.glyphicon-pencil

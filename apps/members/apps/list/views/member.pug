@@ -1,0 +1,37 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Member'
+	- activeApp = 'members'
+
+block contents
+	.page-header
+		h2 #{ member.fullname }
+	.row
+		.col-md-2
+			p: img( style="border-radius: 100%", src=member.gravatar + '?s=150&d=mm&r=g' )
+		.col-md-2
+			if member.discourse.activated
+				p.pull-right
+					strong Discourse:
+			p.pull-right
+				strong Emergency Contact:
+		.col-md-8
+			if member.discourse.activated
+				p: a( target="_blank", href=discourse_path + '/users/' + discourse.user.username ) @#{ discourse.user.username }
+
+			p
+				if member.emergency_contact.telephone
+					| On file
+				else
+					| Not held
+
+	.page-header
+		h3 Permissions
+
+	if member.permissions.length > 0
+		.list-group
+			each permission, p in member.permissions
+				include ../../../../../src/views/partials/permission.pug
+	else
+		p Member has no permissions

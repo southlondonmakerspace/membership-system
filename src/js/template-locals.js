@@ -1,3 +1,5 @@
+var moment = require( 'moment' );
+
 var config, apps = [];
 
 function templateLocals( req, res, next ) {
@@ -78,7 +80,8 @@ function templateLocals( req, res, next ) {
 
 	// Now
 	res.locals.now = new Date();
-
+	res.locals.moment = moment;
+	
 	next();
 };
 

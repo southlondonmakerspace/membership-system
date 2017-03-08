@@ -1,0 +1,26 @@
+span.list-group-item( class=( permission.date_added > now || permission.date_expires != undefined && permission.date_expires < now ? 'disabled' : '' ) )
+	h4.list-group-item-heading #{ permission.permission.name }
+	if permission.permission.description
+		p.list-group-item-text #{ permission.permission.description }
+	p.list-group-item-text Valid&nbsp;
+		time( datetime=moment( permission.date_added, moment.ISO_8601 ), title=moment( permission.date_added ).format( 'HH:mm:ss DD/MM/Y' ) ) #{ moment( permission.date_added ).format( 'DD/MM/Y' ) }
+		if permission.date_expires
+			|  &mdash;
+			time( datetime=moment( permission.date_expires, moment.ISO_8601 ), title=moment( permission.date_expires ).format( 'HH:mm:ss DD/MM/Y' ) ) #{ moment( permission.date_expires ).format( 'DD/MM/Y' ) }
+
+		else
+			|  onwards
+	p( style="position: absolute; top: 1em; right: 1em;" )
+		if admin_area
+			if ! permission.permission.superadmin_only || access == 'superadmin'
+				a( href="/admin/members/" + member.uuid + "/permissions/" + permission._id + "/modify", style="margin-right: 1em;" )
+					span.glyphicon.glyphicon-pencil
+				a( href="/admin/members/" + member.uuid + "/permissions/" + permission._id + "/revoke" )
+					span.glyphicon.glyphicon-remove
+			else
+				small Restricted to Super Admins
+		else
+			if now < permission.date_added
+				span.label.label-default Pending
+			if permission.date_expires != undefined && now > permission.date_expires
+				span.label.label-default Expired

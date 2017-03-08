@@ -1,0 +1,13 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Activation'
+	- heading = heading
+	- activeApp = 'admin'
+
+block contents
+	form( method="post" )
+		p
+			label( for="activated" ) Activated:
+			input( type="checkbox", name="activated", checked=member.activated, value="true" )#activated.form-control
+		p: button.btn.btn-primary Update

@@ -1,0 +1,50 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+
+block contents
+	ol( style="padding-left: 2em;" )
+		li( style="margin-bottom: 1em;" )
+			a( href="/profile/update" ).btn.btn-success
+				span.glyphicon.glyphicon-check
+				|  Profile
+			|  So we know who you are.
+		li( style="margin-bottom: 1em;" )
+			a( href="/profile/emergency-contact", class=( user.emergency_contact.telephone ? "btn-success" : "btn-danger" ) ).btn
+				span.glyphicon( class=( user.emergency_contact.telephone ? "glyphicon-check" : "glyphicon-unchecked" ) )
+				|  Emergency Contact
+			|  In the unlikely event of an accident.
+		li( style="margin-bottom: 1em;" )
+			if user.gocardless.mandate_id == ''
+				a( href="/profile/direct-debit" ).btn.btn-danger
+					span.glyphicon.glyphicon-unchecked
+					|  Direct Debit
+				|  So you can pay your membership fee.
+			else if user.gocardless.subscription_id == ''
+				a( href="/profile/direct-debit" ).btn.btn-warning
+					span.glyphicon.glyphicon-unchecked
+					|  Direct Debit
+				|  So you can pay your membership fee.
+			else
+				a( href="/profile/direct-debit" ).btn.btn-success
+					span.glyphicon.glyphicon-check
+					|  Direct Debit
+				|  So you can pay your membership fee.
+		li( style="margin-bottom: 1em;" )
+			if user.discourse.activated
+				a( href="/profile/discourse" ).btn.btn-success
+					span.glyphicon.glyphicon-check
+					|  Discourse
+				|  So you can view the members only area on Discourse.
+			else if ( ! user.discourse.activated && user.discourse.username != '' )
+				a( href="/profile/discourse" ).btn.btn-warning
+					span.glyphicon.glyphicon-unchecked
+					|  Discourse
+				|  So you can view the members only area on Discourse.
+			else
+				a( href="/profile/discourse" ).btn.btn-danger
+					span.glyphicon.glyphicon-unchecked
+					|  Discourse
+				|  So you can view the members only area on Discourse.

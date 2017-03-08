@@ -1,0 +1,29 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = 'Search'
+
+block contents
+	p Search for your Discourse credentials address to start linking your account.
+
+	form( method="get", action="/profile/discourse", style="max-width: 300px;" )
+		p
+			label( for="search" ) Search:
+			input( type="text", placeholder="Discourse name, username or email...", name="search" )#search.form-control
+		p
+			button.btn.btn-primary Search
+
+	if users
+		.page-header
+			h3 Results
+		form( method="post", action="/profile/discourse/link" )
+			input( type="hidden", value=search, name="search" )
+			each user, u in users
+				.col-md-2
+					p
+						img( style="border-radius: 100%", src=user.avatar )
+					p @
+						a( href=user.profile_link, target="_blank") #{ user.username }
+					p
+						button.btn.btn-default( name="user", value="{{ loop.index0 }}" ) Link

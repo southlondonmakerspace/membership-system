@@ -69,7 +69,8 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 	var activity = {
 		name: req.body.name,
 		event_name: req.body.event,
-		slug: req.body.slug
+		slug: req.body.slug,
+		admin_only: req.body.admin_only
 	};
 
 	new Activities( activity ).save( function( err, activity ) {
@@ -117,7 +118,8 @@ app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, r
 	var activity = {
 		name: req.body.name,
 		event_name: req.body.event,
-		slug: req.body.slug
+		slug: req.body.slug,
+		admin_only: req.body.admin_only
 	};
 
 	Activities.update( { slug: req.params.slug }, activity, function( status ) {

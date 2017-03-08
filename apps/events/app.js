@@ -47,6 +47,13 @@ app.get( '/', auth.isMember, function( req, res ) {
 		}
 	}
 	Events.find( search ).populate( 'member' ).populate( 'permission' ).populate( 'activity' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
+		if ( res.locals.access.indexOf( 'admin' ) == -1 ) {
+			events = events.filter( function( e ) {
+				if ( e.activity != undefined )
+					return ! e.activity.admin_only;
+				return true;
+			} )
+		}
 		for ( var e = 1; e < events.length; e++ ) {
 			var event = events[e];
 			var prevEvent = events[e-1];

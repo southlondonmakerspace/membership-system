@@ -1,10 +1,15 @@
 if event.member && event.permission
 	a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
-	a( href="/members/?permission=" + event.permission.slug )  #{ event.permission.event_name }
+	| &nbsp;
+	a( href="/members/?permission=" + event.permission.slug ) #{ event.permission.event_name }
 else if event.activity
-	#{ event.activity.event_name }
+	if event.activity.slug = 'unknown-tag'
+		| #{ event.activity.event_name.replace( '$', event.action ) }&nbsp;
+		a( href="/admin/events/link/" + event._id ).btn.btn-xs.btn-default Link
+	else
+		| #{ event.activity.event_name.replace( '$', event.action ) }
 else
-	#{ event.action }
+	| #{ event.action }
 
 if relative
 	span.badge

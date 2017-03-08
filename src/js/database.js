@@ -275,7 +275,11 @@ var activitySchema = mongoose.Schema( {
 		unique: true,
 		required: true
 	},
-	event_name: String
+	event_name: String,
+	admin_only: {
+		type: Boolean,
+		default: false
+	}
 } );
 
 exports.permissionsSchema = permissionsSchema;

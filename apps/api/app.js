@@ -65,7 +65,8 @@ app.get( '/event/:slug', function( req, res ) {
 		Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
 			if ( activity != undefined ) {
 				new Events( {
-					activity: activity._id
+					activity: activity._id,
+					action: ( req.query.action ? req.query.action : '' )
 				} ).save( function( status ) {
 					res.sendStatus( 200 );
 				} );

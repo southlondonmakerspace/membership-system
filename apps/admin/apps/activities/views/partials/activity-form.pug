@@ -5,7 +5,10 @@ form( method="post" )
 	p
 		label( for="event" ) Event:
 		input( name="event", type="text", value=( activity ? activity.event_name : '' ) )#event.form-control
-	p
-		label( for="slug" ) Slug:
-		input( name="slug", type="text", value=( activity ? activity.slug : '' ), required )#slug.form-control
+		p
+			label( for="slug" ) Slug:
+			input( name="slug", type="text", value=( activity ? activity.slug : '' ), required )#slug.form-control
+		p
+			label( for="admin_only" ) Admin Only:
+			input( name="admin_only", type="checkbox", checked=( activity ? activity.admin_only : '' ) )#admin_only.form-control
 	p: button.btn.btn-primary #{ action }

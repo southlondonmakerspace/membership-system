@@ -5,7 +5,7 @@ if event.member && event.permission
 else if event.activity
 	if event.activity.slug = 'unknown-tag'
 		| #{ event.activity.event_name.replace( '$', event.action ) }&nbsp;
-		a( href="/admin/events/link/" + event._id ).btn.btn-xs.btn-default Link
+		a( href="/admin/events/link/" + event._id ).btn.btn-xs.btn-warning Link
 	else
 		| #{ event.activity.event_name.replace( '$', event.action ) }
 else

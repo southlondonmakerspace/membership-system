@@ -1,11 +1,9 @@
-// Handle all authentication
-
-"use strict";
-
 var config = require( '../../config/config.json' );
 
-var Permissions = require( '../../src/js/database' ).Permissions,
-	Members = require( '../../src/js/database' ).Members;;
+var db = require( '../../src/js/database' ),
+	Permissions = db.Permissions,
+	Members = db.Members,
+	APIKeys = db.APIKeys;
 
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy;
@@ -202,6 +200,15 @@ var Authentication = {
 				res.redirect( '/login' );
 				return;
 		}
+	},
+	isAPIAuthenticated: function( req, res, next ) {
+		console.log( 'isAPIAuthenticated' );
+		if ( req.query.api_key == undefined ) return res.sendStatus( 403 );
+		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
+			console.log( key );
+			if ( key != undefined ) return next();
+			return res.sendStatus( 403 );
+		} );
 	},
 	isMember: function( req, res, next ) {
 		var status = Authentication.activeMember( req );

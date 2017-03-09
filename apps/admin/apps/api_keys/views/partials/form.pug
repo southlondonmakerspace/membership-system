@@ -1,0 +1,8 @@
+form( method="post" )
+	p
+		label( for="name" ) Name:
+		input( name="name", type="text", value=( key ? key.name : '' ), required )#name.form-control
+	p
+		label( for="key" ) Key:
+		input( name="key", type="text", value=( key ? key.key : '' ), required )#key.form-control
+	p: button.btn.btn-primary #{ action }

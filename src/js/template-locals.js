@@ -81,7 +81,7 @@ function templateLocals( req, res, next ) {
 	// Now
 	res.locals.now = new Date();
 	res.locals.moment = moment;
-	
+
 	next();
 };
 

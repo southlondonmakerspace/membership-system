@@ -282,12 +282,31 @@ var activitySchema = mongoose.Schema( {
 	}
 } );
 
+var apikeySchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId() },
+		required: true,
+		unique: true
+	},
+	name: {
+		type: String,
+		required: true
+	},
+	key: {
+		type: String,
+		unique: true,
+		required: true
+	}
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
 exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
 exports.activitySchema = activitySchema;
+exports.apikeySchema = apikeySchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
@@ -295,6 +314,7 @@ exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
 exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.Activities = mongoose.model( 'Activities', exports.activitySchema );
+exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

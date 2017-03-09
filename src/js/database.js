@@ -36,7 +36,8 @@ var permissionsSchema = mongoose.Schema( {
 		name: String,
 		order: Number
 	},
-	event_name: String
+	event_name: String,
+	event_unauthorised: String
 } );
 
 var memberSchema = mongoose.Schema( {
@@ -255,6 +256,10 @@ var eventsSchema = mongoose.Schema( {
 	activity: {
 		type: ObjectId,
 		ref: 'Activities'
+	},
+	successful: {
+		type: Boolean,
+		default: true
 	},
 	action: String
 } );

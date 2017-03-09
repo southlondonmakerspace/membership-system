@@ -52,18 +52,27 @@ app.get( '/link/:event', auth.isAdmin, function( req, res ) {
 app.get( '/link/:event/:member', auth.isAdmin, function( req, res ) {
 	Events.findById( req.params.event ).populate( 'activity' ).exec( function( err, event ) {
 		if ( event != undefined ) {
-			if ( event.activity.slug == 'unknown-tag' ) {
-				Members.findOne( { uuid: req.params.member }, function( err, member ) {
-					if ( member != undefined ) {
-						var hashed_tag = auth.hashCard( event.action );
-						member.tag.id = event.action;
-						member.tag.hashed = hashed_tag;
-						member.save( function ( err ) {} );
-					} else {
-						req.flash( 'danger', messages['member-404'] )
-						res.redirect( '/events' );
-					}
-				} );
+			if ( event.action.trim() != '' ) {
+				if ( event.activity.slug == 'unknown-tag' ) {
+					Members.findOne( { uuid: req.params.member }, function( err, member ) {
+						if ( member != undefined ) {
+							var hashed_tag = auth.hashCard( event.action );
+							member.tag.id = event.action;
+							member.tag.hashed = hashed_tag;
+							member.save( function ( err ) {} );
+							Events.update( { action: event.action }, { $set: { action: 'linked', member: member._id } }, { multi: true }, function( err ) {
+								req.flash( 'success', messages['event-linked'] )
+								res.redirect( '/events' );
+							} );
+						} else {
+							req.flash( 'danger', messages['member-404'] )
+							res.redirect( '/events' );
+						}
+					} );
+				} else {
+					req.flash( 'danger', messages['event-not-linkable'] )
+					res.redirect( '/events' );
+				}
 			} else {
 				req.flash( 'danger', messages['event-not-linkable'] )
 				res.redirect( '/events' );

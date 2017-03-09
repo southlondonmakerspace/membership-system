@@ -3,9 +3,6 @@ form( method="post" )
 		label( for="name" ) Name:
 		input( name="name", type="text", value=( permission ? permission.name : '' ), required )#name.form-control
 	p
-		label( for="event" ) Event:
-		input( name="event", type="text", value=( permission ? permission.event_name : '' ) )#event.form-control
-	p
 		label( for="slug" ) Slug:
 		input( name="slug", type="text", value=( permission ? permission.slug : '' ), required )#slug.form-control
 	p
@@ -15,6 +12,13 @@ form( method="post" )
 		label( for="superadmin_only" ) Require Super Admin:
 		input( checked=( permission ? permission.superadmin_only : false ), name="superadmin_only", type="checkbox" )#superadmin_only.form-control
 		small Should granting, editing and modification of this permission be limited to Super Admin users?
+	h3 Event logging
+	p
+		label( for="event" ) Authorised:
+		input( name="event", type="text", value=( permission ? permission.event_name : '' ) )#event.form-control
+		p
+			label( for="event_unauthorised" ) Unauthorised:
+			input( name="event_unauthorised", type="text", value=( permission ? permission.event_unauthorised : '' ) )#event_unauthorised.form-control
 	h3 Discourse Group
 	p
 		label( for="group_id" ) ID:

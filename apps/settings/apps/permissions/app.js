@@ -98,6 +98,7 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 	var permission = {
 		name: req.body.name,
 		event_name: req.body.event,
+		event_unauthorised: req.body.event_unauthorised,
 		slug: req.body.slug,
 		description: req.body.description,
 		superadmin_only: ( req.body.superadmin_only ? true : false ),
@@ -153,6 +154,7 @@ app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, r
 	var permission = {
 		name: req.body.name,
 		event_name: req.body.event,
+		event_unauthorised: req.body.event_unauthorised,
 		slug: req.body.slug,
 		description: req.body.description,
 		superadmin_only: req.body.superadmin_only,

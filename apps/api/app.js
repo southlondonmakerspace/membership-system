@@ -37,8 +37,18 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 				if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasPermission = true;
 			}
 
-			if ( ( isDirector && hasPermission ) || ( hasMembership && hasPermission ) )
+			if ( ( isDirector && hasPermission ) || ( hasMembership && hasPermission ) ) {
 				grantAccess = true;
+			} else {
+				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
+					if ( permission != undefined )
+						new Events( {
+							member: member._id,
+							permission: permission._id,
+							successful: false
+						} ).save( function( status ) {} );
+				} )
+			}
 		}
 
 		if ( grantAccess ) {
@@ -46,7 +56,8 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 			Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
 				new Events( {
 					member: member._id,
-					permission: permission._id
+					permission: permission._id,
+					successful: true
 				} ).save( function( status ) {} );
 			} )
 			res.send( JSON.stringify( {

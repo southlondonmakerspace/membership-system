@@ -34,11 +34,9 @@ block contents
 								else
 									h3.panel-title #{ moment( event.happened ).format( 'dddd Do MMMM Y' ) }
 							<ul class="list-group">
-								li.list-group-item( class=( event.activity && event.activity.admin_only ? 'list-group-item-warning' : '' ) )
-									include partials/event.pug
+								include partials/event.pug
 					else
-						li.list-group-item( class=( event.activity && event.activity.admin_only ? 'list-group-item-warning' : '' ) )
-							include partials/event.pug
+						include partials/event.pug
 			else
 				ul.list-group
 					li.list-group-item.list-group-item-default There are no events this month.

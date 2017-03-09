@@ -207,10 +207,8 @@ var Authentication = {
 		}
 	},
 	isAPIAuthenticated: function( req, res, next ) {
-		console.log( 'isAPIAuthenticated' );
 		if ( req.query.api_key == undefined ) return res.sendStatus( 403 );
 		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
-			console.log( key );
 			if ( key != undefined ) return next();
 			return res.sendStatus( 403 );
 		} );

@@ -9,8 +9,7 @@ var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
-var Activities = require( __js + '/database' ).Activities,
-	Members = require( __js + '/database' ).Members;
+var APIKeys = require( __js + '/database' ).APIKeys;
 
 var auth = require( __js + '/authentication' );
 
@@ -28,13 +27,13 @@ app.use( function( req, res, next ) {
 		name: app_config.title,
 		url: app.parent.mountpath + app.mountpath
 	} );
-	res.locals.activeApp = 'admin';
+	res.locals.activeApp = 'settings';
 	next();
 } );
 
-app.get( '/', auth.isAdmin, function( req, res ) {
-	Activities.find( function( err, activities ) {
-		res.render( 'activities', { activities: activities } );
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
+	APIKeys.find( function( err, keys ) {
+		res.render( 'index', { keys: keys } );
 	} );
 } );
 
@@ -42,88 +41,89 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
-	res.render( 'create-activity' );
+	res.render( 'create' );
 } );
 
 app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	if ( req.body.name == undefined ||
-		 req.body.event == undefined ||
- 		 req.body.slug == undefined ) {
+		 req.body.key == undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
 	}
 
 	if ( req.body.name.trim() == '' ) {
-		req.flash( 'danger', messages['activity-name-required'] );
+		req.flash( 'danger', messages['apikey-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.slug.trim() == '' ) {
-		req.flash( 'danger', messages['activity-slug-required'] );
+	if ( req.body.key.trim() == '' ) {
+		req.flash( 'danger', messages['apikey-key-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	var activity = {
+	var key = {
 		name: req.body.name,
-		event_name: req.body.event,
-		slug: req.body.slug,
-		admin_only: req.body.admin_only
+		key: req.body.key
 	};
 
-	new Activities( activity ).save( function( err, activity ) {
-		req.flash( 'success', messages['activity-created'] );
+	new APIKeys( key ).save( function( err, activity ) {
+		req.flash( 'success', messages['apikey-created'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
 
-app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
-	Activities.findOne( { slug: req.params.slug }, function( err, activity ) {
-		if ( activity == undefined ) {
-			req.flash( 'warning', messages['activity-404'] );
+app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
+	APIKeys.findById( req.params.id, function( err, key ) {
+		if ( key == undefined ) {
+			req.flash( 'warning', messages['apikey-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
 
 		res.locals.breadcrumb.push( {
-			name: activity.name
+			name: key.name
 		} );
-		res.render( 'edit-activity', { activity: activity } );
+		res.render( 'edit', { key: key } );
 	} );
 } );
 
-app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:id/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	if ( req.body.name == undefined ||
-		 req.body.event == undefined ||
- 		 req.body.slug == undefined ) {
+		 req.body.key == undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
 	}
 
 	if ( req.body.name.trim() == '' ) {
-		req.flash( 'danger', messages['activity-name-required'] );
+		req.flash( 'danger', messages['apikey-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.slug.trim() == '' ) {
-		req.flash( 'danger', messages['activity-slug-required'] );
+	if ( req.body.key.trim() == '' ) {
+		req.flash( 'danger', messages['apikey-key-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	var activity = {
 		name: req.body.name,
-		event_name: req.body.event,
-		slug: req.body.slug,
-		admin_only: req.body.admin_only
+		key: req.body.key
 	};
 
-	Activities.update( { slug: req.params.slug }, activity, function( status ) {
-		req.flash( 'success', messages['activity-update'] );
+	APIKeys.update( { _id: req.params.id }, activity, function( status ) {
+		req.flash( 'success', messages['apikey-update'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	} );
+} );
+
+app.get( '/:id/delete', auth.isSuperAdmin, function( req, res ) {
+	APIKeys.remove( { _id: req.params.id }, function( err ) {
+		req.flash( 'success', messages['apikey-delete'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

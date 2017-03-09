@@ -1,10 +1,10 @@
 extends ../../../../../src/views/base.pug
 
 block prepend title
-	- title = 'Create API Key'
+	- title = 'Create Activity'
 	- heading = title
-	- activeApp = 'admin'
+	- activeApp = 'settings'
 
 block contents
 	- action = 'Create'
-	include partials/form.pug
+	include partials/activity-form.pug

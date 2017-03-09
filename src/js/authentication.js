@@ -1,6 +1,11 @@
-var config = require( '../../config/config.json' );
+var __home = __dirname + "/../..";
+var __config = __home + '/config/config.json';
+var __src = __home + '/src';
+var __js = __src + '/js';
 
-var db = require( '../../src/js/database' ),
+var config = require( __config );
+
+var db = require( __js + '/database' ),
 	Permissions = db.Permissions,
 	Members = db.Members,
 	APIKeys = db.APIKeys;
@@ -10,7 +15,7 @@ var passport = require( 'passport' ),
 
 var crypto = require( 'crypto' );
 
-var messages = require( '../../src/messages.json' );
+var messages = require( __src + '/messages.json' );
 
 var Authentication = {
 	auth: function( app ) {

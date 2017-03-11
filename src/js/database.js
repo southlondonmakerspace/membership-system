@@ -1,5 +1,3 @@
-"use strict";
-
 var mongoose = require( 'mongoose' ),
 	ObjectId = mongoose.Schema.ObjectId,
 	crypto = require( 'crypto' );
@@ -11,12 +9,12 @@ exports.connect = function( url ) {
 	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
 
 	return exports;
-}
+};
 
 var permissionsSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -43,7 +41,7 @@ var permissionsSchema = mongoose.Schema( {
 var memberSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -53,7 +51,7 @@ var memberSchema = mongoose.Schema( {
 		default: function () { // pseudo uuid4
 			function s4() {
 				return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
-			};
+			}
 			return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 		}
 	},
@@ -113,7 +111,7 @@ var memberSchema = mongoose.Schema( {
 			type: String,
 			validate: {
 				validator: function ( v ) {
-					if ( v == '' ) return true;
+					if ( v === '' ) return true;
 					return /[A-z0-9]{8}/.test( v );
 				},
 				message: '{VALUE} is not a valid tag ID'
@@ -203,7 +201,7 @@ memberSchema.virtual( 'gravatar' ).get( function() {
 var paymentSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -236,7 +234,7 @@ var historicEventsSchema = mongoose.Schema( {
 var eventsSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -267,7 +265,7 @@ var eventsSchema = mongoose.Schema( {
 var activitySchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -290,7 +288,7 @@ var activitySchema = mongoose.Schema( {
 var apikeySchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},

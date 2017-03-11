@@ -37,7 +37,7 @@ GoCardless.validateWebhook = function( webhook_signature, body, callback ) {
 	}
 
 	callback( false );
-}
+};
 
 // Redirect Flow
 
@@ -48,7 +48,7 @@ GoCardless.createRedirectFlow = function ( description, session_token, redirect_
 			session_token: session_token,
 			success_redirect_url: redirect_url
 		}
-	}
+	};
 
 	GoCardless.request( 'post', '/redirect_flows', data, function ( error, response, body ) {
 		if ( response.statusCode == 201 ) {
@@ -64,7 +64,7 @@ GoCardless.completeRedirectFlow = function ( redirect_flow_id, session_token, ca
 		data: {
 			session_token: session_token
 		}
-	}
+	};
 
 	GoCardless.request( 'post', '/redirect_flows/' + redirect_flow_id + '/actions/complete', data, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
@@ -112,7 +112,7 @@ GoCardless.createSubscription = function ( mandate_id, amount, day_of_month, des
 			},
 			metadata: metadata
 		}
-	}
+	};
 
 	GoCardless.request( 'post', '/subscriptions', data, function ( error, response, body ) {
 		if ( response.statusCode == 201 ) {
@@ -155,7 +155,7 @@ GoCardless.createPayment = function ( mandate_id, amount, description, callback 
 				mandate: mandate_id
 			}
 		}
-	}
+	};
 
 	GoCardless.request( 'post', '/payments', data, function ( error, response, body ) {
 		if ( response.statusCode == 201 ) {

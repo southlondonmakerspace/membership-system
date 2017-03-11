@@ -24,7 +24,7 @@ var Authentication = {
 			usernameField: 'email'
 		}, function( email, password, done ) {
 				Members.findOne( { email: email }, function( err, user ) {
-					if ( user != null ) {
+					if ( user !== null ) {
 						if ( user.password.tries >= config['password-tries'] ) {
 							return done( null, false, { message: messages['account-locked'] } );
 						}
@@ -35,7 +35,7 @@ var Authentication = {
 									return done( null, false, { message: messages['inactive-account'] } );
 								}
 
-								if ( user.password.reset_code != null ) {
+								if ( user.password.reset_code !== null ) {
 									user.password.reset_code = null;
 									user.save( function ( err ) {} );
 									return done( null, { _id: user._id }, { message: messages['password-reset-attempt'] } );
@@ -67,7 +67,7 @@ var Authentication = {
 
 		passport.deserializeUser( function( data, done ) {
 			Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
-				if ( user != null ) {
+				if ( user !== null ) {
 					var permissions = [ 'loggedIn' ];
 
 					user.last_seen = new Date();
@@ -78,7 +78,7 @@ var Authentication = {
 
 					for ( var p = 0; p < user.permissions.length; p++ ) {
 						if ( user.permissions[p].date_added <= new Date() ) {
-							if ( user.permissions[p].date_expires == undefined || user.permissions[p].date_expires > new Date() ) {
+							if ( user.permissions[p].date_expires === undefined || user.permissions[p].date_expires > new Date() ) {
 								permissions.push( user.permissions[p].permission.slug );
 							}
 						}
@@ -87,11 +87,11 @@ var Authentication = {
 					user.quickPermissions = permissions;
 					user.setup = false;
 					if ( user.emergency_contact.telephone ||
-						 user.gocardless.mandate_id == '' ||
-						 user.gocardless.subscription_id == '' ||
+						 user.gocardless.mandate_id === '' ||
+						 user.gocardless.subscription_id === '' ||
 						 ! user.discourse.activated ||
-						 user.discourse.username == '' ||
-						 user.tag.id == '' )
+						 user.discourse.username === '' ||
+						 user.tag.id === '' )
 						user.setup = true;
 					return done( null, user );
 				} else {
@@ -137,7 +137,7 @@ var Authentication = {
 	},
 	loggedIn: function( req ) {
 		// Is the user logged in?
-		if ( req.isAuthenticated() && req.user != undefined ) {
+		if ( req.isAuthenticated() && req.user !== undefined ) {
 			// Is the user active
 			if ( req.user.activated || Authentication.superAdmin( req.user.email ) ) {
 				return true;
@@ -185,7 +185,7 @@ var Authentication = {
 		return -3;
 	},
 	checkPermission: function( req, permission ) {
-		if ( req.user == undefined ) return false;
+		if ( req.user === undefined ) return false;
 		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return true;
 		return false;
 	},
@@ -207,9 +207,9 @@ var Authentication = {
 		}
 	},
 	isAPIAuthenticated: function( req, res, next ) {
-		if ( req.query.api_key == undefined ) return res.sendStatus( 403 );
+		if ( req.query.api_key === undefined ) return res.sendStatus( 403 );
 		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
-			if ( key != undefined ) return next();
+			if ( key !== undefined ) return next();
 			return res.sendStatus( 403 );
 		} );
 	},
@@ -294,17 +294,17 @@ var Authentication = {
 		if ( password.length < 8 )
 			return messages['password-err-length'];
 
-		if ( password.match( /\d/g ) == null )
+		if ( password.match( /\d/g ) === null )
 			return messages['password-err-number'];
 
-		if ( password.match( /[A-Z]/g ) == null )
+		if ( password.match( /[A-Z]/g ) === null )
 			return messages['password-err-letter-up'];
 
-		if ( password.match( /[a-z]/g ) == null )
+		if ( password.match( /[a-z]/g ) === null )
 			return messages['password-err-letter-low'];
 
 		return true;
 	}
-}
+};
 
 module.exports = Authentication;

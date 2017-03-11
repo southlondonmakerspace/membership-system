@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -35,7 +33,7 @@ app.get( '/:activation_code' , function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
-	} else if ( req.params.activation_code.match( /^\w{20}$/ ) == null ) {
+	} else if ( req.params.activation_code.match( /^\w{20}$/ ) === null ) {
 		res.redirect( '/activate' );
 	} else {
 		res.render( 'activate', { activation_code: req.params.activation_code } );
@@ -43,7 +41,7 @@ app.get( '/:activation_code' , function( req, res ) {
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
-	if ( req.body.activation_code == undefined || req.body.password == undefined ) {
+	if ( req.body.activation_code === undefined || req.body.password === undefined ) {
 			req.flash( 'danger', messages['information-ommited'] );
 			res.redirect( '/activate' );
 			return;
@@ -51,7 +49,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
-	} else if ( req.body.activation_code.match( /^\w{20}$/ ) == null ) {
+	} else if ( req.body.activation_code.match( /^\w{20}$/ ) === null ) {
 		req.flash( 'danger', messages['activation-error'] );
 		res.redirect( '/activate' );
 	} else {
@@ -59,7 +57,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 			activation_code: req.body.activation_code,
 		}, function ( err, user ) {
 
-			if ( user == null ) {
+			if ( user === null ) {
 				req.flash( 'danger', messages['activation-error'] );
 				res.redirect( app.mountpath + '/' + req.body.activation_code );
 				return;
@@ -82,9 +80,9 @@ app.post( '/', formBodyParser, function( req, res ) {
 					}
 				}, function ( status ) {
 					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', messages['activation-success'] )
+					req.flash( 'success', messages['activation-success'] );
 					res.redirect( '/profile/direct-debit' );
-				} )
+				} );
 			} );
 		} );
 	}

@@ -36,7 +36,7 @@ Permissions.find( function ( err, permissions ) {
 				break;
 		}
 	}
-} )
+} );
 
 var userSchema = mongoose.Schema( {
 	name: String,
@@ -105,7 +105,7 @@ Users.find( function( err, users ) {
 			 user.permission == 21 ||
 			 user.permission == 22 )
 			 member.permissions.push( createPermission( laser ) );
-		if ( user.gc_donation != null )
+		if ( user.gc_donation !== null )
 			member.permissions.push( createPermission( beta ) );
 		if ( user.membership_expires >= new Date() )
 			member.permissions.push( createPermission( membership ) );

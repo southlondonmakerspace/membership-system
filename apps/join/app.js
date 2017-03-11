@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -42,21 +40,20 @@ app.get( '/' , function( req, res ) {
 			firstname: '',
 			lastname: '',
 			email: ''
-		}
+		};
 		res.render( 'join', { user: req.session.join ? req.session.join : user } );
 		delete req.session.join;
 	}
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
-	if ( req.body.firstname == undefined ||
-		 req.body.lastname == undefined ||
- 		 req.body.password == undefined ||
- 		 req.body.verify == undefined ||
- 		 req.body.email == undefined ||
- 		 req.body.address == undefined ) {
+	if ( req.body.firstname === undefined ||
+		 req.body.lastname === undefined ||
+ 		 req.body.password === undefined ||
+ 		 req.body.verify === undefined ||
+ 		 req.body.email === undefined ||
+ 		 req.body.address === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
- 			req.session.join = user;
  			res.redirect( app.mountpath );
  			return;
 	}
@@ -72,19 +69,19 @@ app.post( '/', formBodyParser, function( req, res ) {
 			address: req.body.address,
 		};
 
-		if ( req.body.firstname == '' ) {
+		if ( req.body.firstname === '' ) {
 			req.flash( 'danger', messages['user-firstname'] );
 			req.session.join = user;
 			res.redirect( app.mountpath );
 			return;
 		}
-		if ( req.body.lastname == '' ) {
+		if ( req.body.lastname === '' ) {
 			req.flash( 'danger', messages['user-lastname'] );
 			req.session.join = user;
 			res.redirect( app.mountpath );
 			return;
 		}
-		if ( req.body.address == '' ) {
+		if ( req.body.address === '' ) {
 			req.flash( 'danger', messages['user-address'] );
 			req.session.join = user;
 			res.redirect( app.mountpath );
@@ -99,7 +96,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 		}
 
 		var passwordRequirements = auth.passwordRequirements( req.body.password );
-		if ( passwordRequirements != true ) {
+		if ( passwordRequirements !== true ) {
 			req.flash( 'danger', passwordRequirements );
 			req.session.join = user;
 			res.redirect( app.mountpath );
@@ -109,15 +106,15 @@ app.post( '/', formBodyParser, function( req, res ) {
 		var postcode = '';
 		var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-		if ( results != undefined ) {
+		if ( results !== undefined ) {
 			postcode = results[0];
 		}
 		postcodes.lookup( postcode, function( err, data ) {
-			if ( data != undefined ) {
+			if ( data !== undefined ) {
 				user.postcode_coordinates = {
 					lat: data.latitude,
 					lng: data.longitude,
-				}
+				};
 			} else {
 				user.postcode_coordinates = null;
 			}
@@ -131,8 +128,8 @@ app.post( '/', formBodyParser, function( req, res ) {
 
 					// Store new member
 					new Members( user ).save( function( status ) {
-						if ( status != null ) {
-							if ( status.errors != undefined ) {
+						if ( status !== null ) {
+							if ( status.errors !== undefined ) {
 								var keys = Object.keys( status.errors );
 								for ( var k in keys ) {
 									var key = keys[k];

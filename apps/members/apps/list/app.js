@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -47,14 +45,14 @@ app.get( '/', auth.isMember, function( req, res ) {
 				}
 			} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).populate( 'permissions.permission' ).exec( function( err, members ) {
 				var singlePermission;
-				if ( req.query.permission != undefined )
+				if ( req.query.permission !== undefined )
 					members = members.filter( function( member ) {
 						var matched;
 						for ( var p = 0; p < member.permissions.length; p++ )
 							if ( member.permissions[p].permission.slug == req.query.permission &&
 								 member.permissions[p].date_added <= new Date() &&
 								 ( member.permissions[p].date_expires >= new Date() ||
-								   member.permissions[p].date_expires == undefined
+								   member.permissions[p].date_expires === undefined
 							 	 )
 							) {
 								matched = true;
@@ -65,11 +63,11 @@ app.get( '/', auth.isMember, function( req, res ) {
 						return;
 					} );
 				var heading = res.locals.app.title;
-				if ( singlePermission != undefined )
+				if ( singlePermission !== undefined )
 					heading += ': "' + singlePermission.name + '"';
 				res.render( 'members', { heading: heading, permissions: allPermissions, members: members } );
 			} );
-		} )
+		} );
 	} );
 } );
 
@@ -98,7 +96,7 @@ app.get( '/graph'/*, auth.isMember*/, function( req, res ) {
 
 app.get( '/:uuid', auth.isMember, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.mountpath );
 			return;

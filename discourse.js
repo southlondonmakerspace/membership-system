@@ -1,5 +1,3 @@
-"use strict";
-
 var __config = __dirname + '/config/config.json';
 var __src = __dirname + '/src';
 var __js = __src + '/js';

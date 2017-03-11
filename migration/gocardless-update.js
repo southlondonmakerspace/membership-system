@@ -18,7 +18,7 @@ Members.find( { 'gocardless.subscription_id': { $exists: true } }, function( err
 				this.member.save( function( err ) {
 					if ( err )
 						console.log( err );
-				} )
+				} );
 			}
 		}.bind( { member: member } ) );
 	}

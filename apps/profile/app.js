@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -52,10 +50,10 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
-	if ( req.body.firstname == undefined ||
-		 req.body.lastname == undefined ||
- 		 req.body.email == undefined ||
- 		 req.body.address == undefined ) {
+	if ( req.body.firstname === undefined ||
+		 req.body.lastname === undefined ||
+ 		 req.body.email === undefined ||
+ 		 req.body.address === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.mountpath );
  			return;
@@ -64,7 +62,7 @@ app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	var postcode = '';
 	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-	if ( results != undefined ) {
+	if ( results !== undefined ) {
 		postcode = results[0];
 	}
 	postcodes.lookup( postcode, function( err, data ) {
@@ -75,17 +73,17 @@ app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 			address: req.body.address
 		};
 
-		if ( data != undefined ) {
+		if ( data !== undefined ) {
 			profile.postcode_coordinates = {
 				lat: data.latitude,
 				lng: data.longitude,
-			}
+			};
 		} else {
 			profile.postcode_coordinates = null;
 		}
 
 		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-			if ( status != null ) {
+			if ( status !== null ) {
 				var keys = Object.keys( status.errors );
 				for ( var k in keys ) {
 					var key = keys[k];
@@ -112,9 +110,9 @@ app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
-	if ( req.body.firstname == undefined ||
-		 req.body.lastname == undefined ||
- 		 req.body.telephone == undefined ) {
+	if ( req.body.firstname === undefined ||
+		 req.body.lastname === undefined ||
+ 		 req.body.telephone === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.mountpath );
  			return;
@@ -128,7 +126,7 @@ app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( r
 	};
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status != null ) {
+		if ( status !== null ) {
 			var keys = Object.keys( status.errors );
 			for ( var k in keys ) {
 				var key = keys[k];
@@ -152,9 +150,9 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
-	if ( req.body.current == undefined ||
-		 req.body.new == undefined ||
- 		 req.body.verify == undefined ) {
+	if ( req.body.current === undefined ||
+		 req.body.new === undefined ||
+ 		 req.body.verify === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.mountpath );
  			return;
@@ -168,7 +166,7 @@ app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req
 			}
 
 			var passwordRequirements = auth.passwordRequirements( req.body.new );
-			if ( passwordRequirements != true ) {
+			if ( passwordRequirements !== true ) {
 				req.flash( 'danger', passwordRequirements );
 				res.redirect( app.mountpath + '/change-password' );
 				return;

@@ -1,7 +1,3 @@
-// Add support for sessions
-
-"use strict";
-
 var session = require( 'express-session' ),
 	config = require( '../../config/config.json' ),
 	cookie = require('cookie-parser'),
@@ -30,4 +26,4 @@ module.exports =  function( app ) {
 
 	app.use( passport.initialize() );
 	app.use( passport.session() );
-}
+};

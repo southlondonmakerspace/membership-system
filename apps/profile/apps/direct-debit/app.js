@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -77,8 +75,8 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 		for ( var d = 1; d <= 28; d++ ) dates.push( d );
 
 		var next_possible_charge_date;
-		if ( req.user.gocardless.next_possible_charge_date != undefined )
-			next_possible_charge_date = req.user.gocardless.next_possible_charge_date.getDate()
+		if ( req.user.gocardless.next_possible_charge_date !== undefined )
+			next_possible_charge_date = req.user.gocardless.next_possible_charge_date.getDate();
 
 		res.render( 'setup-subscription', {
 			amount: ( req.user.gocardless.minimum ? req.user.gocardless.minimum : config.gocardless.minimum ),
@@ -134,8 +132,8 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
-	if ( req.body.amount == undefined ||
-	 	 req.body.day_of_month == undefined ) {
+	if ( req.body.amount === undefined ||
+	 	 req.body.day_of_month === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
 		return;

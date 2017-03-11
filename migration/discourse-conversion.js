@@ -28,7 +28,7 @@ Members.find( function( err, members ) {
 
 function updateDiscourseUsername( member ) {
 	Discourse.searchUsers( member.discourse.email, function( users ) {
-		if ( users != undefined && users.length == 1 ) {
+		if ( users !== undefined && users.length == 1 ) {
 			member.discourse.username = users[0].username;
 			member.save( function ( err ) {
 				if ( err )

@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -25,29 +23,29 @@ var app_config = {};
 app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 	Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		var grantAccess = false;
-		if ( member != undefined ) {
+		if ( member !== undefined ) {
 			var hasMembership = false;
 			var hasPermission = false;
 			var isDirector = false;
 
 			for ( var p = 0; p < member.permissions.length; p++ ) {
 				var permission = member.permissions[p];
-				if ( permission.permission.slug == 'director' && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) isDirector = true;
-				if ( permission.permission.slug == 'member' && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasMembership = true;
-				if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires == undefined || permission.date_expires > new Date() ) ) hasPermission = true;
+				if ( permission.permission.slug == 'director' && permission.date_added <= new Date() && ( permission.date_expires === undefined || permission.date_expires > new Date() ) ) isDirector = true;
+				if ( permission.permission.slug == 'member' && permission.date_added <= new Date() && ( permission.date_expires === undefined || permission.date_expires > new Date() ) ) hasMembership = true;
+				if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires === undefined || permission.date_expires > new Date() ) ) hasPermission = true;
 			}
 
 			if ( ( isDirector && hasPermission ) || ( hasMembership && hasPermission ) ) {
 				grantAccess = true;
 			} else {
 				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
-					if ( permission != undefined )
+					if ( permission !== undefined )
 						new Events( {
 							member: member._id,
 							permission: permission._id,
 							successful: false
 						} ).save( function( status ) {} );
-				} )
+				} );
 			}
 		}
 
@@ -59,7 +57,7 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 					permission: permission._id,
 					successful: true
 				} ).save( function( status ) {} );
-			} )
+			} );
 			res.send( JSON.stringify( {
 				name: member.fullname
 			} ) );
@@ -71,7 +69,7 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 
 app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
 	Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
-		if ( activity != undefined ) {
+		if ( activity !== undefined ) {
 			new Events( {
 				activity: activity._id,
 				action: ( req.query.action ? req.query.action : '' )
@@ -81,7 +79,7 @@ app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
 		} else {
 			res.sendStatus( 404 );
 		}
-	} )
+	} );
 } );
 
 app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
@@ -116,16 +114,16 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 					name: event.permission.name,
 					action: event.permission.event_name
 				}
-			}
+			};
 			output.events.push( output_event );
 		}
 		res.send( JSON.stringify( output ) );
-	} )
+	} );
 } );
 
 app.get( '*', function ( req, res ) {
 	res.sendStatus( 501 );
-} )
+} );
 
 module.exports = function( config ) {
 	app_config = config;

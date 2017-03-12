@@ -6,8 +6,11 @@ block prepend title
 	- activeApp = 'admin'
 
 block contents
-	form( method="post" )
-		p
-			label( for="tag" ) Tag:
-			input( type="tag", value=member.tag.id, name="tag" )#tag.form-control
-		p: button.btn.btn-primary Update
+	form( method="post" ).form-horizontal
+		.form-group
+			label( for="tag" ).col-md-2 Tag
+			.col-md-4
+				input( type="tag", value=member.tag.id, name="tag" )#tag.form-control
+		.form-group
+			.col-md-4.col-md-offset-2
+				button.btn.btn-primary Update

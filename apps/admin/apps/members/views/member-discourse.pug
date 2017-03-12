@@ -6,14 +6,21 @@ block prepend title
 	- activeApp = 'admin'
 
 block contents
-	form( method="post" )
-		p
-			label( for="username" ) Username:
-			input( type="username", value=member.discourse.username, name="username" )#username.form-control
-		p
-			label( for="activated" ) Activated:
-			input( type="checkbox", name="activated", checked=member.discourse.activated, value="true" )#activated.form-control
-		p
-			label( for="clear" ) Clear activation code:
-			input( type="checkbox", name="clear", value="true" )#clear.form-control
-		p: button.btn.btn-primary Update
+	form( method="post" ).form-horizontal
+		.form-group
+			label( for="username" ).col-md-2 Username
+			.col-md-4
+				input( type="username", value=member.discourse.username, name="username" )#username.form-control
+		.form-group
+			.col-md-4.col-md-offset-2
+				label( for="activated" )
+					input( type="checkbox", name="activated", checked=member.discourse.activated, value="true" )#activated.checkbox-control
+					|  Activated
+		.form-group
+			.col-md-4.col-md-offset-2
+				label( for="clear" )
+					input( type="checkbox", name="clear", value="true" )#clear.checkbox-control
+					|  Clear activation code
+		.form-group
+			.col-md-4.col-md-offset-2
+				button.btn.btn-primary Update

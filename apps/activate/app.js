@@ -25,7 +25,7 @@ app.get( '/' , function( req, res ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
-		res.render( 'activate' );
+		res.render( 'index' );
 	}
 } );
 
@@ -36,7 +36,7 @@ app.get( '/:activation_code' , function( req, res ) {
 	} else if ( req.params.activation_code.match( /^\w{20}$/ ) === null ) {
 		res.redirect( '/activate' );
 	} else {
-		res.render( 'activate', { activation_code: req.params.activation_code } );
+		res.render( 'index', { activation_code: req.params.activation_code } );
 	}
 } );
 

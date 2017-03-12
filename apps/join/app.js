@@ -41,8 +41,7 @@ app.get( '/' , function( req, res ) {
 			lastname: '',
 			email: ''
 		};
-		res.render( 'join', { user: req.session.join ? req.session.join : user } );
-		delete req.session.join;
+		res.render( 'join', { user: user } );
 	}
 } );
 
@@ -71,35 +70,30 @@ app.post( '/', formBodyParser, function( req, res ) {
 
 		if ( req.body.firstname === '' ) {
 			req.flash( 'danger', messages['user-firstname'] );
-			req.session.join = user;
-			res.redirect( app.mountpath );
+			res.render( 'join', { user: user } );
 			return;
 		}
 		if ( req.body.lastname === '' ) {
 			req.flash( 'danger', messages['user-lastname'] );
-			req.session.join = user;
-			res.redirect( app.mountpath );
+			res.render( 'join', { user: user } );
 			return;
 		}
 		if ( req.body.address === '' ) {
 			req.flash( 'danger', messages['user-address'] );
-			req.session.join = user;
-			res.redirect( app.mountpath );
+			res.render( 'join', { user: user } );
 			return;
 		}
 
 		if ( req.body.password != req.body.verify ) {
 			req.flash( 'danger', messages['password-err-mismatch'] );
-			req.session.join = user;
-			res.redirect( app.mountpath );
+			res.render( 'join', { user: user } );
 			return;
 		}
 
 		var passwordRequirements = auth.passwordRequirements( req.body.password );
 		if ( passwordRequirements !== true ) {
 			req.flash( 'danger', passwordRequirements );
-			req.session.join = user;
-			res.redirect( app.mountpath );
+			res.render( 'join', { user: user } );
 			return;
 		}
 
@@ -138,7 +132,6 @@ app.post( '/', formBodyParser, function( req, res ) {
 							} else if ( status.code == 11000 ) {
 								req.flash( 'danger', messages['duplicate-user'] );
 							}
-							req.session.join = user;
 							res.redirect( app.mountpath );
 						} else {
 							var message = {};

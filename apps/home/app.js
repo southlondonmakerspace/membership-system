@@ -10,7 +10,7 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', function ( req, res ) {
-	if ( ! auth.isLoggedIn ) {
+	if ( ! auth.loggedIn( req ) ) {
 		res.render( 'index' );
 	} else {
 		res.redirect( '/profile' );

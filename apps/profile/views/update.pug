@@ -7,20 +7,21 @@ block prepend title
 block contents
 	form( method="post" ).form-horizontal
 		.form-group
-			label( for="email" ).col-md-2 Email:
+			label( for="email" ).col-md-2 Email
 			.col-md-4
 				input( type="email", value=user.email, name="email", required, disabled )#email.form-control
 				span.help-block This can only be changed by an administrator.
+		hr
 		.form-group
-			label( for="firstname" ).col-md-2 First Name:
+			label( for="firstname" ).col-md-2 First Name
 			.col-md-4
 				input( type="text", value=user.firstname, name="firstname", required )#firstname.form-control
 		.form-group
-			label( for="lastname" ).col-md-2 Last Name:
+			label( for="lastname" ).col-md-2 Last Name
 			.col-md-4
 				input( type="text", value=user.lastname, name="lastname", required )#lastname.form-control
 		.form-group
-			label( for="address" ).col-md-2 Address:
+			label( for="address" ).col-md-2 Address
 			.col-md-4
 				textarea( rows="4", name="address", required )#address.form-control #{ user.address }
 		.form-group

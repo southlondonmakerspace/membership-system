@@ -1,8 +1,12 @@
-form( method="post" )
-	p
-		label( for="name" ) Name:
-		input( name="name", type="text", value=( key ? key.name : '' ), required )#name.form-control
-	p
-		label( for="key" ) Key:
-		input( name="key", type="text", value=( key ? key.key : '' ), required )#key.form-control
-	p: button.btn.btn-primary #{ action }
+form( method="post" ).form-horizontal
+	.form-group
+		label( for="name" ).col-md-2 Name:
+		.col-md-4
+			input( name="name", type="text", value=( key ? key.name : '' ), required )#name.form-control
+	.form-group
+		label( for="key" ).col-md-2 Key:
+		.col-md-4
+			input( name="key", type="text", value=( key ? key.key : '' ), required )#key.form-control
+	.form-group
+		.col-md-4.col-md-offset-2
+			button.btn.btn-primary #{ action }

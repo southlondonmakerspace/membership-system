@@ -1,0 +1,21 @@
+form( method="post" ).form-horizontal
+	.form-group
+		label( for="name" ).col-md-2 Name:
+		.col-md-4
+			input( name="name", type="text", value=( activity ? activity.name : '' ), required )#name.form-control
+	.form-group
+		label( for="event" ).col-md-2 Event:
+		.col-md-4
+			input( name="event", type="text", value=( activity ? activity.event_name : '' ) )#event.form-control
+	.form-group
+		label( for="slug" ).col-md-2 Slug:
+		.col-md-4
+			input( name="slug", type="text", value=( activity ? activity.slug : '' ), required )#slug.form-control
+	.form-group
+		.col-md-4.col-md-offset-2
+			label( for="admin_only" )
+				input( name="admin_only", type="checkbox", checked=( activity ? activity.admin_only : '' ) )#admin_only.checkbox-control
+				|  Admin only
+	.form-group
+		.col-md-4.col-md-offset-2
+			button.btn.btn-primary #{ action }

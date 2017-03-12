@@ -1,10 +1,10 @@
 extends ../../../../../src/views/base.pug
 
 block prepend title
-	- title = 'Edit Permission'
-	- heading = 'Edit "' + permission.name + '" Permission'
+	- title = 'Edit Activity'
+	- heading = 'Edit "' + activity.name + '" Activity'
 	- activeApp = 'settings'
 
 block contents
 	- action = 'Update'
-	include partials/permission-form.pug
+	include partials/form.pug

@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -34,7 +32,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
-		res.render( 'permissions', { permissions: permissions } );
+		res.render( 'index', { permissions: permissions } );
 	} );
 } );
 
@@ -42,12 +40,12 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
-	res.render( 'create-permission' );
+	res.render( 'create' );
 } );
 
 app.get( '/:slug', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
-		if ( permission == undefined ) {
+		if ( permission === undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -69,27 +67,27 @@ app.get( '/:slug', auth.isAdmin, function( req, res ) {
 				}
 			}
 		} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
-			res.render( 'permission', { permission: permission, members: members } );
+			res.render( 'item', { permission: permission, members: members } );
 		} );
 	} );
 } );
 
 app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.name == undefined ||
-		 req.body.event == undefined ||
- 		 req.body.slug == undefined ) {
+	if ( req.body.name === undefined ||
+		 req.body.event === undefined ||
+ 		 req.body.slug === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
 	}
 
-	if ( req.body.name.trim() == '' ) {
+	if ( req.body.name.trim() === '' ) {
 		req.flash( 'danger', messages['permission-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.slug.trim() == '' ) {
+	if ( req.body.slug.trim() === '' ) {
 		req.flash( 'danger', messages['permission-slug-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -117,7 +115,7 @@ app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res )
 
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
-		if ( permission == undefined ) {
+		if ( permission === undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -126,26 +124,26 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: permission.name
 		} );
-		res.render( 'edit-permission', { permission: permission } );
+		res.render( 'edit', { permission: permission } );
 	} );
 } );
 
 app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.name == undefined ||
-		 req.body.event == undefined ||
- 		 req.body.slug == undefined ) {
+	if ( req.body.name === undefined ||
+		 req.body.event === undefined ||
+ 		 req.body.slug === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
 	}
 
-	if ( req.body.name.trim() == '' ) {
+	if ( req.body.name.trim() === '' ) {
 		req.flash( 'danger', messages['permission-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.slug.trim() == '' ) {
+	if ( req.body.slug.trim() === '' ) {
 		req.flash( 'danger', messages['permission-slug-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;

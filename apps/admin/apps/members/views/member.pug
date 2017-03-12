@@ -12,8 +12,10 @@ block contents
 					a( href="/admin/members/" + member.uuid + "/update" ).btn.btn-default.pull-right
 						span.glyphicon.glyphicon-pencil
 						|  Edit Profile
-			p: img( style="border-radius: 100%", src=member.gravatar + "?s=150&d=mm&r=g" )
 			dl.dl-horizontal
+				dt Avatar
+				dd
+					img( src=member.gravatar + "?s=150&d=mm&r=g" )
 				dt First Name
 				dd  #{ member.firstname }
 				dt Last Name

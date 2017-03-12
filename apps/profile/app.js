@@ -52,7 +52,6 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 	if ( req.body.firstname === undefined ||
 		 req.body.lastname === undefined ||
- 		 req.body.email === undefined ||
  		 req.body.address === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.mountpath );
@@ -69,7 +68,6 @@ app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
 		var profile = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
-			email: req.body.email,
 			address: req.body.address
 		};
 

@@ -137,7 +137,7 @@ block contents
 				.page-header
 					h3 Payments
 				if payments.length > 0
-					table.table.table-striped.table-hover.table-condensed
+					table.table.table-striped.table-condensed
 						thead
 							tr
 								th Payment ID
@@ -151,8 +151,10 @@ block contents
 						tbody
 							each payment, p in payments
 								tr
-									td #{ payment.payment_id }
-									td #{ payment.subscription_id }
+									td
+										a( href="https://manage.gocardless.com/payments/" + payment.payment_id ) #{ payment.payment_id }
+									td 
+										a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id ) #{ payment.subscription_id }
 									td #{ moment( payment.created ).format( 'HH:mm:ss DD/MM/YYYY' ) }
 									td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
 									td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }

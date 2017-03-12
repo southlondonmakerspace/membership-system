@@ -31,4 +31,4 @@ if event.successful || ( ! event.successful && event.permission.event_unauthoris
 				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( event.happened ).fromNow() }
 		else
 			span.badge
-				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm:ss' ) }
+				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm' ) }

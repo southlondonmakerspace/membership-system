@@ -1,6 +1,6 @@
 {
-	"title": "Settings",
-	"path": "settings",
+	"title": "Reports",
+	"path": "reports",
 	"permissions": [
 		"superadmin", "admin", "director"
 	],

@@ -26,7 +26,6 @@ app.use( function( req, res, next ) {
 		name: app_config.title,
 		url: app.parent.mountpath + app.mountpath
 	} );
-	res.locals.activeApp = 'admin';
 	next();
 } );
 

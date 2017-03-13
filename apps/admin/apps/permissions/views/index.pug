@@ -3,7 +3,7 @@ extends ../../../../../src/views/base.pug
 block prepend title
 	- title = app.title
 	- heading = title
-	- activeApp = 'settings'
+	- activeApp = 'admin'
 
 block append js
 	script( type="text/javascript" ).
@@ -15,7 +15,7 @@ block append js
 
 block contents
 	if access == 'superadmin'
-		p: a( href="/settings/permissions/create" ).btn.btn-default
+		p: a( href="/admin/permissions/create" ).btn.btn-default
 			span.glyphicon.glyphicon-plus
 			|  Create Permission
 	table.table.table-striped.table-hover.table-condensed
@@ -30,7 +30,7 @@ block contents
 					th
 		tbody
 			each permission, p in permissions
-				tr( data-href="/settings/permissions/" + permission.slug, style="cursor: pointer;" )
+				tr( data-href="/admin/permissions/" + permission.slug, style="cursor: pointer;" )
 					td #{ permission.name }
 					td #{ permission.slug }
 					td #{ permission.description }
@@ -45,5 +45,5 @@ block contents
 						else
 							| No
 						if access == 'superadmin'
-							td: a( href="/settings/permissions/" + permission.slug + "/edit" )
+							td: a( href="/admin/permissions/" + permission.slug + "/edit" )
 								span.glyphicon.glyphicon-pencil

@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -34,7 +32,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	var startDate = new Date();
 	startDate.setDate( 1 );
 
-	if ( req.query.month != undefined && req.query.year != undefined ) {
+	if ( req.query.month !== undefined && req.query.year !== undefined ) {
 		startDate.setMonth( req.query.month - 1 );
 		startDate.setYear( req.query.year );
 	}
@@ -45,14 +43,14 @@ app.get( '/', auth.isMember, function( req, res ) {
 			$gte: startDate,
 			$lt: endDate
 		}
-	}
+	};
 	Events.find( search ).populate( 'member' ).populate( 'permission' ).populate( 'activity' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
 		if ( res.locals.access.indexOf( 'admin' ) == -1 ) {
 			events = events.filter( function( e ) {
-				if ( e.activity != undefined )
+				if ( e.activity !== undefined )
 					return ! e.activity.admin_only;
 				return true;
-			} )
+			} );
 		}
 		for ( var e = 1; e < events.length; e++ ) {
 			var event = events[e];
@@ -68,7 +66,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 			next: endDate,
 			searchDate: startDate
 		} );
-	} )
+	} );
 } );
 
 module.exports = function( config ) {

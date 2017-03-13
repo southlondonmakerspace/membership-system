@@ -1,6 +1,6 @@
 form( method="post" )
 	if ! partial
-		p
+		.form-group
 			label( for="permission" ) Permission:
 			select( name="permission" )#permission.form-control
 				option( disabled selected ) –
@@ -10,7 +10,7 @@ form( method="post" )
 						value=permission.slug,
 						disabled=( permission.superadmin_only && access != 'superadmin' )
 					) #{ permission.name } #{ permission.superadmin_only && access != 'superadmin' ? '– Restricted to Super Admins' : '' }
-	p
+	.form-group
 		label Start
 		br
 		if current != undefined && current.date_added
@@ -20,11 +20,11 @@ form( method="post" )
 		input( type="time", name="start_time", value=moment( date ).format( 'HH:mm' ), style="display: inline; width: auto;" ).form-control
 		| &nbsp;
 		input( type="date", name="start_date", value=moment( date ).format( 'YYYY-MM-DD' ), style="display: inline; width: auto;" ).form-control
-	p
+	.form-group
 		label Expires
 		br
 		input( type="time", name="expiry_time", value=( current && current.date_expires ? moment( current.date_expires ).format( 'HH:mm' ) : '' ), style="display: inline; width: auto;" ).form-control
 		| &nbsp;
 		input( type="date", name="expiry_date", value=( current && current.date_expires ? moment( current.date_expires ).format( 'YYYY-MM-DD' ) : '' ), style="display: inline; width: auto;" ).form-control
-	p
+	.form-group
 		button.btn.btn-primary #{ action }

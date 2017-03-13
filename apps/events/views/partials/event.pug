@@ -1,14 +1,34 @@
-if event.member && event.permission
-	a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
-	a( href="/members/?permission=" + event.permission.slug )  #{ event.permission.event_name }
-else if event.activity
-	#{ event.activity.event_name }
-else
-	#{ event.action }
+if event.successful || ( ! event.successful && event.permission.event_unauthorised )
+	li.list-group-item(
+		class=( event.activity && event.activity.admin_only ? 'list-group-item-warning' : '' )
+		class=( event.successful == false ? 'list-group-item-danger' : '' )
+		class=( event.activity ? 'list-group-item-info' : '' )
+	)
+		if event.member && event.permission
+			a( href="/members/list/" + event.member.uuid ) #{ event.member.fullname }
+			| &nbsp;
+			if event.successful
+				a( href="/members/list/?permission=" + event.permission.slug ) #{ event.permission.event_name }
+			else
+				a( href="/members/list/?permission=" + event.permission.slug ) #{ event.permission.event_unauthorised }
+		else if event.activity
+			if event.activity.slug == 'unknown-tag'
+				if event.action == 'linked'
+					| #{ event.activity.event_name }
+					small  (Linked to:&nbsp;
+						a( href="/members/list/" + event.member.uuid ) #{ event.member.fullname }
+						| )
+				else
+					| #{ event.activity.event_name }&nbsp;
+					a( href="/admin/events/link/" + event._id ).btn.btn-xs.btn-warning Link
+			else
+				| #{ event.activity.event_name.replace( '$', event.action ) }
+		else
+			| #{ event.action }
 
-if relative
-	span.badge
-		time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( event.happened ).fromNow() }
-else
-	span.badge
-		time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm:ss' ) }
+		if relative
+			span.badge
+				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( event.happened ).fromNow() }
+		else
+			span.badge
+				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm' ) }

@@ -1,0 +1,27 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeApp = 'admin'
+
+block contents
+	p: a( href="/admin/api-keys/create" ).btn.btn-default
+		span.glyphicon.glyphicon-plus
+		|  Create API Key
+	table.table.table-striped.table-condensed
+		thead
+			tr
+				th Name
+				th Key
+				th Edit
+				th Delete
+		tbody
+			each key, k in keys
+				tr
+					td #{ key.name }
+					td #{ key.key }
+					td: a( href="/admin/api-keys/" + key._id + "/edit" )
+						span.glyphicon.glyphicon-pencil
+					td: a( href="/admin/api-keys/" + key._id + "/delete" )
+						span.glyphicon.glyphicon-remove

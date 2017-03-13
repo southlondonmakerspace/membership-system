@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -34,7 +32,7 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', formBodyParser, function( req, res ) {
-	if ( req.body.email == undefined ) {
+	if ( req.body.email === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
 		return;
@@ -51,7 +49,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 					firstname: user.firstname,
 					config: config,
 					reset_url: config.audience + '/password-reset/code/' + password_reset_code
-				}
+				};
 
 				message.text = pug.renderFile( __dirname + '/email-templates/reset.text.pug', options );
 				message.html = pug.renderFile( __dirname + '/email-templates/reset.html.pug', options );
@@ -80,7 +78,7 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 } );
 
 app.post( '/change-password', formBodyParser, function( req, res ) {
-	if ( req.body.password_reset_code == undefined ) {
+	if ( req.body.password_reset_code === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
 		return;
@@ -94,7 +92,7 @@ app.post( '/change-password', formBodyParser, function( req, res ) {
 			}
 
 			var passwordRequirements = auth.passwordRequirements( req.body.password );
-			if ( passwordRequirements != true ) {
+			if ( passwordRequirements !== true ) {
 				req.flash( 'danger', passwordRequirements );
 				res.redirect( app.mountpath + '/code/' + req.body.password_reset_code );
 				return;

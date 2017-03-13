@@ -3,7 +3,7 @@ extends ../../../../../src/views/base.pug
 block prepend title
 	- title = app.title
 	- heading = permission.name
-	- activeApp = 'admin'
+	- activeApp = 'settings'
 
 block append js
 	script( type="text/javascript" ).
@@ -16,4 +16,4 @@ block append js
 block contents
 	p Members with the "#{ permission.name }" permission.
 	hr
-	include ../../members/views/partials/member-table.pug
+	include ../../../../admin/apps/members/views/partials/member-table.pug

@@ -19,9 +19,9 @@ block contents
 					if superadmin
 						span.list-group-item
 							h4.list-group-item-heading Super Admin
-								p.list-group-item-text Has super admin permission granted in the config.json file.
-								p( style="position: absolute; top: 1em; right: 1em;" )
-									small Requires edit to config.json
+							p.list-group-item-text Has super admin permission granted in the config.json file.
+							p( style="position: absolute; top: 1em; right: 1em;" )
+								small Requires edit to config.json
 					- admin_area = true
 					each permission, p in member.permissions
 						include ../../../../../src/views/partials/permission.pug

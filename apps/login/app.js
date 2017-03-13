@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../..';
 var __src = __root + '/src';
 
@@ -35,7 +33,7 @@ app.post( '/', formBodyParser, passport.authenticate( 'local', {
 	failureFlash: true,
 	successFlash: true
 } ), function (req, res ) {
-	if ( req.session.requestedUrl != undefined ) {
+	if ( req.session.requestedUrl !== undefined ) {
 		res.redirect( req.session.requestedUrl );
 		delete req.session.requestedUrl;
 	} else {

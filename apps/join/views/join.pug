@@ -18,27 +18,27 @@ block append js
 				var pw = jQuery( this ).val();
 
 				if ( pw.length < 8 ) {
-					jQuery( '.pw.len' ).removeClass( 'pass');
+					jQuery( '.pw.len' ).removeClass( 'pass' );
 				} else {
-					jQuery( '.pw.len' ).addClass( 'pass');
+					jQuery( '.pw.len' ).addClass( 'pass' );
 				}
 
 				if ( pw.match( /\d/g ) == null ) {
-					jQuery( '.pw.num' ).removeClass( 'pass');
+					jQuery( '.pw.num' ).removeClass( 'pass' );
 				} else {
-					jQuery( '.pw.num' ).addClass( 'pass');
+					jQuery( '.pw.num' ).addClass( 'pass' );
 				}
 
 				if ( pw.match( /[A-Z]/g ) == null ) {
-					jQuery( '.pw.up' ).removeClass( 'pass');
+					jQuery( '.pw.up' ).removeClass( 'pass' );
 				} else {
-					jQuery( '.pw.up' ).addClass( 'pass');
+					jQuery( '.pw.up' ).addClass( 'pass' );
 				}
 
 				if ( pw.match( /[a-z]/g ) == null ) {
-					jQuery( '.pw.low' ).removeClass( 'pass');
+					jQuery( '.pw.low' ).removeClass( 'pass' );
 				} else {
-					jQuery( '.pw.low' ).addClass( 'pass');
+					jQuery( '.pw.low' ).addClass( 'pass' );
 				}
 			} );
 		} );
@@ -48,6 +48,7 @@ block append css
 		.pw {
 			line-height: normal;
 			margin-bottom: 0.5em;
+			width: 15em;
 		}
 
 		.pw:last-child {
@@ -73,33 +74,46 @@ block contents
 			.page-header
 				h2 #{ app.title }
 			p Thanks for choosing to join #{ config.organisation }, just so you know, you have got to be over 18 to become a member.
-			form( method="post" )
-				h3 Login Details
-				p To keep things simple we use your email address as your login username.
-				p( style="max-width: 400px;" )
-					label( for="email" ) Email:
-					input( name="email", type="email", value=user.email )#email.form-control
-				p( style="max-width: 400px;" )
-					label( for="password" ) Password:
-					input( name="password", type="password" )#password.form-control
-				p( style="max-width: 400px;" )
-					label( for="verify" ) Verify password:
-					input( name="verify" type="password" )#verify.form-control
-				h3 Personal Details
-				p As a membership organisation, we are legally required to keep your name and address on record and available for inspection.
-				p( style="max-width: 400px;" )
-					label( for="firstname" ) First Name:
-					input( name="firstname", type="text", value=user.firstname )#firstname.form-control
-				p( style="max-width: 400px;" )
-					label( for="lastname" ) Last Name:
-					input( name="lastname", type="text", value=user.lastname)#lastname.form-control
-				p( style="max-width: 400px;" )
-					label( for="address" ) Address:
-					textarea( name="address" )#address.form-control #{ user.address }
+			form( method="post" ).form-horizontal
+				.form-group
+					.col-md-12
+						.page-header
+							h3 Login Details
+						p To keep things simple we use your email address as your login username.
+				.form-group
+					label( for="email" ).col-md-3 Email
+					.col-md-5
+						input( name="email", type="email", value=user.email )#email.form-control
+				.form-group
+					label( for="password" ).col-md-3 Password
+					.col-md-5
+						input( name="password", type="password" )#password.form-control
+				.form-group
+					label( for="verify" ).col-md-3 Verify password
+					.col-md-5
+						input( name="verify" type="password" )#verify.form-control
+				.form-group
+					.col-md-12
+						.page-header
+							h3 Personal Details
+						p As a membership organisation, we are legally required to keep your name and address on record and available for inspection.
+				.form-group
+					label( for="firstname" ).col-md-3 First Name
+					.col-md-5
+						input( name="firstname", type="text", value=user.firstname )#firstname.form-control
+				.form-group
+					label( for="lastname" ).col-md-3 Last Name
+					.col-md-5
+						input( name="lastname", type="text", value=user.lastname)#lastname.form-control
+				.form-group
+					label( for="address" ).col-md-3 Address
+					.col-md-5
+						textarea( name="address" )#address.form-control #{ user.address }
 				hr
-				p
-					button.btn.btn-primary Next
-						span.glyphicon.glyphicon-chevron-right
+				.form-group
+					.col-md-12
+						button.btn.btn-primary.pull-right Next
+							span.glyphicon.glyphicon-chevron-right
 		.col-md-4
 			.page-header
 				h2 Already a member?

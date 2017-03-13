@@ -1,5 +1,3 @@
-"use strict";
-
 var __config = __dirname + '/config/config.json';
 var __static = __dirname + '/static';
 var __src = __dirname + '/src';
@@ -21,7 +19,7 @@ var Payments = require( __js + '/database' ).Payments;
 console.log( "Starting..." );
 
 app.post( '/', textBodyParser, function( req, res ) {
-	if ( req.headers['webhook-signature'] != undefined && req.headers['content-type'] == 'application/json' ) {
+	if ( req.headers['webhook-signature'] !== undefined && req.headers['content-type'] == 'application/json' ) {
 		GoCardless.validateWebhook( req.headers['webhook-signature'], req.body, function( valid ) {
 			if ( valid ) {
 				var events = JSON.parse( req.body ).events;
@@ -72,7 +70,7 @@ function createPayment( event ) {
 		created: new Date( event.created_at ),
 		updated: new Date(),
 		status: event.details.cause
-	}
+	};
 
 	// Fetch amount
 	GoCardless.getPayment( event.links.payment, function( error, response ) {
@@ -81,12 +79,12 @@ function createPayment( event ) {
 			var amount = parseInt( response.amount );
 			payment.amount = amount / 100;
 		}
-		if ( event.links.subscription != undefined ) {
+		if ( event.links.subscription !== undefined ) {
 			payment.subscription_id = event.links.subscription;
 			payment.description = 'Membership';
 
 			Members.findOne( { 'gocardless.subscription_id': payment.subscription_id }, function( err, member ) {
-				if ( member != undefined ) {
+				if ( member !== undefined ) {
 					payment.member = member._id;
 				}
 				new Payments( payment ).save( function( err ) {
@@ -103,7 +101,7 @@ function createPayment( event ) {
 
 function updatePayment( event ) {
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
-		if ( payment == undefined ) return; // There's nothing left to do here.
+		if ( payment === undefined ) return; // There's nothing left to do here.
 		payment.status = event.details.cause;
 		payment.updated = new Date();
 		payment.save( function( err ) {
@@ -114,8 +112,8 @@ function updatePayment( event ) {
 
 function extendMembership( event ) {
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
-		if ( payment == undefined ) return; // There's nothing left to do here.
-		if ( payment.member != undefined ) {
+		if ( payment === undefined ) return; // There's nothing left to do here.
+		if ( payment.member !== undefined ) {
 			Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 				var foundPermission = false;
 				for ( var p = 0; p < member.permissions.length; p++ ) {
@@ -141,12 +139,12 @@ function extendMembership( event ) {
 
 function grantMembership( member ) {
 	Permissions.findOne( { slug: 'member' }, function( err, permission ) {
-		if ( permission != undefined ) {
+		if ( permission !== undefined ) {
 			var new_permission = {
 				permission: permission.id,
 				date_added: new Date(),
 				date_expires: new Date()
-			}
+			};
 			new_permission.date_expires.setDate( new_permission.date_expires.getDate() + 36 );
 
 			console.log( 'Granting "' + member.email + '" membership permission until: ' + new_permission.date_expires );

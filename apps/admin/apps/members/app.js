@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -51,7 +49,7 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 app.get( '/:uuid', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -70,7 +68,7 @@ app.get( '/:uuid', auth.isAdmin, function( req, res ) {
 
 app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', members['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -87,10 +85,10 @@ app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.firstname == undefined ||
-		 req.body.lastname == undefined ||
-		 req.body.email == undefined ||
-		 req.body.address == undefined ) {
+	if ( req.body.firstname === undefined ||
+		 req.body.lastname === undefined ||
+		 req.body.email === undefined ||
+		 req.body.address === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.parent.mountpath + app.mountpath );
  			return;
@@ -99,7 +97,7 @@ app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req,
 	var postcode = '';
 	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-	if ( results != undefined ) {
+	if ( results !== undefined ) {
 		postcode = results[0];
 	}
 	postcodes.lookup( postcode, function( err, data ) {
@@ -110,11 +108,11 @@ app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req,
 			address: req.body.address
 		};
 
-		if ( data != undefined ) {
+		if ( data !== undefined ) {
 			member.postcode_coordinates = {
 				lat: data.latitude,
 				lng: data.longitude,
-			}
+			};
 		} else {
 			member.postcode_coordinates = null;
 		}
@@ -131,7 +129,7 @@ app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req,
 
 app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -167,7 +165,7 @@ app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( 
 
 app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -185,7 +183,7 @@ app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/tag', [ auth.isAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.tag == undefined ) {
+	if ( req.body.tag === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -197,11 +195,11 @@ app.post( '/:uuid/tag', [ auth.isAdmin, formBodyParser ], function( req, res ) {
 		'tag.hashed': hashed_tag
 	};
 
-	if ( req.body.tag == '' )
+	if ( req.body.tag === '' )
 		profile['tag.hashed'] = '';
 
 	Members.update( { uuid: req.params.uuid }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status != null ) {
+		if ( status !== null ) {
 			var keys = Object.keys( status.errors );
 			for ( var k in keys ) {
 				var key = keys[k];
@@ -219,7 +217,7 @@ app.post( '/:uuid/tag', [ auth.isAdmin, formBodyParser ], function( req, res ) {
 
 app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -237,7 +235,7 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.username == undefined ) {
+	if ( req.body.username === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -246,7 +244,7 @@ app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( r
 	var member = {
 		'discourse.username': req.body.username,
 		'discourse.activated': ( req.body.activated ? true : false )
-	}
+	};
 
 	if ( req.body.clear ) member['discourse.activation_code'] = null;
 
@@ -261,7 +259,7 @@ app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( r
 
 app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -279,9 +277,9 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.mandate_id == undefined ||
-		 req.body.subscription_id == undefined ||
-	 	 req.body.minimum == undefined ) {
+	if ( req.body.mandate_id === undefined ||
+		 req.body.subscription_id === undefined ||
+	 	 req.body.minimum === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -291,7 +289,7 @@ app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( 
 		'gocardless.mandate_id': req.body.mandate_id,
 		'gocardless.subscription_id': req.body.subscription_id,
 		'gocardless.minimum': req.body.minimum
-	}
+	};
 
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', messages['gocardless-updated'] );
@@ -305,7 +303,7 @@ app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( 
 app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-			if ( member == undefined ) {
+			if ( member === undefined ) {
 				req.flash( 'warning', messages['member-404'] );
 				res.redirect( app.parent.mountpath + app.mountpath );
 				return;
@@ -327,18 +325,18 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 //////////////////////////
 
 app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.permission == undefined ||
-		 req.body.start_time == undefined ||
- 		 req.body.start_date == undefined ||
-		 req.body.expiry_time == undefined ||
-		 req.body.expiry_date == undefined ) {
+	if ( req.body.permission === undefined ||
+		 req.body.start_time === undefined ||
+ 		 req.body.start_date === undefined ||
+		 req.body.expiry_time === undefined ||
+		 req.body.expiry_date === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	Permissions.findOne( { slug: req.body.permission }, function( err, permission ) {
-		if ( permission != undefined ) {
+		if ( permission !== undefined ) {
 			if ( permission.superadmin_only && res.locals.access != 'superadmin' ) {
 				req.flash( 'danger', messages['permission-sa-only'] );
 				res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.uuid + '/permissions' );
@@ -347,11 +345,11 @@ app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req,
 
 			var new_permission = {
 				permission: permission.id
-			}
+			};
 
 			new_permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
 
-			if ( req.body.expiry_date != '' && req.body.expiry_time != '' )
+			if ( req.body.expiry_date !== '' && req.body.expiry_time !== '' )
 				new_permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
 
 			if ( new_permission.date_added >= new_permission.date_expires ) {
@@ -394,13 +392,13 @@ app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req,
 
 app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
 
-		if ( member.permissions.id( req.params.id ) == undefined ) {
+		if ( member.permissions.id( req.params.id ) === undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -428,23 +426,23 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], function( req, res ) {
-	if ( req.body.start_time == undefined ||
- 		 req.body.start_date == undefined ||
-		 req.body.expiry_time == undefined ||
-		 req.body.expiry_date == undefined ) {
+	if ( req.body.start_time === undefined ||
+ 		 req.body.start_date === undefined ||
+		 req.body.expiry_time === undefined ||
+		 req.body.expiry_date === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	Members.findOne( { uuid: req.params.uuid }).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
 
-		if ( member.permissions.id( req.params.id ) == undefined ) {
+		if ( member.permissions.id( req.params.id ) === undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -458,13 +456,13 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 
 		var permission = member.permissions.id( req.params.id );
 
-		if ( req.body.start_date != '' && req.body.start_time != '' ) {
+		if ( req.body.start_date !== '' && req.body.start_time !== '' ) {
 			permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
 		} else {
 			permission.date_added = new Date();
 		}
 
-		if ( req.body.expiry_date != '' && req.body.expiry_time != '' ) {
+		if ( req.body.expiry_date !== '' && req.body.expiry_time !== '' ) {
 			permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
 
 			if ( permission.date_added >= permission.date_expires ) {
@@ -488,13 +486,13 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 
 app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		if ( member == undefined ) {
+		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
 
-		if ( member.permissions.id( req.params.id ) == undefined ) {
+		if ( member.permissions.id( req.params.id ) === undefined ) {
 			req.flash( 'warning', messages['permission-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;

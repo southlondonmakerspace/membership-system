@@ -15,6 +15,7 @@ block contents
 			tr
 				th Name
 				th Slug
+				th Admin Only
 				if access == 'superadmin'
 					th
 		tbody
@@ -22,6 +23,7 @@ block contents
 				tr
 					td #{ activity.name }
 					td #{ activity.slug }
+					td #{ activity.admin_only ? 'Yes' : 'No' }
 					if access == 'superadmin'
 						td: a( href="/admin/activities/" + activity.slug + "/edit" )
 							span.glyphicon.glyphicon-pencil

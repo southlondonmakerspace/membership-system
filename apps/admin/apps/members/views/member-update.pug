@@ -6,18 +6,25 @@ block prepend title
 	- activeApp = 'admin'
 
 block contents
-	form( method="post" )
-		p
-			label( for="email" ) Email:
-			input( type="email", value=member.email, name="email", required )#email.form-control
-		p
-			label( for="firstname" ) First Name:
-			input( type="text", value=member.firstname, name="firstname", required )#firstname.form-control
-		p
-			label( for="lastname" ) Last Name:
-			input( type="text", value=member.lastname, name="lastname", required )#lastname.form-control
-		p
-			label( for="address" ) Address:
-			br
-			textarea( rows="4", name="address", required )#address.form-control #{ member.address }
-		p: button.btn.btn-primary Update
+	form( method="post" ).form-horizontal
+		.form-group
+			label( for="email" ).col-md-2 Email
+			.col-md-4
+				input( type="email", value=member.email, name="email", required )#email.form-control
+				span.help-block This will change the users login details.
+		hr
+		.form-group
+			label( for="firstname" ).col-md-2 First Name
+			.col-md-4
+				input( type="text", value=member.firstname, name="firstname", required )#firstname.form-control
+		.form-group
+			label( for="lastname" ).col-md-2 Last Name
+			.col-md-4
+				input( type="text", value=member.lastname, name="lastname", required )#lastname.form-control
+		.form-group
+			label( for="address" ).col-md-2 Address
+			.col-md-4
+				textarea( rows="4", name="address", required )#address.form-control #{ member.address }
+		.form-group
+			.col-md-4.col-md-offset-2
+				button.btn.btn-primary Update

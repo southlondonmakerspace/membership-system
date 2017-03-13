@@ -71,5 +71,16 @@
 	"gocardless-mandate-success": "Direct Debit mandate setup succesfully",
 	"gocardless-mandate-err": "Error setting up Direct Debit mandate",
 	"gocardless-mandate-cancelled": "Direct Debit mandate cancelled",
-	"gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate"
+	"gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate",
+
+	"event-404": "Event not found",
+	"event-not-linkable": "Tag cannot be linked",
+	"event-linked": "Tag linked to user",
+
+	"apikey-404": "API Key not found",
+	"apikey-created": "API Key created",
+	"apikey-update": "API Key updated",
+	"apikey-delete": "API Key deleted",
+	"apikey-name-required": "API Key requires a name",
+	"apikey-key-required": "API Key requires a secret key"
 }

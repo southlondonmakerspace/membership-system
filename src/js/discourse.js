@@ -1,5 +1,3 @@
-"use strict";
-
 var config = require( '../../config/config.json' );
 
 var Database = require( '../../src/js/database' ),
@@ -23,7 +21,7 @@ var Discourse = {
 		}, function ( error, response, body ) {
 			if ( response.statusCode == '200 ') {
 				var output = JSON.parse( body );
-				if ( output[0] != undefined ) {
+				if ( output[0] !== undefined ) {
 					return callback( output );
 				}
 			}
@@ -37,7 +35,7 @@ var Discourse = {
 				api_key: config.discourse.api_key
 			}
 		}, function ( error, response, body ) {
-			if ( response != undefined && response.statusCode == '200' ) {
+			if ( response !== undefined && response.statusCode == '200' ) {
 				var output = JSON.parse( body );
 				return callback( output );
 			}
@@ -74,7 +72,7 @@ var Discourse = {
 					Discourse.checkPermission( permissions[p] );
 				}
 			} );
-			} )
+		} );
 	},
 	checkPermission: function( permission ) {
 		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
@@ -84,7 +82,7 @@ var Discourse = {
 				api_key: config.discourse.api_key
 			}
 		}, function( err, req, body ) {
-			if ( body == undefined )
+			if ( body === undefined )
 				return;
 			var users = JSON.parse( body ).members;
 			var usernames = [];
@@ -93,7 +91,7 @@ var Discourse = {
 				// Loop through discourse users
 				for ( var u in users ) {
 					var user = users[u];
-					usernames.push( user.username )
+					usernames.push( user.username );
 					Discourse.checkDiscourseUser( user.username, permission );
 				}
 			}
@@ -129,7 +127,7 @@ var Discourse = {
 					]
 				} , function( err, members ) {
 					for ( var i = 0; i < members.length; i++ ) {
-						var member = members[i]
+						var member = members[i];
 						if ( usernames.indexOf( member.discourse.username ) == -1 ) {
 							Discourse.addUser( member.discourse.username, permission );
 						}
@@ -169,7 +167,7 @@ var Discourse = {
 					}
 				]
 			} ).populate( 'permissions.permission' ).exec( function( err, member ) {
-				if ( member == undefined ) {
+				if ( member === undefined ) {
 					Discourse.removeUser( username, permission );
 					return;
 				}
@@ -192,13 +190,13 @@ var Discourse = {
 			for ( var m = 0; m < members.length; m++ ) {
 				var member = members[m];
 				member.permissions = member.permissions.filter( function ( perm ) {
-					if ( perm.permission.group.order == undefined ) return false;
+					if ( perm.permission.group.order === undefined ) return false;
 					return true;
 				} ).sort( function ( a, b ) {
 					if ( a.permission.group.order > b.permission.group.order ) return 1;
 					if ( a.permission.group.order < b.permission.group.order ) return -1;
 					return 0;
-				} )
+				} );
 
 				if ( member.permissions.length >= 1 ) {
 					Discourse.setPrimaryGroup( member.discourse.username, member.permissions[0].permission );
@@ -210,7 +208,7 @@ var Discourse = {
 		api_tasks.push( function() {
 			console.log( 'Setting user "' + username + '" primary group to "' + permission.group.name + '".' );
 			Discourse.getUsername( username, function( user ) {
-				if ( user != undefined )
+				if ( user !== undefined )
 					request.put( config.discourse.url + '/admin/users/' + user.user.id + '/primary_group', {
 						form: {
 							api_username: config.discourse.api_username,

@@ -7,27 +7,25 @@ block prepend title
 block contents
 	.page-header
 		h2 #{ member.fullname }
+			if access.indexOf( 'admin' ) != -1
+				a( href="/admin/members/" + member.uuid ).btn.btn-default.pull-right Manage
 	.row
 		.col-md-2
 			p: img( style="border-radius: 100%", src=member.gravatar + '?s=150&d=mm&r=g' )
-		.col-md-2
-			if member.discourse.activated
-				p.pull-right
-					strong Discourse:
-			p.pull-right
-				strong Emergency Contact:
-		.col-md-8
-			if member.discourse.activated
-				p: a( target="_blank", href=discourse_path + '/users/' + discourse.user.username ) @#{ discourse.user.username }
-
-			p
+		.col-md-10
+			dl.dl-horizontal
+				if member.discourse.activated && discourse != undefined
+					dt Discourse
+					dd: a( target="_blank", href=discourse_path + '/users/' + discourse.user.username ) @#{ discourse.user.username }
+				dt Emergency Contact
 				if member.emergency_contact.telephone
-					| On file
+					dd On file
 				else
-					| Not held
-
+					dd Not held
 	.page-header
 		h3 Permissions
+			if access.indexOf( 'admin' ) != -1
+				a( href="/admin/members/" + member.uuid + "/permissions" ).btn.btn-default.pull-right Edit
 
 	if member.permissions.length > 0
 		.list-group

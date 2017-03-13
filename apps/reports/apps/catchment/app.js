@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -27,7 +25,6 @@ app.use( function( req, res, next ) {
 		name: app_config.title,
 		url: app.parent.mountpath + app.mountpath
 	} );
-	res.locals.activeApp = app_config.uid;
 	next();
 } );
 
@@ -41,7 +38,7 @@ app.get( '/data.json', auth.isMember, function( req, res ) {
 			var locations = [];
 			for ( var m in members ) {
 				var member = members[m];
-				if ( member.postcode_coordinates.lat != undefined )
+				if ( member.postcode_coordinates.lat !== undefined )
 					locations.push( member.postcode_coordinates );
 			}
 			locations.sort();

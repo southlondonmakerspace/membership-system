@@ -1,5 +1,3 @@
-"use strict";
-
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -38,7 +36,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.user.discourse.activated && ! req.user.discourse.activation_code ) {
 		var search = ( req.query.search ? req.query.search : req.user.email );
 		discourse.searchUsers( search, function( users ) {
-			if ( users != undefined ) {
+			if ( users !== undefined ) {
 				for ( var u in users ) {
 					users[u].avatar = config.discourse.url + users[u].avatar_template.replace( '{size}', 100 );
 					users[u].profile_link = config.discourse.url + '/users/' + users[u].username;
@@ -60,14 +58,14 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
-	if ( req.body.search == undefined ) {
+	if ( req.body.search === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
 		return;
 	}
 	if ( ! req.user.discourse.activation_code ) {
 		discourse.searchUsers( req.body.search, function( users ) {
-			if ( users != undefined ) {
+			if ( users !== undefined ) {
 				var user = users[ req.body.user ];
 				Members.findOne( { "discourse.id": user.id }, function( err, member ) {
 					if ( member ) {
@@ -98,12 +96,12 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 } );
 
 app.post( '/activate', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
-	if ( req.body.activation_code == undefined ) {
+	if ( req.body.activation_code === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
 		return;
 	}
-	if ( req.body.activation_code != '' ) {
+	if ( req.body.activation_code !== '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {
 			Members.update( { "_id": req.user._id }, { $set: {
 				"discourse.activated": true,

@@ -20,20 +20,23 @@ block contents
 							span( aria-hidden="true" ) &nbsp;&rarr;
 
 		.col-md-9
-			each event, e in events
-				if event.split || e == 0
-					if event.split
-						</ul>
-						</div>
-					<div class="panel panel-default">
-						.panel-heading
-							if now.getDay() == event.happened.getDay()
-								h3.panel-title Today
-							else
-								h3.panel-title #{ moment( event.happened ).format( 'dddd Do MMMM Y' ) }
-						<ul class="list-group">
-							li.list-group-item
+			if events.length > 0
+				each event, e in events
+					if event.split || e == 0
+						if event.split
+							</ul>
+							</div>
+						<div class="panel panel-default">
+							.panel-heading
+								if moment().diff( event.happened, 'days' ) == 0
+									- relative = true
+									h3.panel-title Today
+								else
+									h3.panel-title #{ moment( event.happened ).format( 'dddd Do MMMM Y' ) }
+							<ul class="list-group">
 								include partials/event.pug
-				else
-					li.list-group-item
+					else
 						include partials/event.pug
+			else
+				ul.list-group
+					li.list-group-item.list-group-item-default There are no events this month.

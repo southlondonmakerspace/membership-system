@@ -1,5 +1,3 @@
-"use strict";
-
 var mongoose = require( 'mongoose' ),
 	ObjectId = mongoose.Schema.ObjectId,
 	crypto = require( 'crypto' );
@@ -11,12 +9,12 @@ exports.connect = function( url ) {
 	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
 
 	return exports;
-}
+};
 
 var permissionsSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -36,13 +34,14 @@ var permissionsSchema = mongoose.Schema( {
 		name: String,
 		order: Number
 	},
-	event_name: String
+	event_name: String,
+	event_unauthorised: String
 } );
 
 var memberSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -52,7 +51,7 @@ var memberSchema = mongoose.Schema( {
 		default: function () { // pseudo uuid4
 			function s4() {
 				return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
-			};
+			}
 			return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 		}
 	},
@@ -112,7 +111,7 @@ var memberSchema = mongoose.Schema( {
 			type: String,
 			validate: {
 				validator: function ( v ) {
-					if ( v == '' ) return true;
+					if ( v === '' ) return true;
 					return /[A-z0-9]{8}/.test( v );
 				},
 				message: '{VALUE} is not a valid tag ID'
@@ -202,7 +201,7 @@ memberSchema.virtual( 'gravatar' ).get( function() {
 var paymentSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -235,7 +234,7 @@ var historicEventsSchema = mongoose.Schema( {
 var eventsSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -256,13 +255,17 @@ var eventsSchema = mongoose.Schema( {
 		type: ObjectId,
 		ref: 'Activities'
 	},
+	successful: {
+		type: Boolean,
+		default: true
+	},
 	action: String
 } );
 
 var activitySchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId() },
+		default: function() { return new mongoose.Types.ObjectId(); },
 		required: true,
 		unique: true
 	},
@@ -275,7 +278,29 @@ var activitySchema = mongoose.Schema( {
 		unique: true,
 		required: true
 	},
-	event_name: String
+	event_name: String,
+	admin_only: {
+		type: Boolean,
+		default: false
+	}
+} );
+
+var apikeySchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+	name: {
+		type: String,
+		required: true
+	},
+	key: {
+		type: String,
+		unique: true,
+		required: true
+	}
 } );
 
 exports.permissionsSchema = permissionsSchema;
@@ -284,6 +309,7 @@ exports.paymentSchema = paymentSchema;
 exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
 exports.activitySchema = activitySchema;
+exports.apikeySchema = apikeySchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
@@ -291,6 +317,7 @@ exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
 exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.Activities = mongoose.model( 'Activities', exports.activitySchema );
+exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

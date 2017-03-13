@@ -1,0 +1,21 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+
+block contents
+	.alert.alert-info Before you can activate your account, please enter your password.
+	form( method="post" action="/activate" ).form-horizontal
+		.form-group
+			label( for="activation_code" ).col-md-2 Activation code:
+			.col-md-4
+				input( name="activation_code", type="text", value=activation_code, ( activation_code ? readonly : null ) )#activation_code.form-control
+		.form-group
+			label( for="password" ).col-md-2 Password:
+			.col-md-4
+				input( name="password", type="password" )#password.form-control
+		.form-group
+			.col-md-4.col-md-offset-2
+				button.btn.btn-primary Activate
+					span.glyphicon.glyphicon-chevron-right

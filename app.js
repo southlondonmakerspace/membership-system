@@ -1,5 +1,3 @@
-"use strict";
-
 var __config = __dirname + '/config/config.json';
 var __static = __dirname + '/static';
 var __src = __dirname + '/src';
@@ -50,7 +48,7 @@ for ( var f in files ) {
 			// Parse the config into apps array
 			var output = JSON.parse( fs.readFileSync( config_file ) );
 			output.uid = files[f];
-			if ( output.priority == undefined ) output.priority = 100;
+			if ( output.priority === undefined ) output.priority = 100;
 			output.app = file + '/app.js';
 
 			// Check for sub apps directory
@@ -69,7 +67,7 @@ for ( var f in files ) {
 							// Parse the config into apps array
 							var subapp_output = JSON.parse( fs.readFileSync ( sub_config_file ) );
 							subapp_output.uid = subapps[a];
-							if ( subapp_output.priority == undefined ) subapp_output.priority = 100;
+							if ( subapp_output.priority === undefined ) subapp_output.priority = 100;
 							subapp_output.app = subapp + '/app.js';
 							output.subapps.push( subapp_output );
 						}

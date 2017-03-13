@@ -9,8 +9,13 @@ block contents
 		.col-md-6
 			.page-header
 				h2 #{ member.fullname }
-			p: img( style="border-radius: 100%", src=member.gravatar + "?s=150&d=mm&r=g" )
+					a( href="/admin/members/" + member.uuid + "/update" ).btn.btn-default.pull-right
+						span.glyphicon.glyphicon-pencil
+						|  Edit Profile
 			dl.dl-horizontal
+				dt Avatar
+				dd
+					img( src=member.gravatar + "?s=150&d=mm&r=g" )
 				dt First Name
 				dd  #{ member.firstname }
 				dt Last Name
@@ -24,9 +29,6 @@ block contents
 					dd #{ member.postcode_coordinates.lat ? member.postcode_coordinates.lat : '–' }
 					dt Longitude
 					dd #{ member.postcode_coordinates.lng ? member.postcode_coordinates.lng : '–' }
-			p: a( href="/admin/members/" + member.uuid + "/update" ).btn.btn-default
-				span.glyphicon.glyphicon-pencil
-				|  Edit
 		if access == 'superadmin'
 			.col-md-6
 				.page-header
@@ -42,6 +44,10 @@ block contents
 		.col-md-6
 			.page-header
 				h3 Membership System
+					if access == 'superadmin'
+						a( href="/admin/members/" + member.uuid + "/activation" ).btn.btn-default.pull-right
+							span.glyphicon.glyphicon-pencil
+							|  Edit Activation
 			dl.dl-horizontal
 				dt UUID
 				dd #{ member.uuid }
@@ -61,27 +67,26 @@ block contents
 					dd #{ member.password_reset_code ? member.password_reset_code + ' ' + audience + '/password-reset/' + member.password_reset_code : '–' }
 					dt Password tries
 					dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries > password_tries ? ' – Locked' : '' }
-			if access == 'superadmin'
-				p: a( href="/admin/members/" + member.uuid + "/activation" ).btn.btn-default
-					span.glyphicon.glyphicon-pencil
-					|  Edit
 		.col-md-6
 			.page-header
 				h3 Tag
+					a( href="/admin/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
+						span.glyphicon.glyphicon-pencil
+						|  Edit Tag
 			dl.dl-horizontal
 				dt Tag
 				dd #{ member.tag.id ? member.tag.id : '–' }
 				if access == 'superadmin'
 					dt Hashed Tag
 					dd #{ member.tag.hashed ? member.tag.hashed : '–' }
-			p: a( href="/admin/members/" + member.uuid + "/tag" ).btn.btn-default
-				span.glyphicon.glyphicon-pencil
-				|  Edit
 	if access == 'superadmin'
 		.row
 			.col-md-6
 				.page-header
 					h3 Discourse
+						a( href="/admin/members/" + member.uuid + "/discourse" ).btn.btn-default.pull-right
+							span.glyphicon.glyphicon-pencil
+							|  Edit Discourse
 				dl.dl-horizontal
 					dt Username
 					dd #{ member.discourse.username ? member.discourse.username : '–' }
@@ -89,12 +94,12 @@ block contents
 					dd #{ member.discourse.activated ? 'Yes' : 'No' }
 					dt Activation Code
 					dd #{ member.discourse.activation_code ? member.discourse.activation_code : '–' } #{ member.discourse.activation_code ? audience + '/profile/discourse?code=' + member.discourse.activation_code : '' }
-				p: a( href="/admin/members/" + member.uuid + "/discourse" ).btn.btn-default
-					span.glyphicon.glyphicon-pencil
-					|  Edit
 			.col-md-6
 				.page-header
 					h3 GoCardless
+						a( href="/admin/members/" + member.uuid + "/gocardless" ).btn.btn-default.pull-right
+							span.glyphicon.glyphicon-pencil
+							|  Edit GoCardless
 				dl.dl-horizontal
 					dt Mandate ID
 					if member.gocardless.mandate_id
@@ -107,37 +112,34 @@ block contents
 					else
 						dd –
 					dt Minimum
-					dd £#{ member.gocardless.minimum ? member.gocardless.minimum : '–' }
+					dd #{ member.gocardless.minimum ? '£' + member.gocardless.minimum : '–' }
 					if member.gocardless.next_possible_charge_date
 						dt Earliest charge date
 						dd #{ moment( member.gocardless.next_possible_charge_date ).format( 'DD/MM/YYYY' ) }
-				p: a( href="/admin/members/" + member.uuid + "/gocardless" ).btn.btn-default
-					span.glyphicon.glyphicon-pencil
-					|  Edit
 	.row
 		.col-md-12
 			.page-header
 				h3 Permissions
+					a( href="/admin/members/" + member.uuid + "/permissions" ).btn.btn-default.pull-right
+						span.glyphicon.glyphicon-pencil
+						|  Edit Permissions
 			if member.permissions.length > 0 || superadmin
 				.list-group
 					if superadmin
 						span.list-group-item
-						h4.list-group-item-heading Super Admin
+							h4.list-group-item-heading Super Admin
 							p.list-group-item-text Has super admin permission granted in the config.json file.
 					each permission, p in member.permissions
 						include ../../../../../src/views/partials/permission.pug
 			else
 				p Member has no permissions
-			p: a( href="/admin/members/" + member.uuid + "/permissions" ).btn.btn-default
-				span.glyphicon.glyphicon-pencil
-				|  Edit
 	if access == 'superadmin'
 		.row
 			.col-md-12
 				.page-header
 					h3 Payments
 				if payments.length > 0
-					table.table.table-striped.table-hover.table-condensed
+					table.table.table-striped.table-condensed
 						thead
 							tr
 								th Payment ID
@@ -151,8 +153,10 @@ block contents
 						tbody
 							each payment, p in payments
 								tr
-									td #{ payment.payment_id }
-									td #{ payment.subscription_id }
+									td
+										a( href="https://manage.gocardless.com/payments/" + payment.payment_id ) #{ payment.payment_id }
+									td 
+										a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id ) #{ payment.subscription_id }
 									td #{ moment( payment.created ).format( 'HH:mm:ss DD/MM/YYYY' ) }
 									td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
 									td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }

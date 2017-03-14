@@ -1,5 +1,0 @@
-{
-	"title": "Count",
-	"path": "count",
-	"permissions": [ "superadmin", "director" ]
-}

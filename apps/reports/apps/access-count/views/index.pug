@@ -22,16 +22,21 @@ block contents
 
 		.col-md-9
 			if ( members != undefined && members.length > 0 )
-				ul.list-group: li.list-group-item.list-group-item-default Days the door was opened in #{ moment( searchDate ).format( 'MMMM' ) } #{ moment( searchDate ).format( 'Y' ) } by user.
+				ul.list-group: li.list-group-item.list-group-item-default Number of days the door was unlocked per member out of #{ moment( searchDate ).daysInMonth() } days in #{ moment( searchDate ).format( 'MMMM' ) } #{ moment( searchDate ).format( 'Y' ) }.
 				table.table.table-striped.table-condensed
 					thead
 						tr
 							th Name
 							th Count
+							th Visualisation
 					tbody
 						each member, m in members
 							tr
 								td: a( href="/members/list/" + member.member.uuid ) #{ member.member.fullname }
 								td #{ member.count }
+								td
+									.progress( style="margin-bottom: 0;" )
+										- value = ( member.count / moment( searchDate ).daysInMonth() ) * 100
+										.progress-bar( role="progresbar", style="width:" + value + "%;" )
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( searchDate ).format( 'MMMM' ) } #{ moment( searchDate ).format( 'Y' ) }.

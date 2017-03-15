@@ -18,9 +18,8 @@ nav.navbar.navbar-default
 										li
 											a( href="/" + app.path ) #{ app.title }
 									each subapp, s in subapps[app.uid]
-										unless subapp.hidden
-											li
-												a( href="/" + app.path + "/" + subapp.path ) #{ subapp.title }
+										li
+											a( href="/" + app.path + "/" + subapp.path ) #{ subapp.title }
 					else
 						li( class=( activeApp == app.path ? "active" : "" ) )
 							a( href="/" + app.path ) #{ app.title }

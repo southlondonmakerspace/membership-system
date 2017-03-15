@@ -2,16 +2,22 @@ extends ../../../../../src/views/base.pug
 
 block prepend title
 	- title = app.title
-	- heading = 'Activate Discourse Link'
 
 block contents
-	p We've sent an activation link to your Discourse Private Messages
-	p Please click the link or copy the code to link your accounts.
+	.row
+		.col-md-3
+			- page = 'discourse'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 Activate Discourse Link
+			p We've sent an activation link to your Discourse Private Messages
+			p Please click the link or copy the code to link your accounts.
 
-	form( method="post", action="/profile/discourse/activate" )
-		p
-			label( for="activation_code" ) Activation code:
-			input( name="activation_code" type="text" value=activation_code )#activation_code.form-control( class=(  activation_code ? 'readonly' : '' ) )
-		p
-			button.btn.btn-primary Activate
-				span.glyphicon.glyphicon-chevron-right
+			form( method="post", action="/profile/discourse/activate" )
+				p
+					label( for="activation_code" ) Activation code:
+					input( name="activation_code" type="text" value=activation_code )#activation_code.form-control( class=(  activation_code ? 'readonly' : '' ) )
+				p
+					button.btn.btn-primary Activate
+						span.glyphicon.glyphicon-chevron-right

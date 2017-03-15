@@ -4,5 +4,6 @@
 	"permissions": [
 		"member"
 	],
-	"priority": 1
+	"priority": 1,
+	"hidden": true
 }

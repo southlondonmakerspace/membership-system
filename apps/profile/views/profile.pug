@@ -2,42 +2,21 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = app.title
-	- heading = "Hello " + user.firstname + "..."
 
 block contents
 	.row
+		.col-md-3
+			- page = 'home'
+			include partials/sidebar.pug
 		.col-md-2
 			img( style="border-radius: 100%", src=user.gravatar + "?s=150&d=mm&r=g" )
-		.col-md-10
-			dl.dl-horizontal
+		.col-md-7
+			.page-header
+				h3 Hello #{ user.firstname }...
+			dl
 				dt Name
-				dd #{ user.fullname }
+				dd( style="margin-bottom: 1em;" ) #{ user.fullname }
 				dt Email
-				dd #{ user.email }
+				dd( style="margin-bottom: 1em;" ) #{ user.email }
 				dt Address
 				dd #{ user.address.replace( /\r\n/g, ", " ) }
-			.page-header
-				h3 Account
-				a( href="/profile/update" ).btn.btn-default
-					span.glyphicon.glyphicon-pencil
-					|  Edit Profile
-				| &nbsp;
-				a( href="/profile/change-password" ).btn.btn-default
-					span.glyphicon.glyphicon-lock
-					|  Change Password
-				| &nbsp;
-				a( href="http://en.gravatar.com/", target="_blank" ).btn.btn-default
-					span.glyphicon.glyphicon-camera
-					|  Avatar
-				| &nbsp;
-				a( href="/profile/emergency-contact" ).btn.btn-default
-					span.glyphicon.glyphicon-exclamation-sign
-					|  Emergency Contact
-				| &nbsp;
-				a( href="/profile/direct-debit" ).btn.btn-default
-					span.glyphicon.glyphicon-piggy-bank
-					|  Direct Debit
-				| &nbsp;
-				a( href="/profile/discourse" ).btn.btn-default
-					span.glyphicon.glyphicon-book
-					|  Link Discourse

@@ -2,11 +2,18 @@ extends ../../../../../src/views/base.pug
 
 block prepend title
 	- title = 'Direct Debit'
-	- heading = 'Cancel Subscription'
 
 block contents
-	p Are you sure you want to cancel your subscription?
-	form( method="post" )
-		p
-			button( role="button").btn.btn-danger Yes, cancel my subscription
-			a( href="/profile/direct-debit" ).btn.btn-default No
+	.row
+		.col-md-3
+			- page = 'direct-debit'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 Cancel Subscription
+			p Are you sure you want to cancel your subscription?
+				form( method="post" )
+					p
+						button( role="button").btn.btn-danger Yes, cancel my subscription
+						| 
+						a( href="/profile/direct-debit" ).btn.btn-default No

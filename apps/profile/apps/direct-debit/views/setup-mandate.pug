@@ -2,14 +2,17 @@ extends ../../../../../src/views/base.pug
 
 block prepend title
 	- title = 'Direct Debit'
-	- heading = title
 
 block contents
-	p The first step to becoming an active member is to setup a Direct Debit mandate with our payment provider, GoCardless.
-
-	.page-header
-		h3 Mandate
-
-	p When you select to setup your mandate by clicking the button below, we will redirect you to our payment provider's secure form to collect your details without revealing them to us, this keeps your details secure in the hands of experts.
-
-	a( href="/profile/direct-debit/setup-mandate" ).btn.btn-primary Setup Mandate
+	.row
+		.col-md-3
+			- page = 'direct-debit'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 Direct Debit
+			p The first step to becoming an active member is to setup a Direct Debit mandate with our payment provider, GoCardless.
+			.page-header
+				h3 Mandate
+			p When you select to setup your mandate by clicking the button below, we will redirect you to our payment provider's secure form to collect your details without revealing them to us, this keeps your details secure in the hands of experts.
+			a( href="/profile/direct-debit/setup-mandate" ).btn.btn-primary Setup Mandate

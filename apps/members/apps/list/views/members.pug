@@ -57,7 +57,7 @@ block contents
 			li: a( href="/members" ) Show all
 			li( role="separator" ).divider
 			each permission, p in permissions
-				li: a( href="/members/list?permission={{ permission.slug }}" ) #{ permission.name }
+				li: a( href="/members/list?permission=" + permission.slug ) #{ permission.name }
 	hr
 	p Members: #{ members.length }
 	hr

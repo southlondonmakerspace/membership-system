@@ -1,0 +1,5 @@
+{
+	"title": "Events",
+	"path": "events",
+	"permissions": [ "superadmin", "director" ]
+}

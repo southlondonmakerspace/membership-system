@@ -4,6 +4,48 @@ block prepend title
 	- title = app.title
 	- activeapp = 'reports'
 
+block append js
+	script( src="/js/chart.js" )
+	script
+		| var data = !{ JSON.stringify( data ) };
+		| var labels = !{ JSON.stringify( labels ) };
+	script.
+		jQuery( document ).ready( function() {
+			var canvas = jQuery( '#chart' );
+			var chart = new Chart( canvas, {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [{
+						label: 'Unique member visits',
+						data: data,
+						backgroundColor: 'rgba( 255, 0, 0, .2 )',
+						borderColor: 'rgba( 255, 0, 0, .8 )',
+						borderWidth: 1
+					}]
+				},
+				options: {
+					legend: {
+						display: false
+					},
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}],
+						xAxes: [{
+							type: 'time',
+							time: {
+								unit: 'week',
+								tooltipFormat: 'ddd Do MMM'
+							}
+						}]
+					}
+				}
+			} );
+		} );
+
 block contents
 	.row
 		.col-md-3
@@ -22,6 +64,7 @@ block contents
 		.col-md-9
 			if ( result != undefined && result.length > 0 )
 				ul.list-group: li.list-group-item.list-group-item-default Number of unique members using "#{ slug }" on each day in #{ moment( start ).format( 'YYYY' ) }.
+				canvas#chart
 				table.table.table-striped.table-condensed
 					thead
 						tr

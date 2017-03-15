@@ -30,17 +30,19 @@ function templateLocals( req, res, next ) {
 			if ( app.subapps.length > 0 ) {
 				for ( var s in app.subapps ) {
 					var subapp = app.subapps[s];
-					if ( subapp.permissions !== undefined && subapp.permissions != [] ) {
-						if ( req.user ) {
-							for ( var p in subapp.permissions ) {
-								if ( req.user.quickPermissions.indexOf( subapp.permissions[p] ) != -1 ) {
-									res.locals.subapps[ app.uid ].push( subapp );
-									break;
+					if ( subapp.hidden !== true ) {
+						if ( subapp.permissions !== undefined && subapp.permissions != [] ) {
+							if ( req.user ) {
+								for ( var p in subapp.permissions ) {
+									if ( req.user.quickPermissions.indexOf( subapp.permissions[p] ) != -1 ) {
+										res.locals.subapps[ app.uid ].push( subapp );
+										break;
+									}
 								}
 							}
+						} else if ( req.user ) {
+							res.locals.subapps[ app.uid ].push( subapp );
 						}
-					} else if ( req.user ) {
-						res.locals.subapps[ app.uid ].push( subapp );
 					}
 				}
 			}

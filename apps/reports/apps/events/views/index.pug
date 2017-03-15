@@ -1,0 +1,36 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeapp = 'reports'
+
+block contents
+	.panel.panel-default
+		.panel-body This part of the system is very basic, there are many reports but modifying the URL is necessary to select the permission you are querying.
+	ul.list-group
+		li.list-group-item
+			h4.list-group-item-heading Days of week (Year)
+			p.list-group-item-text Counts unique members using a permission for each day of the week in a year.
+			p.list-group-item-text Example: 
+				a( href="/reports/events/door/days-of-week/2016" ) /door/days-of-week/2016
+		li.list-group-item
+			h4.list-group-item-heading Days of week (Month)
+			p.list-group-item-text Counts unique members using a permission for each day of the week in a month.
+			p.list-group-item-text Example: 
+				a( href="/reports/events/door/days-of-week/2016/12" ) /door/days-of-week/2016/12 
+		li.list-group-item
+			h4.list-group-item-heading Days
+			p.list-group-item-text Counts unique members using a permission for each day of year.
+			p.list-group-item-text Example: 
+				a( href="/reports/events/door/days/2016" ) /door/days/2016
+		li.list-group-item
+			h4.list-group-item-heading Members (Year)
+			p.list-group-item-text Counts how many unique days a members has used a permission in a year.
+			p.list-group-item-text Example: 
+				a( href="/reports/events/door/members/2016" ) /door/members/2016
+		li.list-group-item
+			h4.list-group-item-heading Members (Month)
+			p.list-group-item-text Counts how many unique days a members has used a permission in a month.
+			p.list-group-item-text Example: 
+				a( href="/reports/events/door/members/2016" ) /door/members/2016/12

@@ -7,20 +7,20 @@ block prepend title
 block contents
 	.row
 		.col-md-3
-			h3( style="margin-bottom: 0; font-weight: normal;" ) #{ app.title }:
-			h1( style="margin-top: 0; margin-bottom: 0;" ) #{ moment( searchDate ).format( 'Y' ) }
+			h3( style="margin-bottom: 0; font-weight: normal;" ) Members:
+			h1( style="margin-top: 0; margin-bottom: 0;" ) #{ moment( start ).format( 'Y' ) }
 			nav( aria-label="..." )
 				ul.pager
 					li.previous
-						a( href="/reports/count/year/" + moment( previous ).format( 'Y' ) )
+						a( href="/reports/events/" + slug + "/members/" + moment( previous ).format( 'Y' ) )
 							span( aria-hidden="true" ) &larr;&nbsp;
 							| #{ moment( previous ).format( 'Y' ) }
 					li.next
-						a( href="/reports/count/year/" + moment( next ).format( 'Y' ) ) #{ moment( next ).format( 'Y' ) }
+						a( href="/reports/events/" + slug + "/members/" + moment( next ).format( 'Y' ) ) #{ moment( next ).format( 'Y' ) }
 							span( aria-hidden="true" ) &nbsp;&rarr;
 		.col-md-9
 			if ( members != undefined && members.length > 0 )
-				ul.list-group: li.list-group-item.list-group-item-default Days the door was opened in #{ moment( searchDate ).format( 'Y' ) } by user.
+				ul.list-group: li.list-group-item.list-group-item-default Days "#{ slug }" was used in #{ moment( start ).format( 'Y' ) } by user.
 				table.table.table-striped.table-condensed
 					thead
 						tr
@@ -32,4 +32,4 @@ block contents
 								td: a( href="/members/list/" + member.member.uuid ) #{ member.member.fullname }
 								td #{ member.count }
 			else
-				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( searchDate ).format( 'MMMM' ) } #{ moment( searchDate ).format( 'Y' ) }.
+				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( start ).format( 'MMMM' ) } #{ moment( start ).format( 'Y' ) }.

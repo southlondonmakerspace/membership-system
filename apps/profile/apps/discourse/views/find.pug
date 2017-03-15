@@ -5,25 +5,30 @@ block prepend title
 	- heading = 'Search'
 
 block contents
-	p Search for your Discourse credentials address to start linking your account.
-
-	form( method="get", action="/profile/discourse", style="max-width: 300px;" )
-		p
-			label( for="search" ) Search:
-			input( type="text", placeholder="Discourse name, username or email...", name="search" )#search.form-control
-		p
-			button.btn.btn-primary Search
-
-	if users
-		.page-header
-			h3 Results
-		form( method="post", action="/profile/discourse/link" )
-			input( type="hidden", value=search, name="search" )
-			each user, u in users
-				.col-md-2
-					p
-						img( style="border-radius: 100%", src=user.avatar )
-					p @
-						a( href=user.profile_link, target="_blank") #{ user.username }
-					p
-						button.btn.btn-default( name="user", value="{{ loop.index0 }}" ) Link
+	.row
+		.col-md-3
+			- page = 'discourse'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 Search
+			p Search for your Discourse credentials address to start linking your account.
+			form( method="get", action="/profile/discourse", style="max-width: 300px;" )
+				p
+					label( for="search" ) Search:
+					input( type="text", placeholder="Discourse name, username or email...", name="search" )#search.form-control
+				p
+					button.btn.btn-primary Search
+			if users
+				.page-header
+					h3 Results
+				form( method="post", action="/profile/discourse/link" )
+					input( type="hidden", value=search, name="search" )
+					each user, u in users
+						.col-md-2
+							p
+								img( style="border-radius: 100%", src=user.avatar )
+							p @
+								a( href=user.profile_link, target="_blank") #{ user.username }
+							p
+								button.btn.btn-default( name="user", value=u ) Link

@@ -18,7 +18,7 @@ block contents
 				center: { lat: 51.4511044, lng: -0.1018774 },
 				zoom: 12
 			});
-			jQuery.getJSON('/admin/catchment/data.json', function( data ) {
+			jQuery.getJSON('/reports/catchment/data.json', function( data ) {
 				for( var d in data ) {
 					var pos = new google.maps.LatLng( data[d].lat, data[d].lng );
 					heatmapData.push( pos );

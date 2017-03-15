@@ -1,5 +1,6 @@
 {
 	"title": "Setup",
 	"path": "setup",
-	"priority": 3
+	"priority": 3,
+	"hidden": true
 }

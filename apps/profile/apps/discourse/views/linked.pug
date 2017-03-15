@@ -2,11 +2,17 @@ extends ../../../../../src/views/base.pug
 
 block prepend title
 	- title = app.title
-	- heading = title
 
 block contents
-	p: img( style="border-radius: 100%", src=discourse_user.avatar )
-	p Hello there
-		a( target="_blank", href=discourse_path + "/users/" + discourse_user.user.username)  @#{ discourse_user.user.username }
-		| .
-	p Your account is linked with Discourse.
+	.row
+		.col-md-3
+			- page = 'discourse'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 Discourse
+			p: img( style="border-radius: 100%", src=discourse_user.avatar )
+			p Hello there
+				a( target="_blank", href=discourse_path + "/users/" + discourse_user.user.username)  @#{ discourse_user.user.username }
+				| .
+			p Your account is linked with Discourse.

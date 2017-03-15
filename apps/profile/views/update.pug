@@ -13,6 +13,15 @@ block contents
 				h3 Edit Profile
 			form( method="post" ).form-horizontal
 				.form-group
+					label.col-md-3 Avatar
+					.col-md-5
+						img( style="border-radius: 100%", src=user.gravatar + "?s=50&d=mm&r=g" )
+						span.help-block Your avatar is managed at
+							| 
+							a( href="https://gravatar.com", target="_blank" ) Gravatar.com
+							|  using your email address #{ user.email }
+				hr
+				.form-group
 					label( for="email" ).col-md-3 Email
 					.col-md-5
 						input( type="email", value=user.email, name="email", required, disabled )#email.form-control

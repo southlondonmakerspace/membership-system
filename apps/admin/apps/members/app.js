@@ -163,7 +163,7 @@ app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( 
 // Member Tag
 /////////////
 
-app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );
@@ -182,7 +182,7 @@ app.get( '/:uuid/tag', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/tag', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/tag', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	if ( req.body.tag === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath + app.mountpath );

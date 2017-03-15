@@ -10,6 +10,10 @@ case payment.status
 	when 'mandate_cancelled'
 		span.label.label-danger( title=payment.status ) Cancelled
 	when 'bank_account_closed'
-		span.label.label-danger( title=payment.status ) Cancelled
+		span.label.label-danger( title=payment.status ) Account Closed
+	when 'refer_to_payer'
+		span.label.label-danger( title=payment.status ) Refer to Payer
+	when 'direct_debit_not_enabled'
+		span.label.label-danger( title=payment.status ) Direct Debit Not Enabled
 	default
 		span.label.label-default( title=payment.status ) #{ payment.status }

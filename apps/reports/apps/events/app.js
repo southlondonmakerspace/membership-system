@@ -31,11 +31,11 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	res.render( 'index' );
 } );
 
-app.get( '/:slug/members/:year/:month', auth.isMember, function( req, res ) {
+app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.month !== undefined && req.params.year !== undefined ) {
@@ -108,7 +108,7 @@ app.get( '/:slug/members/:year/:month', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/members/:year', auth.isMember, function( req, res ) {
+app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
@@ -176,7 +176,7 @@ app.get( '/:slug/members/:year', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days/:year?', auth.isMember, function( req, res ) {
+app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
@@ -250,7 +250,7 @@ app.get( '/:slug/days/:year?', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days-of-week/:year?', auth.isMember, function( req, res ) {
+app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
@@ -322,7 +322,7 @@ app.get( '/:slug/days-of-week/:year?', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days-of-week/:year/:month', auth.isMember, function( req, res ) {
+app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {

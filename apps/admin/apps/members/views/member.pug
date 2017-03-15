@@ -9,9 +9,10 @@ block contents
 		.col-md-6
 			.page-header
 				h2 #{ member.fullname }
-					a( href="/admin/members/" + member.uuid + "/update" ).btn.btn-default.pull-right
-						span.glyphicon.glyphicon-pencil
-						|  Edit Profile
+					if access == 'superadmin'
+						a( href="/admin/members/" + member.uuid + "/update" ).btn.btn-default.pull-right
+							span.glyphicon.glyphicon-pencil
+							|  Edit Profile
 			dl.dl-horizontal
 				dt Avatar
 				dd
@@ -70,9 +71,10 @@ block contents
 		.col-md-6
 			.page-header
 				h3 Tag
-					a( href="/admin/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
-						span.glyphicon.glyphicon-pencil
-						|  Edit Tag
+					if access == 'superadmin'
+						a( href="/admin/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
+							span.glyphicon.glyphicon-pencil
+							|  Edit Tag
 			dl.dl-horizontal
 				dt Tag
 				dd #{ member.tag.id ? member.tag.id : '–' }

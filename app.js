@@ -9,10 +9,14 @@ var body = require( 'body-parser' ),
 	config = require( __config ),
 	database = require( __js + '/database' ).connect( config.mongo ),
 	express = require( 'express' ),
+	helmet = require( 'helmet' ),
 	flash = require( 'express-flash' ),
 	app = express(),
 	http = require( 'http' ).Server( app ),
 	fs = require( 'fs' );
+
+// Use helmet
+app.use( helmet() );
 
 var apps = [];
 

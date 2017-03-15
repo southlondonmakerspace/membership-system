@@ -18,7 +18,7 @@ if members.length > 0
 					th Profile
 					th Discourse
 					th GoCardless
-				th Tag
+					th Tag
 				th Permissions
 		tbody
 			each member, m in members
@@ -36,8 +36,8 @@ if members.length > 0
 							span.glyphicon.glyphicon-book
 						td: a.btn.btn-sm( title="Edit GoCardless" href="/admin/members/" + member.uuid + "/gocardless", class=( member.discourse.activated ? 'btn-success' : 'btn-default' ) )
 							span.glyphicon.glyphicon-piggy-bank
-					td: a.btn.btn-sm( title="Edit Tag" href="/admin/members/" + member.uuid + "/tag", class=( member.tag.id ? 'btn-success' : 'btn-default' ) )
-						span.glyphicon.glyphicon-credit-card
+						td: a.btn.btn-sm( title="Edit Tag" href="/admin/members/" + member.uuid + "/tag", class=( member.tag.id ? 'btn-success' : 'btn-default' ) )
+							span.glyphicon.glyphicon-credit-card
 					td: a.btn.btn-sm.btn-default( title="Edit Permissions" href="/admin/members/" + member.uuid + "/permissions" )
 						span.glyphicon.glyphicon-tag
 else

@@ -31,11 +31,11 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	res.render( 'index' );
 } );
 
-app.get( '/:slug/members/:year/:month', auth.isMember, function( req, res ) {
+app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.month !== undefined && req.params.year !== undefined ) {
@@ -108,7 +108,7 @@ app.get( '/:slug/members/:year/:month', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/members/:year', auth.isMember, function( req, res ) {
+app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
@@ -176,10 +176,9 @@ app.get( '/:slug/members/:year', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days/:year?', auth.isMember, function( req, res ) {
+app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-		console.log( req.params.year );
 		if ( req.params.year !== undefined ) {
 			start.setFullYear( parseInt( req.params.year ) );
 		}
@@ -232,19 +231,26 @@ app.get( '/:slug/days/:year?', auth.isMember, function( req, res ) {
 				$sort: { day: 1 }
 			}
 		], function ( err, result ) {
-			console.log( result );
+			var labels = [];
+			var data = [];
+			for ( var r in result ) {
+				labels.push( moment( start ).dayOfYear( result[r].day ) );
+				data.push( result[r].count );
+			}
 			res.render( 'days', {
 				result: result,
 				previous: previous,
 				next: end,
 				start: start,
-				slug: req.params.slug
+				slug: req.params.slug,
+				data: data,
+				labels: labels
 			} );
 		} );
 	} );
 } );
 
-app.get( '/:slug/days-of-week/:year?', auth.isMember, function( req, res ) {
+app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
@@ -300,19 +306,23 @@ app.get( '/:slug/days-of-week/:year?', auth.isMember, function( req, res ) {
 				$sort: { day: 1 }
 			}
 		], function ( err, result ) {
-			console.log( result );
+			var data = {};
+			for ( var r in result ) {
+				data[ moment( start ).day( result[r].day - 1 ).format( 'dddd' ) ] = result[r].count;
+			}
 			res.render( 'days-of-week-year', {
 				result: result,
 				previous: previous,
 				next: end,
 				start: start,
-				slug: req.params.slug
+				slug: req.params.slug,
+				data: data
 			} );
 		} );
 	} );
 } );
 
-app.get( '/:slug/days-of-week/:year/:month', auth.isMember, function( req, res ) {
+app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
@@ -372,13 +382,17 @@ app.get( '/:slug/days-of-week/:year/:month', auth.isMember, function( req, res )
 				$sort: { day: 1 }
 			}
 		], function ( err, result ) {
-			console.log( result );
+			var data = {};
+			for ( var r in result ) {
+				data[ moment( start ).day( result[r].day - 1 ).format( 'dddd' ) ] = result[r].count;
+			}
 			res.render( 'days-of-week-month', {
 				result: result,
 				previous: previous,
 				next: end,
 				start: start,
-				slug: req.params.slug
+				slug: req.params.slug,
+				data: data
 			} );
 		} );
 	} );

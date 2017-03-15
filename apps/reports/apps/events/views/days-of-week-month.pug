@@ -3,7 +3,40 @@ extends ../../../../../src/views/base.pug
 block prepend title
 	- title = app.title
 	- activeapp = 'reports'
-
+	
+block append js
+	script( src="/js/chart.js" )
+	script var data = !{ JSON.stringify( data ) };
+	script.
+		jQuery( document ).ready( function() {
+			var canvas = jQuery( '#chart' );
+			var chart = new Chart( canvas, {
+				type: 'horizontalBar',
+				data: {
+					labels: Object.keys( data ),
+					datasets: [{
+						label: 'Unique member visits',
+						data: Object.values( data ),
+						backgroundColor: 'rgba( 255, 0, 0, .2 )',
+						borderColor: 'rgba( 255, 0, 0, .8 )',
+						borderWidth: 1
+					}]
+				},
+				options: {
+					legend: {
+						display: false
+					},
+					scales: {
+						xAxes: [{
+							ticks: {
+								beginAtZero:true
+							}
+						}]
+					}
+				}
+			} );
+		} );
+			
 block contents
 	.row
 		.col-md-3
@@ -23,6 +56,7 @@ block contents
 		.col-md-9
 			if ( result != undefined && result.length > 0 )
 				ul.list-group: li.list-group-item.list-group-item-default Number of unique members using "#{ slug }" on each day of the week in #{ moment( start ).format( 'MMMM YYYY' ) }.
+				canvas#chart
 				table.table.table-striped.table-condensed
 					thead
 						tr

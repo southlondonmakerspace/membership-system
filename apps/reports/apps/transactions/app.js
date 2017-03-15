@@ -7,6 +7,8 @@ var	express = require( 'express' ),
 	app = express(),
 	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
 
+var moment = require( 'moment' );
+
 var Payments = require( __js + '/database' ).Payments,
 	Members = require( __js + '/database' ).Members;
 
@@ -29,9 +31,41 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isSuperAdmin, function( req, res ) {
-	Payments.find().populate( 'member' ).exec( function( err, payments ) {
-		res.render( 'transactions', { payments: payments } );
+app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
+	var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
+	if ( req.params.month !== undefined && req.params.year !== undefined ) {
+		start.setMonth( parseInt( req.params.month ) - 1 );
+		start.setYear( parseInt( req.params.year ) );
+	}
+	var end = new Date( start );
+	end.setMonth( start.getMonth() + 1 );
+
+	var previous = new Date( start );
+	previous.setMonth( start.getMonth() - 1 );
+
+	res.locals.breadcrumb.push( {
+		name: moment( start ).format( 'MMMM YYYY' )
+	} );
+
+	Payments.find( {
+		created: {
+			$gte: start,
+			$lt: end
+		}
+	} ).populate( 'member' ).exec( function( err, payments ) {
+		var total = 0;
+		for ( var p in payments ) {
+			if ( Number.isInteger( payments[p].amount ) )
+				if ( payments[p].status == 'payment_paid_out' )
+					total += payments[p].amount;
+		}
+		res.render( 'transactions', {
+			payments: payments,
+			total: total,
+			next: end,
+			previous: previous,
+			start: start
+		} );
 	} );
 } );
 

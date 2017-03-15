@@ -20,6 +20,7 @@
     "express": "^4.13.3",
     "express-flash": "git://github.com/RGBboy/express-flash.git",
     "express-session": "^1.12.1",
+    "helmet": "^3.5.0",
     "less": "^2.5.3",
     "moment": "^2.15.1",
     "mongoose": "^4.2.5",

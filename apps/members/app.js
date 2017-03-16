@@ -38,21 +38,68 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
-		Permissions.find( function( err, allPermissions ) {
-			Members.find( {
-				permissions: {
-					$elemMatch: {
-						permission: membership_permission._id,
-						date_added: { $lte: new Date() },
-						$or: [
-							{ date_expires: null },
-							{ date_expires: { $gt: new Date() } }
-						]
+	Permissions.find( function( err, permissions ) {
+		var filter_permissions = [];
+
+		// If not admin or requesting active members only add member permission to filtering list
+		if ( ! ( auth.canAdmin( req ) == true ) || req.query.active_members !== undefined ) {
+			var member = permissions.filter( function( permission ) {
+				if ( permission.slug == 'member' ) return true;
+				return false;
+			} )[0];
+			filter_permissions.push( member );
+			permissions = permissions.filter( function( p ) {
+				if ( p.slug == 'member' ) return false;
+				return true;
+			} );
+		}
+
+		// If requested add custom permission to filtering list
+		var permission;
+		if ( req.query.permission !== undefined ) {
+			permission = permissions.filter( function( permission ) {
+				if ( permission.slug == req.query.permission ) return true;
+				return false;
+			} );
+			if ( permission.length !== 1 ) {
+				permission = null;
+			} else if ( permission.length === 1 ) {
+				permission = permission[0];
+				filter_permissions.push( permission );
+				res.locals.breadcrumb.push( {
+					name: permission.name,
+				} );
+			}
+		}
+
+		// Add permission list to search parameters
+		var search = {};
+		if ( filter_permissions.length > 0 ) {
+			var filter = [];
+			for ( var fp in filter_permissions ) {
+				filter.push( {
+					permissions: {
+						$elemMatch: {
+							permission: filter_permissions[fp]._id,
+							date_added: { $lte: new Date() },
+							$or: [
+								{ date_expires: null },
+								{ date_expires: { $gt: new Date() } }
+							]
+						}
 					}
-				}
-			} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
-				res.render( 'members', { members: members } );
+				} );
+			}
+			search = { $and: filter };
+		}
+
+		// Perform search
+		Members.find( search ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
+			res.render( 'members', {
+				members: members,
+				permissions: permissions,
+				filter_permission: ( permission !== null ? permission : null ),
+				active_members: ( req.query.active_members !== undefined ? true : false )
 			} );
 		} );
 	} );

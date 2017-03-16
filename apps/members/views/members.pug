@@ -26,11 +26,6 @@ block append js
 				// create a jquery object of the rows
 				var jo = $( "tbody" ).find( "tr" );
 
-				if ( this.value == "" ) {
-					jo.show();
-					return;
-				}
-
 				// hide all the rows
 				jo.hide();
 
@@ -44,10 +39,33 @@ block append js
 					}
 					return false;
 				}).show();
+				
+				$( '.member_count' ).text( $( "tbody" ).find( "tr:visible" ).length );
 			});
 		});
 
 block contents
-	input( placeholder="Filter", style="max-width: 200px" )#filter.form-control
+	.row
+		.col-md-3
+			input( placeholder="Filter" )#filter.form-control
+		if access.indexOf( 'admin' ) != -1
+			.col-md-3
+				if active_members
+					a( href='?' + ( filter_permission != null ? 'permission=' + filter_permission.slug : '' ) ).btn.btn-success
+						span.glyphicon.glyphicon-check
+						|  Filtering inactive members
+				else 
+					a( href='?' + ( filter_permission != null ? 'permission=' + filter_permission.slug + '&' : '' ) + 'active_members' ).btn.btn-default
+						span.glyphicon.glyphicon-unchecked
+						|  Filter inactive members
+		.col-md-3
+			.dropdown
+				button( type="button", data-toggle="dropdown", class=( filter_permission != null ? 'btn-success' : 'btn-default' ) ).btn.dropdown-toggle#permissions_filter #{ filter_permission != null ? filter_permission.name : 'Permissions' }&nbsp;
+					span.caret
+				ul.dropdown-menu.dropdown-menu-left
+					li: a( href="?permission=" + ( active_members ? '&active_members' : '' ) ) Show all
+					li.divider
+					each permission, p in permissions
+						li: a( href="?permission=" + permission.slug + ( active_members ? '&active_members' : '' ) ) #{ permission.name }
 	hr
 	include partials/member-table.pug

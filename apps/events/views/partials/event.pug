@@ -20,7 +20,7 @@ if event.successful || ( ! event.successful && event.permission.event_unauthoris
 						| )
 				else
 					| #{ event.activity.event_name }&nbsp;
-					a( href="/admin/events/link/" + event._id ).btn.btn-xs.btn-warning Link
+					a( href="/members/link/" + event._id ).btn.btn-xs.btn-warning Link
 			else
 				| #{ event.activity.event_name.replace( '$', event.action ) }
 		else

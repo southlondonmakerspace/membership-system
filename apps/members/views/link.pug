@@ -1,4 +1,4 @@
-extends ../../../../../src/views/base.pug
+extends ../../../src/views/base.pug
 
 block prepend title
 	- title = 'Link tag #' + tag + ' to user'
@@ -65,7 +65,7 @@ block contents
 		tbody
 			each member, m in members
 				tr
-					td: a.btn.btn-xs( href="/admin/events/link/" + event._id + "/" + member.uuid, class=( ! member.tag.id ? 'btn-primary' : 'btn-default' ) )
+					td: a.btn.btn-xs( href="/members/link/" + event._id + "/" + member.uuid, class=( ! member.tag.id ? 'btn-primary' : 'btn-default' ) )
 						| #{ ! member.tag.id ? 'Link' : 'Replace' }
 					td #{ member.firstname }
 					td #{ member.lastname }

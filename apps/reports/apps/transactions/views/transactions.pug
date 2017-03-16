@@ -46,7 +46,7 @@ block contents
 						each payment, p in payments
 							tr
 								if payment.member
-									td: a( href="/admin/members/" + payment.member.uuid ) #{ payment.member.fullname }
+									td: a( href="/members/" + payment.member.uuid ) #{ payment.member.fullname }
 								else
 									td –
 								td: a( href="https://manage.gocardless.com/payments/" + payment.payment_id, target="_blank" ) #{ payment.payment_id }

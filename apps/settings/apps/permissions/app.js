@@ -43,35 +43,6 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.render( 'create' );
 } );
 
-app.get( '/:slug', auth.isAdmin, function( req, res ) {
-	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
-		if ( permission === undefined ) {
-			req.flash( 'warning', messages['permission-404'] );
-			res.redirect( app.parent.mountpath + app.mountpath );
-			return;
-		}
-
-		res.locals.breadcrumb.push( {
-			name: permission.name
-		} );
-
-		Members.find( {
-			permissions: {
-				$elemMatch: {
-					permission: permission._id,
-					date_added: { $lte: new Date() },
-					$or: [
-						{ date_expires: null },
-						{ date_expires: { $gt: new Date() } }
-					]
-				}
-			}
-		} ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
-			res.render( 'item', { permission: permission, members: members } );
-		} );
-	} );
-} );
-
 app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
 	if ( req.body.name === undefined ||
 		 req.body.event === undefined ||

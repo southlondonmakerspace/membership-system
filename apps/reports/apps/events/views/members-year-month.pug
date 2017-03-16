@@ -32,7 +32,7 @@ block contents
 					tbody
 						each member, m in members
 							tr
-								td: a( href="/members/list/" + member.member.uuid ) #{ member.member.fullname }
+								td: a( href="/members/" + member.member.uuid ) #{ member.member.fullname }
 								td #{ member.count }
 								td
 									.progress( style="margin-bottom: 0;" )

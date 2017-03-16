@@ -1,8 +1,8 @@
-extends ../../../../../src/views/base.pug
+extends ../../../src/views/base.pug
 
 block prepend title
 	- title = 'Permissions'
-	- activeApp = 'admin'
+	- activeApp = 'members'
 
 block contents
 	.row
@@ -24,6 +24,6 @@ block contents
 								small Requires edit to config.json
 					- admin_area = true
 					each permission, p in member.permissions
-						include ../../../../../src/views/partials/permission.pug
+						include ../../../src/views/partials/permission.pug
 				else
 					p This member has no permissions.

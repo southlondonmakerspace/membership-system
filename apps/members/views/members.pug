@@ -2,8 +2,9 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = app.title
+	- heading = title
 	- activeApp = 'members'
-	-
+
 block append js
 	script( type="text/javascript" ).
 		jQuery(document).ready(function($) {
@@ -47,38 +48,6 @@ block append js
 		});
 
 block contents
-	input( placeholder="Filter", style="max-width: 200px; display: inline;" )#filter.form-control
-	| &nbsp;
-	.dropdown( style="display: inline;" )
-		button( type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" )#filter.btn.btn-default.dropdown-toggle
-			span.caret
-			|  Filter by permissions
-		ul.dropdown-menu( aria-labelledby="filter" )
-			li: a( href="/members" ) Show all
-			li( role="separator" ).divider
-			each permission, p in permissions
-				li: a( href="/members?permission=" + permission.slug ) #{ permission.name }
+	input( placeholder="Filter", style="max-width: 200px" )#filter.form-control
 	hr
-	p Members: #{ members.length }
-	hr
-	table.table.table-striped.table-hover.table-condensed
-		thead
-			tr
-				th Gravatar
-				th First name
-				th Last name
-				th Joined
-				th Emergency Contact
-		tbody
-			each member, m in members
-				tr( title="View Member", data-href="/members/" + member.uuid, style="cursor: pointer;" )
-					td
-						img( style="border-radius: 100%", src=member.gravatar + "?s=75&d=mm&r=g" )
-					td #{ member.firstname }
-					td #{ member.lastname }
-					td #{ moment( member.joined ).format( 'DD/MM/YYYY' ) }
-					td
-						if member.emergency_contact.telephone
-							| Yes
-						else
-							| No
+	include partials/member-table.pug

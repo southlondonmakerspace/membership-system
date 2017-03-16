@@ -1,0 +1,6 @@
+{
+	"title": "Map",
+	"path": "map",
+	"permissions": [ "admin", "superadmin", "director" ],
+	"priority": 1
+}

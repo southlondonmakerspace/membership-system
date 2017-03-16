@@ -1,8 +1,0 @@
-{
-	"title": "Map",
-	"path": "map",
-	"permissions": [
-		"member"
-	],
-	"priority": 1
-}

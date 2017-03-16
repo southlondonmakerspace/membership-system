@@ -29,11 +29,11 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
+app.get( '/', auth.isAdmin, function( req, res ) {
 	res.render( 'map' );
 } );
 
-app.get( '/data.json', auth.isMember, function( req, res ) {
+app.get( '/data.json', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
 		Members.find( {
 			permissions: {

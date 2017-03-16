@@ -3,11 +3,11 @@ extends ../../../../../src/views/base.pug
 block prepend title
 	- title = app.title
 	- heading = title
-	- activeApp = 'members'
+	- activeApp = 'reports'
 
 block contents
 	.panel.panel-default
-		.panel-body This is a heatmap of current members.
+		.panel-body This map shows active member accounts.
 	#map.col-m-12( style="height: 40em;" )
 	script( type="text/javascript" ).
 		var map;
@@ -18,7 +18,7 @@ block contents
 				center: { lat: 51.4511044, lng: -0.1018774 },
 				zoom: 12
 			});
-			jQuery.getJSON('/members/map/data.json', function( data ) {
+			jQuery.getJSON('/reports/map/data.json', function( data ) {
 				for( var d in data ) {
 					var pos = new google.maps.LatLng( data[d].lat, data[d].lng );
 					heatmapData.push( pos );

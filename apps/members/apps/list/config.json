@@ -1,8 +1,0 @@
-{
-	"title": "List",
-	"path": "list",
-	"permissions": [
-		"member"
-	],
-	"priority": 10
-}

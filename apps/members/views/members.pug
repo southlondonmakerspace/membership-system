@@ -1,4 +1,4 @@
-extends ../../../../../src/views/base.pug
+extends ../../../src/views/base.pug
 
 block prepend title
 	- title = app.title
@@ -57,7 +57,7 @@ block contents
 			li: a( href="/members" ) Show all
 			li( role="separator" ).divider
 			each permission, p in permissions
-				li: a( href="/members/list?permission=" + permission.slug ) #{ permission.name }
+				li: a( href="/members?permission=" + permission.slug ) #{ permission.name }
 	hr
 	p Members: #{ members.length }
 	hr
@@ -71,7 +71,7 @@ block contents
 				th Emergency Contact
 		tbody
 			each member, m in members
-				tr( title="View Member", data-href="/members/list/" + member.uuid, style="cursor: pointer;" )
+				tr( title="View Member", data-href="/members/" + member.uuid, style="cursor: pointer;" )
 					td
 						img( style="border-radius: 100%", src=member.gravatar + "?s=75&d=mm&r=g" )
 					td #{ member.firstname }

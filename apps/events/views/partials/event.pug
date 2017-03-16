@@ -5,18 +5,18 @@ if event.successful || ( ! event.successful && event.permission.event_unauthoris
 		class=( event.activity ? 'list-group-item-info' : '' )
 	)
 		if event.member && event.permission
-			a( href="/members/list/" + event.member.uuid ) #{ event.member.fullname }
+			a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
 			| &nbsp;
 			if event.successful
-				a( href="/members/list/?permission=" + event.permission.slug ) #{ event.permission.event_name }
+				a( href="/members/?permission=" + event.permission.slug ) #{ event.permission.event_name }
 			else
-				a( href="/members/list/?permission=" + event.permission.slug ) #{ event.permission.event_unauthorised }
+				a( href="/members/?permission=" + event.permission.slug ) #{ event.permission.event_unauthorised }
 		else if event.activity
 			if event.activity.slug == 'unknown-tag'
 				if event.action == 'linked'
 					| #{ event.activity.event_name }
 					small  (Linked to:&nbsp;
-						a( href="/members/list/" + event.member.uuid ) #{ event.member.fullname }
+						a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
 						| )
 				else
 					| #{ event.activity.event_name }&nbsp;

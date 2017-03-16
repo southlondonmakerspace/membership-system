@@ -51,11 +51,11 @@ var Authentication = {
 							} else {
 								user.password.tries++;
 								user.save( function ( err ) {} );
-								return done( null, false, { message: messages['login-failed'] } );
+								return setTimeout( function() { return done( null, false, { message: messages['login-failed'] } ); }, 1000 );
 							}
 						} );
 					} else {
-						return done( null, false, { message: messages['login-failed'] } );
+						return setTimeout( function() { return done( null, false, { message: messages['login-failed'] } ); }, 1000 );
 					}
 				} );
 			}

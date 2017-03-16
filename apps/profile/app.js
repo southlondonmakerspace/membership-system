@@ -41,8 +41,8 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	if ( auth.checkPermission( req, 'member' ) && auth.checkPermission( req, 'member' ) ) {
-		Permissions.findOne( { slug: 'member' }, function ( err, door ) {
+	if ( auth.activeMember( req ) && auth.checkPermission( req, 'door' ) && auth.checkPermission( req, 'door' ) ) {
+		Permissions.findOne( { slug: 'door' }, function ( err, door ) {
 			Events.aggregate( [
 				{
 					$match: {

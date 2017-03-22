@@ -7,7 +7,7 @@ block prepend title
 
 block contents
 	if access == 'superadmin'
-		p: a( href="/admin/permissions/create" ).btn.btn-default
+		p: a( href="/settings/permissions/create" ).btn.btn-default
 			span.glyphicon.glyphicon-plus
 			|  Create Permission
 	table.table.table-striped.table-condensed
@@ -37,5 +37,5 @@ block contents
 						else
 							| Admin
 						if access == 'superadmin'
-							td: a( href="/admin/permissions/" + permission.slug + "/edit" )
+							td: a( href="/settings/permissions/" + permission.slug + "/edit" )
 								span.glyphicon.glyphicon-pencil

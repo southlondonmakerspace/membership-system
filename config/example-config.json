@@ -3,7 +3,14 @@
 	"host": "127.0.0.1",
 	"secret": "abc123",
 	"globals": {
-		"organisation": "",
+		"organisation": "UK Makerspace",
+		"about": {
+			"text": "Hello there Makers!",
+			"link": {
+				"text": "Find out more",
+				"url": "http://localhost/about"
+			}
+		},
 		"title": "Membership System"
 	},
 	"tag_salt": "",

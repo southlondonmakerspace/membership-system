@@ -187,6 +187,7 @@ var Authentication = {
 	checkPermission: function( req, permission ) {
 		if ( req.user === undefined ) return false;
 		if ( permission == 'superadmin' ) {
+			if ( Authentication.superAdmin( req.user.email ) ) return true;
 			if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
 			return false;
 		}

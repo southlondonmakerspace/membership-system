@@ -155,7 +155,7 @@ var Authentication = {
 			return status;
 		} else {
 			if ( Authentication.checkPermission( req, 'member' ) ) return true;
-			if ( Authentication.checkPermission( req, 'director' ) ) return true;
+			if ( Authentication.checkPermission( req, 'superadmin' ) ) return true;
 			if ( Authentication.checkPermission( req, 'admin' ) ) return true;
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 		}
@@ -167,7 +167,7 @@ var Authentication = {
 		if ( ! status ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'director' ) ) return true;
+			if ( Authentication.checkPermission( req, 'superadmin' ) ) return true;
 			if ( Authentication.checkPermission( req, 'admin' ) ) return true;
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 		}
@@ -179,13 +179,22 @@ var Authentication = {
 		if ( ! status ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'director' ) ) return true;
+			if ( Authentication.checkPermission( req, 'superadmin' ) ) return true;
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 		}
 		return -3;
 	},
 	checkPermission: function( req, permission ) {
 		if ( req.user === undefined ) return false;
+		if ( permission == 'superadmin' ) {
+			if ( Authentication.superAdmin( req.user.email ) ) return true;
+			if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
+			return false;
+		}
+		if ( permission == 'admin' ) {
+			if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) return true;
+			return false;
+		}
 		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return true;
 		return false;
 	},

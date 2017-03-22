@@ -23,7 +23,7 @@ var app_config = {};
 app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 	Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		var grantAccess = false;
-		if ( member !== undefined ) {
+		if ( member !== null ) {
 			var hasMembership = false;
 			var hasPermission = false;
 			var isDirector = false;
@@ -36,8 +36,18 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 			}
 
 			if ( ( isDirector && hasPermission ) || ( hasMembership && hasPermission ) ) {
-				grantAccess = true;
+				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
+					new Events( {
+						member: member._id,
+						permission: permission._id,
+						successful: true
+					} ).save( function( status ) {} );
+				} );
+				res.send( JSON.stringify( {
+					name: member.fullname
+				} ) );
 			} else {
+				res.sendStatus( 403 );
 				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
 					if ( permission !== undefined )
 						new Events( {
@@ -47,29 +57,15 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 						} ).save( function( status ) {} );
 				} );
 			}
-		}
-
-		if ( grantAccess ) {
-			// Log access
-			Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
-				new Events( {
-					member: member._id,
-					permission: permission._id,
-					successful: true
-				} ).save( function( status ) {} );
-			} );
-			res.send( JSON.stringify( {
-				name: member.fullname
-			} ) );
 		} else {
-			res.sendStatus( 403 );
+			res.sendStatus( 404 );
 		}
 	} );
 } );
 
 app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
 	Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
-		if ( activity !== undefined ) {
+		if ( activity !== null ) {
 			new Events( {
 				activity: activity._id,
 				action: ( req.query.action ? req.query.action : '' )

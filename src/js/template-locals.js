@@ -1,6 +1,15 @@
+var __root = '../..';
+var __src = __root + '/src';
+var __js = __src + '/js';
+var __config = __root + '/config';
+
+var auth = require( __js + '/authentication' );
+
+var config = require( __config + '/config.json' );
+
 var moment = require( 'moment' );
 
-var config, apps = [];
+var apps = [];
 
 function templateLocals( req, res, next ) {
 	// Process which apps should be shown in menu
@@ -16,7 +25,7 @@ function templateLocals( req, res, next ) {
 			if ( app.permissions !== undefined && app.permissions != [] ) {
 				if ( req.user ) {
 					for ( var p in app.permissions ) {
-						if ( req.user.quickPermissions.indexOf( app.permissions[p] ) != -1 ) {
+						if ( auth.checkPermission( req, app.permissions[p] ) ) {
 							res.locals.apps[ app.menu ].push( app );
 							break;
 						}
@@ -34,7 +43,7 @@ function templateLocals( req, res, next ) {
 						if ( subapp.permissions !== undefined && subapp.permissions != [] ) {
 							if ( req.user ) {
 								for ( var p in subapp.permissions ) {
-									if ( req.user.quickPermissions.indexOf( subapp.permissions[p] ) != -1 ) {
+									if ( auth.checkPermission( req, subapp.permissions[p] ) ) {
 										res.locals.subapps[ app.uid ].push( subapp );
 										break;
 									}
@@ -54,9 +63,9 @@ function templateLocals( req, res, next ) {
 
 	if ( req.user !== undefined && req.user.quickPermissions !== undefined ) {
 		if ( req.user.quickPermissions.indexOf( 'member' ) != -1 ) res.locals.access = 'member';
-		if ( req.user.quickPermissions.indexOf( 'admin' ) != -1 ) res.locals.access = 'admin';
+		if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) res.locals.access = 'admin';
 		if ( req.user.quickPermissions.indexOf( 'superadmin' ) != -1 ) res.locals.access = 'superadmin';
-		if ( req.user.quickPermissions.indexOf( 'director' ) != -1 ) res.locals.access = 'superadmin';
+		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) res.locals.access = 'superadmin';
 	}
 
 	// Delete login redirect URL if user navigates to anything other than the login page
@@ -87,8 +96,7 @@ function templateLocals( req, res, next ) {
 	next();
 }
 
-module.exports = function( c, a ) {
-	config = c;
+module.exports = function( a ) {
 	apps = a;
 	return templateLocals;
 };

@@ -90,7 +90,7 @@ apps.sort( function( a, b ) {
 } );
 
 // Load in local variables such as config.globals
-app.use( require( __js + '/template-locals' )( config, apps ) );
+app.use( require( __js + '/template-locals' )( apps ) );
 
 // Use PUG to render pages
 app.set( 'views', __views );

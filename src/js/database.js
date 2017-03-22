@@ -108,14 +108,7 @@ var memberSchema = mongoose.Schema( {
 	},
 	tag: {
 		id: {
-			type: String,
-			validate: {
-				validator: function ( v ) {
-					if ( v === '' ) return true;
-					return /[A-z0-9]{8}/.test( v );
-				},
-				message: '{VALUE} is not a valid tag ID'
-			}
+			type: String
 		},
 		hashed: {
 			type: String,

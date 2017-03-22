@@ -1,7 +1,9 @@
 {
 	"title": "Members",
 	"path": "members",
-	"permissions": [ "member", "admin", "superadmin", "director" ],
+	"permissions": [
+		"superadmin", "admin", "member"
+	],
 	"menu": "main",
 	"priority": 3
 }

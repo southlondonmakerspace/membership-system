@@ -2,7 +2,7 @@
 	"title": "Settings",
 	"path": "settings",
 	"permissions": [
-		"superadmin", "admin", "director"
+		"superadmin", "admin"
 	],
 	"menu": "main",
 	"hidden": true,

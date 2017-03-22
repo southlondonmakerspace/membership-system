@@ -1,4 +1,7 @@
 {
 	"title": "Activities",
-	"path": "activities"
+	"path": "activities",
+	"permissions": [
+		"superadmin", "admin"
+	]
 }

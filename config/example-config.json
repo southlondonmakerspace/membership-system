@@ -15,6 +15,10 @@
 	},
 	"tag_salt": "",
 	"superadmins": [],
+	"permission": {
+		"admin": "admin",
+		"superadmin": "superadmin"
+	},
 	"smtp": {
 		"from": "Organisation <email@example.com>",
 		"url": "smtp://username:password@smtp.example.com:587"

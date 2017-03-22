@@ -2,6 +2,6 @@
 	"title": "API Keys",
 	"path": "api-keys",
 	"permissions": [
-		"superadmin", "director"
+		"superadmin"
 	]
 }

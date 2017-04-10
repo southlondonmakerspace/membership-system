@@ -33,3 +33,12 @@ body {
   -webkit-filter: blur(2px);
   filter: blur(2px);
 }
+.btn-link {
+  border: none;
+  background: transparent;
+  color: #337ab7;
+  padding: 0;
+}
+.btn-link:hover {
+  color: #23527c;
+}

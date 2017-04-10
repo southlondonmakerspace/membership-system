@@ -23,5 +23,7 @@ block contents
 					td #{ key.key }
 					td: a( href="/settings/api-keys/" + key._id + "/edit" )
 						span.glyphicon.glyphicon-pencil
-					td: a( href="/settings/api-keys/" + key._id + "/delete" )
-						span.glyphicon.glyphicon-remove
+					td
+						form( action="/settings/api-keys/" + key._id + "/delete", method="post" )
+							button.btn-link
+								span.glyphicon.glyphicon-remove

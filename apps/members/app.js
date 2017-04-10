@@ -525,7 +525,7 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 	} );
 } );
 
-app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );

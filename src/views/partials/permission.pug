@@ -10,13 +10,14 @@ span.list-group-item( class=( permission.date_added > now || permission.date_exp
 
 		else
 			|  onwards
-	p( style="position: absolute; top: 1em; right: 1em;" )
+	span( style="position: absolute; top: 1em; right: 1em;" )
 		if admin_area
 			if ! permission.permission.superadmin_only || access == 'superadmin'
 				a( href="/members/" + member.uuid + "/permissions/" + permission._id + "/modify", style="margin-right: 1em;" )
 					span.glyphicon.glyphicon-pencil
-				a( href="/members/" + member.uuid + "/permissions/" + permission._id + "/revoke" )
-					span.glyphicon.glyphicon-remove
+				form( action="/members/" + member.uuid + "/permissions/" + permission._id + "/revoke", method="post", style="display:inline;" )
+					button.btn-link
+						span.glyphicon.glyphicon-remove
 			else
 				small Restricted to Super Admins
 		else

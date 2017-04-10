@@ -119,7 +119,7 @@ app.post( '/:id/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res
 	} );
 } );
 
-app.get( '/:id/delete', auth.isSuperAdmin, function( req, res ) {
+app.post( '/:id/delete', auth.isSuperAdmin, function( req, res ) {
 	APIKeys.remove( { _id: req.params.id }, function( err ) {
 		req.flash( 'success', messages['apikey-delete'] );
 		res.redirect( app.parent.mountpath + app.mountpath );

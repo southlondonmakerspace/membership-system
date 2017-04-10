@@ -18,7 +18,7 @@ module.exports =  function( app ) {
 	app.use( session( {
 		name: 'slmsMSSession',
 		secret: config.secret,
-		cookie: { maxAge: 31*24*60*60*1000 },
+		cookie: config.cookie,
 		saveUninitialized: false,
 		store: store,
 		resave: false,

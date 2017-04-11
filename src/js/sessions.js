@@ -2,6 +2,7 @@ var session = require( 'express-session' ),
 	config = require( '../../config/config.json' ),
 	cookie = require('cookie-parser'),
 	passport = require( 'passport' );
+	csrf = require( 'csurf' );
 
 var MongoDBStore = require( 'connect-mongodb-session' )( session );
 
@@ -27,4 +28,10 @@ module.exports =  function( app ) {
 
 	app.use( passport.initialize() );
 	app.use( passport.session() );
+
+	app.use( csrf );
+	app.use( function( req, res, next ) {
+		res.locals._csrf = req.csrfToken();
+		next();
+	} );
 };

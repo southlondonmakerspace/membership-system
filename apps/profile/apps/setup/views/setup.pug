@@ -17,12 +17,12 @@ block contents
 				|  Emergency Contact
 			|  In the unlikely event of an accident.
 		li( style="margin-bottom: 1em;" )
-			if user.gocardless.mandate_id == ''
+			if user.gocardless.mandate_id == '' || user.gocardless.mandate_id == undefined
 				a( href="/profile/direct-debit" ).btn.btn-danger
 					span.glyphicon.glyphicon-unchecked
 					|  Direct Debit
 				|  So you can pay your membership fee.
-			else if user.gocardless.subscription_id == ''
+			else if user.gocardless.subscription_id == '' || user.gocardless.subscription_id == undefined
 				a( href="/profile/direct-debit" ).btn.btn-warning
 					span.glyphicon.glyphicon-unchecked
 					|  Direct Debit

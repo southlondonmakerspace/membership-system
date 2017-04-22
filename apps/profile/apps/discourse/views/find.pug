@@ -23,6 +23,7 @@ block contents
 				.page-header
 					h3 Results
 				form( method="post", action="/profile/discourse/link" )
+					include ../../../../../src/views/partials/csrf.pug
 					input( type="hidden", value=search, name="search" )
 					each user, u in users
 						.col-md-2

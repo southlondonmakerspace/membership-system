@@ -25,5 +25,6 @@ block contents
 						span.glyphicon.glyphicon-pencil
 					td
 						form( action="/settings/api-keys/" + key._id + "/delete", method="post" )
+							include ../../../../../src/views/partials/csrf.pug
 							button.btn-link
 								span.glyphicon.glyphicon-remove

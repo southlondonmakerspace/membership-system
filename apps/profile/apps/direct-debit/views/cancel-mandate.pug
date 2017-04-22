@@ -13,6 +13,7 @@ block contents
 				h3 Cancel Direct Debit Mandate
 			p Are you sure you want to cancel your Direct Debit mandate?
 			form( method="post" )
+				include ../../../../../src/views/partials/csrf.pug
 				p
 					button( role="button" ).btn.btn-danger Yes, cancel my Direct Debit mandate
 					| 

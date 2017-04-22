@@ -19,6 +19,7 @@ var Discourse = {
 				filter: search
 			}
 		}, function ( error, response, body ) {
+			console.log( body );
 			if ( response.statusCode == '200 ') {
 				var output = JSON.parse( body );
 				if ( output[0] !== undefined ) {

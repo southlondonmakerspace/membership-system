@@ -37,6 +37,8 @@ app.get( '/', auth.isAdmin, function( req, res ) {
 
 app.get( '/:slug/members/:year/:month', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( ! permission ) return res.render( '../../../../../src/views/404' );
+
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.month !== undefined && req.params.year !== undefined ) {
 			start.setMonth( parseInt( req.params.month ) - 1 );
@@ -110,6 +112,8 @@ app.get( '/:slug/members/:year/:month', auth.isAdmin, function( req, res ) {
 
 app.get( '/:slug/members/:year', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( ! permission ) return res.render( '../../../../../src/views/404' );
+
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
 			start.setFullYear( parseInt( req.params.year ) );
@@ -178,6 +182,8 @@ app.get( '/:slug/members/:year', auth.isAdmin, function( req, res ) {
 
 app.get( '/:slug/days/:year?', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( ! permission ) return res.render( '../../../../../src/views/404' );
+
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
 			start.setFullYear( parseInt( req.params.year ) );
@@ -252,6 +258,8 @@ app.get( '/:slug/days/:year?', auth.isAdmin, function( req, res ) {
 
 app.get( '/:slug/days-of-week/:year?', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( ! permission ) return res.render( '../../../../../src/views/404' );
+
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
 			start.setFullYear( parseInt( req.params.year ) );
@@ -324,6 +332,8 @@ app.get( '/:slug/days-of-week/:year?', auth.isAdmin, function( req, res ) {
 
 app.get( '/:slug/days-of-week/:year/:month', auth.isAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
+		if ( ! permission ) return res.render( '../../../../../src/views/404' );
+
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 		if ( req.params.year !== undefined ) {
 			start.setFullYear( parseInt( req.params.year ) );

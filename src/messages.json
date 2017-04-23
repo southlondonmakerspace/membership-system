@@ -82,5 +82,7 @@
 	"apikey-update": "API Key updated",
 	"apikey-delete": "API Key deleted",
 	"apikey-name-required": "API Key requires a name",
-	"apikey-key-required": "API Key requires a secret key"
+	"apikey-key-required": "API Key requires a secret key",
+
+	"tag-revoked": "Your tag has been revoked"
 }

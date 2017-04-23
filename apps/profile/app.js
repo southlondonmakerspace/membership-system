@@ -41,58 +41,75 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	if ( auth.activeMember( req ) && auth.checkPermission( req, 'door' ) && auth.checkPermission( req, 'door' ) ) {
-		Permissions.findOne( { slug: 'door' }, function ( err, door ) {
-			Events.aggregate( [
-				{
-					$match: {
-						happened: { $gte: moment().startOf('month').toDate(), $lt: moment().endOf('month').toDate() },
-						permission: door._id,
-						member: req.user._id,
-						successful: { $ne: false }
-					}
-				},
-				{
-					$group: {
-						_id: {
-							member: "$member",
-							day: { $dayOfMonth: "$happened" }
+	if ( auth.activeMember( req ) ) {
+		if ( auth.checkPermission( req, config.permission.access ) ) {
+			Permissions.findOne( { slug: config.permission.access }, function ( err, access ) {
+				Events.aggregate( [
+					{
+						$match: {
+							happened: { $gte: moment().startOf('month').toDate(), $lt: moment().endOf('month').toDate() },
+							permission: access._id,
+							member: req.user._id,
+							successful: { $ne: false }
 						}
-					}
-				},
-				{
-					$group: {
-						_id: "$_id.member",
-						days: { $push: "$_id.day" }
-					}
-				},
-				{
-					$project: {
-						_id: 0,
-						count: { $size: "$days" }
-					}
-				},
-				{
-					$sort: { count: -1 }
-				}
-			], function ( err, result ) {
-				var member = {};
-				var permissions = req.user.permissions.filter( function( p ) {
-					if ( p.permission !== undefined && p.permission.slug !== undefined ) {
-						if ( p.permission.slug == 'member' ) {
-							return true;
+					},
+					{
+						$group: {
+							_id: {
+								member: "$member",
+								day: { $dayOfMonth: "$happened" }
+							}
 						}
+					},
+					{
+						$group: {
+							_id: "$_id.member",
+							days: { $push: "$_id.day" }
+						}
+					},
+					{
+						$project: {
+							_id: 0,
+							count: { $size: "$days" }
+						}
+					},
+					{
+						$sort: { count: -1 }
 					}
-					return false;
-				} );
-				if ( permissions.length > 0 ) member = permissions[0];
-				res.render( 'profile', {
-					user: req.user,
-					count: result,
-					membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+				], function ( err, result ) {
+					var member = {};
+					var permissions = req.user.permissions.filter( function( p ) {
+						if ( p.permission !== undefined && p.permission.slug !== undefined ) {
+							if ( p.permission.slug == 'member' ) {
+								return true;
+							}
+						}
+						return false;
+					} );
+					if ( permissions.length > 0 ) member = permissions[0];
+					res.render( 'profile', {
+						user: req.user,
+						count: result,
+						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+					} );
 				} );
 			} );
-		} );
+		} else {
+			var member = {};
+			var permissions = req.user.permissions.filter( function( p ) {
+				if ( p.permission !== undefined && p.permission.slug !== undefined ) {
+					if ( p.permission.slug == 'member' ) {
+						return true;
+					}
+				}
+				return false;
+			} );
+			if ( permissions.length > 0 ) member = permissions[0];
+			res.render( 'profile', {
+				user: req.user,
+				membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+			} );
+		}
 	} else {
 		res.render( 'profile', { user: req.user } );
 	}

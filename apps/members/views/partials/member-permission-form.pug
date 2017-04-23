@@ -1,4 +1,5 @@
 form( method="post" )
+	include ../../../../src/views/partials/csrf.pug
 	if ! partial
 		.form-group
 			label( for="permission" ) Permission:
@@ -16,7 +17,7 @@ form( method="post" )
 		if current != undefined && current.date_added
 			- date = current.date_added
 		else
-			- date = now
+			- date = moment()
 		input( type="time", name="start_time", value=moment( date ).format( 'HH:mm' ), style="display: inline; width: auto;" ).form-control
 		| &nbsp;
 		input( type="date", name="start_date", value=moment( date ).format( 'YYYY-MM-DD' ), style="display: inline; width: auto;" ).form-control

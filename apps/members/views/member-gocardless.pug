@@ -7,6 +7,7 @@ block prepend title
 
 block contents
 	form( method="post" ).form-horizontal
+		include ../../../src/views/partials/csrf.pug
 		.form-group
 			label( for="mandate_id" ).col-md-2 Mandate ID
 			.col-md-4

@@ -26,16 +26,16 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 		if ( member !== null ) {
 			var hasMembership = false;
 			var hasPermission = false;
-			var isDirector = false;
+			var isSuperAdmin = false;
 
 			for ( var p = 0; p < member.permissions.length; p++ ) {
 				var permission = member.permissions[p];
-				if ( permission.permission.slug == 'director' && permission.date_added <= new Date() && ( permission.date_expires === undefined || permission.date_expires > new Date() ) ) isDirector = true;
-				if ( permission.permission.slug == 'member' && permission.date_added <= new Date() && ( permission.date_expires === undefined || permission.date_expires > new Date() ) ) hasMembership = true;
-				if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( permission.date_expires === undefined || permission.date_expires > new Date() ) ) hasPermission = true;
+				if ( permission.permission.slug == config.permission.superadmin && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) isSuperAdmin = true;
+				if ( permission.permission.slug == 'member' && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) hasMembership = true;
+				if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) hasPermission = true;
 			}
 
-			if ( ( isDirector && hasPermission ) || ( hasMembership && hasPermission ) ) {
+			if ( ( isSuperAdmin && hasPermission ) || ( hasMembership && hasPermission ) ) {
 				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
 					new Events( {
 						member: member._id,
@@ -49,7 +49,7 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 			} else {
 				res.sendStatus( 403 );
 				Permissions.findOne( { slug: req.params.slug }, function ( err, permission ) {
-					if ( permission !== undefined )
+					if ( permission )
 						new Events( {
 							member: member._id,
 							permission: permission._id,

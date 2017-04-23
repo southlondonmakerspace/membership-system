@@ -16,6 +16,7 @@ block contents
 				h3 Subscription
 			p Setting up a subscription will allow us to charge you on a day of your choice each month.
 			form( action="/profile/direct-debit/create-subscription", method="post" ).form-horizontal
+				include ../../../../../src/views/partials/csrf.pug
 				.form-group
 					label( for="amount" ).col-sm-2.control-label Amount:
 					.col-sm-10

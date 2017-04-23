@@ -25,12 +25,22 @@ app.use( function( req, res, next ) {
 		name: app_config.title,
 		url: app.parent.mountpath + app.mountpath
 	} );
-	res.locals.activeApp = 'profile';
+	res.locals.activeApp = app_config.uid;
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
-	res.render( 'permissions', { permissions: req.user.permissions } );
+app.get( '/', auth.isLoggedIn, function( req, res ) {
+	res.render( 'index', { user: req.user } );
+} );
+
+app.post( '/revoke', auth.isLoggedIn, function( req, res ) {
+	req.user.tag.id = '';
+	req.user.tag.hashed = '';
+	req.user.save( function( err ) {
+		console.log( err );
+		req.flash( 'danger', messages['tag-revoked'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	} );
 } );
 
 module.exports = function( config ) {

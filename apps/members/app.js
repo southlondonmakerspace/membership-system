@@ -11,6 +11,7 @@ var	express = require( 'express' ),
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
 
+var moment = require( 'moment' );
 var	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
 	Members = db.Members,
@@ -366,7 +367,7 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
 			} );
-			res.render( 'member-permissions', { permissions: permissions, member: member, now: new Date(), superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
+			res.render( 'member-permissions', { permissions: permissions, member: member, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
 	} );
 } );
@@ -394,10 +395,10 @@ app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req,
 				permission: permission.id
 			};
 
-			new_permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
+			new_permission.date_added = moment( req.body.start_date + 'T' + req.body.start_time ).toDate();
 
 			if ( req.body.expiry_date !== '' && req.body.expiry_time !== '' )
-				new_permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
+				new_permission.date_expires = moment( req.body.expiry_date + 'T' + req.body.expiry_time ).toDate();
 
 			if ( new_permission.date_added >= new_permission.date_expires ) {
 				req.flash( 'warning', messages['permission-expiry-error'] );
@@ -501,13 +502,13 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 		var permission = member.permissions.id( req.params.id );
 
 		if ( req.body.start_date !== '' && req.body.start_time !== '' ) {
-			permission.date_added = new Date( req.body.start_date + 'T' + req.body.start_time );
+			permission.date_added = moment( req.body.start_date + 'T' + req.body.start_time ).toDate();
 		} else {
 			permission.date_added = new Date();
 		}
 
 		if ( req.body.expiry_date !== '' && req.body.expiry_time !== '' ) {
-			permission.date_expires = new Date( req.body.expiry_date + 'T' + req.body.expiry_time );
+			permission.date_expires = moment( req.body.expiry_date + 'T' + req.body.expiry_time ).toDate();
 
 			if ( permission.date_added >= permission.date_expires ) {
 				req.flash( 'warning', messages['permission-expiry-error'] );
@@ -525,7 +526,7 @@ app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], fun
 	} );
 } );
 
-app.get( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( member === undefined ) {
 			req.flash( 'warning', messages['member-404'] );

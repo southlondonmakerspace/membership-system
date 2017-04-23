@@ -75,6 +75,7 @@ block contents
 				h2 #{ app.title }
 			p Thanks for choosing to join #{ config.organisation }, just so you know, you have got to be over 18 to become a member.
 			form( method="post" ).form-horizontal
+				include ../../../src/views/partials/csrf.pug
 				.form-group
 					.col-md-12
 						.page-header

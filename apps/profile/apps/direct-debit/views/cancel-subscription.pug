@@ -13,6 +13,7 @@ block contents
 				h3 Cancel Subscription
 			p Are you sure you want to cancel your subscription?
 				form( method="post" )
+					include ../../../../../src/views/partials/csrf.pug
 					p
 						button( role="button").btn.btn-danger Yes, cancel my subscription
 						| 

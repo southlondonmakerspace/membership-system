@@ -12,14 +12,8 @@ block contents
 			.page-header
 				h3 #{ title }
 			.list-group
-				each permission, p in permissions
-					span.list-group-item
-						h4.list-group-item-heading
-							a( href="/members?permission=" + permission.slug ) #{ permission.name }
-						if permission.description
-							p.list-group-item-text #{ permission.description }
-						p( style="position: absolute; top: 1em; right: .15em;" )
-							if permission.granted
-								span.label.label-success( style="margin-right: 1em;")
-									span.glyphicon.glyphicon-ok
-									|  Granted
+				if permissions.length
+					each permission, p in permissions
+						include ../../../../../src/views/partials/permission.pug
+				else
+					p You currently haven't been granted any permissions.

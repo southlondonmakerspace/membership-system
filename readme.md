@@ -9,6 +9,7 @@ The system is dependent on a number of NPM modules, and Mongo DB.
 1. Clone the repo into a folder.
 1. Copy the example config in the `config` folder, naming it `config.json`. Complete the details.
 1. Use `npm update` to install the numerous dependencies.
+1. Run `node first-time.js` to create the basic necessary database entries to avoid crashing.
 1. Start the main server using `node app`.
 1. Open a browser to `http://localhost:3001`.
 1. Follow the process to join.

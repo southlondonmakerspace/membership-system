@@ -5,6 +5,7 @@ block prepend title
 	- heading = title
 
 block contents
+	p Thanks for joining, to complete your signup follow this setup process...
 	ol( style="padding-left: 2em;" )
 		li( style="margin-bottom: 1em;" )
 			a( href="/profile/update" ).btn.btn-success
@@ -17,12 +18,12 @@ block contents
 				|  Emergency Contact
 			|  In the unlikely event of an accident.
 		li( style="margin-bottom: 1em;" )
-			if user.gocardless.mandate_id == ''
+			if user.gocardless.mandate_id == '' || user.gocardless.mandate_id == undefined
 				a( href="/profile/direct-debit" ).btn.btn-danger
 					span.glyphicon.glyphicon-unchecked
 					|  Direct Debit
 				|  So you can pay your membership fee.
-			else if user.gocardless.subscription_id == ''
+			else if user.gocardless.subscription_id == '' || user.gocardless.subscription_id == undefined
 				a( href="/profile/direct-debit" ).btn.btn-warning
 					span.glyphicon.glyphicon-unchecked
 					|  Direct Debit
@@ -38,7 +39,7 @@ block contents
 					span.glyphicon.glyphicon-check
 					|  Discourse
 				|  So you can view the members only area on Discourse.
-			else if ( ! user.discourse.activated && user.discourse.username != '' )
+			else if ( ! user.discourse.activated && user.discourse.username )
 				a( href="/profile/discourse" ).btn.btn-warning
 					span.glyphicon.glyphicon-unchecked
 					|  Discourse
@@ -48,3 +49,14 @@ block contents
 					span.glyphicon.glyphicon-unchecked
 					|  Discourse
 				|  So you can view the members only area on Discourse.
+		li( style="margin-bottom: 1em;" )
+			if user.tag.id
+				a( href="/profile/tag" ).btn.btn-success
+					span.glyphicon.glyphicon-check
+					|  Tag
+				|  So you can use your tag in the space.
+			else
+				a( href="/profile/tag" ).btn.btn-danger
+					span.glyphicon.glyphicon-unchecked
+					|  Tag
+				|  So you can use your tag in the space.

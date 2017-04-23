@@ -16,9 +16,9 @@ block contents
 			dl
 				dt Joined
 				dd( style="margin-bottom: 1em;" ) #{ moment( user.joined ).fromNow() }
-				if count != undefined && count[0] != undefined && count[0].count != undefined
-					dt Visits this month
-					dd( style="margin-bottom: 1em;" ) #{ count[0].count }
 				if membership_expires != undefined
 					dt Membership
-					dd Renews #{ moment( membership_expires ).fromNow() }
+					dd( style="margin-bottom: 1em;" ) Renews #{ moment( membership_expires ).fromNow() }
+				if count != undefined && count[0] != undefined && count[0].count != undefined
+					dt Visits this month
+					dd #{ count[0].count }

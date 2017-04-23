@@ -4,6 +4,14 @@ body {
 }
 .logo {
   margin-bottom: 20px;
+  display: inline-block;
+  width: 5em;
+  height: 5em;
+  background-color: red;
+  background-image: url(/svg/logo.svg);
+  background-size: 3em;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .bg {
   background: url('/assets/example/bg_blueplane.jpg') no-repeat center center;
@@ -32,4 +40,20 @@ body {
   position: absolute;
   -webkit-filter: blur(2px);
   filter: blur(2px);
+}
+.btn-link {
+  border: none;
+  background: transparent;
+  color: #337ab7;
+  padding: 0;
+}
+.btn-link:hover {
+  color: #23527c;
+}
+.navbar .container-fluid {
+  padding-left: 0;
+}
+.navbar .container-fluid .collapse.navbar-collapse {
+  padding-left: 0;
+  padding-right: 0;
 }

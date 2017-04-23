@@ -3,10 +3,13 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = app.title
 	- heading = title
+	
+block navbar
 
 block contents
 	.alert.alert-info Before you can activate your account, please enter your password.
 	form( method="post" action="/activate" ).form-horizontal
+		include ../../../src/views/partials/csrf.pug
 		.form-group
 			label( for="activation_code" ).col-md-2 Activation code:
 			.col-md-4

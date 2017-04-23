@@ -81,7 +81,7 @@ app.post( '/', formBodyParser, function( req, res ) {
 				}, function ( status ) {
 					req.session.passport = { user: { _id: user._id } };
 					req.flash( 'success', messages['activation-success'] );
-					res.redirect( '/profile/direct-debit' );
+					res.redirect( '/profile/setup' );
 				} );
 			} );
 		} );

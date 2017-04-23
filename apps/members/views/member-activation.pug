@@ -7,6 +7,7 @@ block prepend title
 
 block contents
 	form( method="post" ).form-horizontal
+		include ../../../src/views/partials/csrf.pug
 		.form-group
 			.col-md-12
 				label( for="activated" )

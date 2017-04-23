@@ -19,7 +19,7 @@ var messages = require( __src + '/messages.json' );
 
 var Authentication = {
 	auth: function( app ) {
-		
+
 		// Add support for local authentication in Passport.js
 		passport.use( new LocalStrategy( {
 			usernameField: 'email'
@@ -107,7 +107,7 @@ var Authentication = {
 					// Loop through permissions check they are active right now and add those to the array
 					for ( var p = 0; p < user.permissions.length; p++ ) {
 						if ( user.permissions[p].date_added <= new Date() ) {
-							if ( user.permissions[p].date_expires === undefined || user.permissions[p].date_expires > new Date() ) {
+							if ( ! user.permissions[p].date_expires || user.permissions[p].date_expires > new Date() ) {
 								permissions.push( user.permissions[p].permission.slug );
 							}
 						}
@@ -180,7 +180,7 @@ var Authentication = {
 	// Checks the user is logged in and activated.
 	loggedIn: function( req ) {
 		// Is the user logged in?
-		if ( req.isAuthenticated() && req.user !== undefined ) {
+		if ( req.isAuthenticated() && req.user ) {
 			// Is the user active
 			if ( req.user.activated || Authentication.superAdmin( req.user.email ) ) {
 				return true;
@@ -232,7 +232,7 @@ var Authentication = {
 	},
 	// Checks if the user has an active specified permission
 	checkPermission: function( req, permission ) {
-		if ( req.user === undefined ) return false;
+		if ( ! req.user ) return false;
 		if ( permission == 'superadmin' ) {
 			if ( Authentication.superAdmin( req.user.email ) ) return true;
 			if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
@@ -265,9 +265,9 @@ var Authentication = {
 	},
 	// Express middleware to redirect unauthenticated API calls
 	isAPIAuthenticated: function( req, res, next ) {
-		if ( req.query.api_key === undefined ) return res.sendStatus( 403 );
+		if ( ! req.query.api_key ) return res.sendStatus( 403 );
 		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
-			if ( key !== undefined ) return next();
+			if ( key ) return next();
 			return res.sendStatus( 403 );
 		} );
 	},

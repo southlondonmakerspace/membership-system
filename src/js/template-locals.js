@@ -89,8 +89,7 @@ function templateLocals( req, res, next ) {
 	if ( req.user !== undefined ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
 
-	// Now
-	res.locals.now = new Date();
+	// Moment.js
 	res.locals.moment = moment;
 
 	next();

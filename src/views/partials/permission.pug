@@ -1,4 +1,4 @@
-span.list-group-item( class=( permission.date_added > now || permission.date_expires != undefined && permission.date_expires < now ? 'disabled' : '' ) )
+span.list-group-item( class=( permission.date_added > moment() || permission.date_expires != undefined && permission.date_expires < moment() ? 'disabled' : '' ) )
 	h4.list-group-item-heading #{ permission.permission.name }
 	if permission.permission.description
 		p.list-group-item-text #{ permission.permission.description }
@@ -22,7 +22,7 @@ span.list-group-item( class=( permission.date_added > now || permission.date_exp
 			else
 				small Restricted to Super Admins
 		else
-			if now < permission.date_added
+			if moment() < permission.date_added
 				span.label.label-default Pending
-			if permission.date_expires != undefined && now > permission.date_expires
+			if permission.date_expires != undefined && moment() > permission.date_expires
 				span.label.label-default Expired

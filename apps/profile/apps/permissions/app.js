@@ -30,14 +30,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	Permissions.find( function( err, permissions ) {
-		for ( var p = 0; p < permissions.length; p++ ) {
-			var permission = permissions[p];
-			if ( req.user.quickPermissions.indexOf( permission.slug ) != -1 )
-				permission.granted = true;
-		}
-		res.render( 'permissions', { permissions: permissions } );
-	} );
+	res.render( 'permissions', { permissions: req.user.permissions } );
 } );
 
 module.exports = function( config ) {

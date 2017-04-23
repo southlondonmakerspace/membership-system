@@ -55,3 +55,16 @@ new Permissions( {
 		console.log( err );
 	}
 } );
+
+// Access
+new Permissions( {
+	name: 'Access',
+	slug: config.permission.access,
+	superadmin_only: true
+} ).save( function( err ) {
+	if ( ! err ) {
+		console.log( 'created access permission' );
+	} else {
+		console.log( err );
+	}
+} );

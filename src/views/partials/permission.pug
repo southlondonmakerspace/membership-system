@@ -16,6 +16,7 @@ span.list-group-item( class=( permission.date_added > now || permission.date_exp
 				a( href="/members/" + member.uuid + "/permissions/" + permission._id + "/modify", style="margin-right: 1em;" )
 					span.glyphicon.glyphicon-pencil
 				form( action="/members/" + member.uuid + "/permissions/" + permission._id + "/revoke", method="post", style="display:inline;" )
+					include csrf.pug
 					button.btn-link
 						span.glyphicon.glyphicon-remove
 			else

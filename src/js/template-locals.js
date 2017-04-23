@@ -75,12 +75,12 @@ function templateLocals( req, res, next ) {
 	// Check if user is setup
 	res.locals.userSetup = true;
 	if ( req.user !== undefined &&
-		 (	req.user.emergency_contact.telephone === '' ||
-			req.user.gocardless.mandate_id === '' ||
-			req.user.gocardless.subscription_id === '' ||
+		 (	! req.user.emergency_contact.telephone ||
+			! req.user.gocardless.mandate_id ||
+			! req.user.gocardless.subscription_id ||
 			! req.user.discourse.activated ||
-			req.user.discourse.username === '' ||
-			req.user.tag.id == ''
+			!req.user.discourse.username ||
+			! req.user.tag.id
 		) )
 		res.locals.userSetup = false;
 

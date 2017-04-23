@@ -39,7 +39,7 @@ block contents
 					span.glyphicon.glyphicon-check
 					|  Discourse
 				|  So you can view the members only area on Discourse.
-			else if ( ! user.discourse.activated && user.discourse.username != '' )
+			else if ( ! user.discourse.activated && user.discourse.username )
 				a( href="/profile/discourse" ).btn.btn-warning
 					span.glyphicon.glyphicon-unchecked
 					|  Discourse

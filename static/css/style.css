@@ -49,3 +49,10 @@ body {
 .btn-link:hover {
   color: #23527c;
 }
+.navbar .container-fluid {
+  padding-left: 0;
+}
+.navbar .container-fluid .collapse.navbar-collapse {
+  padding-left: 0;
+  padding-right: 0;
+}

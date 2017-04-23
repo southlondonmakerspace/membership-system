@@ -4,6 +4,7 @@ body {
 }
 .logo {
   margin-bottom: 20px;
+  display: inline-block;
   width: 5em;
   height: 5em;
   background-color: red;

@@ -82,7 +82,7 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 							discourse.sendActivationMessage( user.username, code );
 
 							req.flash( 'info', messages['discourse-activation-sent'] );
-							res.redirect( app.parent.mountpath );
+							res.redirect( app.parent.mountpath + app.mountpath );
 						} );
 					}
 				} );

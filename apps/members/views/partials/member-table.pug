@@ -17,7 +17,7 @@ if members.length > 0
 					th Manage
 		tbody
 			each member, m in members
-				tr( title="Member Details", data-href="/members/" + member.uuid, style="cursor: pointer;" )
+				tr( data-href="/members/" + member.uuid, style="cursor: pointer;" )
 					td: img( style="border-radius: 100%", src=member.gravatar + "?s=50&d=mm&r=g" )
 					td #{ member.firstname }
 					td #{ member.lastname }

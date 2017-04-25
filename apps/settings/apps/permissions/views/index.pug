@@ -18,8 +18,7 @@ block contents
 				th Description
 				th Discourse Group
 				th Restricted
-				if access == 'superadmin'
-					th Edit
+				th Edit
 		tbody
 			each permission, p in permissions
 				tr
@@ -36,6 +35,5 @@ block contents
 							| Super Admin
 						else
 							| Admin
-						if access == 'superadmin'
-							td: a( href="/settings/permissions/" + permission.slug + "/edit" )
-								span.glyphicon.glyphicon-pencil
+					td: a( href="/settings/permissions/" + permission.slug + "/edit" )
+						span.glyphicon.glyphicon-pencil

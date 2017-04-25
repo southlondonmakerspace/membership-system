@@ -2,6 +2,6 @@
 	"title": "Activities",
 	"path": "activities",
 	"permissions": [
-		"superadmin", "admin"
+		"superadmin"
 	]
 }

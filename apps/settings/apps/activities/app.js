@@ -29,7 +29,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isAdmin, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	Activities.find( function( err, activities ) {
 		res.render( 'index', { activities: activities } );
 	} );

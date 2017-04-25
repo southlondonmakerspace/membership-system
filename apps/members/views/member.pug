@@ -82,6 +82,7 @@ block contents
 						dd #{ member.password.reset_code ? member.password.reset_code + ' – ' + audience + '/password-reset/' + member.password.reset_code : '–' }
 						dt Password tries
 						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
+		if access == 'superadmin'
 			.col-md-6
 				.page-header
 					h3 Tag
@@ -92,9 +93,8 @@ block contents
 				dl.dl-horizontal
 					dt Tag
 					dd #{ member.tag.id ? member.tag.id : '–' }
-					if access == 'superadmin'
-						dt Hashed Tag
-						dd #{ member.tag.hashed ? member.tag.hashed : '–' }
+					dt Hashed Tag
+					dd #{ member.tag.hashed ? member.tag.hashed : '–' }
 		if access == 'superadmin'
 			.row
 				.col-md-6

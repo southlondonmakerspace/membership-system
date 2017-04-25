@@ -114,6 +114,18 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	res.redirect( app.parent.mountpath );
 } );
 
+app.post( '/unlink', auth.isLoggedIn, function( req, res ) {
+	req.user.discourse = {
+		email: '',
+		username: '',
+		activated: false
+	};
+	req.user.save( function( err ) {
+		req.flash( 'danger', messages['discourse-unlinked'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	} );
+} );
+
 module.exports = function( config ) {
 	app_config = config;
 	return app;

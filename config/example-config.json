@@ -2,6 +2,7 @@
 	"port": 3001,
 	"host": "127.0.0.1",
 	"secret": "abc123",
+	"session": "session",
 	"cookie": {
 		"secure": true,
 		"httpOnly": true,
@@ -18,13 +19,15 @@
 				"url": "http://localhost/about"
 			}
 		},
-		"title": "Membership System"
+		"title": "Membership System",
+		"google_map_key": "AIzaSyDWYuDWHlWLgIXyfVnJlLaFbbVD-hpDxrM"
 	},
 	"tag_salt": "",
 	"superadmins": [],
 	"permission": {
 		"admin": "admin",
-		"superadmin": "superadmin"
+		"superadmin": "superadmin",
+		"access": "access"
 	},
 	"smtp": {
 		"from": "Organisation <email@example.com>",
@@ -38,11 +41,12 @@
 		"api_key": ""
 	},
 	"gocardless": {
-		"port": 3002,
 		"access_token": "",
 		"secret": "",
+		"minimum": 20,
 		"sandbox": true,
-		"minimum": 20
+		"port": 3002
 	},
-	"password-tries": 1
+	"password-tries": 1,
+	"dev": true
 }

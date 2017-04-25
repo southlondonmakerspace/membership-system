@@ -42,7 +42,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 		var filter_permissions = [];
 
 		// If not admin or requesting active members only add member permission to filtering list
-		if ( ! ( auth.canAdmin( req ) == true ) || req.query.active_members !== undefined ) {
+		if ( ! ( auth.canAdmin( req ) == true && req.query.inactive_members !== undefined ) ) {
 			var member = permissions.filter( function( permission ) {
 				if ( permission.slug == 'member' ) return true;
 				return false;
@@ -99,7 +99,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				members: members,
 				permissions: permissions,
 				filter_permission: ( permission !== null ? permission : null ),
-				active_members: ( req.query.active_members !== undefined ? true : false )
+				inactive_members: ( req.query.inactive_members !== undefined ? false : true )
 			} );
 		} );
 	} );

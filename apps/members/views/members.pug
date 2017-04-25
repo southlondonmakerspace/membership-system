@@ -12,7 +12,7 @@ block contents
 	.row
 		.col-md-3
 			input( placeholder="Filter" )#filter.form-control
-		if access.indexOf( 'admin' ) != -1
+		if access == 'superadmin'
 			.col-md-3
 				if inactive_members
 					a( href='?' + ( filter_permission != null ? 'permission=' + filter_permission.slug + '&' : '' ) + 'inactive_members' ).btn.btn-default

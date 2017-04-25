@@ -14,7 +14,7 @@ if members.length > 0
 				if access == 'superadmin'
 					th( colspan="5" ) 
 				if access.indexOf( 'admin' ) != -1
-					th  
+					th Manage
 		tbody
 			each member, m in members
 				tr( title="Member Details", data-href="/members/" + member.uuid, style="cursor: pointer;" )

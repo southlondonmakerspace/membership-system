@@ -1,7 +1,10 @@
 var __root = __dirname + '/../..';
+var __config = __root + '/config/config.json';
 var __apps = __root + '/apps';
 var __src = __root + '/src';
 var __js = __src + '/js';
+
+var config = require( __config );
 
 var fs = require( 'fs' );
 
@@ -20,6 +23,18 @@ module.exports = function( a ) {
 
 	// Route apps
 	routeApps();
+
+	// Error 404
+	app.use( function ( req, res, next ) {
+		res.status( 404 );
+		res.render( '404' );
+	} );
+
+	// Error 500
+	app.use( function ( err, req, res, next ) {
+		res.status( 500 );
+		res.render( '500', { error: ( config.dev ? err.stack : undefined ) } );
+	} );
 };
 
 function loadApps() {

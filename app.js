@@ -1,12 +1,15 @@
-var __config = __dirname + '/config/config.json';
-var __static = __dirname + '/static';
-var __src = __dirname + '/src';
+var __root = __dirname;
+var __config = __root + '/config/config.json';
+var __static = __root + '/static';
+var __src = __root + '/src';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
-var config = require( __config ),
-	database = require( __js + '/database' ).connect( config.mongo ),
-	express = require( 'express' ),
+var config = require( __config );
+
+var database = require( __js + '/database' ).connect( config.mongo );
+
+var express = require( 'express' ),
 	helmet = require( 'helmet' ),
 	flash = require( 'express-flash' ),
 	app = express(),
@@ -38,13 +41,6 @@ app.set( 'view cache', false );
 
 // Load apps
 app_loader( app );
-
-// Error 404
-app.get( '*', function( req, res ) {
-	res.status( 404 );
-	res.render( '404' );
-} );
-console.log( "	Route: *" );
 
 // Start server
 var listener = app.listen( config.port ,config.host, function () {

@@ -29,7 +29,8 @@ module.exports =  function( app ) {
 	} ) );
 
 	// Form Body Parser
-	app.use( body() );
+	app.use( body.urlencoded( { extended: true } ) );
+	app.use( body.json() );
 
 	// Passport
 	app.use( passport.initialize() );

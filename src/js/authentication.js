@@ -46,7 +46,7 @@ var Authentication = {
 								}
 
 								// Clear any pending password resets and notify
-								if ( user.password.reset_code !== null ) {
+								if ( user.password.reset_code ) {
 									user.password.reset_code = null;
 									user.save( function ( err ) {} );
 									return done( null, { _id: user._id }, { message: messages['password-reset-attempt'] } );

@@ -31,11 +31,11 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isAdmin, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	res.render( 'index' );
 } );
 
-app.get( '/:slug/members/:year/:month', auth.isAdmin, function( req, res ) {
+app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
@@ -110,7 +110,7 @@ app.get( '/:slug/members/:year/:month', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/members/:year', auth.isAdmin, function( req, res ) {
+app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
@@ -180,7 +180,7 @@ app.get( '/:slug/members/:year', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days/:year?', auth.isAdmin, function( req, res ) {
+app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
@@ -256,7 +256,7 @@ app.get( '/:slug/days/:year?', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days-of-week/:year?', auth.isAdmin, function( req, res ) {
+app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
@@ -330,7 +330,7 @@ app.get( '/:slug/days-of-week/:year?', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/days-of-week/:year/:month', auth.isAdmin, function( req, res ) {
+app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 

@@ -2,7 +2,7 @@
 	"title": "Map",
 	"path": "map",
 	"permissions": [
-		"superadmin", "admin"
+		"superadmin"
 	],
 	"priority": 1
 }

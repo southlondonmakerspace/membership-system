@@ -2,7 +2,7 @@
 	"title": "Reports",
 	"path": "reports",
 	"permissions": [
-		"superadmin", "admin"
+		"superadmin"
 	],
 	"menu": "main",
 	"hidden": true,

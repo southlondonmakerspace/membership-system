@@ -5,8 +5,7 @@ var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express(),
-	discourse = require( __js + '/discourse' ),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	discourse = require( __js + '/discourse' );
 
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
@@ -150,7 +149,7 @@ app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.firstname === undefined ||
 		 req.body.lastname === undefined ||
 		 req.body.email === undefined ||
@@ -208,7 +207,7 @@ app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};
@@ -242,7 +241,7 @@ app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/tag', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.tag === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
@@ -291,7 +290,7 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.username === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
@@ -330,7 +329,7 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.mandate_id === undefined ||
 		 req.body.subscription_id === undefined ||
 	 	 req.body.minimum === undefined ) {
@@ -372,7 +371,7 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	if ( req.body.permission === undefined ||
 		 req.body.start_time === undefined ||
  		 req.body.start_date === undefined ||
@@ -470,7 +469,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	if ( req.body.start_time === undefined ||
  		 req.body.start_date === undefined ||
 		 req.body.expiry_time === undefined ||

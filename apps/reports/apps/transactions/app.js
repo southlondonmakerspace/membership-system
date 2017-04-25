@@ -4,8 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var moment = require( 'moment' );
 

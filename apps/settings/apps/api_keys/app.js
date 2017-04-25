@@ -4,8 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var APIKeys = require( __js + '/database' ).APIKeys;
 
@@ -42,7 +41,7 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.render( 'create' );
 } );
 
-app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.name === undefined ||
 		 req.body.key === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );
@@ -88,7 +87,7 @@ app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:id/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.name === undefined ||
 		 req.body.key === undefined ) {
  			req.flash( 'danger', messages['information-ommited'] );

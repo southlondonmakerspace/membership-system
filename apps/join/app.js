@@ -4,8 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
@@ -45,7 +44,7 @@ app.get( '/' , function( req, res ) {
 	}
 } );
 
-app.post( '/', formBodyParser, function( req, res ) {
+app.post( '/', function( req, res ) {
 	if ( req.body.firstname === undefined ||
 		 req.body.lastname === undefined ||
  		 req.body.password === undefined ||

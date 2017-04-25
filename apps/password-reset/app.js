@@ -4,8 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var pug = require( 'pug' );
 var nodemailer = require( 'nodemailer' );
@@ -31,7 +30,7 @@ app.get( '/' , function( req, res ) {
 	res.render( 'reset-password' );
 } );
 
-app.post( '/', formBodyParser, function( req, res ) {
+app.post( '/', function( req, res ) {
 	if ( req.body.email === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
@@ -77,7 +76,7 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 	res.render( 'change-password', { password_reset_code: req.params.password_reset_code } );
 } );
 
-app.post( '/change-password', formBodyParser, function( req, res ) {
+app.post( '/change-password', function( req, res ) {
 	if ( req.body.password_reset_code === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );

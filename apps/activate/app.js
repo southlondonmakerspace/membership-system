@@ -3,8 +3,7 @@ var __src = __root + '/src';
 var __js = __src + '/js';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var	Members = require( __js + '/database' ).Members,
 	auth = require( __js + '/authentication' );
@@ -40,7 +39,7 @@ app.get( '/:activation_code' , function( req, res ) {
 	}
 } );
 
-app.post( '/', formBodyParser, function( req, res ) {
+app.post( '/', function( req, res ) {
 	if ( req.body.activation_code === undefined || req.body.password === undefined ) {
 			req.flash( 'danger', messages['information-ommited'] );
 			res.redirect( '/activate' );

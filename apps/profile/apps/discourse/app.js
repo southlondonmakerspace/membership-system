@@ -5,8 +5,7 @@ var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express(),
-	request= require( 'request' ),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	request= require( 'request' );
 
 var messages = require( __src + '/messages.json' );
 
@@ -57,7 +56,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
+app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.search === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
@@ -95,7 +94,7 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 	}
 } );
 
-app.post( '/activate', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.activation_code === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );

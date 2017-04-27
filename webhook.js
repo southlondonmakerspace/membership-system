@@ -4,7 +4,7 @@ var __src = __dirname + '/src';
 var __js = __src + '/js';
 
 var config = require( __config ),
-	database = require( __js + '/database' ).connect( config.mongo ),
+	db = require( __dirname + '/src/js/database' ).connect( config.mongo ),
 	express = require( 'express' ),
 	app = express(),
 	http = require( 'http' ).Server( app ),
@@ -12,9 +12,9 @@ var config = require( __config ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
-var Members = require( __js + '/database' ).Members;
-var Permissions = require( __js + '/database' ).Permissions;
-var Payments = require( __js + '/database' ).Payments;
+var Members = db.Members,
+	Permissions = db.Permissions,
+	Payments = db.Payments;
 
 console.log( "Starting..." );
 

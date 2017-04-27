@@ -117,6 +117,12 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 				name: member.fullname
 			} );
 			discourse.getUsername( member.discourse.username, function( discourse ) {
+				var total = 0;
+
+				for ( p in payments ) {
+					total += payments[p].amount;
+				}
+
 				res.render( 'member', {
 					member: member,
 					payments: payments,
@@ -124,7 +130,8 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 					discourse_path: config.discourse.url,
 					audience: config.audience,
 					superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ),
-					password_tries: config['password-tries']
+					password_tries: config['password-tries'],
+					total: total
 				} );
 			} );
 		} );

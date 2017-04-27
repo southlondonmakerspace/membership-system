@@ -80,37 +80,68 @@ app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
 
 app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
+
 	if ( ! req.query.since ) return res.sendStatus( 404 );
 	var date = moment( req.query.since );
+
 	if ( ! date.isValid() ) return res.sendStatus( 404 );
 	var limit = 10;
+
+	var page = 1;
+	if ( req.query.page ) page = parseInt( req.query.page );
+
 	if ( req.query.limit ) {
 		var raw_limit = parseInt( req.query.limit );
-		if ( req.query.limit > 0 && req.query.limit < 50 )
+		if ( req.query.limit > 0 && req.query.limit <= 100 )
 			limit = raw_limit;
 	}
-	Events.find( { happened: { $gt: date.toDate() } } ).limit( limit ).sort( { happened: 'asc' } ).populate( 'member' ).populate( 'permission' ).exec( function( err, events ) {
+	Events.find( {
+		happened: {
+			$gt: date.toDate()
+		}
+	} )
+	.limit( limit )
+	.skip( ( page - 1 ) * limit )
+	.sort( { happened: 'asc' } )
+	.populate( 'member' )
+	.populate( 'permission' )
+	.populate( 'activity' )
+	.exec( function( err, events ) {
 		var output = {
 			now: new Date(),
 			since: date.toDate(),
 			limit: limit,
+			page: page,
+			results: events.length,
 			events: []
 		};
+		console.log( events.length );
 		for ( var e in events ) {
+			console.log( e );
 			var event = events[e];
 			var output_event = {
-				date: event.happened,
-				user: {
+				date: event.happened
+			};
+			if ( event.member )
+				output_event.user = {
 					fullname: event.member.fullname,
 					firstname: event.member.firstname,
 					lastname: event.member.lastname,
 					gravatar: event.member.gravatar
-				},
-				permission: {
+				};
+
+			if ( event.permission )
+				output_event.permission = {
 					name: event.permission.name,
 					action: event.permission.event_name
 				}
-			};
+
+			if ( event.activity )
+				output_event.activitiy = {
+					name: event.activity.name,
+					action: event.activity.event_name
+				}
+
 			output.events.push( output_event );
 		}
 		res.send( JSON.stringify( output ) );

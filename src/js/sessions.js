@@ -1,5 +1,8 @@
+var __root = '../..';
+var __config = __root + '/config/config.json';
+
 var session = require( 'express-session' ),
-	config = require( '../../config/config.json' ),
+	config = require( __config ),
 	cookie = require('cookie-parser'),
 	body = require( 'body-parser' ),
 	passport = require( 'passport' );

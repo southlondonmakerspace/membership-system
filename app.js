@@ -14,7 +14,7 @@ var express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	app = express(),
 	http = require( 'http' ).Server( app ),
-	app_loader = require( __js + '/app-loader.js' );
+	app_loader = require( __js + '/app-loader' );
 
 // Use helmet
 app.use( helmet() );

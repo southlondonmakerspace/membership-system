@@ -6,9 +6,10 @@ var	express = require( 'express' ),
 	app = express();
 
 var auth = require( __js + '/authentication' ),
-	Members = require( __js + '/database' ).Members,
-	Payments = require( __js + '/database' ).Payments,
-	HistoricEvents = require( __js + '/database' ).HistoricEvents;
+	db = require( __js + '/database' ),
+	Members = db.Members,
+	Payments = db.Payments,
+	HistoricEvents = db.HistoricEvents;
 
 var app_config = {};
 

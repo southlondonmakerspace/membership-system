@@ -6,8 +6,9 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var Permissions = require( __js + '/database' ).Permissions,
-	Members = require( __js + '/database' ).Members;
+var db = require( __js + '/database' ),
+	Permissions = db.Permissions,
+	Members = db.Members;
 
 var auth = require( __js + '/authentication' );
 

@@ -6,8 +6,9 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var Activities = require( __js + '/database' ).Activities,
-	Members = require( __js + '/database' ).Members;
+var db = require( __js + '/database' ),
+	Activities = db.Activities,
+	Members = db.Members;
 
 var auth = require( __js + '/authentication' );
 

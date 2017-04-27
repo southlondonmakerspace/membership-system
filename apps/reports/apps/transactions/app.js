@@ -8,8 +8,9 @@ var	express = require( 'express' ),
 
 var moment = require( 'moment' );
 
-var Payments = require( __js + '/database' ).Payments,
-	Members = require( __js + '/database' ).Members;
+var db = require( __js + '/database' ),
+	Payments = db.Payments,
+	Members = db.Members;
 
 var auth = require( __js + '/authentication' );
 

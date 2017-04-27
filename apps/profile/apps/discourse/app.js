@@ -5,8 +5,7 @@ var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express(),
-	request= require( 'request' ),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	request= require( 'request' );
 
 var messages = require( __src + '/messages.json' );
 
@@ -57,7 +56,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
+app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.search === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
@@ -83,7 +82,7 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 							discourse.sendActivationMessage( user.username, code );
 
 							req.flash( 'info', messages['discourse-activation-sent'] );
-							res.redirect( app.parent.mountpath );
+							res.redirect( app.parent.mountpath + app.mountpath );
 						} );
 					}
 				} );
@@ -95,7 +94,7 @@ app.post( '/link', [ formBodyParser, auth.isLoggedIn ], function( req, res ) {
 	}
 } );
 
-app.post( '/activate', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.activation_code === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
@@ -113,6 +112,18 @@ app.post( '/activate', [ auth.isLoggedIn, formBodyParser ], function( req, res )
 	}
 	req.flash( 'warning', messages['discourse-activation-code-err'] );
 	res.redirect( app.parent.mountpath );
+} );
+
+app.post( '/unlink', auth.isLoggedIn, function( req, res ) {
+	req.user.discourse = {
+		email: '',
+		username: '',
+		activated: false
+	};
+	req.user.save( function( err ) {
+		req.flash( 'danger', messages['discourse-unlinked'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	} );
 } );
 
 module.exports = function( config ) {

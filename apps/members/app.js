@@ -5,8 +5,7 @@ var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express(),
-	discourse = require( __js + '/discourse' ),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	discourse = require( __js + '/discourse' );
 
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
@@ -43,7 +42,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 		var filter_permissions = [];
 
 		// If not admin or requesting active members only add member permission to filtering list
-		if ( ! ( auth.canAdmin( req ) == true ) || req.query.active_members !== undefined ) {
+		if ( ! ( auth.canSuperAdmin( req ) == true && req.query.inactive_members !== undefined ) ) {
 			var member = permissions.filter( function( permission ) {
 				if ( permission.slug == 'member' ) return true;
 				return false;
@@ -96,11 +95,11 @@ app.get( '/', auth.isMember, function( req, res ) {
 
 		// Perform search
 		Members.find( search ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
-			res.render( 'members', {
+			res.render( 'index', {
 				members: members,
 				permissions: permissions,
 				filter_permission: ( permission !== null ? permission : null ),
-				active_members: ( req.query.active_members !== undefined ? true : false )
+				inactive_members: ( req.query.inactive_members !== undefined ? false : true )
 			} );
 		} );
 	} );
@@ -118,6 +117,12 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 				name: member.fullname
 			} );
 			discourse.getUsername( member.discourse.username, function( discourse ) {
+				var total = 0;
+
+				for ( p in payments ) {
+					total += payments[p].amount;
+				}
+
 				res.render( 'member', {
 					member: member,
 					payments: payments,
@@ -125,7 +130,8 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 					discourse_path: config.discourse.url,
 					audience: config.audience,
 					superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ),
-					password_tries: config['password-tries']
+					password_tries: config['password-tries'],
+					total: total
 				} );
 			} );
 		} );
@@ -146,11 +152,11 @@ app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Update',
 		} );
-		res.render( 'member-update', { member: member } );
+		res.render( 'update', { member: member } );
 	} );
 } );
 
-app.post( '/:uuid/update', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.firstname === undefined ||
 		 req.body.lastname === undefined ||
 		 req.body.email === undefined ||
@@ -204,11 +210,11 @@ app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Activation',
 		} );
-		res.render( 'member-activation', { member: member } );
+		res.render( 'activation', { member: member } );
 	} );
 } );
 
-app.post( '/:uuid/activation', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	var member = {
 		activated: ( req.body.activated ? true : false )
 	};
@@ -238,11 +244,11 @@ app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Tag'
 		} );
-		res.render( 'member-tag', { member: member } );
+		res.render( 'tag', { member: member } );
 	} );
 } );
 
-app.post( '/:uuid/tag', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.tag === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
@@ -287,11 +293,11 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Discourse'
 		} );
-		res.render( 'member-discourse', { member: member } );
+		res.render( 'discourse', { member: member } );
 	} );
 } );
 
-app.post( '/:uuid/discourse', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.username === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.mountpath );
@@ -326,11 +332,11 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'GoCardless'
 		} );
-		res.render( 'member-gocardless', { member: member, minimum: config.gocardless.minimum } );
+		res.render( 'gocardless', { member: member, minimum: config.gocardless.minimum } );
 	} );
 } );
 
-app.post( '/:uuid/gocardless', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.mandate_id === undefined ||
 		 req.body.subscription_id === undefined ||
 	 	 req.body.minimum === undefined ) {
@@ -367,12 +373,12 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
 			} );
-			res.render( 'member-permissions', { permissions: permissions, member: member, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
+			res.render( 'permissions', { permissions: permissions, member: member, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
 	} );
 } );
 
-app.post( '/:uuid/permissions', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	if ( req.body.permission === undefined ||
 		 req.body.start_time === undefined ||
  		 req.body.start_date === undefined ||
@@ -466,11 +472,11 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: member.permissions.id( req.params.id ).permission.name
 		} );
-		res.render( 'member-permission', { member: member, current: member.permissions.id( req.params.id ) } );
+		res.render( 'permission', { member: member, current: member.permissions.id( req.params.id ) } );
 	} );
 } );
 
-app.post( '/:uuid/permissions/:id/modify', [ auth.isAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	if ( req.body.start_time === undefined ||
  		 req.body.start_date === undefined ||
 		 req.body.expiry_time === undefined ||

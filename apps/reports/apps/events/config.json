@@ -2,6 +2,6 @@
 	"title": "Events",
 	"path": "events",
 	"permissions": [
-		"superadmin", "admin"
+		"superadmin"
 	]
 }

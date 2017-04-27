@@ -46,7 +46,7 @@ var Authentication = {
 								}
 
 								// Clear any pending password resets and notify
-								if ( user.password.reset_code !== null ) {
+								if ( user.password.reset_code ) {
 									user.password.reset_code = null;
 									user.save( function ( err ) {} );
 									return done( null, { _id: user._id }, { message: messages['password-reset-attempt'] } );
@@ -138,6 +138,7 @@ var Authentication = {
 		app.use( passport.initialize() );
 		app.use( passport.session() );
 	},
+
 	// Used for generating activation codes for new accounts, discourse linking, and password reset
 	// returns a 10 byte / 20 character hex string
 	generateActivationCode: function( callback ) {
@@ -145,6 +146,7 @@ var Authentication = {
 			callback( code.toString( 'hex' ) );
 		} );
 	},
+
 	// Used to create a long salt for each individual user
 	// returns a 256 byte / 512 character hex string
 	generateSalt: function( callback ) {
@@ -152,6 +154,7 @@ var Authentication = {
 			callback( salt.toString( 'hex' ) );
 		} );
 	},
+
 	// Hashes passwords through sha512 1000 times
 	// returns a 512 byte / 1024 character hex string
 	hashPassword: function( password, salt, callback ) {
@@ -159,6 +162,7 @@ var Authentication = {
 			callback( hash.toString( 'hex' ) );
 		} );
 	},
+
 	// Utility function generates a salt and hash from a plain text password
 	generatePassword: function( password, callback ) {
 		Authentication.generateSalt( function( salt ) {
@@ -170,6 +174,7 @@ var Authentication = {
 			} );
 		} );
 	},
+
 	// Checks if an email address is in the config.json superadmin email array
 	superAdmin: function( email ) {
 		if ( config.superadmins.indexOf( email ) != -1 ) {
@@ -177,6 +182,7 @@ var Authentication = {
 		}
 		return false;
 	},
+
 	// Checks the user is logged in and activated.
 	loggedIn: function( req ) {
 		// Is the user logged in?
@@ -191,6 +197,7 @@ var Authentication = {
 			return false;
 		}
 	},
+
 	// Checks if the user is an active member (has paid or has admin powers)
 	activeMember: function( req ) {
 		// Check user is logged in
@@ -205,6 +212,7 @@ var Authentication = {
 		}
 		return -2;
 	},
+
 	// Checks if the user has an active admin or superadmin privilage
 	canAdmin: function( req ) {
 		// Check user is logged in
@@ -218,6 +226,7 @@ var Authentication = {
 		}
 		return -3;
 	},
+
 	// Checks if the user has an active superadmin privilage
 	canSuperAdmin: function( req ) {
 		// Check user is logged in
@@ -230,6 +239,7 @@ var Authentication = {
 		}
 		return -3;
 	},
+	
 	// Checks if the user has an active specified permission
 	checkPermission: function( req, permission ) {
 		if ( ! req.user ) return false;
@@ -245,6 +255,7 @@ var Authentication = {
 		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return true;
 		return false;
 	},
+
 	// Express middleware to redirect logged out users
 	isLoggedIn: function( req, res, next ) {
 		var status = Authentication.loggedIn( req );
@@ -263,6 +274,7 @@ var Authentication = {
 				return;
 		}
 	},
+
 	// Express middleware to redirect unauthenticated API calls
 	isAPIAuthenticated: function( req, res, next ) {
 		if ( ! req.query.api_key ) return res.sendStatus( 403 );
@@ -271,6 +283,7 @@ var Authentication = {
 			return res.sendStatus( 403 );
 		} );
 	},
+
 	// Express middleware to redirect inactive members
 	isMember: function( req, res, next ) {
 		var status = Authentication.activeMember( req );
@@ -293,6 +306,7 @@ var Authentication = {
 				return;
 		}
 	},
+
 	// Express middleware to redirect users without admin/superadmin privilages
 	isAdmin: function( req, res, next ) {
 		var status = Authentication.canAdmin( req );
@@ -319,6 +333,7 @@ var Authentication = {
 				return;
 		}
 	},
+
 	// Express middleware to redirect users without superadmin privilages
 	isSuperAdmin: function( req, res, next ) {
 		var status = Authentication.canSuperAdmin( req );
@@ -345,6 +360,7 @@ var Authentication = {
 				return;
 		}
 	},
+
 	// Hashes a members tag with a salt using md5, per the legacy membership system
 	hashCard: function( id ) {
 		var md5 = crypto.createHash( 'md5' );
@@ -352,6 +368,7 @@ var Authentication = {
 		md5.update( id.toLowerCase() );
 		return md5.digest( 'hex' );
 	},
+
 	// Checks password meets requirements
 	passwordRequirements: function( password ) {
 		if ( password.length < 8 )

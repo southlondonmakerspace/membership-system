@@ -82,17 +82,17 @@ block contents
 						dd #{ member.password.reset_code ? member.password.reset_code + ' – ' + audience + '/password-reset/' + member.password.reset_code : '–' }
 						dt Password tries
 						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
-			.col-md-6
-				.page-header
-					h3 Tag
-						if access == 'superadmin'
-							a( href="/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
-								span.glyphicon.glyphicon-pencil
-								|  Edit Tag
-				dl.dl-horizontal
-					dt Tag
-					dd #{ member.tag.id ? member.tag.id : '–' }
-					if access == 'superadmin'
+			if access == 'superadmin'
+				.col-md-6
+					.page-header
+						h3 Tag
+							if access == 'superadmin'
+								a( href="/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
+									span.glyphicon.glyphicon-pencil
+									|  Edit Tag
+					dl.dl-horizontal
+						dt Tag
+						dd #{ member.tag.id ? member.tag.id : '–' }
 						dt Hashed Tag
 						dd #{ member.tag.hashed ? member.tag.hashed : '–' }
 		if access == 'superadmin'
@@ -181,5 +181,9 @@ block contents
 									td
 										include ../../profile/apps/statement/views/partials/status.pug
 									td #{ payment.amount ? '£' + payment.amount : '–' }
+						tfoot
+							tr
+								th( colspan=7 ) Total
+								th £ #{ total }
 				else
 					p Member has no payment history

@@ -6,8 +6,7 @@ var __apps = __dirname + '/apps';
 
 var	fs = require( 'fs' ),
 	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
@@ -125,7 +124,7 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 	res.render( 'update', { user: req.user } );
 } );
 
-app.post( '/update', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.firstname === undefined ||
 		 req.body.lastname === undefined ||
  		 req.body.address === undefined ) {
@@ -183,7 +182,7 @@ app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 	res.render( 'emergency-contact', { user: req.user } );
 } );
 
-app.post( '/emergency-contact', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.firstname === undefined ||
 		 req.body.lastname === undefined ||
  		 req.body.telephone === undefined ) {
@@ -223,7 +222,7 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 	res.render( 'change-password' );
 } );
 
-app.post( '/change-password', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.current === undefined ||
 		 req.body.new === undefined ||
  		 req.body.verify === undefined ) {

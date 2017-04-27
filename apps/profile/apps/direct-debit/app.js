@@ -5,9 +5,7 @@ var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express(),
-	request = require( 'request' ),
-	bodyParser = require( 'body-parser' ),
-	formBodyParser = bodyParser.urlencoded( { extended: true } );
+	request = require( 'request' );
 
 var messages = require( __src + '/messages.json' );
 
@@ -15,8 +13,9 @@ var config = require( __config + '/config.json' );
 
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
-	Permissions = require( __js + '/database' ).Permissions,
-	Members = require( __js + '/database' ).Members;
+	db = require( __js + '/database' ),
+	Permissions = db.Permissions,
+	Members = db.Members;
 
 var GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
@@ -131,7 +130,7 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-app.post( '/create-subscription', [ auth.isLoggedIn, formBodyParser ], function( req, res ) {
+app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.amount === undefined ||
 	 	 req.body.day_of_month === undefined ) {
 		req.flash( 'danger', messages['information-ommited'] );

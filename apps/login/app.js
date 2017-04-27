@@ -2,8 +2,7 @@ var __root = '../..';
 var __src = __root + '/src';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var	passport = require( 'passport' );
 
@@ -24,11 +23,11 @@ app.get( '/' , function( req, res ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
-		res.render( 'login' );
+		res.render( 'index' );
 	}
 } );
 
-app.post( '/', formBodyParser, passport.authenticate( 'local', {
+app.post( '/', passport.authenticate( 'local', {
 	failureRedirect: app.mountpath,
 	failureFlash: true,
 	successFlash: true

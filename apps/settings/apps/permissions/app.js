@@ -4,11 +4,11 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
-var Permissions = require( __js + '/database' ).Permissions,
-	Members = require( __js + '/database' ).Members;
+var db = require( __js + '/database' ),
+	Permissions = db.Permissions,
+	Members = db.Members;
 
 var auth = require( __js + '/authentication' );
 
@@ -30,7 +30,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isAdmin, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		res.render( 'index', { permissions: permissions } );
 	} );
@@ -43,7 +43,7 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.render( 'create' );
 } );
 
-app.post( '/create', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.name === undefined ||
 		 req.body.event === undefined ||
  		 req.body.slug === undefined ) {
@@ -99,7 +99,7 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:slug/edit', [ auth.isSuperAdmin, formBodyParser ], function( req, res ) {
+app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( req.body.name === undefined ||
 		 req.body.event === undefined ||
  		 req.body.slug === undefined ) {

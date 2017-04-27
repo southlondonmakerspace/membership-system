@@ -2,6 +2,6 @@
 	"title": "Catchment",
 	"path": "catchment",
 	"permissions": [
-		"superadmin", "admin"
+		"superadmin"
 	]
 }

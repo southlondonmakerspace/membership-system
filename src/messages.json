@@ -84,5 +84,6 @@
 	"apikey-name-required": "API Key requires a name",
 	"apikey-key-required": "API Key requires a secret key",
 
-	"tag-revoked": "Your tag has been revoked"
+	"tag-revoked": "Your tag has been revoked",
+	"discourse-unlinked": "Your Discourse account has been unlinked"
 }

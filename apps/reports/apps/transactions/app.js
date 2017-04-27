@@ -4,13 +4,13 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	formBodyParser = require( 'body-parser' ).urlencoded( { extended: true } );
+	app = express();
 
 var moment = require( 'moment' );
 
-var Payments = require( __js + '/database' ).Payments,
-	Members = require( __js + '/database' ).Members;
+var db = require( __js + '/database' ),
+	Payments = db.Payments,
+	Members = db.Members;
 
 var auth = require( __js + '/authentication' );
 
@@ -59,7 +59,7 @@ app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
 				if ( payments[p].status == 'payment_paid_out' )
 					total += payments[p].amount;
 		}
-		res.render( 'transactions', {
+		res.render( 'index', {
 			payments: payments,
 			total: total,
 			next: end,

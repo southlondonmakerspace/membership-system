@@ -3,6 +3,7 @@ var mongoose = require( 'mongoose' ),
 	crypto = require( 'crypto' );
 
 exports.connect = function( url ) {
+	mongoose.Promise = global.Promise;
 	mongoose.connect( url );
 	var db = mongoose.connection;
 	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
@@ -132,7 +133,6 @@ var memberSchema = mongoose.Schema( {
 		}
 	},
 	discourse: {
-		email: String,
 		username: String,
 		activated: {
 			type: Boolean,

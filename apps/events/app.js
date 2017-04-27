@@ -109,7 +109,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 							} );
 						}
 
-						res.render( 'events', {
+						res.render( 'index', {
 							events: events,
 							previous: previousDate,
 							next: endDate,

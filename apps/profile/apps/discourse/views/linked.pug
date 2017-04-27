@@ -10,9 +10,18 @@ block contents
 			include ../../../views/partials/sidebar.pug
 		.col-md-9
 			.page-header
-				h3 Discourse
-			p: img( style="border-radius: 100%", src=discourse_user.avatar )
-			p Hello there
-				a( target="_blank", href=discourse_path + "/users/" + discourse_user.user.username)  @#{ discourse_user.user.username }
-				| .
-			p Your account is linked with Discourse.
+				h3 #{ title }
+			.row
+				.col-md-2
+					p: img( style="border-radius: 100%", src=discourse_user.avatar )
+				.col-md-10
+					p Your account is linked to your Discourse profile
+						|  
+						a( target="_blank", href=discourse_path + "/users/" + discourse_user.user.username) @#{ discourse_user.user.username }
+						| .
+					.page-header
+						h3 Unlink your account
+					p You can unlink your account from Discourse by clicking below.
+					form( action="/profile/discourse/unlink", method="post" )
+						include ../../../../../src/views/partials/csrf.pug
+						button.btn.btn-sm.btn-danger Unlink from Discourse

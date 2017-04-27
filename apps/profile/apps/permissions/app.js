@@ -8,8 +8,9 @@ var	express = require( 'express' ),
 
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
-	Permissions = require( __js + '/database' ).Permissions,
-	Members = require( __js + '/database' ).Members;
+	db = require( __js + '/database' ),
+	Permissions = db.Permissions,
+	Members = db.Members;
 
 var messages = require( __src + '/messages.json' );
 
@@ -30,7 +31,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	res.render( 'permissions', { permissions: req.user.permissions } );
+	res.render( 'index', { permissions: req.user.permissions } );
 } );
 
 module.exports = function( config ) {

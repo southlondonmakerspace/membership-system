@@ -15,6 +15,7 @@ block contents
 			p Please click the link or copy the code to link your accounts.
 
 			form( method="post", action="/profile/discourse/activate" )
+				include ../../../../../src/views/partials/csrf.pug
 				p
 					label( for="activation_code" ) Activation code:
 					input( name="activation_code" type="text" value=activation_code )#activation_code.form-control( class=(  activation_code ? 'readonly' : '' ) )

@@ -30,7 +30,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	res.render( 'permissions', { permissions: req.user.permissions } );
+	res.render( 'index', { permissions: req.user.permissions } );
 } );
 
 module.exports = function( config ) {

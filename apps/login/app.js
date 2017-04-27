@@ -23,7 +23,7 @@ app.get( '/' , function( req, res ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
 	} else {
-		res.render( 'login' );
+		res.render( 'index' );
 	}
 } );
 

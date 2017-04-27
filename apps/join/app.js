@@ -40,7 +40,7 @@ app.get( '/' , function( req, res ) {
 			lastname: '',
 			email: ''
 		};
-		res.render( 'join', { user: user } );
+		res.render( 'index', { user: user } );
 	}
 } );
 

@@ -30,7 +30,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isSuperAdmin, function( req, res ) {
-	res.render( 'map' );
+	res.render( 'index' );
 } );
 
 app.get( '/data.json', auth.isSuperAdmin, function( req, res ) {

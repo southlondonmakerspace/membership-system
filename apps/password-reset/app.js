@@ -27,7 +27,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/' , function( req, res ) {
-	res.render( 'reset-password' );
+	res.render( 'index' );
 } );
 
 app.post( '/', function( req, res ) {

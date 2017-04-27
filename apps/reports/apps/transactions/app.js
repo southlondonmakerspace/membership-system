@@ -58,7 +58,7 @@ app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
 				if ( payments[p].status == 'payment_paid_out' )
 					total += payments[p].amount;
 		}
-		res.render( 'transactions', {
+		res.render( 'index', {
 			payments: payments,
 			total: total,
 			next: end,

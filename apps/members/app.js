@@ -95,7 +95,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 
 		// Perform search
 		Members.find( search ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
-			res.render( 'members', {
+			res.render( 'index', {
 				members: members,
 				permissions: permissions,
 				filter_permission: ( permission !== null ? permission : null ),
@@ -152,7 +152,7 @@ app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Update',
 		} );
-		res.render( 'member-update', { member: member } );
+		res.render( 'update', { member: member } );
 	} );
 } );
 
@@ -210,7 +210,7 @@ app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Activation',
 		} );
-		res.render( 'member-activation', { member: member } );
+		res.render( 'activation', { member: member } );
 	} );
 } );
 
@@ -244,7 +244,7 @@ app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Tag'
 		} );
-		res.render( 'member-tag', { member: member } );
+		res.render( 'tag', { member: member } );
 	} );
 } );
 
@@ -293,7 +293,7 @@ app.get( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'Discourse'
 		} );
-		res.render( 'member-discourse', { member: member } );
+		res.render( 'discourse', { member: member } );
 	} );
 } );
 
@@ -332,7 +332,7 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'GoCardless'
 		} );
-		res.render( 'member-gocardless', { member: member, minimum: config.gocardless.minimum } );
+		res.render( 'gocardless', { member: member, minimum: config.gocardless.minimum } );
 	} );
 } );
 
@@ -373,7 +373,7 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
 			} );
-			res.render( 'member-permissions', { permissions: permissions, member: member, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
+			res.render( 'permissions', { permissions: permissions, member: member, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
 		} );
 	} );
 } );
@@ -472,7 +472,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: member.permissions.id( req.params.id ).permission.name
 		} );
-		res.render( 'member-permission', { member: member, current: member.permissions.id( req.params.id ) } );
+		res.render( 'permission', { member: member, current: member.permissions.id( req.params.id ) } );
 	} );
 } );
 

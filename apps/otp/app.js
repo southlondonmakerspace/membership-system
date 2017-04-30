@@ -43,6 +43,12 @@ app.post( '/', passport.authenticate( 'totp', {
 	}
 } );
 
+app.get( '/cancel', function( req, res ) {
+	delete req.session.method;
+	req.logout();
+	res.redirect( '/' );
+} );
+
 module.exports = function( config ) {
 	app_config = config;
 	return app;

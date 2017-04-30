@@ -45,11 +45,10 @@ block contents
 					if access.indexOf( 'admin' ) != -1
 						th Email
 					th Joined
-					if access.indexOf( 'admin' ) != -1
-						th Manage
 					if access == 'superadmin'
-						th( colspan="5" ) 
-					
+						th( colspan="7" ) Manage
+					else if access.indexOf( 'admin' ) != -1
+						th Manage
 			tbody
 				each member, m in members
 					tr( data-href="/members/" + member.uuid, style="cursor: pointer;" )
@@ -70,6 +69,8 @@ block contents
 								span.glyphicon.glyphicon-piggy-bank
 							td: a.btn.btn-sm( title="Edit Tag" href="/members/" + member.uuid + "/tag", class=( member.tag.id ? 'btn-success' : 'btn-default' ) )
 								span.glyphicon.glyphicon-credit-card
+							td: a.btn.btn-sm( title="Edit 2FA", href="/members/" + member.uuid + "/2fa", class=( member.otp.key ? 'btn-success' : 'btn-default' ) )
+								span.glyphicon.glyphicon-lock
 						if access.indexOf( 'admin' ) != -1
 							td: a.btn.btn-sm.btn-default( title="Edit Permissions" href="/members/" + member.uuid + "/permissions" )
 								span.glyphicon.glyphicon-tag

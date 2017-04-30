@@ -60,9 +60,13 @@ block contents
 				.page-header
 					h3 Membership System
 						if access == 'superadmin'
-							a( href="/members/" + member.uuid + "/activation" ).btn.btn-default.pull-right
-								span.glyphicon.glyphicon-pencil
-								|  Edit Activation
+							.btn-group.pull-right
+								a( href="/members/" + member.uuid + "/activation" ).btn.btn-default
+									span.glyphicon.glyphicon-ok
+									|  Edit Activation
+								a( href="/members/" + member.uuid + "/2fa" ).btn.btn-default
+									span.glyphicon.glyphicon-lock
+									|  Edit 2FA
 				dl.dl-horizontal
 					dt UUID
 					dd #{ member.uuid }
@@ -80,8 +84,10 @@ block contents
 						dd #{ member.activation_code ? member.activation_code + ' – ' + audience + '/activate/' + member.activation_code : '–' }
 						dt Password Reset Code
 						dd #{ member.password.reset_code ? member.password.reset_code + ' – ' + audience + '/password-reset/' + member.password.reset_code : '–' }
-						dt Password tries
+						dt Password Tries
 						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
+						dt 2FA
+						dd #{ member.otp.key ? 'Enabled' : 'Disabled' }
 			if access == 'superadmin'
 				.col-md-6
 					.page-header

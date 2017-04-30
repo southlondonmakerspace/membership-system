@@ -1,0 +1,12 @@
+form( method="post", action="/login" )
+	include ../../../../src/views/partials/csrf.pug
+	.form-group
+		label( for="email" ) Email:
+		input( name="email", type="text" )#email.form-control
+	.form-group
+		label( for="password" ) Password:
+		input( name="password", type="password" )#password.form-control
+	.form-group
+		button( role="button" ).btn.btn-primary Login
+		| &nbsp;
+		a( href="/password-reset" ).btn.btn-default Reset Password

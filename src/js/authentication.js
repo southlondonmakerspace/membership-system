@@ -11,9 +11,11 @@ var db = require( __js + '/database' ),
 	APIKeys = db.APIKeys;
 
 var passport = require( 'passport' ),
-	LocalStrategy = require( 'passport-local' ).Strategy;
+	LocalStrategy = require( 'passport-local' ).Strategy,
+	TotpStrategy = require( 'passport-totp' ).Strategy;
 
-var crypto = require( 'crypto' );
+var crypto = require( 'crypto' ),
+	base32 = require( 'thirty-two' );
 
 var messages = require( __src + '/messages.json' );
 
@@ -79,6 +81,18 @@ var Authentication = {
 			}
 		) );
 
+		// Add support for TOTP authentication in Passport.js
+		passport.use( new TotpStrategy( {
+			window: 1,
+		}, function( user, done ) {
+				if ( user.otp.key ) {
+					return done( null, base32.decode( user.otp.key ), 30 );
+				}
+				return done( null, false );
+			})
+		);
+
+
 		// Passport.js serialise user function
 		passport.serializeUser( function( data, done ) {
 			done( null, data );
@@ -139,6 +153,16 @@ var Authentication = {
 		app.use( passport.session() );
 	},
 
+	// Used for generating an OTP secret for 2FA
+	// returns a base32 encoded string of random bytes
+	generateOTPSecret: function( callback ) {
+		crypto.randomBytes( 16, function( ex, raw ) {
+			var secret = base32.encode( raw );
+			secret = secret.toString().replace(/=/g, '');
+			callback( secret );
+		} );
+	},
+
 	// Used for generating activation codes for new accounts, discourse linking, and password reset
 	// returns a 10 byte / 20 character hex string
 	generateActivationCode: function( callback ) {
@@ -183,18 +207,29 @@ var Authentication = {
 		return false;
 	},
 
+	LOGGED_IN: true,
+	NOT_LOGGED_IN: false,
+	NOT_ACTIVATED: -1,
+	NOT_MEMBER: -2,
+	NOT_ADMIN: -3,
+	REQUIRES_2FA: -4,
+
 	// Checks the user is logged in and activated.
 	loggedIn: function( req ) {
 		// Is the user logged in?
 		if ( req.isAuthenticated() && req.user ) {
 			// Is the user active
 			if ( req.user.activated || Authentication.superAdmin( req.user.email ) ) {
-				return true;
+				if ( ! req.user.otp.key || ( req.user.otp.key && req.session.method == 'totp' ) ) {
+					return Authentication.LOGGED_IN;
+				} else {
+					return Authentication.REQUIRES_2FA;
+				}
 			} else {
-				return -1;
+				return Authentication.NOT_ACTIVATED;
 			}
 		} else {
-			return false;
+			return Authentication.NOT_LOGGED_IN;
 		}
 	},
 
@@ -202,57 +237,57 @@ var Authentication = {
 	activeMember: function( req ) {
 		// Check user is logged in
 		var status = Authentication.loggedIn( req );
-		if ( ! status ) {
+		if ( status != Authentication.LOGGED_IN ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'member' ) ) return true;
-			if ( Authentication.checkPermission( req, 'superadmin' ) ) return true;
-			if ( Authentication.checkPermission( req, 'admin' ) ) return true;
-			if ( Authentication.superAdmin( req.user.email ) ) return true;
+			if ( Authentication.checkPermission( req, 'member' ) ) return Authentication.LOGGED_IN;
+			if ( Authentication.checkPermission( req, 'superadmin' ) ) return Authentication.LOGGED_IN;
+			if ( Authentication.checkPermission( req, 'admin' ) ) return Authentication.LOGGED_IN;
+			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 		}
-		return -2;
+		return Authentication.NOT_MEMBER;
 	},
 
 	// Checks if the user has an active admin or superadmin privilage
 	canAdmin: function( req ) {
 		// Check user is logged in
 		var status = Authentication.loggedIn( req );
-		if ( ! status ) {
+		if ( status != Authentication.LOGGED_IN ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'superadmin' ) ) return true;
-			if ( Authentication.checkPermission( req, 'admin' ) ) return true;
-			if ( Authentication.superAdmin( req.user.email ) ) return true;
+			if ( Authentication.checkPermission( req, 'superadmin' ) ) return Authentication.LOGGED_IN;
+			if ( Authentication.checkPermission( req, 'admin' ) ) return Authentication.LOGGED_IN;
+			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 		}
-		return -3;
+		return Authentication.NOT_ADMIN;
 	},
 
 	// Checks if the user has an active superadmin privilage
 	canSuperAdmin: function( req ) {
 		// Check user is logged in
 		var status = Authentication.loggedIn( req );
-		if ( ! status ) {
+		if ( status != Authentication.LOGGED_IN ) {
 			return status;
 		} else {
-			if ( Authentication.checkPermission( req, 'superadmin' ) ) return true;
-			if ( Authentication.superAdmin( req.user.email ) ) return true;
+			if ( Authentication.checkPermission( req, 'superadmin' ) ) return Authentication.LOGGED_IN;
+			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 		}
-		return -3;
+		return Authentication.NOT_ADMIN;
 	},
-	
+
 	// Checks if the user has an active specified permission
 	checkPermission: function( req, permission ) {
 		if ( ! req.user ) return false;
 		if ( permission == 'superadmin' ) {
-			if ( Authentication.superAdmin( req.user.email ) ) return true;
-			if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
+			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
+			if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return Authentication.LOGGED_IN;
 			return false;
 		}
 		if ( permission == 'admin' ) {
-			if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) return true;
+			if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) return Authentication.LOGGED_IN;
 			return false;
 		}
-		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return true;
+		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return Authentication.LOGGED_IN;
 		return false;
 	},
 
@@ -260,14 +295,17 @@ var Authentication = {
 	isLoggedIn: function( req, res, next ) {
 		var status = Authentication.loggedIn( req );
 		switch ( status ) {
-			case true:
+			case Authentication.LOGGED_IN:
 				return next();
-			case -1:
+			case Authentication.NOT_ACTIVATED:
 				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
+			case Authentication.REQUIRES_2FA:
+				res.redirect( '/otp' );
+				return;
 			default:
-			case false:
+			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );
@@ -288,18 +326,22 @@ var Authentication = {
 	isMember: function( req, res, next ) {
 		var status = Authentication.activeMember( req );
 		switch ( status ) {
-			case true:
+			case Authentication.LOGGED_IN:
 				return next();
-			case -1:
+			case Authentication.NOT_ACTIVATED:
 				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
-			case -2:
+			case Authentication.NOT_MEMBER:
 				req.flash( 'warning', messages['inactive-membership'] );
 				res.redirect( '/profile' );
 				return;
+			case Authentication.REQUIRES_2FA:
+				req.flash( 'warning', messages['2fa-required'] );
+				res.redirect( '/otp' );
+				return;
 			default:
-			case false:
+			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );
@@ -311,22 +353,26 @@ var Authentication = {
 	isAdmin: function( req, res, next ) {
 		var status = Authentication.canAdmin( req );
 		switch ( status ) {
-			case true:
+			case Authentication.LOGGED_IN:
 				return next();
-			case -1:
+			case Authentication.NOT_ACTIVATED:
 				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
-			case -2:
+			case Authentication.NOT_MEMBER:
 				req.flash( 'warning', messages['inactive-membership'] );
 				res.redirect( '/profile' );
 				return;
-			case -3:
+			case Authentication.NOT_ADMIN:
 				req.flash( 'warning', messages['403'] );
 				res.redirect( '/profile' );
 				return;
+			case Authentication.REQUIRES_2FA:
+				req.flash( 'warning', messages['2fa-required'] );
+				res.redirect( '/otp' );
+				return;
 			default:
-			case false:
+			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );
@@ -338,22 +384,26 @@ var Authentication = {
 	isSuperAdmin: function( req, res, next ) {
 		var status = Authentication.canSuperAdmin( req );
 		switch ( status ) {
-			case true:
+			case Authentication.LOGGED_IN:
 				return next();
-			case -1:
+			case Authentication.NOT_ACTIVATED:
 				req.flash( 'warning', messages['inactive-account'] );
 				res.redirect( '/' );
 				return;
-			case -2:
+			case Authentication.NOT_MEMBER:
 				req.flash( 'warning', messages['inactive-membership'] );
 				res.redirect( '/profile' );
 				return;
-			case -3:
+			case Authentication.NOT_ADMIN:
 				req.flash( 'warning', messages['403'] );
 				res.redirect( '/profile' );
 				return;
+			case Authentication.REQUIRES_2FA:
+				req.flash( 'warning', messages['2fa-required'] );
+				res.redirect( '/otp' );
+				return;
 			default:
-			case false:
+			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'error', messages['login-required'] );
 				res.redirect( '/login' );

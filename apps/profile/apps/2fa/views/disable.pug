@@ -1,0 +1,19 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Disable ' + app.title
+
+block contents
+	.row
+		.col-md-3
+			- page = '2fa'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			p Are you sure you want to disable two factor authentication?
+			form( method="post" )
+				include ../../../../../src/views/partials/csrf.pug	
+				button.btn.btn-danger Yes, disable Two Factor Authentication
+				|  
+				a( href="/profile/2fa" ).btn.btn-default No

@@ -38,7 +38,6 @@ app.post( '/revoke', auth.isLoggedIn, function( req, res ) {
 	req.user.tag.id = '';
 	req.user.tag.hashed = '';
 	req.user.save( function( err ) {
-		console.log( err );
 		req.flash( 'danger', messages['tag-revoked'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

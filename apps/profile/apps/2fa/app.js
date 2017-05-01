@@ -80,12 +80,28 @@ app.get( '/disable', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/disable', auth.isLoggedIn, function( req, res ) {
-	req.user.otp.activated = false;
-	req.user.otp.key = '';
-	req.user.save( function( err ) {
-		req.flash( 'success', messages['2fa-disabled'] );
-		res.redirect( '/profile/2fa' );
-	} );
+	// Check OTP
+	var test = TOTP.verify( req.body.code, base32.decode( req.user.otp.key ) );
+	if ( test && Math.abs( test.delta ) < 2 ) {
+		// Check password
+		auth.hashPassword( req.body.password, req.user.password.salt, function( hash ) {
+			// Check the hashes match
+			if ( hash == req.user.password.hash ) {
+				req.user.otp.activated = false;
+				req.user.otp.key = '';
+				req.user.save( function( err ) {
+					req.flash( 'success', messages['2fa-disabled'] );
+					res.redirect( '/profile/2fa' );
+				} );
+			} else {
+				req.flash( 'warning', messages['2fa-unable-to-disable'] );
+				res.redirect( '/profile/2fa/disable' );
+			}
+		} );
+	} else {
+		req.flash( 'warning', messages['2fa-unable-to-disable'] );
+		res.redirect( '/profile/2fa/disable' );
+	}
 } );
 
 module.exports = function( config ) {

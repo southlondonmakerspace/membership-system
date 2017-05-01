@@ -8,13 +8,13 @@ block prepend title
 block contents
 	form( method="post" ).form-horizontal
 		include ../../../src/views/partials/csrf.pug
-		if member.otp.key
+		if member.otp.activated
 			.panel.panel-info
 				.panel-body Two factor authentication is enabled on this account, by disabling it the user will have to set it up again.
 			.form-group
 				.col-md-12
 					label( for="2fa-enabled" )
-						input( type="checkbox", name="2fa-enabled", checked=member.otp.key?true:false, value="true" )#2fa-enabled.checkbox-control
+						input( type="checkbox", name="2fa-enabled", checked=member.otp.activated ? true : false, value="true" )#2fa-enabled.checkbox-control
 						|  2FA Enabled
 			.form-group
 				.col-md-12

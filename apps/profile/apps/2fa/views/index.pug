@@ -15,7 +15,7 @@ block contents
 			p By enabling the one time password on your account you will need to supply your email, password and the correct one-time password.
 			p: strong This is recommended for accounts with administrative privilages.
 			hr
-			if user.otp.key
+			if user.otp.activated
 				.panel.panel-success
 					.panel-body.text-success Two factor authentication is 
 						strong enabled

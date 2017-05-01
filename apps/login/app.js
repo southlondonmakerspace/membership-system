@@ -28,7 +28,7 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', passport.authenticate( 'local', {
-	failureRedirect: app.mountpath,
+	failureRedirect: '/login',
 	failureFlash: true,
 	successFlash: true
 } ), function ( req, res ) {

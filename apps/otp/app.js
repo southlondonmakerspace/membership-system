@@ -19,10 +19,10 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/' , function( req, res ) {
-	if ( ! req.user.otp.key ) {
+	if ( ! req.user.otp.activated ) {
 		req.flash( 'warning', messages['2fa-unnecessary'] );
 		res.redirect( '/profile/2fa' );
-	} else if ( req.user.otp.key && req.session.method === 'totp' ) {
+	} else if ( req.user.otp.activated && req.session.method === 'totp' ) {
 		req.flash( 'warning', messages['2fa-already-complete'] );
 		res.redirect( '/profile' );
 	} else {
@@ -32,7 +32,7 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', passport.authenticate( 'totp', {
 	failureFlash: messages[ '2fa-invalid' ],
-	failureRedirect: app.mountpath
+	failureRedirect: '/otp'
 } ), function ( req, res ) {
 	req.session.method = 'totp';
 	if ( req.session.requestedUrl !== undefined ) {

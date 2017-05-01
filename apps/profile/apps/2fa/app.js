@@ -38,19 +38,33 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/setup', auth.isLoggedIn, function( req, res ) {
+	if ( req.user.otp.activated ) {
+		req.flash( 'danger', messages['2fa-already-enabled'] );
+		res.redirect( '/profile/2fa' );
+		return;
+	}
 	auth.generateOTPSecret( function( secret ) {
-		var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/' + req.user.email + '?secret=' + secret;
-		res.render( 'setup', {
-			qr: url,
-			secret: secret
+		req.user.otp.key = secret;
+		req.user.save( function( err ) {
+			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/' + req.user.email + '?secret=' + secret;
+			res.render( 'setup', {
+				qr: url,
+				secret: secret
+			} );
 		} );
 	} );
 } );
 
 app.post( '/setup', auth.isLoggedIn, function( req, res ) {
-	var test = TOTP.verify( req.body.code, base32.decode( req.body.secret ) );
+	if ( req.user.otp.activated ) {
+		req.flash( 'danger', messages['2fa-already-enabled'] );
+		res.redirect( '/profile/2fa' );
+		return;
+	}
+	var test = TOTP.verify( req.body.code, base32.decode( req.user.otp.key ) );
 	if ( test && Math.abs( test.delta ) < 2 ) {
-		req.user.otp.key = req.body.secret;
+		req.user.otp.activated = true;
+		req.session.method = 'totp';
 		req.user.save( function( err ) {
 			req.flash( 'success', messages['2fa-enabled'] );
 			res.redirect( '/profile/2fa' );
@@ -66,6 +80,7 @@ app.get( '/disable', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/disable', auth.isLoggedIn, function( req, res ) {
+	req.user.otp.activated = false;
 	req.user.otp.key = '';
 	req.user.save( function( err ) {
 		req.flash( 'success', messages['2fa-disabled'] );

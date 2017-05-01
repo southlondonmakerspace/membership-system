@@ -220,7 +220,7 @@ var Authentication = {
 		if ( req.isAuthenticated() && req.user ) {
 			// Is the user active
 			if ( req.user.activated || Authentication.superAdmin( req.user.email ) ) {
-				if ( ! req.user.otp.key || ( req.user.otp.key && req.session.method == 'totp' ) ) {
+				if ( ! req.user.otp.activated || ( req.user.otp.activated && req.session.method == 'totp' ) ) {
 					return Authentication.LOGGED_IN;
 				} else {
 					return Authentication.REQUIRES_2FA;

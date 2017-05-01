@@ -94,5 +94,6 @@
 	"2fa-already-complete": "You've already completed two factor authentication",
 	"2fa-unnecessary": "You do not have two factor authentication enabled on your account",
 	"2fa-no-change": "There was no change to two factor authentication",
-	"2fa-invalid": "Your one time password is invalid"
+	"2fa-invalid": "Your one time password is invalid",
+	"2fa-already-enabled": "Two factor authentication is already enabled"
 }

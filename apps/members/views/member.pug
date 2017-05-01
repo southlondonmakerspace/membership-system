@@ -87,7 +87,7 @@ block contents
 						dt Password Tries
 						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
 						dt 2FA
-						dd #{ member.otp.key ? 'Enabled' : 'Disabled' }
+						dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
 			if access == 'superadmin'
 				.col-md-6
 					.page-header

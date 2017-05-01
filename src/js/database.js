@@ -86,7 +86,12 @@ var memberSchema = mongoose.Schema( {
 	},
 	otp: {
 		key: {
-			type: String
+			type: String,
+			default: ''
+		},
+		activated: {
+			type: Boolean,
+			default: false
 		}
 	},
 	activated: {

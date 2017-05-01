@@ -1,0 +1,21 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "One Time Password"
+	- heading = title
+
+block navbar
+
+block contents
+	p Your account is secured with a one time password, please enter the current code to complete your login.
+	form( method="post" ).form-horizontal
+		include ../../../src/views/partials/csrf.pug
+		.form-group
+			label( for="code" ).control-label.col-md-2 Code:
+			.col-md-3
+				input( name="code", type="text" )#code.form-control
+		.form-group
+			.col-md-offset-2.col-md-10
+				button( role="button" ).btn.btn-primary Authenticate
+				| &nbsp;
+				a( href="/otp/cancel" ).btn.btn-default Cancel Login

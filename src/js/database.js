@@ -77,11 +77,21 @@ var memberSchema = mongoose.Schema( {
 			required: true
 		},
 		reset_code: {
-			type: String,
+			type: String
 		},
 		tries: {
 			type: Number,
 			default: 0
+		}
+	},
+	otp: {
+		key: {
+			type: String,
+			default: ''
+		},
+		activated: {
+			type: Boolean,
+			default: false
 		}
 	},
 	activated: {

@@ -19,26 +19,34 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/' , function( req, res ) {
-	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+	if ( ! req.user.otp.activated ) {
+		req.flash( 'warning', messages['2fa-unnecessary'] );
+		res.redirect( '/profile/2fa' );
+	} else if ( req.user.otp.activated && req.session.method === 'totp' ) {
+		req.flash( 'warning', messages['2fa-already-complete'] );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'index' );
 	}
 } );
 
-app.post( '/', passport.authenticate( 'local', {
-	failureRedirect: '/login',
-	failureFlash: true,
-	successFlash: true
+app.post( '/', passport.authenticate( 'totp', {
+	failureFlash: messages[ '2fa-invalid' ],
+	failureRedirect: '/otp'
 } ), function ( req, res ) {
-	req.session.method = 'plain';
+	req.session.method = 'totp';
 	if ( req.session.requestedUrl !== undefined ) {
 		res.redirect( req.session.requestedUrl );
 		delete req.session.requestedUrl;
 	} else {
 		res.redirect( '/profile' );
 	}
+} );
+
+app.get( '/cancel', function( req, res ) {
+	delete req.session.method;
+	req.logout();
+	res.redirect( '/' );
 } );
 
 module.exports = function( config ) {

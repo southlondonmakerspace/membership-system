@@ -9,6 +9,7 @@ var	express = require( 'express' ),
 var messages = require( __src + '/messages.json' );
 
 app.get( '/' , function( req, res ) {
+	delete req.session.method;
 	req.logout();
 	req.flash( 'success', messages['logged-out'] );
 	res.redirect( '/' );

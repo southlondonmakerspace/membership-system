@@ -614,6 +614,42 @@ app.get( '/link/:event/:member', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
+app.get( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
+		if ( member === undefined ) {
+			req.flash( 'warning', messages['member-404'] );
+			res.redirect( app.mountpath );
+			return;
+		}
+
+		res.locals.breadcrumb.push( {
+			name: member.fullname,
+			url: '/members/' + member.uuid
+		} );
+		res.locals.breadcrumb.push( {
+			name: '2FA'
+		} );
+		res.render( '2fa', { member: member } );
+	} );
+} );
+
+app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
+	if ( ! req.body['2fa-enabled'] ) {
+		var member = {
+			otp: {
+				key: ''
+			}
+		};
+		Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
+			req.flash( 'success', messages['2fa-disabled'] );
+			res.redirect( app.mountpath + '/' + req.params.uuid );
+		} );
+	} else {
+		req.flash( 'success', messages['2fa-no-change'] );
+		res.redirect( app.mountpath + '/' + req.params.uuid );
+	}
+} );
+
 module.exports = function( config ) {
 	app_config = config;
 	return app;

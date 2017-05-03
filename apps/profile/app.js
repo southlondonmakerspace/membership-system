@@ -13,6 +13,8 @@ var PostcodesIO = require( 'postcodesio-client' ),
 
 var moment = require( 'moment' );
 
+var Mail = require( __js + '/mail' );
+
 var db = require( __js + '/database' ),
 	Members = db.Members,
 	Events = db.Events,
@@ -257,8 +259,20 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 					'password.hash': password.hash,
 					'password.reset_code': null,
 				} }, function( status ) {
-					req.flash( 'success', messages['password-changed'] );
-					res.redirect( app.mountpath );
+					var options = {
+						firstname: user.firstname
+					};
+
+					Mail.sendMail(
+						user.email,
+						'Password Changed',
+						__dirname + '/email-templates/password-changed.text.pug',
+						__dirname + '/email-templates/password-changed.html.pug',
+						options,
+						function() {
+							req.flash( 'success', messages['password-changed'] );
+							res.redirect( app.mountpath );
+					} );
 				} );
 			} );
 		} );

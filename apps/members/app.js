@@ -17,6 +17,8 @@ var	db = require( __js + '/database' ),
 	Payments = db.Payments,
 	Events = db.Events;
 
+var Mail = require( __js + '/mail' );
+
 var auth = require( __js + '/authentication' );
 
 var messages = require( __src + '/messages.json' );
@@ -641,8 +643,20 @@ app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
 			}
 		};
 		Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
-			req.flash( 'success', messages['2fa-disabled'] );
-			res.redirect( app.mountpath + '/' + req.params.uuid );
+			var options = {
+				firstname: req.user.firstname
+			};
+
+			Mail.sendMail(
+				req.user.email,
+				'Two Factor Authentaction Disabled',
+				__dirname + '/email-templates/disabled.text.pug',
+				__dirname + '/email-templates/disabled.html.pug',
+				options,
+				function() {
+					req.flash( 'success', messages['2fa-disabled'] );
+					res.redirect( app.mountpath + '/' + req.params.uuid );
+			} );
 		} );
 	} else {
 		req.flash( 'success', messages['2fa-no-change'] );

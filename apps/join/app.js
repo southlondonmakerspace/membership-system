@@ -9,8 +9,7 @@ var	express = require( 'express' ),
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
 
-var pug = require( 'pug' );
-var nodemailer = require( 'nodemailer' );
+var Mail = require( __js + '/mail' );
 
 var	Members = require( __js + '/database' ).Members;
 
@@ -133,27 +132,21 @@ app.post( '/', function( req, res ) {
 							}
 							res.redirect( app.mountpath );
 						} else {
-							var message = {};
-
 							var options = {
 								firstname: user.firstname,
-								config: config,
 								activation_url: config.audience + '/activate/' + user.activation_code
 							};
 
-							message.text = pug.renderFile( __dirname + '/email-templates/join.text.pug', options );
-							message.html = pug.renderFile( __dirname + '/email-templates/join.html.pug', options );
-
-							var transporter = nodemailer.createTransport( config.smtp.url );
-
-							message.from = config.smtp.from;
-							message.to = req.body.email;
-							message.subject = 'Activation Email – ' + config.globals.organisation;
-
-							req.flash( 'success', messages['account-created'] );
-							res.redirect( '/' );
-
-							transporter.sendMail( message, function( err, info ) {} );
+							Mail.sendMail(
+								req.body.email,
+								'Activation Email',
+								__dirname + '/email-templates/join.text.pug',
+								__dirname + '/email-templates/join.html.pug',
+								options,
+								function() {
+									req.flash( 'success', messages['account-created'] );
+									res.redirect( '/' );
+							} );
 						}
 					} );
 				} );

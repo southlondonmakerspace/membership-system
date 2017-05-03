@@ -1,0 +1,6 @@
+extends ../../../src/views/email.text.pug
+
+block content
+	| Hello #{ firstname }
+	| #{'\n'}
+	| Two factor authentication on your #{ config.globals.organisation } account has been disabled by an administrator.

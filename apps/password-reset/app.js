@@ -6,8 +6,7 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var pug = require( 'pug' );
-var nodemailer = require( 'nodemailer' );
+var Mail = require( __js + '/mail' );
 
 var	Members = require( __js + '/database' ).Members;
 
@@ -43,28 +42,23 @@ app.post( '/', function( req, res ) {
 				user.password.reset_code = password_reset_code;
 				user.save( function( err ) {} );
 
-				var message = {};
 				var options = {
 					firstname: user.firstname,
-					config: config,
 					reset_url: config.audience + '/password-reset/code/' + password_reset_code
 				};
 
-				message.text = pug.renderFile( __dirname + '/email-templates/reset.text.pug', options );
-				message.html = pug.renderFile( __dirname + '/email-templates/reset.html.pug', options );
-
-				var transporter = nodemailer.createTransport( config.smtp.url );
-
-				message.from = config.smtp.from;
-				message.to = user.email;
-				message.subject = 'Password Reset – ' + config.globals.organisation;
-
-				transporter.sendMail( message, function( err, info ) {
+				Mail.sendMail(
+					req.body.email,
+					'Password Reset',
+					__dirname + '/email-templates/reset.text.pug',
+					__dirname + '/email-templates/reset.html.pug',
+					options,
+					function() {
+						req.flash( 'success', messages['password-reset'] );
+						res.redirect( app.mountpath );
 				} );
 			} );
 		}
-		req.flash( 'success', messages['password-reset'] );
-		res.redirect( app.mountpath );
 	} );
 } );
 

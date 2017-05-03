@@ -10,20 +10,54 @@ var Database = require( __js + '/database' ),
 	Members = Database.Members,
 	ObjectId = Database.ObjectId;
 
-var request = require( 'request' );
+var request = require( 'request' ),
+	queryString = require( 'query-string' );
 
 var api_tasks = [];
 
 var Discourse = {
+	queryString: function( url, params ) {
+		return url + '?' + queryString.stringify( params );
+	},
+	get: function( url, params, cb ) {
+		if ( typeof params === 'function' ) cb = params;
+		if ( typeof params !== 'object' ) params = {};
+		params.api_username = config.discourse.api_username;
+		params.api_key = config.discourse.api_key;
+		var options = {
+			url: Discourse.queryString( config.discourse.url + url, params )
+		};
+		request( options, cb );
+	},
+	request: function( action, url, params, cb ) {
+		if ( typeof params !== 'object' ) params = {};
+		params.api_username = config.discourse.api_username;
+		params.api_key = config.discourse.api_key;
+		var options = {
+			url: config.discourse.url + url,
+			method: action,
+			form: params
+		};
+		request( options, cb );
+	},
+	post: function( url, params, cb ) {
+		if ( typeof params === 'function' ) cb = params;
+		Discourse.request( 'POST', url, params, cb );
+	},
+	put: function( url, params, cb ) {
+		if ( typeof params === 'function' ) cb = params;
+		Discourse.request( 'PUT', url, params, cb );
+	},
+	del: function( url, params, cb ) {
+		if ( typeof params === 'function' ) cb = params;
+		Discourse.request( 'DELETE', url, params, cb );
+	},
 	searchUsers: function ( search, callback ) {
-		request.get( config.discourse.url + '/admin/users/list/active.json', {
-			form: {
-				api_username: config.discourse.api_username,
-				api_key: config.discourse.api_key,
-				show_emails: true,
-				filter: search
-			}
-		}, function ( error, response, body ) {
+		var params = {
+			show_emails: true,
+			filter: search
+		};
+		Discourse.get( '/admin/users/list/active.json', params, function ( error, response, body ) {
 			if ( response.statusCode == '200 ') {
 				var output = JSON.parse( body );
 				if ( output[0] !== undefined ) {
@@ -34,12 +68,7 @@ var Discourse = {
 		} );
 	},
 	getUsername: function( username, callback ) {
-		request.get( config.discourse.url + '/users/' + username + '.json', {
-			form: {
-				api_username: config.discourse.api_username,
-				api_key: config.discourse.api_key
-			}
-		}, function ( error, response, body ) {
+		Discourse.get( '/users/' + username + '.json', function ( error, response, body ) {
 			if ( response !== undefined && response.statusCode == '200' ) {
 				var output = JSON.parse( body );
 				return callback( output );
@@ -48,19 +77,16 @@ var Discourse = {
 		} );
 	},
 	sendPrivateMessage:	function ( username, subject, message ) {
-		request.post( config.discourse.url + '/posts', {
-			form: {
-				api_username: config.discourse.api_username,
-				api_key: config.discourse.api_key,
-				raw: message,
-				title: subject,
-				category: "",
-				is_warning: "false",
-				archetype: "private_message",
-				target_usernames: username,
-				nested_post: "true"
-			}
-		} );
+		var params = {
+			raw: message,
+			title: subject,
+			category: "",
+			is_warning: "false",
+			archetype: "private_message",
+			target_usernames: username,
+			nested_post: "true"
+		};
+		Discourse.post( '/posts', params );
 	},
 	sendActivationMessage: function ( username, code ) {
 		var message = "Your activation code: **" + code + "**\n\n[Click here to activate](" + config.audience + '/profile/discourse?code=' + code + ")";
@@ -81,12 +107,7 @@ var Discourse = {
 	},
 	checkPermission: function( permission ) {
 		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
-		request.get( config.discourse.url + '/groups/' + permission.group.name + '/members.json?limit=9999', {
-			form: {
-				api_username: config.discourse.api_username,
-				api_key: config.discourse.api_key
-			}
-		}, function( err, req, body ) {
+		Discourse.get( '/groups/' + permission.group.name + '/members.json', { limit: 9999 }, function( err, req, body ) {
 			if ( body === undefined )
 				return;
 			var users = JSON.parse( body ).members;
@@ -172,7 +193,7 @@ var Discourse = {
 					}
 				]
 			} ).populate( 'permissions.permission' ).exec( function( err, member ) {
-				if ( member === undefined ) {
+				if ( ! member ) {
 					Discourse.removeUser( username, permission );
 					return;
 				}
@@ -214,40 +235,34 @@ var Discourse = {
 			console.log( 'Setting user "' + username + '" primary group to "' + permission.group.name + '".' );
 			Discourse.getUsername( username, function( user ) {
 				if ( user !== undefined )
-					request.put( config.discourse.url + '/admin/users/' + user.user.id + '/primary_group', {
-						form: {
-							api_username: config.discourse.api_username,
-							api_key: config.discourse.api_key,
-							primary_group_id: permission.group.id
-						}
-					} );
+					Discourse.put( '/admin/users/' + user.user.id + '/primary_group', { primary_group_id: permission.group.id } );
 			} );
 		} );
 	},
 	addUser: function( username, permission ) {
 		api_tasks.push( function() {
 			console.log( 'Adding user "' + username + '" to group "' + permission.group.name + '".' );
-			request.put( config.discourse.url + '/groups/' + permission.group.id + '/members.json', {
-				form: {
-					api_username: config.discourse.api_username,
-					api_key: config.discourse.api_key,
-					usernames: username
-				}
-			} );
+			var params = {
+				usernames: username
+			};
+			Discourse.put( '/groups/' + permission.group.id + '/members.json', params );
 		} );
 	},
 	removeUser: function( username, permission ) {
 		api_tasks.push( function() {
-			console.log( 'Removing user "' + username + '" from group "' + permission.group.name + '".' );
+			console.log( 'Fetching user "' + username + '".' );
 			Discourse.getUsername( username, function( user ) {
-				request.del( config.discourse.url + '/groups/' + permission.group.id + '/members.json', {
-					form: {
-						api_username: config.discourse.api_username,
-						api_key: config.discourse.api_key,
-						user_id: user.user.id
-					}
-				} );
+				Discourse._removeUser( user.user, permission );
 			} );
+		} );
+	},
+	_removeUser: function ( user, permission ) {
+		api_tasks.push( function() {
+			console.log( 'Removing user "' + user.username + '" from group "' + permission.group.name + '".' );
+			var params = {
+				user_id: user.id
+			};
+			Discourse.del( '/groups/' + permission.group.id + '/members.json', params );
 		} );
 	}
 };

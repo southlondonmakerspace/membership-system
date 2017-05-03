@@ -34,6 +34,10 @@ app.use( function( req, res, next ) {
 app.get( '/', auth.isMember, function( req, res ) {
 	var startDate = new Date();
 	startDate.setDate( 1 );
+	startDate.setHours( 0 );
+	startDate.setMinutes( 0 );
+	startDate.setSeconds( 0 );
+	startDate.setMilliseconds( 0 );
 
 	if ( req.query.month !== undefined && req.query.year !== undefined ) {
 		startDate.setMonth( req.query.month - 1 );

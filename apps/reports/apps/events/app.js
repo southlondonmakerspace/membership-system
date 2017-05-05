@@ -98,12 +98,17 @@ app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) 
 			}
 		], function ( err, result ) {
 			Members.populate( result, { path: 'member' }, function( err, members ) {
+				var total = 0;
+				for ( var m in members ) {
+					total += members[m].count;
+				}
 				res.render( 'members-year-month', {
 					members: members,
 					previous: previous,
 					next: end,
 					start: start,
-					slug: req.params.slug
+					slug: req.params.slug,
+					total: total
 				} );
 			} );
 		} );
@@ -168,12 +173,17 @@ app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 			}
 		], function ( err, result ) {
 			Members.populate( result, { path: 'member' }, function( err, members ) {
+				var total = 0;
+				for ( var m in members ) {
+					total += members[m].count;
+				}
 				res.render( 'members-year', {
 					members: members,
 					previous: previous,
 					next: end,
 					start: start,
-					slug: req.params.slug
+					slug: req.params.slug,
+					total: total
 				} );
 			} );
 		} );
@@ -239,9 +249,11 @@ app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 		], function ( err, result ) {
 			var labels = [];
 			var data = [];
+			var total = 0;
 			for ( var r in result ) {
 				labels.push( moment( start ).dayOfYear( result[r].day ) );
 				data.push( result[r].count );
+				total += result[r].count;
 			}
 			res.render( 'days', {
 				result: result,
@@ -250,7 +262,8 @@ app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 				start: start,
 				slug: req.params.slug,
 				data: data,
-				labels: labels
+				labels: labels,
+				total: total
 			} );
 		} );
 	} );
@@ -315,8 +328,10 @@ app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 			}
 		], function ( err, result ) {
 			var data = {};
+			var total = 0;
 			for ( var r in result ) {
 				data[ moment( start ).day( result[r].day - 1 ).format( 'dddd' ) ] = result[r].count;
+				total += result[r].count;
 			}
 			res.render( 'days-of-week-year', {
 				result: result,
@@ -324,7 +339,8 @@ app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 				next: end,
 				start: start,
 				slug: req.params.slug,
-				data: data
+				data: data,
+				total: total
 			} );
 		} );
 	} );
@@ -393,8 +409,10 @@ app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, r
 			}
 		], function ( err, result ) {
 			var data = {};
+			var total = 0;
 			for ( var r in result ) {
 				data[ moment( start ).day( result[r].day - 1 ).format( 'dddd' ) ] = result[r].count;
+				total += result[r].count;
 			}
 			res.render( 'days-of-week-month', {
 				result: result,
@@ -402,7 +420,8 @@ app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, r
 				next: end,
 				start: start,
 				slug: req.params.slug,
-				data: data
+				data: data,
+				total: total
 			} );
 		} );
 	} );

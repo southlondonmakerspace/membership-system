@@ -31,5 +31,9 @@ block contents
 							tr
 								td: a( href="/members/" + member.member.uuid ) #{ member.member.fullname }
 								td #{ member.count }
+					thead
+						tr
+							th Total
+							th #{ total }
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( start ).format( 'MMMM' ) } #{ moment( start ).format( 'Y' ) }.

@@ -76,5 +76,9 @@ block contents
 								td
 									| #{ moment( start ).dayOfYear( day.day ).format( 'DD/MM/YYYY' )  }
 								td #{ day.count }
+					tfoot
+						tr
+							th Total
+							th #{ total }
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no events to count.

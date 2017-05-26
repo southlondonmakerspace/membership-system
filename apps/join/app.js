@@ -68,30 +68,30 @@ app.post( '/', function( req, res ) {
 
 		if ( req.body.firstname === '' ) {
 			req.flash( 'danger', messages['user-firstname'] );
-			res.render( 'join', { user: user } );
+			res.render( 'index', { user: user } );
 			return;
 		}
 		if ( req.body.lastname === '' ) {
 			req.flash( 'danger', messages['user-lastname'] );
-			res.render( 'join', { user: user } );
+			res.render( 'index', { user: user } );
 			return;
 		}
 		if ( req.body.address === '' ) {
 			req.flash( 'danger', messages['user-address'] );
-			res.render( 'join', { user: user } );
+			res.render( 'index', { user: user } );
 			return;
 		}
 
 		if ( req.body.password != req.body.verify ) {
 			req.flash( 'danger', messages['password-err-mismatch'] );
-			res.render( 'join', { user: user } );
+			res.render( 'index', { user: user } );
 			return;
 		}
 
 		var passwordRequirements = auth.passwordRequirements( req.body.password );
 		if ( passwordRequirements !== true ) {
 			req.flash( 'danger', passwordRequirements );
-			res.render( 'join', { user: user } );
+			res.render( 'index', { user: user } );
 			return;
 		}
 

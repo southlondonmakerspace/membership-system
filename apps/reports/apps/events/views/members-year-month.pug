@@ -38,5 +38,10 @@ block contents
 									.progress( style="margin-bottom: 0;" )
 										- value = ( member.count / moment( start ).daysInMonth() ) * 100
 										.progress-bar( role="progresbar", style="width:" + value + "%;" )
+					thead
+						tr
+							th Total
+							th #{ total }
+							th
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( start ).format( 'MMMM' ) } #{ moment( start ).format( 'Y' ) }.

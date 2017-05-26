@@ -138,7 +138,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	var postcode = '';
 	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-	if ( results !== undefined ) {
+	if ( results ) {
 		postcode = results[0];
 	}
 	postcodes.lookup( postcode, function( err, data ) {

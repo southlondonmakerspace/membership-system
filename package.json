@@ -37,8 +37,8 @@
     "thirty-two": "^1.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "node app",
+    "import": "node tools/import_drydata/import.js",
     "watch-css": "catw -c 'lessc -' 'static/less/*.less' -o static/css/style.css -v",
     "watch": "npm run watch-css"
   },

@@ -42,20 +42,13 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
-	if ( req.body.name === undefined ||
-		 req.body.key === undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.parent.mountpath + app.mountpath );
- 			return;
-	}
-
-	if ( req.body.name.trim() === '' ) {
+	if ( ! req.body.name || req.body.name.trim() === '' ) {
 		req.flash( 'danger', messages['apikey-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.key.trim() === '' ) {
+	if ( ! req.body.key || req.body.key.trim() === '' ) {
 		req.flash( 'danger', messages['apikey-key-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -74,7 +67,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	APIKeys.findById( req.params.id, function( err, key ) {
-		if ( key === undefined ) {
+		if ( ! key ) {
 			req.flash( 'warning', messages['apikey-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -88,20 +81,13 @@ app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
-	if ( req.body.name === undefined ||
-		 req.body.key === undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.parent.mountpath + app.mountpath );
- 			return;
-	}
-
-	if ( req.body.name.trim() === '' ) {
+	if ( ! req.body.name || req.body.name.trim() === '' ) {
 		req.flash( 'danger', messages['apikey-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.key.trim() === '' ) {
+	if ( ! req.body.key || req.body.key.trim() === '' ) {
 		req.flash( 'danger', messages['apikey-key-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;

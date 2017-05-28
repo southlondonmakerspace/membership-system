@@ -131,8 +131,8 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
-	if ( req.body.amount === undefined ||
-	 	 req.body.day_of_month === undefined ) {
+	if ( ! req.body.amount ||
+	 	 ! req.body.day_of_month ) {
 		req.flash( 'danger', messages['information-ommited'] );
 		res.redirect( app.parent.mountpath );
 		return;

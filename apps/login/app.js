@@ -33,7 +33,7 @@ app.post( '/', passport.authenticate( 'local', {
 	successFlash: true
 } ), function ( req, res ) {
 	req.session.method = 'plain';
-	if ( req.session.requestedUrl !== undefined ) {
+	if ( req.session.requestedUrl ) {
 		res.redirect( req.session.requestedUrl );
 		delete req.session.requestedUrl;
 	} else {

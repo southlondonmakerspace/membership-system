@@ -60,7 +60,7 @@ var Discourse = {
 		Discourse.get( '/admin/users/list/active.json', params, function ( error, response, body ) {
 			if ( response.statusCode == '200 ') {
 				var output = JSON.parse( body );
-				if ( output[0] !== undefined ) {
+				if ( output[0] ) {
 					return callback( output );
 				}
 			}
@@ -69,7 +69,7 @@ var Discourse = {
 	},
 	getUsername: function( username, callback ) {
 		Discourse.get( '/users/' + username + '.json', function ( error, response, body ) {
-			if ( response !== undefined && response.statusCode == '200' ) {
+			if ( response && response.statusCode == '200' ) {
 				var output = JSON.parse( body );
 				return callback( output );
 			}
@@ -108,7 +108,7 @@ var Discourse = {
 	checkPermission: function( permission ) {
 		console.log( 'Checking Discourse Group "' + permission.group.name + '"...' );
 		Discourse.get( '/groups/' + permission.group.name + '/members.json', { limit: 9999 }, function( err, req, body ) {
-			if ( body === undefined )
+			if ( ! body )
 				return;
 			var users = JSON.parse( body ).members;
 			var usernames = [];
@@ -216,7 +216,7 @@ var Discourse = {
 			for ( var m = 0; m < members.length; m++ ) {
 				var member = members[m];
 				member.permissions = member.permissions.filter( function ( perm ) {
-					if ( perm.permission.group.order === undefined ) return false;
+					if ( ! perm.permission.group.order ) return false;
 					return true;
 				} ).sort( function ( a, b ) {
 					if ( a.permission.group.order > b.permission.group.order ) return 1;
@@ -234,7 +234,7 @@ var Discourse = {
 		api_tasks.push( function() {
 			console.log( 'Setting user "' + username + '" primary group to "' + permission.group.name + '".' );
 			Discourse.getUsername( username, function( user ) {
-				if ( user !== undefined )
+				if ( user )
 					Discourse.put( '/admin/users/' + user.user.id + '/primary_group', { primary_group_id: permission.group.id } );
 			} );
 		} );

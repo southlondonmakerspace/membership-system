@@ -30,7 +30,7 @@ var Authentication = {
 				// Search for member by email address
 				Members.findOne( { email: email }, function( err, user ) {
 					// If a user is found validate password
-					if ( user !== null ) {
+					if ( user ) {
 
 						// Has account exceeded it's password tries?
 						if ( user.password.tries >= config['password-tries'] ) {
@@ -105,7 +105,7 @@ var Authentication = {
 			Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 
 				// If member found
-				if ( user !== null ) {
+				if ( user ) {
 
 					// Create array of permissions for user
 					var permissions = [ 'loggedIn' ];

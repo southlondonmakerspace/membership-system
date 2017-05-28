@@ -22,7 +22,7 @@ function templateLocals( req, res, next ) {
 	for ( var a in apps ) {
 		var app = apps[a];
 		if ( app.menu != "none" ) {
-			if ( app.permissions !== undefined && app.permissions != [] ) {
+			if ( app.permissions && app.permissions != [] ) {
 				if ( req.user ) {
 					for ( var p in app.permissions ) {
 						if ( auth.checkPermission( req, app.permissions[p] ) ) {
@@ -40,7 +40,7 @@ function templateLocals( req, res, next ) {
 				for ( var s in app.subapps ) {
 					var subapp = app.subapps[s];
 					if ( subapp.hidden !== true ) {
-						if ( subapp.permissions !== undefined && subapp.permissions != [] ) {
+						if ( subapp.permissions && subapp.permissions != [] ) {
 							if ( req.user ) {
 								for ( var p in subapp.permissions ) {
 									if ( auth.checkPermission( req, subapp.permissions[p] ) ) {
@@ -61,7 +61,7 @@ function templateLocals( req, res, next ) {
 	// Template permissions
 	res.locals.access = 'none';
 
-	if ( req.user !== undefined && req.user.quickPermissions !== undefined ) {
+	if ( req.user && req.user.quickPermissions ) {
 		if ( req.user.quickPermissions.indexOf( 'member' ) != -1 ) res.locals.access = 'member';
 		if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) res.locals.access = 'admin';
 		if ( req.user.quickPermissions.indexOf( 'superadmin' ) != -1 ) res.locals.access = 'superadmin';
@@ -74,7 +74,7 @@ function templateLocals( req, res, next ) {
 
 	// Check if user is setup
 	res.locals.userSetup = true;
-	if ( req.user !== undefined &&
+	if ( req.user &&
 		 (	! req.user.emergency_contact.telephone ||
 			! req.user.gocardless.mandate_id ||
 			! req.user.gocardless.subscription_id ||
@@ -87,7 +87,7 @@ function templateLocals( req, res, next ) {
 	// Load config + prepare breadcrumbs
 	res.locals.config = config.globals;
 	res.locals.usersname = config.globals.title;
-	if ( req.user !== undefined ) res.locals.usersname = req.user.fullname;
+	if ( req.user ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
 
 	// Moment.js

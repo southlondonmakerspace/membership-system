@@ -39,7 +39,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	startDate.setSeconds( 0 );
 	startDate.setMilliseconds( 0 );
 
-	if ( req.query.month !== undefined && req.query.year !== undefined ) {
+	if ( req.query.month && req.query.year ) {
 		startDate.setMonth( req.query.month - 1 );
 		startDate.setYear( req.query.year );
 	}
@@ -52,18 +52,18 @@ app.get( '/', auth.isMember, function( req, res ) {
 		}
 	};
 	// FILTER: Permission Success
-	if ( req.query.successful && req.query.unsuccessful === undefined ) search.successful = { $ne: false };
-	if ( req.query.unsuccessful && req.query.successful === undefined ) search.successful = false;
+	if ( req.query.successful && ! req.query.unsuccessful ) search.successful = { $ne: false };
+	if ( req.query.unsuccessful && ! req.query.successful ) search.successful = false;
 
 	// FILTER: Permission
 	Permissions.findOne( { slug: req.query.permission }, function( err, permission ) {
-		if ( permission !== null ) {
+		if ( permission ) {
 			search.permission = permission._id;
 		}
 
 		// FILTER: Activities
 		Activities.findOne( { slug: req.query.activity }, function( err, activity ) {
-			if ( activity !== null ) {
+			if ( activity ) {
 				search.activity = activity._id;
 			}
 
@@ -71,7 +71,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 			Events.find( search ).populate( 'member' ).populate( 'permission' ).populate( 'activity' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
 				if ( res.locals.access.indexOf( 'admin' ) == -1 ) {
 					events = events.filter( function( e ) {
-						if ( e.activity !== undefined )
+						if ( e.activity )
 							return ! e.activity.admin_only;
 						return true;
 					} );
@@ -95,15 +95,11 @@ app.get( '/', auth.isMember, function( req, res ) {
 							selected.admin_only = '';
 						}
 
-						if ( auth.canAdmin( req ) && req.query.admin_only !== undefined && req.query.admin_only == 'on' ) {
+						if ( auth.canAdmin( req ) && req.query.admin_only && req.query.admin_only == 'on' ) {
 							events = events.filter( function ( event ) {
-								if ( event.activity !== undefined ) {
-									if ( event.activity.admin_only !== undefined ) {
-										if ( event.activity.admin_only === true ) {
-											return true;
-										} else {
-											return false;
-										}
+								if ( event.activity ) {
+									if ( event.activity.admin_only ) {
+										return true;
 									} else {
 										return false;
 									}

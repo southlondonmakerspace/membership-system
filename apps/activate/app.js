@@ -40,7 +40,7 @@ app.get( '/:activation_code' , function( req, res ) {
 } );
 
 app.post( '/', function( req, res ) {
-	if ( req.body.activation_code === undefined || req.body.password === undefined ) {
+	if ( ! req.body.activation_code || ! req.body.password ) {
 			req.flash( 'danger', messages['information-ommited'] );
 			res.redirect( '/activate' );
 			return;
@@ -48,15 +48,14 @@ app.post( '/', function( req, res ) {
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
-	} else if ( req.body.activation_code.match( /^\w{20}$/ ) === null ) {
+	} else if ( ! req.body.activation_code.match( /^\w{20}$/ ) ) {
 		req.flash( 'danger', messages['activation-error'] );
 		res.redirect( '/activate' );
 	} else {
 		Members.findOne( {
 			activation_code: req.body.activation_code,
 		}, function ( err, user ) {
-
-			if ( user === null ) {
+			if ( ! user ) {
 				req.flash( 'danger', messages['activation-error'] );
 				res.redirect( app.mountpath + '/' + req.body.activation_code );
 				return;

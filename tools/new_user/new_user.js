@@ -81,6 +81,15 @@ db.mongoose.connection.on( 'connected', function() {
 		}
 	} );
 
+	// Level question
+	questions.push( {
+		type: 'list',
+		name: 'activation',
+		message: 'Activate user?',
+		choices: [ 'Yes', 'No' ],
+		default: 'Yes'
+	} );
+
 	// Member
 	questions.push( {
 		type: 'list',
@@ -99,74 +108,119 @@ db.mongoose.connection.on( 'connected', function() {
 		default: 'Super Admin'
 	} );
 
-	inquirer.prompt( questions ).then( function( answers ) {
-		var user = {
-			firstname: answers.firstname,
-			lastname: answers.lastname,
-			address: answers.address.split( ',' ).map( function( s ) { return s.trim(); } ).join( "\n" ),
-			email: answers.email,
-			permissions: []
-		};
-
-		Auth.generatePassword( answers.password, function( result ) {
-			user.password = {};
-			user.password.hash = result.hash;
-			user.password.salt = result.salt;
-
-			if ( answers.membership != 'No' ) {
-				var memberPermission = {
-					permission: member
-				}
-
-				var now = moment();
-				switch ( answers.membership ) {
-					case 'Yes':
-						memberPermission.date_added = now.toDate();
-						break;
-					case 'Yes (expires after 1 month)':
-						memberPermission.date_added = now.toDate();
-						memberPermission.date_expires = now.add( '1', 'months' ).toDate();
-						break;
-					case 'Yes (expired yesterday)':
-						memberPermission.date_expires = now.subtract( '1', 'day' ).toDate();
-						memberPermission.date_added = now.subtract( '1', 'months' ).toDate();
-						break;
-				}
-				user.permissions.push( memberPermission );
-			}
-
-			if ( answers.permission != 'None' ) {
-				var adminPermission = {
-					date_added: moment().toDate()
-				}
-
-				switch ( answers.permission ) {
-					case 'Admin':
-						adminPermission.permission = admin;
-						break;
-					case 'Super Admin':
-						adminPermission.permission = superadmin;
-						break;
-				}
-				user.permissions.push( adminPermission );
-			}
-
-			new Members( user ).save( function( err ) {
-				if ( err ) {
-					console.log( 'Unable to create user because of error(s):' );
-					console.log( err );
-				} else {
-					console.log( 'New user created.' );
-				}
-
-				setTimeout( function () {
-					db.mongoose.disconnect();
-				}, 1000);
-			} );
-		} );
-	} );
+	inquirer.prompt( questions ).then( processAnswers );
 } );
 
 db.mongoose.connection.on( 'disconnected', function() {
 	console.log( 'Disconnected from database' );
 } );
+
+function processAnswers( answers ) {
+	var user = {
+		firstname: answers.firstname,
+		lastname: answers.lastname,
+		address: answers.address.split( ',' ).map( function( s ) { return s.trim(); } ).join( "\n" ),
+		email: answers.email,
+		permissions: []
+	};
+
+	var actions = [
+		processMembership( user, answers.membership ),
+		processPermission( user, answers.permission ),
+		processActivation( user, answers.activation ),
+		processPassword( user, answers.password )
+	];
+
+	Promise.all( actions ).then( function() {
+		new Members( user ).save( function( err ) {
+			if ( err ) {
+				console.log( 'Unable to create user because of error(s):' );
+				console.log( err );
+			} else {
+				console.log( 'New user created.' );
+			}
+
+			setTimeout( function () {
+				db.mongoose.disconnect();
+			}, 1000);
+		} );
+	} );
+}
+
+function processPassword( user, password ) {
+	return new Promise( function( resolve, reject ) {
+		Auth.generatePassword( password, function( result ) {
+			user.password = {};
+			user.password.hash = result.hash;
+			user.password.salt = result.salt;
+			resolve();
+		} );
+	} );
+}
+
+function processMembership( user, answer ) {
+	return new Promise( function( resolve, reject ) {
+		if ( answer != 'No' ) {
+			var memberPermission = {
+				permission: member
+			}
+			var now = moment();
+			switch ( answer ) {
+				case 'Yes':
+					memberPermission.date_added = now.toDate();
+					break;
+				case 'Yes (expires after 1 month)':
+					memberPermission.date_added = now.toDate();
+					memberPermission.date_expires = now.add( '1', 'months' ).toDate();
+					break;
+				case 'Yes (expired yesterday)':
+					memberPermission.date_expires = now.subtract( '1', 'day' ).toDate();
+					memberPermission.date_added = now.subtract( '1', 'months' ).toDate();
+					break;
+			}
+			user.permissions.push( memberPermission );
+			resolve();
+		} else {
+			resolve();
+		}
+	} );
+}
+
+function processActivation( user, answer ) {
+	return new Promise( function( resolve, reject ) {
+		if ( answer == 'Yes' ) {
+			user.activated = true;
+			resolve();
+		} else {
+			user.activated = false;
+			Auth.generateActivationCode( function( code ) {
+				console.log( 'Activation code: ' + code );
+				user.activation_code = code;
+				resolve();
+			} );
+		}
+	} );
+}
+
+function processPermission( user, answer ) {
+	return new Promise( function( resolve, reject ) {
+		if ( answer != 'None' ) {
+			var adminPermission = {
+				date_added: moment().toDate()
+			}
+
+			switch ( answer ) {
+				case 'Admin':
+					adminPermission.permission = admin;
+					break;
+				case 'Super Admin':
+					adminPermission.permission = superadmin;
+					break;
+			}
+			user.permissions.push( adminPermission );
+			resolve();
+		} else {
+			resolve();
+		}
+	} );
+}

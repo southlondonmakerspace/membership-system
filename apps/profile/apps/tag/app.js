@@ -34,6 +34,10 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
+app.get( '/revoke', auth.isLoggedIn, function( req, res ) {
+	res.render( 'revoke' );
+} );
+
 app.post( '/revoke', auth.isLoggedIn, function( req, res ) {
 	req.user.tag.id = '';
 	req.user.tag.hashed = '';

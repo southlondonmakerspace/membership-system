@@ -22,6 +22,4 @@ block contents
 					.page-header
 						h3 Unlink your account
 					p You can unlink your account from Discourse by clicking below.
-					form( action="/profile/discourse/unlink", method="post" )
-						include ../../../../../src/views/partials/csrf.pug
-						button.btn.btn-sm.btn-danger Unlink from Discourse
+					a( href="/profile/discourse/unlink" ).btn.btn-danger Unlink from Discourse

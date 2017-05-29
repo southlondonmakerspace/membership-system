@@ -1,0 +1,19 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Unlink ' + app.title
+
+block contents
+	.row
+		.col-md-3
+			- page = 'discourse'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			p Are you sure you want to unlink your Discourse profile from your membership, you will no longer have access to private areas of Discourse.
+			form( method="post" )
+				include ../../../../../src/views/partials/csrf.pug
+				button.btn.btn-danger Unlink
+				|  
+				a( href="/profile/discourse" ).btn.btn-default Cancel

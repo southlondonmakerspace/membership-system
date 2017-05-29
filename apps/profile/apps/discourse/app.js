@@ -59,38 +59,50 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.search ) {
 		req.flash( 'danger', messages['information-ommited'] );
-		res.redirect( app.parent.mountpath );
+		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
+
 	if ( ! req.user.discourse.activation_code ) {
 		discourse.searchUsers( req.body.search, function( users ) {
 			if ( users ) {
 				var user = users[ req.body.user ];
-				Members.findOne( { "discourse.id": user.id }, function( err, member ) {
-					if ( member ) {
-						req.flash( 'warning', messages['discouse-id-duplicate'] );
-						res.redirect( app.parent.mountpath + app.mountpath );
-					} else {
-						auth.generateActivationCode( function( code ) {
-							code = code.toString( 'hex' );
+				if ( req.body.user ) {
+					var index = parseInt( req.body.user );
+					if ( index > 0 || index < users.length ) {
+						Members.findOne( { "discourse.id": user.id }, function( err, member ) {
+							if ( member ) {
+								req.flash( 'warning', messages['discouse-id-duplicate'] );
+								res.redirect( app.parent.mountpath + app.mountpath );
+							} else {
+								auth.generateActivationCode( function( code ) {
+									code = code.toString( 'hex' );
 
-							Members.update( { "_id": req.user._id }, { $set: {
-								"discourse.username": user.username,
-								"discourse.activation_code": code
-							} }, function ( error ) {} );
+									Members.update( { "_id": req.user._id }, { $set: {
+										"discourse.username": user.username,
+										"discourse.activation_code": code
+									} }, function ( error ) {} );
 
-							discourse.sendActivationMessage( user.username, code );
+									discourse.sendActivationMessage( user.username, code );
 
-							req.flash( 'info', messages['discourse-activation-sent'] );
-							res.redirect( app.parent.mountpath + app.mountpath );
+									req.flash( 'info', messages['discourse-activation-sent'] );
+									res.redirect( app.parent.mountpath + app.mountpath );
+								} );
+							}
 						} );
+					} else {
+						req.flash( 'danger', messages['discourse-invalid-user'] );
+						res.redirect( app.parent.mountpath + app.mountpath );
 					}
-				} );
+				} else {
+					req.flash( 'danger', messages['discourse-invalid-user'] );
+					res.redirect( app.parent.mountpath + app.mountpath );
+				}
 			}
 		} );
 	} else {
 		req.flash( 'warning', messages['discourse-activation-dupe'] );
-		res.redirect( app.parent.mountpath );
+		res.redirect( app.parent.mountpath + app.mountpath );
 	}
 } );
 
@@ -105,8 +117,14 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 			return res.redirect( app.parent.mountpath + app.mountpath );
 		}
 	}
-	req.flash( 'warning', messages['discourse-activation-code-err'] );
-	res.redirect( app.parent.mountpath );
+	setTimeout( function() {
+		req.flash( 'warning', messages['discourse-activation-code-err'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}, 1000 );
+} );
+
+app.get( '/unlink', auth.isLoggedIn, function( req, res ) {
+	res.render( 'unlink' );
 } );
 
 app.post( '/unlink', auth.isLoggedIn, function( req, res ) {

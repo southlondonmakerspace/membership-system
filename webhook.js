@@ -39,7 +39,7 @@ app.post( '/', textBodyParser, function( req, res ) {
 } );
 
 // Start server
-var listener = app.listen( config.gocardless.port ,config.host, function () {
+var listener = app.listen( config.gocardless.port, config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );
 

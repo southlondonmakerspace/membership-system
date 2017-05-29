@@ -86,6 +86,7 @@ function templateLocals( req, res, next ) {
 
 	// Load config + prepare breadcrumbs
 	res.locals.config = config.globals;
+	res.locals.config.permission = config.permission;
 	res.locals.usersname = config.globals.title;
 	if ( req.user ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];

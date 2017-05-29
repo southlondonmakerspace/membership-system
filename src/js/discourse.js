@@ -113,7 +113,7 @@ var Discourse = {
 			var users = JSON.parse( body ).members;
 			var usernames = [];
 			// Check for users to remove
-			if ( users.length > 0 ) {
+			if ( users && users.length > 0 ) {
 				// Loop through discourse users
 				for ( var u in users ) {
 					var user = users[u];

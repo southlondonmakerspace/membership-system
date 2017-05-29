@@ -146,12 +146,8 @@ block contents
 						a( href="/members/" + member.uuid + "/permissions" ).btn.btn-default.pull-right
 							span.glyphicon.glyphicon-pencil
 							|  Edit Permissions
-			if member.permissions.length > 0 || superadmin
+			if member.permissions.length > 0
 				.list-group
-					if superadmin && access.indexOf( 'admin' ) != -1
-						span.list-group-item
-							h4.list-group-item-heading Super Admin
-							p.list-group-item-text Has super admin permission granted in the config.json file.
 					each permission, p in member.permissions
 						include ../../../src/views/partials/permission.pug
 			else

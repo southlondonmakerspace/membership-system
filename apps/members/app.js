@@ -131,7 +131,6 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 					discourse: discourse,
 					discourse_path: config.discourse.url,
 					audience: config.audience,
-					superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ),
 					password_tries: config['password-tries'],
 					total: total
 				} );
@@ -361,7 +360,10 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 			res.locals.breadcrumb.push( {
 				name: 'Permissions'
 			} );
-			res.render( 'permissions', { permissions: permissions, member: member, superadmin: ( config.superadmins.indexOf( member.email ) != -1 ? true : false ) } );
+			res.render( 'permissions', {
+				permissions: permissions,
+				member: member
+			} );
 		} );
 	} );
 } );

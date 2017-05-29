@@ -23,9 +23,6 @@
 		"google_map_key": "AIzaSyDWYuDWHlWLgIXyfVnJlLaFbbVD-hpDxrM"
 	},
 	"tag_salt": "",
-	"superadmins": [
-		"superadmin@example.com"
-	],
 	"permission": {
 		"admin": "admin",
 		"superadmin": "superadmin",

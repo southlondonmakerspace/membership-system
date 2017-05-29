@@ -140,7 +140,7 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
+app.get( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( ! member ) {
 			req.flash( 'warning', messages['member-404'] );
@@ -152,13 +152,13 @@ app.get( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
 			url: '/members/' + member.uuid
 		} );
 		res.locals.breadcrumb.push( {
-			name: 'Update',
+			name: 'Profile',
 		} );
 		res.render( 'update', { member: member } );
 	} );
 } );
 
-app.post( '/:uuid/update', auth.isSuperAdmin, function( req, res ) {
+app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.firstname ||
 		 ! req.body.lastname ||
 		 ! req.body.email ||

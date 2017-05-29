@@ -115,9 +115,7 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 			results: events.length,
 			events: []
 		};
-		console.log( events.length );
 		for ( var e in events ) {
-			console.log( e );
 			var event = events[e];
 			var output_event = {
 				date: event.happened

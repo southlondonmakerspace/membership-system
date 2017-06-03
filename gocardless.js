@@ -17,26 +17,32 @@ Members.find( {
 }, function( err, members ) {
 	for ( var m = 0; m < members.length; m++ ) {
 		var member = members[m];
-		if ( member.gocardless.subscription_id !== '' ) {
+		if ( member.gocardless.subscription_id ) {
 			api_tasks.push( function() {
 				var subscription_id = this.subscription_id;
 				console.log( 'Checking Subscription: ' + subscription_id );
 				GoCardless.getSubscription( subscription_id, function( err, subscription ) {
-					if ( subscription && subscription.status == 'cancelled' ) {
-						console.log( 'Removed' );
-						Members.update( { 'gocardless.subscription_id': subscription.id }, { $unset: { 'gocardless.subscription_id': true } }, function() {} );
+					var remove = false;
+					if ( subscription && subscription.status == 'cancelled' ) remove = true;
+					if ( err && err.error && err.error.message == 'Resource not found' ) remove = true;
+					if ( remove ) {
+						console.log( 'Removed Subscription:  ' + subscription_id );
+						Members.update( { 'gocardless.subscription_id': subscription_id }, { $unset: { 'gocardless.subscription_id': true } }, function() {} );
 					}
 				} );
 			}.bind( { subscription_id: member.gocardless.subscription_id } ) );
 		}
-		if ( member.gocardless.mandate_id !== '' ) {
+		if ( member.gocardless.mandate_id ) {
 			api_tasks.push( function() {
 				var mandate_id = this.mandate_id;
-				console.log( 'Checking Mandate: ' + mandate_id );
+				console.log( 'Checking Mandate:      ' + mandate_id );
 				GoCardless.getMandate( mandate_id, function( err, mandate ) {
-					if ( mandate && mandate.status == 'cancelled' ) {
-						console.log( 'Removed' );
-						Members.update( { 'gocardless.mandate_id': mandate.id }, { $unset: { 'gocardless.mandate_id': true } }, function() {} );
+					var remove = false;
+					if ( mandate && mandate.status == 'cancelled' ) remove = true;
+					if ( err && err.error && err.error.message == 'Resource not found' ) remove = true;
+					if ( remove ) {
+						console.log( 'Removed Mandate:       ' + mandate_id );
+						Members.update( { 'gocardless.mandate_id': mandate_id }, { $unset: { 'gocardless.mandate_id': true } }, function() {} );
 					}
 				} );
 			}.bind( { mandate_id: member.gocardless.mandate_id } ) );

@@ -52,7 +52,7 @@ block contents
 				.form-group
 					label( for="address" ).col-md-3 Address
 					.col-md-5
-						textarea( name="address" )#address.form-control #{ user.address }
+						textarea( name="address", rows=4 )#address.form-control #{ user.address }
 				hr
 				.form-group
 					.col-md-12
@@ -60,6 +60,6 @@ block contents
 							span.glyphicon.glyphicon-chevron-right
 		.col-md-4
 			.page-header
-				h2 Already a member?
+				h2 Existing member
 			p If you are already a member you can just login...
 			include ../../login/views/partials/form.pug

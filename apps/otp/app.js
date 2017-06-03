@@ -35,7 +35,7 @@ app.post( '/', passport.authenticate( 'totp', {
 	failureRedirect: '/otp'
 } ), function ( req, res ) {
 	req.session.method = 'totp';
-	if ( req.session.requestedUrl !== undefined ) {
+	if ( req.session.requestedUrl ) {
 		res.redirect( req.session.requestedUrl );
 		delete req.session.requestedUrl;
 	} else {

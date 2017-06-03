@@ -8,16 +8,11 @@ The system is dependent on a number of NPM modules, and Mongo DB.
 
 1. Clone the repo into a folder.
 1. Copy the example config in the `config` folder, naming it `config.json`. Complete the details.
-1. Use `npm update` to install the numerous dependencies.
-1. Run `node first-time.js` to create the basic necessary database entries to avoid crashing.
-1. Start the main server using `node app`.
+1. Use `npm install` to install the numerous dependencies.
+1. Run `npm run first-time` to create the basic necessary database entries.
+1. Run `npm run new-user` to create a super admin user.
+1. Start the main server using `npm run start`.
 1. Open a browser to `http://localhost:3001`.
-1. Follow the process to join.
-1. Ensure the email address used to join is the same as that used the `config.json`'s `superadmin` section.
-1. As a logged in, activated account with `superadmin` you can now create new permissions, create the following:
-  - Slug: member
-  - Slug: admin (can be modified using the `config.json`)
-  - Slug: superadmin (can be modified using the `config.json`)
 
 The system is now up and running, however you'll need to review:
   - HTTPs via Nginx as a proxy, so requests to https://localhost` are proxied by Nginx to `http://localhost:3001`.

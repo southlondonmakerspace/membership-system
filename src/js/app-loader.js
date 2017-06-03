@@ -7,6 +7,7 @@ var __js = __src + '/js';
 var config = require( __config );
 
 var fs = require( 'fs' );
+helmet = require( 'helmet' );
 
 var app;
 var apps = [];
@@ -53,7 +54,7 @@ function loadApps() {
 				// Parse the config into apps array
 				var output = JSON.parse( fs.readFileSync( config_file ) );
 				output.uid = files[f];
-				if ( output.priority === undefined ) output.priority = 100;
+				if ( ! output.priority ) output.priority = 100;
 				output.app = file + '/app.js';
 
 				// Check for sub apps directory
@@ -76,7 +77,7 @@ function loadApps() {
 								// Parse the config into apps array
 								var subapp_output = JSON.parse( fs.readFileSync ( sub_config_file ) );
 								subapp_output.uid = subapps[a];
-								if ( subapp_output.priority === undefined ) subapp_output.priority = 100;
+								if ( ! subapp_output.priority ) subapp_output.priority = 100;
 								subapp_output.app = subapp + '/app.js';
 
 								output.subapps.push( subapp_output );
@@ -105,6 +106,7 @@ function routeApps() {
 		console.log( "	Route: /" + _app.path );
 
 		var new_app = require( _app.app )( _app );
+		new_app.use( helmet() );
 		app.use( '/' + _app.path, new_app );
 
 		if ( _app.subapps.length > 0 ) {
@@ -113,6 +115,7 @@ function routeApps() {
 				console.log( "	       /" + _app.path + "/" + _sapp.path  );
 
 				var new_sub_app = require( _sapp.app )( _sapp );
+				new_sub_app.use( helmet() );
 				new_app.use( '/' + _sapp.path, new_sub_app );
 			}
 		}

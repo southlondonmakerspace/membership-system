@@ -30,7 +30,7 @@ var Authentication = {
 				// Search for member by email address
 				Members.findOne( { email: email }, function( err, user ) {
 					// If a user is found validate password
-					if ( user !== null ) {
+					if ( user ) {
 
 						// Has account exceeded it's password tries?
 						if ( user.password.tries >= config['password-tries'] ) {
@@ -43,7 +43,7 @@ var Authentication = {
 							if ( hash == user.password.hash ) {
 
 								// Check the user account is activated (or is a config superadmin)
-								if ( ! ( user.activated || Authentication.superAdmin( user.email ) ) ) {
+								if ( ! ( user.activated ) ) {
 									return done( null, false, { message: messages['inactive-account'] } );
 								}
 
@@ -105,7 +105,7 @@ var Authentication = {
 			Members.findById( data._id ).populate( 'permissions.permission' ).exec( function( err, user ) {
 
 				// If member found
-				if ( user !== null ) {
+				if ( user ) {
 
 					// Create array of permissions for user
 					var permissions = [ 'loggedIn' ];
@@ -113,10 +113,6 @@ var Authentication = {
 					// Update last seen
 					user.last_seen = new Date();
 					user.save( function( err ) {} );
-
-					// Add config superadmin permission if email address is in the config.json
-					if ( Authentication.superAdmin( user.email ) )
-						permissions.push( 'superadmin' );
 
 					// Loop through permissions check they are active right now and add those to the array
 					for ( var p = 0; p < user.permissions.length; p++ ) {
@@ -199,14 +195,6 @@ var Authentication = {
 		} );
 	},
 
-	// Checks if an email address is in the config.json superadmin email array
-	superAdmin: function( email ) {
-		if ( config.superadmins.indexOf( email ) != -1 ) {
-			return true;
-		}
-		return false;
-	},
-
 	LOGGED_IN: true,
 	NOT_LOGGED_IN: false,
 	NOT_ACTIVATED: -1,
@@ -219,7 +207,7 @@ var Authentication = {
 		// Is the user logged in?
 		if ( req.isAuthenticated() && req.user ) {
 			// Is the user active
-			if ( req.user.activated || Authentication.superAdmin( req.user.email ) ) {
+			if ( req.user.activated ) {
 				if ( ! req.user.otp.activated || ( req.user.otp.activated && req.session.method == 'totp' ) ) {
 					return Authentication.LOGGED_IN;
 				} else {
@@ -243,7 +231,6 @@ var Authentication = {
 			if ( Authentication.checkPermission( req, 'member' ) ) return Authentication.LOGGED_IN;
 			if ( Authentication.checkPermission( req, 'superadmin' ) ) return Authentication.LOGGED_IN;
 			if ( Authentication.checkPermission( req, 'admin' ) ) return Authentication.LOGGED_IN;
-			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 		}
 		return Authentication.NOT_MEMBER;
 	},
@@ -257,7 +244,6 @@ var Authentication = {
 		} else {
 			if ( Authentication.checkPermission( req, 'superadmin' ) ) return Authentication.LOGGED_IN;
 			if ( Authentication.checkPermission( req, 'admin' ) ) return Authentication.LOGGED_IN;
-			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 		}
 		return Authentication.NOT_ADMIN;
 	},
@@ -270,7 +256,6 @@ var Authentication = {
 			return status;
 		} else {
 			if ( Authentication.checkPermission( req, 'superadmin' ) ) return Authentication.LOGGED_IN;
-			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 		}
 		return Authentication.NOT_ADMIN;
 	},
@@ -279,7 +264,6 @@ var Authentication = {
 	checkPermission: function( req, permission ) {
 		if ( ! req.user ) return false;
 		if ( permission == 'superadmin' ) {
-			if ( Authentication.superAdmin( req.user.email ) ) return Authentication.LOGGED_IN;
 			if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return Authentication.LOGGED_IN;
 			return false;
 		}

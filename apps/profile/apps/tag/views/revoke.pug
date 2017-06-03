@@ -1,0 +1,19 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = 'Revoke ' + app.title
+
+block contents
+	.row
+		.col-md-3
+			- page = 'tag'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			p Are you sure you want to revoke your tag, you will no longer have access to Makerspace or the tools.
+			form( method="post" )
+				include ../../../../../src/views/partials/csrf.pug
+				button.btn.btn-danger Revoke
+				|  
+				a( href="/profile/discourse" ).btn.btn-default Cancel

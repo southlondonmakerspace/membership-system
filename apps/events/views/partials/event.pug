@@ -28,7 +28,7 @@ if event.successful || ( ! event.successful && event.permission.event_unauthoris
 
 		if relative
 			span.badge
-				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/m/Y' ) ) #{ moment( event.happened ).fromNow() }
+				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss D/M/Y' ) ) #{ moment( event.happened ).fromNow() }
 		else
 			span.badge
-				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss d/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm' ) }
+				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss D/M/Y' ) ) #{ moment( event.happened ).format( 'HH:mm' ) }

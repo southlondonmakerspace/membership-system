@@ -19,9 +19,7 @@ block contents
 							h3 Lost Tag
 						p I've you've lost your tag, click "Revoke my tag" to ensure no one else can use it as soon as possible.
 						p We can issue a replacement or reassociated your tag if you find it.
-						form( action="/profile/tag/revoke", method="post" )
-							include ../../../../../src/views/partials/csrf.pug
-							button.btn.btn-sm.btn-danger Revoke my tag
+						a( href="/profile/tag/revoke" ).btn.btn-danger Revoke my tag
 					else
 						p Once you've setup your direct debit you can collect a tag from #{ config.organisation }.
 						p Visit #{ config.organisation } at any time when it's open to collect a tag.

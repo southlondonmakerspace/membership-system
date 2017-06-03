@@ -1,19 +1,25 @@
 extends ../../../src/views/base.pug
 
 block navbar
-	.jumbotron
-		h1 Welcome...
-		p #{ config.about.text }
-		p: a( href=config.about.link.url, target="_blank").btn.btn-primary #{ config.about.link.text }
-		.bg
 
 block contents
 	.row
+		.col-md-12
+			h2
+				strong #{ config.organisation }
+				br
+				| #{ config.title }
+			h4 #{ config.about.text }
+			p: a( href=config.about.link.url, target="_blank").btn #{ config.about.link.text }
+			.bg
+	.row
 		.col-md-6
 			.page-header
-				h2 Join
-			p: a( href="/join" ).btn.btn-primary.btn-block Join Now
+				h3 New member
+			p Becoming a new member is straightforward, click below to get started. 
+			a( href="/join" ).btn.btn-primary Join
 		.col-md-6
 			.page-header
-				h2 Login
+				h3 Existing member
 			include ../../login/views/partials/form.pug
+		

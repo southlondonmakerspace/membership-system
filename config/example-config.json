@@ -4,7 +4,7 @@
 	"secret": "abc123",
 	"session": "session",
 	"cookie": {
-		"secure": true,
+		"secure": false,
 		"httpOnly": true,
 		"domain": "localhost",
 		"path": "/",
@@ -23,7 +23,6 @@
 		"google_map_key": "AIzaSyDWYuDWHlWLgIXyfVnJlLaFbbVD-hpDxrM"
 	},
 	"tag_salt": "",
-	"superadmins": [],
 	"permission": {
 		"admin": "admin",
 		"superadmin": "superadmin",
@@ -47,6 +46,6 @@
 		"sandbox": true,
 		"port": 3002
 	},
-	"password-tries": 1,
+	"password-tries": 3,
 	"dev": true
 }

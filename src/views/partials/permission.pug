@@ -1,5 +1,12 @@
 span.list-group-item( class=( permission.date_added > moment() || permission.date_expires != undefined && permission.date_expires < moment() ? 'disabled' : '' ) )
 	h4.list-group-item-heading #{ permission.permission.name }
+		if ( access.indexOf( 'admin' ) != -1 )
+			if ( permission.permission.slug == config.permission.superadmin )
+				| 
+				small: span.label.label-danger Super Admin
+			if ( permission.permission.slug == config.permission.admin )
+				| 
+				small: span.label.label-primary Admin
 	if permission.permission.description
 		p.list-group-item-text #{ permission.permission.description }
 	p.list-group-item-text Valid&nbsp;

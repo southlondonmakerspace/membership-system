@@ -3,5 +3,6 @@
 	"path": "events",
 	"permissions": [
 		"superadmin"
-	]
+	],
+	"priority": 3
 }

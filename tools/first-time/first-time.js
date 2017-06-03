@@ -70,3 +70,7 @@ new Permissions( {
 		console.log( err );
 	}
 } );
+
+setTimeout( function () {
+	db.mongoose.disconnect();
+}, 1000);

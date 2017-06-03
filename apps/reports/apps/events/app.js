@@ -40,7 +40,7 @@ app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) 
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-		if ( req.params.month !== undefined && req.params.year !== undefined ) {
+		if ( req.params.month && req.params.year ) {
 			start.setMonth( parseInt( req.params.month ) - 1 );
 			start.setYear( parseInt( req.params.year ) );
 		}
@@ -120,7 +120,7 @@ app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-		if ( req.params.year !== undefined ) {
+		if ( req.params.year ) {
 			start.setFullYear( parseInt( req.params.year ) );
 		}
 		var end = new Date( start );
@@ -195,7 +195,7 @@ app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-		if ( req.params.year !== undefined ) {
+		if ( req.params.year ) {
 			start.setFullYear( parseInt( req.params.year ) );
 		}
 		var end = new Date( start );
@@ -274,7 +274,7 @@ app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
 		var start = new Date(); start.setMonth( 0 ); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-		if ( req.params.year !== undefined ) {
+		if ( req.params.year ) {
 			start.setFullYear( parseInt( req.params.year ) );
 		}
 		var end = new Date( start );
@@ -351,7 +351,7 @@ app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, r
 		if ( ! permission ) return res.render( '../../../../../src/views/404' );
 
 		var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-		if ( req.params.year !== undefined ) {
+		if ( req.params.year ) {
 			start.setFullYear( parseInt( req.params.year ) );
 			start.setMonth( parseInt( req.params.month ) - 1 );
 		}

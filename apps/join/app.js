@@ -44,17 +44,6 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', function( req, res ) {
-	if ( req.body.firstname === undefined ||
-		 req.body.lastname === undefined ||
- 		 req.body.password === undefined ||
- 		 req.body.verify === undefined ||
- 		 req.body.email === undefined ||
- 		 req.body.address === undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.mountpath );
- 			return;
-	}
-
 	if ( req.user ) {
 		req.flash( 'warning', messages['already-logged-in'] );
 		res.redirect( '/profile' );
@@ -66,17 +55,19 @@ app.post( '/', function( req, res ) {
 			address: req.body.address,
 		};
 
-		if ( req.body.firstname === '' ) {
+		if ( ! req.body.firstname ) {
 			req.flash( 'danger', messages['user-firstname'] );
 			res.render( 'index', { user: user } );
 			return;
 		}
-		if ( req.body.lastname === '' ) {
+
+		if ( ! req.body.lastname ) {
 			req.flash( 'danger', messages['user-lastname'] );
 			res.render( 'index', { user: user } );
 			return;
 		}
-		if ( req.body.address === '' ) {
+
+		if ( ! req.body.address ) {
 			req.flash( 'danger', messages['user-address'] );
 			res.render( 'index', { user: user } );
 			return;
@@ -98,11 +89,11 @@ app.post( '/', function( req, res ) {
 		var postcode = '';
 		var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-		if ( results !== undefined ) {
+		if ( results ) {
 			postcode = results[0];
 		}
 		postcodes.lookup( postcode, function( err, data ) {
-			if ( data !== undefined ) {
+			if ( data ) {
 				user.postcode_coordinates = {
 					lat: data.latitude,
 					lng: data.longitude,
@@ -120,8 +111,8 @@ app.post( '/', function( req, res ) {
 
 					// Store new member
 					new Members( user ).save( function( status ) {
-						if ( status !== null ) {
-							if ( status.errors !== undefined ) {
+						if ( status ) {
+							if ( status.errors ) {
 								var keys = Object.keys( status.errors );
 								for ( var k in keys ) {
 									var key = keys[k];

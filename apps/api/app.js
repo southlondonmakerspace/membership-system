@@ -23,7 +23,7 @@ var app_config = {};
 app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 	Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		var grantAccess = false;
-		if ( member !== null ) {
+		if ( member ) {
 			var hasMembership = false;
 			var hasPermission = false;
 			var isSuperAdmin = false;
@@ -65,7 +65,7 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 
 app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
 	Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
-		if ( activity !== null ) {
+		if ( activity ) {
 			new Events( {
 				activity: activity._id,
 				action: ( req.query.action ? req.query.action : '' )
@@ -115,9 +115,7 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 			results: events.length,
 			events: []
 		};
-		console.log( events.length );
 		for ( var e in events ) {
-			console.log( e );
 			var event = events[e];
 			var output_event = {
 				date: event.happened

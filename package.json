@@ -22,6 +22,7 @@
     "express-flash": "0.0.2",
     "express-session": "^1.12.1",
     "helmet": "^3.5.0",
+    "inquirer": "^3.0.6",
     "less": "^2.5.3",
     "moment": "^2.15.1",
     "mongoose": "^4.2.5",
@@ -37,8 +38,10 @@
     "thirty-two": "^1.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "node app",
+    "first-time": "node tools/first-time/first-time",
+    "new-user": "node tools/new_user/new_user",
+    "import": "node tools/import_drydata/import",
     "watch-css": "catw -c 'lessc -' 'static/less/*.less' -o static/css/style.css -v",
     "watch": "npm run watch-css"
   },

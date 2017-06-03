@@ -80,7 +80,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 				], function ( err, result ) {
 					var member = {};
 					var permissions = req.user.permissions.filter( function( p ) {
-						if ( p.permission !== undefined && p.permission.slug !== undefined ) {
+						if ( p.permission && p.permission.slug ) {
 							if ( p.permission.slug == 'member' ) {
 								return true;
 							}
@@ -98,7 +98,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 		} else {
 			var member = {};
 			var permissions = req.user.permissions.filter( function( p ) {
-				if ( p.permission !== undefined && p.permission.slug !== undefined ) {
+				if ( p.permission && p.permission.slug ) {
 					if ( p.permission.slug == 'member' ) {
 						return true;
 					}
@@ -127,18 +127,18 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/update', auth.isLoggedIn, function( req, res ) {
-	if ( req.body.firstname === undefined ||
-		 req.body.lastname === undefined ||
- 		 req.body.address === undefined ) {
+	if ( ! req.body.firstname ||
+		 ! req.body.lastname ||
+ 		 ! req.body.address ) {
  			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.mountpath );
+ 			res.redirect( app.mountpath + '/update' );
  			return;
 	}
 
 	var postcode = '';
 	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
 
-	if ( results !== undefined ) {
+	if ( results ) {
 		postcode = results[0];
 	}
 	postcodes.lookup( postcode, function( err, data ) {
@@ -148,7 +148,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 			address: req.body.address
 		};
 
-		if ( data !== undefined ) {
+		if ( data ) {
 			profile.postcode_coordinates = {
 				lat: data.latitude,
 				lng: data.longitude,
@@ -158,7 +158,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 		}
 
 		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-			if ( status !== null ) {
+			if ( status ) {
 				var keys = Object.keys( status.errors );
 				for ( var k in keys ) {
 					var key = keys[k];
@@ -185,13 +185,6 @@ app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	if ( req.body.firstname === undefined ||
-		 req.body.lastname === undefined ||
- 		 req.body.telephone === undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.mountpath );
- 			return;
-	}
 	var profile = {
 		emergency_contact: {
 			firstname: req.body.firstname,
@@ -201,7 +194,7 @@ app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 	};
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status !== null ) {
+		if ( status ) {
 			var keys = Object.keys( status.errors );
 			for ( var k in keys ) {
 				var key = keys[k];
@@ -225,9 +218,9 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
-	if ( req.body.current === undefined ||
-		 req.body.new === undefined ||
- 		 req.body.verify === undefined ) {
+	if ( ! req.body.current ||
+		 ! req.body.new ||
+ 		 ! req.body.verify ) {
  			req.flash( 'danger', messages['information-ommited'] );
  			res.redirect( app.mountpath );
  			return;

@@ -33,7 +33,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
 	var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
-	if ( req.params.month !== undefined && req.params.year !== undefined ) {
+	if ( req.params.month && req.params.year ) {
 		start.setMonth( parseInt( req.params.month ) - 1 );
 		start.setYear( parseInt( req.params.year ) );
 	}

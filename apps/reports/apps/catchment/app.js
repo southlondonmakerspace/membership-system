@@ -39,7 +39,7 @@ app.get( '/data.json', auth.isSuperAdmin, function( req, res ) {
 			var locations = [];
 			for ( var m in members ) {
 				var member = members[m];
-				if ( member.postcode_coordinates.lat !== undefined )
+				if ( member.postcode_coordinates.lat )
 					locations.push( member.postcode_coordinates );
 			}
 			locations.sort();

@@ -44,21 +44,13 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
-	if ( req.body.name === undefined ||
-		 req.body.event === undefined ||
- 		 req.body.slug === undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.parent.mountpath + app.mountpath );
- 			return;
-	}
-
-	if ( req.body.name.trim() === '' ) {
+	if ( ! req.body.name || req.body.name.trim() === '' ) {
 		req.flash( 'danger', messages['activity-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.slug.trim() === '' ) {
+	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
 		req.flash( 'danger', messages['activity-slug-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -79,7 +71,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	Activities.findOne( { slug: req.params.slug }, function( err, activity ) {
-		if ( activity === undefined ) {
+		if ( ! activity ) {
 			req.flash( 'warning', messages['activity-404'] );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -93,21 +85,13 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
-	if ( req.body.name === undefined ||
-		 req.body.event === undefined ||
- 		 req.body.slug === undefined ) {
- 			req.flash( 'danger', messages['information-ommited'] );
- 			res.redirect( app.parent.mountpath + app.mountpath );
- 			return;
-	}
-
-	if ( req.body.name.trim() === '' ) {
+	if ( ! req.body.name || req.body.name.trim() === '' ) {
 		req.flash( 'danger', messages['activity-name-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.slug.trim() === '' ) {
+	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
 		req.flash( 'danger', messages['activity-slug-required'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;

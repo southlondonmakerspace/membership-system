@@ -25,7 +25,7 @@ block contents
 		.row
 			.col-md-6
 				.page-header
-					h2 Profile
+					h3 Profile
 						if access == 'superadmin'
 							a( href="/members/" + member.uuid + "/profile" ).btn.btn-default.pull-right
 								span.glyphicon.glyphicon-pencil
@@ -58,7 +58,7 @@ block contents
 		.row
 			.col-md-6
 				.page-header
-					h3 Membership System
+					h3 System
 						if access == 'superadmin'
 							.btn-group.pull-right
 								a( href="/members/" + member.uuid + "/activation" ).btn.btn-default

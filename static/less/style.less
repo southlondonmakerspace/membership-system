@@ -56,10 +56,27 @@ body {
 	}
 }
 
-.navbar .container-fluid {
-	padding-left: 0;
-	.collapse.navbar-collapse {
+.page-header {
+	margin-top: 0;
+}
+
+.navbar {
+	box-shadow: none;
+	-webkit-box-shadow: none;
+
+	.container-fluid {
 		padding-left: 0;
-		padding-right: 0;
+		.collapse.navbar-collapse {
+			padding-left: 0;
+			padding-right: 0;
+		}
 	}
+
+	ul.nav.navbar-nav li a {
+		border-radius: 3px;
+	}
+}
+
+ul.nav.nav-tabs {
+	margin-bottom: 15px;
 }

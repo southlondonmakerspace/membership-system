@@ -80,3 +80,70 @@ body {
 ul.nav.nav-tabs {
 	margin-bottom: 15px;
 }
+
+.btn {
+	text-transform: none;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border: 1px solid #ddd;
+
+	&:hover,
+	&:active {
+		border: 1px solid #ddd;
+	}
+}
+
+.btn-success,
+.btn-warning,
+.btn-info,
+.btn-danger,
+.btn-primary,
+.btn-default {
+	&:hover,
+	&:active {
+		box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+}
+
+.btn-success,
+.btn-warning,
+.btn-info,
+.btn-danger,
+.btn-primary {
+	border: 0;
+	&:hover,
+	&:active {
+		border: 0;
+		box-shadow: 0;
+		-webkit-box-shadow: 0;
+	}
+}
+
+.alert {
+	font-weight: 600;
+}
+
+.btn:after {
+	transition: none;
+}
+
+.btn-group {
+	.btn + .btn {
+		border-left: 0;
+	}
+}
+
+.list-group-item-danger a {
+	color: red;
+}
+
+.panel-default {
+	box-shadow: none;
+	border: 1px solid #ddd;
+}
+
+.panel-default>.panel-heading {
+	border-bottom: 1px solid #ddd;
+	background-color: transparent;
+}

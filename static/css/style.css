@@ -70,3 +70,69 @@ body {
 ul.nav.nav-tabs {
   margin-bottom: 15px;
 }
+.btn {
+  text-transform: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  border: 1px solid #ddd;
+}
+.btn:hover,
+.btn:active {
+  border: 1px solid #ddd;
+}
+.btn-success:hover,
+.btn-warning:hover,
+.btn-info:hover,
+.btn-danger:hover,
+.btn-primary:hover,
+.btn-default:hover,
+.btn-success:active,
+.btn-warning:active,
+.btn-info:active,
+.btn-danger:active,
+.btn-primary:active,
+.btn-default:active {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.btn-success,
+.btn-warning,
+.btn-info,
+.btn-danger,
+.btn-primary {
+  border: 0;
+}
+.btn-success:hover,
+.btn-warning:hover,
+.btn-info:hover,
+.btn-danger:hover,
+.btn-primary:hover,
+.btn-success:active,
+.btn-warning:active,
+.btn-info:active,
+.btn-danger:active,
+.btn-primary:active {
+  border: 0;
+  box-shadow: 0;
+  -webkit-box-shadow: 0;
+}
+.alert {
+  font-weight: 600;
+}
+.btn:after {
+  transition: none;
+}
+.btn-group .btn + .btn {
+  border-left: 0;
+}
+.list-group-item-danger a {
+  color: red;
+}
+.panel-default {
+  box-shadow: none;
+  border: 1px solid #ddd;
+}
+.panel-default > .panel-heading {
+  border-bottom: 1px solid #ddd;
+  background-color: transparent;
+}

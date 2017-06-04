@@ -122,7 +122,7 @@ var Discourse = {
 				}
 			}
 			// Check for users to add
-			Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
+			Permissions.findOne( { slug: config.permission.member }, function( err, membership_permission ) {
 				Members.find( {
 					'discourse.activated': true,
 					$and: [
@@ -163,7 +163,7 @@ var Discourse = {
 		} );
 	},
 	checkDiscourseUser: function( username, permission ) {
-		Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
+		Permissions.findOne( { slug: config.permission.member }, function( err, membership_permission ) {
 			Members.findOne( {
 				'discourse.username': username,
 				$and: [

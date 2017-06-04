@@ -17,7 +17,7 @@ var Auth = require( __js + '/authentication' );
 var member, admin, superadmin;
 
 db.mongoose.connection.on( 'connected', function() {
-	Permissions.findOne( { 'slug': 'member' }, function( err, permission ) {
+	Permissions.findOne( { 'slug': config.permission.member }, function( err, permission ) {
 		member = permission._id;
 	} );
 

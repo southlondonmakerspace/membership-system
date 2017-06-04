@@ -23,6 +23,9 @@ block contents
 			each permission, p in permissions
 				tr
 					td #{ permission.name }
+						if ( permission.slug == config.permission.member )
+							| 
+							span.label.label-success Membership
 						if ( permission.slug == config.permission.superadmin )
 							| 
 							span.label.label-danger Super Admin

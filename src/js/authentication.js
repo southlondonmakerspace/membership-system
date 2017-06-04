@@ -271,6 +271,10 @@ var Authentication = {
 			if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) return Authentication.LOGGED_IN;
 			return false;
 		}
+		if ( permission == 'member' ) {
+			if ( req.user.quickPermissions.indexOf( config.permission.member ) != -1 ) return Authentication.LOGGED_IN;
+			return false;
+		}
 		if ( req.user.quickPermissions.indexOf( permission ) != -1 ) return Authentication.LOGGED_IN;
 		return false;
 	},

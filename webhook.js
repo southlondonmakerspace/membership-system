@@ -117,7 +117,7 @@ function extendMembership( event ) {
 			Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 				var foundPermission = false;
 				for ( var p = 0; p < member.permissions.length; p++ ) {
-					if ( member.permissions[p].permission.slug == 'member' ) {
+					if ( member.permissions[p].permission.slug == config.permission.member ) {
 						foundPermission = true;
 						member.permissions[p].date_expires = new Date();
 						member.permissions[p].date_expires.setDate( member.permissions[p].date_expires.getDate() + 36 );
@@ -138,7 +138,7 @@ function extendMembership( event ) {
 }
 
 function grantMembership( member ) {
-	Permissions.findOne( { slug: 'member' }, function( err, permission ) {
+	Permissions.findOne( { slug: config.permission.member }, function( err, permission ) {
 		if ( permission ) {
 			var new_permission = {
 				permission: permission.id,

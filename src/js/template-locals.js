@@ -62,9 +62,8 @@ function templateLocals( req, res, next ) {
 	res.locals.access = 'none';
 
 	if ( req.user && req.user.quickPermissions ) {
-		if ( req.user.quickPermissions.indexOf( 'member' ) != -1 ) res.locals.access = 'member';
+		if ( req.user.quickPermissions.indexOf( config.permission.member ) != -1 ) res.locals.access = 'member';
 		if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) res.locals.access = 'admin';
-		if ( req.user.quickPermissions.indexOf( 'superadmin' ) != -1 ) res.locals.access = 'superadmin';
 		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) res.locals.access = 'superadmin';
 	}
 

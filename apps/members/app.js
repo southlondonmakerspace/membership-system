@@ -46,12 +46,12 @@ app.get( '/', auth.isMember, function( req, res ) {
 		// If not admin or requesting active members only add member permission to filtering list
 		if ( ! ( auth.canSuperAdmin( req ) == true && req.query.inactive_members !== undefined ) ) {
 			var member = permissions.filter( function( permission ) {
-				if ( permission.slug == 'member' ) return true;
+				if ( permission.slug == config.permission.member ) return true;
 				return false;
 			} )[0];
 			filter_permissions.push( member );
 			permissions = permissions.filter( function( p ) {
-				if ( p.slug == 'member' ) return false;
+				if ( p.slug == config.permission.member ) return false;
 				return true;
 			} );
 		}

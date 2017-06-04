@@ -101,7 +101,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				members: members,
 				permissions: permissions,
 				filter_permission: ( permission !== null ? permission : null ),
-				inactive_members: ( req.query.inactive_members !== undefined ? false : true )
+				inactive_members: ( req.query.inactive_members !== undefined ? true : false )
 			} );
 		} );
 	} );

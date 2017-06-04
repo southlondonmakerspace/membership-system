@@ -8,10 +8,12 @@ block navbar
 
 block contents
 	p To reset your password enter your email address and you will receive an email with a link to reset your password.
-	form( method="post", style="max-width: 300px;" )
+	form( method="post" ).form-horizontal
 		include ../../../src/views/partials/csrf.pug
 		.form-group
-			label( for="email" ) Email address
-			input( type="email", name="email", required )#email.form-control
+			label( for="email" ).col-md-2.control-label Email address
+			.col-md-4
+				input( type="email", name="email", required )#email.form-control
 		.form-group
-			button.btn.btn-primary Reset Password
+			.col-md-offset-2.col-md-4
+				button.btn.btn-primary Reset Password

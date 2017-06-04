@@ -103,7 +103,12 @@ app.get( '/setup-mandate', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
-	res.render( 'cancel-mandate' );
+	if ( req.user.gocardless.mandate_id ) {
+		res.render( 'cancel-mandate' );
+	} else {
+		req.flash( 'warning', messages['gocardless-mandate-404'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}
 } );
 
 app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
@@ -165,7 +170,12 @@ app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
-	res.render( 'cancel-subscription' );
+	if ( req.user.gocardless.subscription_id ) {
+		res.render( 'cancel-subscription' );
+	} else {
+		req.flash( 'warning', messages['gocardless-subscription-404'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}
 } );
 
 app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {

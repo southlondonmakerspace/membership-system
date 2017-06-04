@@ -90,7 +90,12 @@ app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/disable', auth.isLoggedIn, function( req, res ) {
-	res.render( 'disable' );
+	if ( req.user.otp.activated ) {
+		res.render( 'disable' );
+	} else {
+		req.flash( 'warning', messages['2fa-already-disabled'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}
 } );
 
 app.post( '/disable', auth.isLoggedIn, function( req, res ) {

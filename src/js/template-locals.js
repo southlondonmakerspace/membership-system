@@ -83,6 +83,15 @@ function templateLocals( req, res, next ) {
 		) )
 		res.locals.userSetup = false;
 
+	// Hide setup prompt after 10 views
+	if ( ! req.session.userSetupShown )
+		req.session.userSetupShown = 0;
+
+	if ( req.session.userSetupShown > 10 )
+		res.locals.userSetup = true;
+
+	req.session.userSetupShown++;
+
 	// Load config + prepare breadcrumbs
 	res.locals.config = config.globals;
 	res.locals.config.permission = config.permission;

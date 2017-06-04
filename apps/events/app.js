@@ -6,6 +6,8 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
+var moment = require( 'moment' );
+
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
@@ -43,6 +45,13 @@ app.get( '/', auth.isMember, function( req, res ) {
 		startDate.setMonth( req.query.month - 1 );
 		startDate.setYear( req.query.year );
 	}
+
+	if ( moment( startDate ).isAfter( moment() ) ) {
+		req.flash( 'warning', messages['event-date-in-future'] );
+		res.redirect( app.mountpath );
+		return;
+	}
+
 	var endDate = new Date( startDate );
 	endDate.setMonth( startDate.getMonth() + 1 );
 	var search = {

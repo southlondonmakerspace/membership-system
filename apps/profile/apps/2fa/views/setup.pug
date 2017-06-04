@@ -23,7 +23,7 @@ block contents
 						include ../../../../../src/views/partials/csrf.pug	
 						.form-group
 							label( for=code ).control-label Code
-							input( type='text', name='code' ).form-control#code
+							input( type='text', name='code', autocomplete="off" ).form-control#code
 						.form-group
 							button.btn.btn-primary Activate
 							|  

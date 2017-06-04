@@ -26,6 +26,8 @@ app.get( '/' , function( req, res ) {
 		req.flash( 'warning', messages['2fa-already-complete'] );
 		res.redirect( '/profile' );
 	} else {
+		res.locals.userSetup = true;
+		req.session.userSetupShown--;
 		res.render( 'index' );
 	}
 } );
@@ -45,6 +47,7 @@ app.post( '/', passport.authenticate( 'totp', {
 
 app.get( '/cancel', function( req, res ) {
 	delete req.session.method;
+	delete req.session.userSetupShown;
 	req.logout();
 	res.redirect( '/' );
 } );

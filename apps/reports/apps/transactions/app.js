@@ -37,6 +37,13 @@ app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
 		start.setMonth( parseInt( req.params.month ) - 1 );
 		start.setYear( parseInt( req.params.year ) );
 	}
+
+	if ( moment( start ).isAfter( moment() ) ) {
+		req.flash( 'warning', messages['transaction-date-in-future'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
 	var end = new Date( start );
 	end.setMonth( start.getMonth() + 1 );
 

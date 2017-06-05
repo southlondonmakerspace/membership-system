@@ -7,9 +7,22 @@ var auth = require( __js + '/authentication' );
 
 var config = require( __config + '/config.json' );
 
-var moment = require( 'moment' );
+var moment = require( 'moment' ),
+	gitRev = require( 'git-rev' );
 
 var apps = [];
+
+var git = {};
+
+gitRev.short( function( str ) {
+	console.log( 'Git hash: ' + str );
+	git.hash = str;
+} );
+
+gitRev.tag( function( str ) {
+	console.log( 'Git tag: ' + str );
+	git.tag = str;
+} );
 
 function templateLocals( req, res, next ) {
 	// Process which apps should be shown in menu
@@ -98,6 +111,7 @@ function templateLocals( req, res, next ) {
 	res.locals.usersname = config.globals.title;
 	if ( req.user ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
+	res.locals.git = git;
 
 	// Moment.js
 	res.locals.moment = moment;

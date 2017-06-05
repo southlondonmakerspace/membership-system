@@ -1,14 +1,14 @@
 {
   "name": "membership-system",
-  "version": "1.0.0",
+  "version": "2.2.7",
   "description": "Membership System for the South London Makerspace",
-  "main": "index.js",
+  "main": "app.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/southlondonmakerspace/membership-system.git"
   },
-  "author": "Tom Lynch, Matthew Press",
-  "license": "ISC",
+  "author": "Tom Lynch",
+  "license": "GNU",
   "bugs": {
     "url": "https://github.com/southlondonmakerspace/membership-system/issues"
   },
@@ -41,8 +41,8 @@
   "scripts": {
     "start": "node app",
     "first-time": "node tools/first-time/first-time",
-    "new-user": "node tools/new_user/new_user",
-    "import": "node tools/import_drydata/import",
+    "new-user": "node tools/new-user/new-user",
+    "import": "node tools/import/import",
     "watch-css": "catw -c 'lessc -' 'static/less/*.less' -o static/css/style.css -v",
     "watch": "npm run watch-css"
   },

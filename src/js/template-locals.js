@@ -12,16 +12,11 @@ var moment = require( 'moment' ),
 
 var apps = [];
 
-var git = {};
+var git = '';
 
 gitRev.short( function( str ) {
 	console.log( 'Git hash: ' + str );
-	git.hash = str;
-} );
-
-gitRev.tag( function( str ) {
-	console.log( 'Git tag: ' + str );
-	git.tag = str;
+	git = str;
 } );
 
 function templateLocals( req, res, next ) {

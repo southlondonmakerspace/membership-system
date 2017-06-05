@@ -15,9 +15,10 @@ block contents
 						a( href="?year=" + moment( previous ).format( 'Y' ) + "&month=" + moment( previous ).format( 'M' ) + "&permission=" + selected.permission + "&activity=" + selected.activity + "&successful=" + ( selected.successful ? 'on' : '' ) + "&unsuccessful=" + ( selected.unsuccessful ? 'on' : '' ) + "&admin_only=" + ( selected.admin_only ? 'on' : '' ) )
 							span( aria-hidden="true" ) &larr;&nbsp;
 							| #{ moment( previous ).format( 'MMMM' ) }
-					li.next
-						a( href="?year=" + moment( next ).format( 'Y' ) + "&month=" + moment( next ).format( 'M' ) + "&permission=" + selected.permission + "&activity=" + selected.activity + "&successful=" + ( selected.successful ? 'on' : '' ) + "&unsuccessful=" + ( selected.unsuccessful ? 'on' : '' ) + "&admin_only=" + ( selected.admin_only ? 'on' : '' ) ) #{ moment( next ).format( 'MMMM' ) }
-							span( aria-hidden="true" ) &nbsp;&rarr;
+					if moment( next ).isBefore( moment() )
+						li.next
+							a( href="?year=" + moment( next ).format( 'Y' ) + "&month=" + moment( next ).format( 'M' ) + "&permission=" + selected.permission + "&activity=" + selected.activity + "&successful=" + ( selected.successful ? 'on' : '' ) + "&unsuccessful=" + ( selected.unsuccessful ? 'on' : '' ) + "&admin_only=" + ( selected.admin_only ? 'on' : '' ) ) #{ moment( next ).format( 'MMMM' ) }
+								span( aria-hidden="true" ) &nbsp;&rarr;
 			form
 				.form-group
 					.page-header

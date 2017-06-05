@@ -15,16 +15,16 @@ block contents
 		if access == 'superadmin'
 			.col-md-3
 				if inactive_members
-					a( href='?' + ( filter_permission != null ? 'permission=' + filter_permission.slug + '&' : '' ) + 'inactive_members' ).btn.btn-default
-						span.glyphicon.glyphicon-unchecked
-						|  Show inactive members
-				else 
-					a( href='?' + ( filter_permission != null ? 'permission=' + filter_permission.slug : '' ) ).btn.btn-success
+					a( href='?' + ( filter_permission ? 'permission=' + filter_permission.slug : '' ) ).btn.btn-success
 						span.glyphicon.glyphicon-check
 						|  Showing inactive members
+				else 
+					a( href='?' + ( filter_permission ? 'permission=' + filter_permission.slug + '&' : '' ) + 'inactive_members' ).btn.btn-default
+						span.glyphicon.glyphicon-unchecked
+						|  Show inactive members
 		.col-md-3
 			.dropdown
-				button( type="button", data-toggle="dropdown", class=( filter_permission != null ? 'btn-success' : 'btn-default' ) ).btn.dropdown-toggle#permissions_filter #{ filter_permission != null ? filter_permission.name : 'Permissions' }&nbsp;
+				button( type="button", data-toggle="dropdown", class=( filter_permission ? 'btn-success' : 'btn-default' ) ).btn.dropdown-toggle#permissions_filter #{ filter_permission != null ? filter_permission.name : 'Permissions' }&nbsp;
 					span.caret
 				ul.dropdown-menu.dropdown-menu-left
 					li: a( href="?permission=" + ( inactive_members ? '&inactive_members' : '' ) ) Show all

@@ -34,7 +34,7 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.get( '/data.json', auth.isSuperAdmin, function( req, res ) {
-	Permissions.findOne( { slug: 'member' }, function( err, membership_permission ) {
+	Permissions.findOne( { slug: config.permission.member }, function( err, membership_permission ) {
 		Members.find( function( err, members ) {
 			var locations = [];
 			for ( var m in members ) {

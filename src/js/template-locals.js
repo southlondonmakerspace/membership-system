@@ -7,9 +7,22 @@ var auth = require( __js + '/authentication' );
 
 var config = require( __config + '/config.json' );
 
-var moment = require( 'moment' );
+var moment = require( 'moment' ),
+	gitRev = require( 'git-rev' );
 
 var apps = [];
+
+var git = {};
+
+gitRev.short( function( str ) {
+	console.log( 'Git hash: ' + str );
+	git.hash = str;
+} );
+
+gitRev.tag( function( str ) {
+	console.log( 'Git tag: ' + str );
+	git.tag = str;
+} );
 
 function templateLocals( req, res, next ) {
 	// Process which apps should be shown in menu
@@ -62,9 +75,8 @@ function templateLocals( req, res, next ) {
 	res.locals.access = 'none';
 
 	if ( req.user && req.user.quickPermissions ) {
-		if ( req.user.quickPermissions.indexOf( 'member' ) != -1 ) res.locals.access = 'member';
+		if ( req.user.quickPermissions.indexOf( config.permission.member ) != -1 ) res.locals.access = 'member';
 		if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) res.locals.access = 'admin';
-		if ( req.user.quickPermissions.indexOf( 'superadmin' ) != -1 ) res.locals.access = 'superadmin';
 		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) res.locals.access = 'superadmin';
 	}
 
@@ -84,12 +96,22 @@ function templateLocals( req, res, next ) {
 		) )
 		res.locals.userSetup = false;
 
+	// Hide setup prompt after 10 views
+	if ( ! req.session.userSetupShown )
+		req.session.userSetupShown = 0;
+
+	if ( req.session.userSetupShown > 10 )
+		res.locals.userSetup = true;
+
+	req.session.userSetupShown++;
+
 	// Load config + prepare breadcrumbs
 	res.locals.config = config.globals;
 	res.locals.config.permission = config.permission;
 	res.locals.usersname = config.globals.title;
 	if ( req.user ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
+	res.locals.git = git;
 
 	// Moment.js
 	res.locals.moment = moment;

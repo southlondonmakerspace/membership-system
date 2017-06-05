@@ -18,16 +18,18 @@ block contents
 			form( action="/profile/direct-debit/create-subscription", method="post" ).form-horizontal
 				include ../../../../../src/views/partials/csrf.pug
 				.form-group
-					label( for="amount" ).col-sm-2.control-label Amount:
-					.col-sm-10
+					label( for="amount" ).col-md-3.control-label Amount:
+					.col-md-5
 						.input-group
 							.input-group-addon &pound;
 							input( name="amount", type="number", value=amount, min=amount )#amount.form-control
 							.input-group-addon .00
+				.form-group
+					.col-md-offset-3.col-md-9
 						span#helpBlock.help-block Our minimum membership fee is &pound;20 per month. However, if you cannot afford this, please email <a href="mailto:directors@southlondonmakerspace.org?Subject=Discount">directors@southlondonmakerspace.org</a> and we can discuss alternatives. If you feel that the membership is worth more we invite you to pay what you think it's worth.
 				.form-group
-					label( for="day_of_month" ).col-sm-2.control-label Day of month:
-					.col-sm-10
+					label( for="day_of_month" ).col-md-3.control-label Day of month:
+					.col-md-5
 						select( name="day_of_month" )#day_of_month.form-control
 							each date, d in dates
 								option( class= ( date == next_possible_charge_date ? 'selected' : '' ) ) #{ date }
@@ -37,9 +39,9 @@ block contents
 						if next_possible_charge_date
 							span#helpBlock.help-block Direct Debits usually take around 7 days to process. Therefore, we've set the charge date to be as early as possible. However if you prefer to pay for your membership on a specific date (eg. the day after payday), please select it here. Note that this will delay the start of your membership.
 				.form-group
-					.col-sm-offset-2.col-sm-10
+					.col-md-offset-3.col-md-5
 						button( role="button" ).btn.btn-primary Create Subscription
 			.page-header
 				h3 Mandate
 			p You can cancel your Direct Debit mandate here or through your bank, this will cancel all pending and future payments.
-			p: a( href="/profile/direct-debit/cancel-mandate" ).btn.btn-danger Cancel Mandate
+			p: a( href="/profile/direct-debit/cancel-mandate" ).btn.btn-danger.outline Cancel Mandate

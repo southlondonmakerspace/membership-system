@@ -26,6 +26,7 @@
 	"permission": {
 		"admin": "admin",
 		"superadmin": "superadmin",
+		"member": "member",
 		"access": "access"
 	},
 	"smtp": {

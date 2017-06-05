@@ -81,7 +81,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 					var member = {};
 					var permissions = req.user.permissions.filter( function( p ) {
 						if ( p.permission && p.permission.slug ) {
-							if ( p.permission.slug == 'member' ) {
+							if ( p.permission.slug == config.permission.member ) {
 								return true;
 							}
 						}
@@ -99,7 +99,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			var member = {};
 			var permissions = req.user.permissions.filter( function( p ) {
 				if ( p.permission && p.permission.slug ) {
-					if ( p.permission.slug == 'member' ) {
+					if ( p.permission.slug == config.permission.member ) {
 						return true;
 					}
 				}

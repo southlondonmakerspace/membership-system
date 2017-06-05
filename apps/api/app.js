@@ -31,7 +31,7 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 			for ( var p = 0; p < member.permissions.length; p++ ) {
 				var permission = member.permissions[p];
 				if ( permission.permission.slug == config.permission.superadmin && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) isSuperAdmin = true;
-				if ( permission.permission.slug == 'member' && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) hasMembership = true;
+				if ( permission.permission.slug == config.permission.member && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) hasMembership = true;
 				if ( permission.permission.slug == req.params.slug && permission.date_added <= new Date() && ( ! permission.date_expires || permission.date_expires > new Date() ) ) hasPermission = true;
 			}
 

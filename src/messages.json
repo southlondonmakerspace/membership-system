@@ -69,14 +69,17 @@
 	"gocardless-subscription-err": "Error setting up subscription",
 	"gocardless-subscription-cancelled": "Subscription cancelled",
 	"gocardless-subscription-cancellation-err": "Error cancelling subscription",
+	"gocardless-subscription-404": "Your account has no subscription",
 	"gocardless-mandate-success": "Direct Debit mandate setup succesfully",
 	"gocardless-mandate-err": "Error setting up Direct Debit mandate",
 	"gocardless-mandate-cancelled": "Direct Debit mandate cancelled",
 	"gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate",
+	"gocardless-mandate-404": "Your account has no mandate",
 
 	"event-404": "Event not found",
 	"event-not-linkable": "Tag cannot be linked",
 	"event-linked": "Tag linked to user",
+	"event-date-in-future": "Events do not occour in the future",
 
 	"apikey-404": "API Key not found",
 	"apikey-created": "API Key created",
@@ -97,5 +100,8 @@
 	"2fa-no-change": "There was no change to two factor authentication",
 	"2fa-invalid": "Your one time password is invalid",
 	"2fa-already-enabled": "Two factor authentication is already enabled",
-	"2fa-unable-to-disable": "Unable to disable two factor authentication"
+	"2fa-already-disabled": "Two factor authentication is already disabled",
+	"2fa-unable-to-disable": "Unable to disable two factor authentication",
+
+	"transaction-date-in-future": "Transactions do not occour in the future"
 }

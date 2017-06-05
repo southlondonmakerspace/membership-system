@@ -97,7 +97,7 @@ app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) 
 				$sort: { count: -1 }
 			}
 		], function ( err, result ) {
-			Members.populate( result, { path: 'member' }, function( err, members ) {
+			Members.populate( result, { path: config.permission.member }, function( err, members ) {
 				var total = 0;
 				for ( var m in members ) {
 					total += members[m].count;
@@ -172,7 +172,7 @@ app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 				$sort: { count: -1 }
 			}
 		], function ( err, result ) {
-			Members.populate( result, { path: 'member' }, function( err, members ) {
+			Members.populate( result, { path: config.permission.member }, function( err, members ) {
 				var total = 0;
 				for ( var m in members ) {
 					total += members[m].count;

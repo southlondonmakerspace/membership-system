@@ -25,15 +25,15 @@ block contents
 							h3 Login Details
 						p To keep things simple we use your email address as your login username.
 				.form-group
-					label( for="email" ).col-md-3 Email
+					label( for="email" ).col-md-3.control-label Email
 					.col-md-5
 						input( name="email", type="email", value=user.email )#email.form-control
 				.form-group
-					label( for="password" ).col-md-3 Password
+					label( for="password" ).col-md-3.control-label Password
 					.col-md-5
 						input( name="password", type="password" )#password.form-control.pw-req
 				.form-group
-					label( for="verify" ).col-md-3 Verify password
+					label( for="verify" ).col-md-3.control-label Verify password
 					.col-md-5
 						input( name="verify" type="password" )#verify.form-control.pw-mat
 				.form-group
@@ -42,22 +42,20 @@ block contents
 							h3 Personal Details
 						p As a membership organisation, we are legally required to keep your name and address on record and available for inspection.
 				.form-group
-					label( for="firstname" ).col-md-3 First Name
+					label( for="firstname" ).col-md-3.control-label First Name
 					.col-md-5
 						input( name="firstname", type="text", value=user.firstname )#firstname.form-control
 				.form-group
-					label( for="lastname" ).col-md-3 Last Name
+					label( for="lastname" ).col-md-3.control-label Last Name
 					.col-md-5
 						input( name="lastname", type="text", value=user.lastname)#lastname.form-control
 				.form-group
-					label( for="address" ).col-md-3 Address
+					label( for="address" ).col-md-3.control-label Address
 					.col-md-5
 						textarea( name="address", rows=4 )#address.form-control #{ user.address }
-				hr
 				.form-group
-					.col-md-12
-						button.btn.btn-primary.pull-right Next
-							span.glyphicon.glyphicon-chevron-right
+					.col-md-offset-3.col-md-9
+						button.btn.btn-primary Next
 		.col-md-4
 			.page-header
 				h2 Existing member

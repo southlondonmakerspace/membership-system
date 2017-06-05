@@ -14,15 +14,15 @@ block contents
 			form( method="post" ).form-horizontal
 				include ../../../src/views/partials/csrf.pug
 				.form-group
-					label( for="firstname" ).col-md-3 First Name
+					label( for="firstname" ).col-md-3.control-label First Name
 					.col-md-5
 						input( type="text", value=user.emergency_contact.firstname, name="firstname" )#firstname.form-control
 				.form-group
-					label( for="lastname" ).col-md-3 Last Name
+					label( for="lastname" ).col-md-3.control-label Last Name
 					.col-md-5
 						input( type="text", value=user.emergency_contact.lastname, name="lastname" )#lastname.form-control
 				.form-group
-					label( for="telephone" ).col-md-3 Telephone
+					label( for="telephone" ).col-md-3.control-label Telephone
 					.col-md-5
 						input( type="text", value=user.emergency_contact.telephone, name="telephone" )#telephone.form-control
 				.form-group

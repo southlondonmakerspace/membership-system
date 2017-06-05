@@ -21,6 +21,7 @@
     "express": "^4.13.3",
     "express-flash": "0.0.2",
     "express-session": "^1.12.1",
+    "git-rev": "^0.2.1",
     "helmet": "^3.5.0",
     "inquirer": "^3.0.6",
     "less": "^2.5.3",

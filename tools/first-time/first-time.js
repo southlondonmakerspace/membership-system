@@ -22,7 +22,7 @@ new Activities( {
 // Member
 new Permissions( {
 	name: 'Member',
-	slug: 'member',
+	slug: config.permission.member,
 	superadmin_only: true
 } ).save( function( err ) {
 	if ( ! err ) {

@@ -33,7 +33,7 @@ var data = {};
 db.mongoose.connection.on( 'connected', function() {
 	console.log( 'Processing Data' );
 	data = fs.readFileSync( process.argv[2] );
-	data = JSON.parse( data.toString().replace( /^#.*\n?/, '' ) );
+	data = JSON.parse( data.toString().replace( /^#.*\n?/gm, '' ) );
 
 	importData();
 

@@ -1,9 +1,28 @@
 html
+	head
+		link( href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600", rel="stylesheet" )
+		style.
+			body { font-family: 'Source Sans Pro', sans-serif; }
+			table {
+				max-width: 650px;
+				margin: auto;
+			}
+			a:link { color: red; }
+			h2, h3 {
+				font-weight: 600;
+				margin-bottom: 0;
+			}
+			h2 { font-size: 18pt; }
+			h3 { font-size: 16pt; }
+			p {
+				font-size: 13pt;
+				margin-top: 0;
+			}
 	body
-		table( style="width: 600px; margin: auto; font-family: sans-serif; font-size: 11pt;" )
+		table
 			tr( height="100" )
 				td( valign="top" )
-					img( src=config.audience + "/imgs/logo.png" )
+					img( src=config.audience + "/imgs/logo.png", width="64px", height="64px" )
 			tr
 				td
 					block content

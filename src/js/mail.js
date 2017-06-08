@@ -23,15 +23,20 @@ var Mail = {
 		message.to = to;
 		message.subject = subject + ' – ' + config.globals.organisation;
 
-		cb();
-
 		transporter.sendMail( message, function( err, info ) {
+			var status;
+
 			if ( err ) {
+				status = false;
 				console.log( 'Error sending email "' + subject + '" to ' + to + ": " );
 				console.log( err );
 			} else {
+				status = true;
 				console.log( 'Email "' + subject + '" sent to ' + to );
 			}
+
+			if ( typeof cb == 'function' )
+				cb( status );
 		} );
 	}
 };

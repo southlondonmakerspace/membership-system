@@ -2,6 +2,7 @@ var __config = __dirname + '/config/config.json';
 var __static = __dirname + '/static';
 var __src = __dirname + '/src';
 var __js = __src + '/js';
+var __views = __src + '/views';
 
 var config = require( __config ),
 	db = require( __dirname + '/src/js/database' ).connect( config.mongo ),
@@ -15,6 +16,8 @@ var config = require( __config ),
 var Members = db.Members,
 	Permissions = db.Permissions,
 	Payments = db.Payments;
+
+var Mail = require( __js + '/mail' );
 
 console.log( "Starting..." );
 
@@ -65,6 +68,7 @@ function handleResourceEvent( event ) {
 }
 
 function createPayment( event ) {
+	console.log( 'Payment Created: (' + event.links.payment + ')' );
 	var payment = {
 		payment_id: event.links.payment,
 		created: new Date( event.created_at ),
@@ -93,13 +97,14 @@ function createPayment( event ) {
 			} );
 		} else {
 			new Payments( payment ).save( function( err ) {
-				console.log( "Unlinked payment" );
+				console.log( 'Unlinked payment: (' + event.links.payment + ')' );
 			} );
 		}
 	} );
 }
 
 function updatePayment( event ) {
+	console.log( 'Payment Update: ' + event.action + ' (' + event.links.payment + ')' );
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
 		if ( ! payment ) return; // There's nothing left to do here.
 		payment.status = event.details.cause;
@@ -156,8 +161,22 @@ function grantMembership( member ) {
 			}, function ( err ) {
 				if ( err ) {
 					console.log( err );
+				} else {
+					sendNewMemberEmail( member );
 				}
 			});
 		}
 	} );
+}
+
+function sendNewMemberEmail( member ) {
+	Mail.sendMail(
+		member.email,
+		'Welcome to ' + config.globals.organisation,
+		__views + '/email-templates/new-member.text.pug',
+		__views + '/email-templates/new-member.html.pug',
+		{
+			firstname: member.firstname
+		}
+	);
 }

@@ -10,6 +10,8 @@ var	express = require( 'express' ),
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
 
+var escapeStringRegexp = require( 'escape-string-regexp' );
+
 var moment = require( 'moment' );
 var	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
@@ -97,19 +99,19 @@ app.get( '/', auth.isMember, function( req, res ) {
 
 		var path = {};
 		if ( req.query.firstname ) {
-			search['$and'].push( { firstname: new RegExp( '.*' + req.query.firstname + '.*', 'i' ) } );
+			search['$and'].push( { firstname: new RegExp( '.*' + escapeStringRegexp( req.query.firstname ) + '.*', 'i' ) } );
 			path['firstname'] = 'firstname=' + req.query.firstname;
 		}
 		if ( req.query.lastname ) {
-			search['$and'].push( { lastname: new RegExp( '.*' + req.query.lastname + '.*', 'i' ) } );
+			search['$and'].push( { lastname: new RegExp( '.*' + escapeStringRegexp( req.query.lastname ) + '.*', 'i' ) } );
 			path['lastname'] = 'lastname=' + req.query.lastname;
 		}
 		if ( req.query.email && auth.canSuperAdmin( req ) == true ) {
-			search['$and'].push( { email: new RegExp( '.*' + req.query.email + '.*', 'i' ) } );
+			search['$and'].push( { email: new RegExp( '.*' + escapeStringRegexp( req.query.email ) + '.*', 'i' ) } );
 			path['email'] = 'email=' + req.query.email;
 		}
 		if ( req.query.discourse ) {
-			search['$and'].push( { 'discourse.username': new RegExp( '.*' + req.query.discourse + '.*', 'i' ) } );
+			search['$and'].push( { 'discourse.username': new RegExp( '.*' + escapeStringRegexp( req.query.discourse ) + '.*', 'i' ) } );
 			path['discourse'] = 'discourse=' + req.query.discourse;
 		}
 		if ( search['$and'].length == 0 ) search = {};

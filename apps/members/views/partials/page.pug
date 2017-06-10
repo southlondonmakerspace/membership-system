@@ -1,0 +1,5 @@
+if pagination.page != page.number
+	li: a( href=page.path ) #{ page.number }
+else
+	li( class='active' )
+		a #{ page.number }

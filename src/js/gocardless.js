@@ -19,12 +19,12 @@ GoCardless.request = function ( method, path, json, callback ) {
 	var options = {
 		method: method,
 		url: GoCardless.config.url + path,
-		json: json,
 		headers: {
 			Authorization: 'Bearer ' + GoCardless.config.access_token,
 			'GoCardless-Version': '2015-07-06'
 		}
 	};
+	if ( json ) options.json = json;
 	request( options, callback );
 };
 
@@ -78,9 +78,9 @@ GoCardless.completeRedirectFlow = function ( redirect_flow_id, session_token, ca
 // Mandate
 
 GoCardless.getMandate = function ( mandate_id, callback ) {
-	GoCardless.request( 'get', '/mandates/' + mandate_id, {}, function ( error, response, body ) {
+	GoCardless.request( 'get', '/mandates/' + mandate_id, null, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
-			callback( null, body.mandates );
+			callback( null, JSON.parse( body ).mandates );
 		} else {
 			callback( body );
 		}
@@ -88,9 +88,9 @@ GoCardless.getMandate = function ( mandate_id, callback ) {
 };
 
 GoCardless.cancelMandate = function ( mandate_id, callback ) {
-	GoCardless.request( 'post', '/mandates/' +  mandate_id + '/actions/cancel', {}, function ( error, response, body ) {
+	GoCardless.request( 'post', '/mandates/' +  mandate_id + '/actions/cancel', null, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
-			callback( null, true, body );
+			callback( null, true, JSON.parse( body ) );
 		} else {
 			callback( body, false );
 		}
@@ -134,9 +134,9 @@ GoCardless.cancelSubscription = function ( subscription_id, callback ) {
 };
 
 GoCardless.getSubscription = function ( subscription_id, callback ) {
-	GoCardless.request( 'get', '/subscriptions/' + subscription_id, {}, function ( error, response, body ) {
+	GoCardless.request( 'get', '/subscriptions/' + subscription_id, null, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
-			callback( null, body.subscriptions );
+			callback( null, JSON.parse( body ).subscriptions );
 		} else {
 			callback( body );
 		}
@@ -167,9 +167,9 @@ GoCardless.createPayment = function ( mandate_id, amount, description, callback 
 };
 
 GoCardless.getPayment = function ( payment_id, callback ) {
-	GoCardless.request( 'get', '/payments/' + payment_id, {}, function ( error, response, body ) {
+	GoCardless.request( 'get', '/payments/' + payment_id, null, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
-			callback( null, body.payments );
+			callback( null, JSON.parse( body ).payments );
 		} else {
 			callback( body );
 		}

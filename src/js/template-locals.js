@@ -107,6 +107,8 @@ function templateLocals( req, res, next ) {
 	if ( req.user ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
 	res.locals.git = git;
+	if ( config.dev )
+		res.locals.dev = true;
 
 	// Moment.js
 	res.locals.moment = moment;

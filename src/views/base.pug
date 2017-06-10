@@ -16,7 +16,7 @@ html
 				script( src="/js/jquery.js" )
 				script( src="/js/bootstrap.js" )
 				script( src="/js/script.js" )
-	body
+	body( class=( dev ? 'dev' : '' ) )
 		block body
 			.container
 				a( href="/" ).logo

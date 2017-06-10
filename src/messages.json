@@ -61,6 +61,7 @@
 	"discourse-activation-code-err": "You must enter a valid activation code",
 	"discouse-id-duplicate": "Discourse ID already associated with another member",
 	"discourse-invalid-user": "Selected user is invalid",
+	"discourse-cancelled": "Activation cancelled",
 
 	"gocardless-updated": "GoCardless updated",
 	"gocardless-subscription-success": "Subscription setup succesfully",

@@ -106,6 +106,18 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
+app.get( '/cancel', auth.isLoggedIn, function( req, res ) {
+	req.user.discourse = {
+		email: '',
+		username: '',
+		activated: false
+	};
+	req.user.save( function( err ) {
+		req.flash( 'warning', messages['discourse-cancelled'] );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	} );
+} );
+
 app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.activation_code || req.body.activation_code !== '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {

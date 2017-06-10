@@ -1,0 +1,40 @@
+.row
+	.col-md-12
+		table.table.table-striped.table-hover.table-condensed
+			thead
+				tr
+					th Gravatar
+					th First name
+					th Last name
+					if access.indexOf( 'admin' ) != -1
+						th Email
+					if access == 'superadmin'
+						th( colspan="7" ) Manage
+					else if access.indexOf( 'admin' ) != -1
+						th Manage
+			tbody
+				each member, m in members
+					tr( data-href="/members/" + member.uuid, style="cursor: pointer;" )
+						td: img( style="border-radius: 100%", src=member.gravatar + "?s=50&d=mm&r=g" )
+						td #{ member.firstname }
+						td #{ member.lastname }
+						if access.indexOf( 'admin' ) != -1
+							td #{ member.email }
+						td
+							.btn-group
+								if access == 'superadmin'
+									a.btn.btn-sm( title="Edit Activation", href="/members/" + member.uuid + "/activation", class=( member.activated ? 'btn-success' : 'btn-default' ) )
+										span.glyphicon.glyphicon-ok
+									a.btn.btn-sm.btn-default( title="Edit Profile", href="/members/" + member.uuid + "/profile" )
+										span.glyphicon.glyphicon-pencil
+									a.btn.btn-sm( title="Edit Discourse" href="/members/" + member.uuid + "/discourse", class=( member.discourse.activated ? 'btn-success' : 'btn-default' ) )
+										span.glyphicon.glyphicon-book
+									a.btn.btn-sm( title="Edit GoCardless" href="/members/" + member.uuid + "/gocardless", class=( member.discourse.activated ? 'btn-success' : 'btn-default' ) )
+										span.glyphicon.glyphicon-piggy-bank
+									a.btn.btn-sm( title="Edit Tag" href="/members/" + member.uuid + "/tag", class=( member.tag.id ? 'btn-success' : 'btn-default' ) )
+										span.glyphicon.glyphicon-credit-card
+									a.btn.btn-sm( title="Edit 2FA", href="/members/" + member.uuid + "/2fa", class=( member.otp.activated ? 'btn-success' : 'btn-default' ) )
+										span.glyphicon.glyphicon-lock
+								if access.indexOf( 'admin' ) != -1
+									a.btn.btn-sm.btn-default( title="Edit Permissions" href="/members/" + member.uuid + "/permissions" )
+										span.glyphicon.glyphicon-tag

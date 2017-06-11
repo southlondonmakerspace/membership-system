@@ -65,9 +65,11 @@ block contents
 							</div>
 						<div class="panel panel-default">
 							.panel-heading
-								if moment().diff( event.happened, 'days' ) == 0
+								if moment( event.happened ).date() == moment().date()
 									- relative = true
 									h3.panel-title Today
+								else if moment( event.happened ).date() == moment().date() - 1
+									h3.panel-title Yesterday
 								else
 									h3.panel-title #{ moment( event.happened ).format( 'dddd Do MMMM Y' ) }
 							<ul class="list-group">

@@ -21,19 +21,20 @@ block contents
 		.col-md-9
 			if ( members != undefined && members.length > 0 )
 				ul.list-group: li.list-group-item.list-group-item-default Days "#{ slug }" was used in #{ moment( start ).format( 'Y' ) } by user.
-				table.table.table-striped.table-condensed
-					thead
-						tr
-							th Name
-							th Count
-					tbody
-						each member, m in members
+				.table-responsive
+					table.table.table-striped.table-condensed
+						thead
 							tr
-								td: a( href="/members/" + member.member.uuid ) #{ member.member.fullname }
-								td #{ member.count }
-					thead
-						tr
-							th Total
-							th #{ total }
+								th Name
+								th Count
+						tbody
+							each member, m in members
+								tr
+									td: a( href="/members/" + member.member.uuid ) #{ member.member.fullname }
+									td #{ member.count }
+						thead
+							tr
+								th Total
+								th #{ total }
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( start ).format( 'MMMM' ) } #{ moment( start ).format( 'Y' ) }.

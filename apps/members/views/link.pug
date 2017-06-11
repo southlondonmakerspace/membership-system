@@ -11,23 +11,24 @@ block prepend title
 block contents
 	input( placeholder="Filter", style="max-width: 200px" )#filter.form-control
 	hr
-	table.table.table-striped.table-condensed
-		colgroup
-			col( style="width: 5%" )
-			col( span="2", style="width: 10%" )
-			col( style="width: 15%" )
-			col( span="6", style="width: 10%;" )
-		thead
-			tr
-				th Link
-				th First name
-				th Last name
-				th Email
-		tbody
-			each member, m in members
+	.table-responsive
+		table.table.table-striped.table-condensed
+			colgroup
+				col( style="width: 5%" )
+				col( span="2", style="width: 10%" )
+				col( style="width: 15%" )
+				col( span="6", style="width: 10%;" )
+			thead
 				tr
-					td: a.btn.btn-xs( href="/members/link/" + event._id + "/" + member.uuid, class=( ! member.tag.id ? 'btn-primary' : 'btn-default' ) )
-						| #{ ! member.tag.id ? 'Link' : 'Replace' }
-					td #{ member.firstname }
-					td #{ member.lastname }
-					td #{ member.email }
+					th Link
+					th First name
+					th Last name
+					th Email
+			tbody
+				each member, m in members
+					tr
+						td: a.btn.btn-xs( href="/members/link/" + event._id + "/" + member.uuid, class=( ! member.tag.id ? 'btn-primary' : 'btn-default' ) )
+							| #{ ! member.tag.id ? 'Link' : 'Replace' }
+						td #{ member.firstname }
+						td #{ member.lastname }
+						td #{ member.email }

@@ -2,6 +2,23 @@ body {
   padding-top: 20px;
   padding-bottom: 20px;
 }
+body.dev {
+  margin-top: 5px;
+}
+body.dev:before {
+  z-index: 1000;
+  content: '';
+  background: repeating-linear-gradient(45deg, orange, orange 10px, black 10px, black 20px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.25);
+}
 .logo {
   margin-bottom: 20px;
   display: inline-block;
@@ -149,4 +166,11 @@ ul.nav.nav-tabs {
 }
 .btn-success:hover {
   border: 1px solid #54cc54;
+}
+.admin-btns .btn {
+  float: none;
+}
+#menu {
+  margin-left: 0px;
+  padding-left: 1em;
 }

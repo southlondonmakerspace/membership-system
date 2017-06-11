@@ -2,6 +2,7 @@ doctype html
 html
 	head
 		meta( charset="utf-8" )
+		meta( name="viewport", content="initial-scale=1.0, width=device-width" )
 		link( rel="shortcut icon" href="/imgs/favicon.ico" )
 		block title
 			if title
@@ -16,7 +17,7 @@ html
 				script( src="/js/jquery.js" )
 				script( src="/js/bootstrap.js" )
 				script( src="/js/script.js" )
-	body
+	body( class=( dev ? 'dev' : '' ) )
 		block body
 			.container
 				a( href="/" ).logo

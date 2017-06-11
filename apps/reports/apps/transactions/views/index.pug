@@ -31,37 +31,38 @@ block contents
 							a( href="/reports/transactions/" + moment( next ).format( 'Y' ) + "/"  + moment( next ).format( 'M' ) ) #{ moment( next ).format( 'MMMM' ) }
 								span( aria-hidden="true" ) &nbsp;&rarr;
 			if payments.length > 0
-				table.table.table-striped.table-hover.table-condensed
-					thead
-						tr
-							th User
-							th Payment ID
-							th Subscription ID
-							th Created
-							th Updated
-							th Charge Date
-							th Description
-							th Status
-							th Amount
-					tbody
-						each payment, p in payments
+				.table-responsive
+					table.table.table-striped.table-hover.table-condensed
+						thead
 							tr
-								if payment.member
-									td: a( href="/members/" + payment.member.uuid ) #{ payment.member.fullname }
-								else
-									td –
-								td: a( href="https://manage.gocardless.com/payments/" + payment.payment_id, target="_blank" ) #{ payment.payment_id }
-								td: a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id, target="_blank" ) #{ payment.subscription_id }
-								td #{ moment( payment.created ).format( 'HH:mm DD/MM/YYYY' ) }
-								td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm DD/MM/YYYY' ) : '–' }
-								td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
-								td #{ payment.description }
-								td
-									include ../../../../profile/apps/statement/views/partials/status.pug
-								td #{ payment.amount ? '£' + payment.amount : '–' }
-					tfoot
-						tr
-							th( colspan=8 ) Total
-							th £#{ total }
+								th User
+								th Payment ID
+								th Subscription ID
+								th Created
+								th Updated
+								th Charge Date
+								th Description
+								th Status
+								th Amount
+						tbody
+							each payment, p in payments
+								tr
+									if payment.member
+										td: a( href="/members/" + payment.member.uuid ) #{ payment.member.fullname }
+									else
+										td –
+									td: a( href="https://manage.gocardless.com/payments/" + payment.payment_id, target="_blank" ) #{ payment.payment_id }
+									td: a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id, target="_blank" ) #{ payment.subscription_id }
+									td #{ moment( payment.created ).format( 'HH:mm DD/MM/YYYY' ) }
+									td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm DD/MM/YYYY' ) : '–' }
+									td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
+									td #{ payment.description }
+									td
+										include ../../../../profile/apps/statement/views/partials/status.pug
+									td #{ payment.amount ? '£' + payment.amount : '–' }
+						tfoot
+							tr
+								th( colspan=8 ) Total
+								th £#{ total }
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no transactions in this momnth.

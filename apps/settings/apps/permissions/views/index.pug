@@ -10,39 +10,40 @@ block contents
 		p: a( href="/settings/permissions/create" ).btn.btn-default
 			span.glyphicon.glyphicon-plus
 			|  Create Permission
-	table.table.table-striped.table-condensed
-		thead
-			tr
-				th Name
-				th Slug
-				th Description
-				th Discourse Group
-				th Restricted
-				th Edit
-		tbody
-			each permission, p in permissions
+	.table-responsive
+		table.table.table-striped.table-condensed
+			thead
 				tr
-					td #{ permission.name }
-						if ( permission.slug == config.permission.member )
-							| 
-							span.label.label-success Membership
-						if ( permission.slug == config.permission.superadmin )
-							| 
-							span.label.label-danger Super Admin
-						if ( permission.slug == config.permission.admin )
-							| 
-							span.label.label-primary Admin
-					td #{ permission.slug }
-					td #{ permission.description }
-					td
-						if permission.group.id && permission.group.name
-							| Linked
-						else
-							| –
-					td
-						if permission.superadmin_only
-							| Super Admin
-						else
-							| Admin
-					td: a( href="/settings/permissions/" + permission.slug + "/edit" )
-						span.glyphicon.glyphicon-pencil
+					th Name
+					th Slug
+					th Description
+					th Discourse Group
+					th Restricted
+					th Edit
+			tbody
+				each permission, p in permissions
+					tr
+						td #{ permission.name }
+							if ( permission.slug == config.permission.member )
+								| 
+								span.label.label-success Membership
+							if ( permission.slug == config.permission.superadmin )
+								| 
+								span.label.label-danger Super Admin
+							if ( permission.slug == config.permission.admin )
+								| 
+								span.label.label-primary Admin
+						td #{ permission.slug }
+						td #{ permission.description }
+						td
+							if permission.group.id && permission.group.name
+								| Linked
+							else
+								| –
+						td
+							if permission.superadmin_only
+								| Super Admin
+							else
+								| Admin
+						td: a( href="/settings/permissions/" + permission.slug + "/edit" )
+							span.glyphicon.glyphicon-pencil

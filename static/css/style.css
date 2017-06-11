@@ -167,3 +167,10 @@ ul.nav.nav-tabs {
 .btn-success:hover {
   border: 1px solid #54cc54;
 }
+.admin-btns .btn {
+  float: none;
+}
+#menu {
+  margin-left: 0px;
+  padding-left: 1em;
+}

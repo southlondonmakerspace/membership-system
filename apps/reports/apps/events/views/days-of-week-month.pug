@@ -57,20 +57,21 @@ block contents
 			if ( result != undefined && result.length > 0 )
 				ul.list-group: li.list-group-item.list-group-item-default Number of unique members using "#{ slug }" on each day of the week in #{ moment( start ).format( 'MMMM YYYY' ) }.
 				canvas#chart
-				table.table.table-striped.table-condensed
-					thead
-						tr
-							th Period
-							th Count
-					tbody
-						each day, d in result
+				.table-responsive
+					table.table.table-striped.table-condensed
+						thead
 							tr
-								td
-									| #{ moment( start ).day( day.day - 1 ).format( 'dddd' )  }
-								td #{ day.count }
-					tfoot
-						tr
-							th Total
-							th #{ total }
+								th Period
+								th Count
+						tbody
+							each day, d in result
+								tr
+									td
+										| #{ moment( start ).day( day.day - 1 ).format( 'dddd' )  }
+									td #{ day.count }
+						tfoot
+							tr
+								th Total
+								th #{ total }
 			else
 				ul.list-group: li.list-group-item.list-group-item-default There are no events to count.

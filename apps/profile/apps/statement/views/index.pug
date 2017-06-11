@@ -12,49 +12,51 @@ block contents
 			.page-header
 				h3 #{ title }
 			if payments.length > 0
-				table.table.table-striped.table-hover.table-condensed
-					thead
-						tr
-							th Charge Date
-							th Description
-							th Status
-							th Amount
-					tbody
-						each payment, p in payments
+				.table-responsive
+					table.table.table-striped.table-hover.table-condensed
+						thead
 							tr
-								td
-									time( datetime=moment( payment.charge_date, moment.ISO_8601 ) ) #{ moment( payment.charge_date ).format( 'd/M/Y' ) }
-								td #{ payment.description }
-								td
-									include partials/status.pug
-								td
-									if payment.amount
-										| &pound;#{ payment.amount }
-									else
-										| &mdash;
+								th Charge Date
+								th Description
+								th Status
+								th Amount
+						tbody
+							each payment, p in payments
+								tr
+									td
+										time( datetime=moment( payment.charge_date, moment.ISO_8601 ) ) #{ moment( payment.charge_date ).format( 'd/M/Y' ) }
+									td #{ payment.description }
+									td
+										include partials/status.pug
+									td
+										if payment.amount
+											| &pound;#{ payment.amount }
+										else
+											| &mdash;
 			else
 				p You have no payment history at this time.
 
 			if historic.length > 0
 				.page-header
 					h3 Historic Payments
-					table.table.table-striped.table-hover.table-condensed
-						thead
-							tr
-							th Charge Date
-							th Description
-							th Status
-							th Amount
-						tbody
-							each payment, p in historic
+					.table-responsive
+						table.table.table-striped.table-hover.table-condensed
+							thead
 								tr
-									td
-										time( datetime=moment( payment.created, moment.ISO_8601 ) ) #{ moment( payment.created ).format( 'd/M/Y' ) }
-									td Membership
-									td
-										include partials/status.pug
-									td
-										if payment.renumeration
-											| &pound;#{ payment.renumeration }
-										else
-											| &mdash;
+								th Charge Date
+								th Description
+								th Status
+								th Amount
+							tbody
+								each payment, p in historic
+									tr
+										td
+											time( datetime=moment( payment.created, moment.ISO_8601 ) ) #{ moment( payment.created ).format( 'd/M/Y' ) }
+										td Membership
+										td
+											include partials/status.pug
+										td
+											if payment.renumeration
+												| &pound;#{ payment.renumeration }
+											else
+												| &mdash;

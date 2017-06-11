@@ -3,7 +3,8 @@ jQuery( document ).ready( function( $ ) {
 		trigger: 'focus',
 		title: 'Password requirements:',
 		content: '<p class="pw len">8 characters or more</p><p class="pw up">1 or more uppercase letters</p><p class="pw low">1 or more lowercase letters</p><p class="pw num">1 or more numbers</p><p class="pw mat">Passwords match</p>',
-		html: true
+		html: true,
+		placement: 'top'
 	};
 	jQuery( '.pw-req' ).popover( options ).on( 'keyup paste focus', check );
 	jQuery( '.pw-mat' ).popover( options ).on( 'keyup paste focus', check );

@@ -39,6 +39,11 @@ app.get( '/' , function( req, res ) {
 			lastname: '',
 			email: ''
 		};
+		console.log( req.session.joinForm );
+		if ( req.session.joinForm ) {
+			user = req.session.joinForm;
+			delete req.session.joinForm;
+		}
 		res.render( 'index', { user: user } );
 	}
 } );
@@ -57,32 +62,37 @@ app.post( '/', function( req, res ) {
 
 		if ( ! req.body.firstname ) {
 			req.flash( 'danger', messages['user-firstname'] );
-			res.render( 'index', { user: user } );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
 			return;
 		}
 
 		if ( ! req.body.lastname ) {
 			req.flash( 'danger', messages['user-lastname'] );
-			res.render( 'index', { user: user } );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
 			return;
 		}
 
 		if ( ! req.body.address ) {
 			req.flash( 'danger', messages['user-address'] );
-			res.render( 'index', { user: user } );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
 			return;
 		}
 
 		if ( req.body.password != req.body.verify ) {
 			req.flash( 'danger', messages['password-err-mismatch'] );
-			res.render( 'index', { user: user } );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
 			return;
 		}
 
 		var passwordRequirements = auth.passwordRequirements( req.body.password );
 		if ( passwordRequirements !== true ) {
 			req.flash( 'danger', passwordRequirements );
-			res.render( 'index', { user: user } );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
 			return;
 		}
 

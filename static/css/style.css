@@ -170,7 +170,9 @@ ul.nav.nav-tabs {
 .admin-btns .btn {
   float: none;
 }
-#menu {
-  margin-left: 0px;
-  padding-left: 1em;
+@media (max-width: 768px) {
+  #menu {
+    margin-left: 0px;
+    padding-left: 1em;
+  }
 }

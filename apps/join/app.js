@@ -39,7 +39,6 @@ app.get( '/' , function( req, res ) {
 			lastname: '',
 			email: ''
 		};
-		console.log( req.session.joinForm );
 		if ( req.session.joinForm ) {
 			user = req.session.joinForm;
 			delete req.session.joinForm;

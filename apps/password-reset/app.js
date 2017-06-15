@@ -58,6 +58,9 @@ app.post( '/', function( req, res ) {
 						res.redirect( app.mountpath );
 				} );
 			} );
+		} else {
+			req.flash( 'success', messages['password-reset'] );
+			res.redirect( app.mountpath );
 		}
 	} );
 } );

@@ -124,8 +124,13 @@ function extendMembership( event ) {
 				for ( var p = 0; p < member.permissions.length; p++ ) {
 					if ( member.permissions[p].permission.slug == config.permission.member ) {
 						foundPermission = true;
+						// Create new expiry date 36 days + 12:00:00 ahead
 						member.permissions[p].date_expires = new Date();
-						member.permissions[p].date_expires.setDate( member.permissions[p].date_expires.getDate() + 36 );
+						member.permissions[p].date_expires.setDate( member.permissions[p].date_expires.getDate() + 37 );
+						member.permissions[p].date_expires.setHours( 12 );
+						member.permissions[p].date_expires.setMinutes( 0 );
+						member.permissions[p].date_expires.setSeconds( 0 );
+						member.permissions[p].date_expires.setMilliseconds( 0 );
 						console.log( 'Extending "' + member.email + '" membership permission until: ' + member.permissions[p].date_expires );
 					}
 				}
@@ -150,7 +155,12 @@ function grantMembership( member ) {
 				date_added: new Date(),
 				date_expires: new Date()
 			};
-			new_permission.date_expires.setDate( new_permission.date_expires.getDate() + 36 );
+			// Create new expiry date 36 days + 12:00:00 ahead
+			new_permission.date_expires.setDate( new_permission.date_expires.getDate() + 37 );
+			new_permission.date_expires.setHours( 12 );
+			new_permission.date_expires.setMinutes( 0 );
+			new_permission.date_expires.setSeconds( 0 );
+			new_permission.date_expires.setMilliseconds( 0 );
 
 			console.log( 'Granting "' + member.email + '" membership permission until: ' + new_permission.date_expires );
 

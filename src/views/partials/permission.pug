@@ -1,15 +1,18 @@
 span.list-group-item( class=( permission.date_added > moment() || permission.date_expires != undefined && permission.date_expires < moment() ? 'disabled' : '' ) )
 	h4.list-group-item-heading #{ permission.permission.name }
-		if ( access.indexOf( 'admin' ) != -1 )
-			if ( permission.permission.slug == config.permission.member )
+		if access( 'admin' )
+			if permission.permission.slug == config.permission.member
 				| 
 				small: span.label.label-success Membership
-			if ( permission.permission.slug == config.permission.superadmin )
+			if permission.permission.slug == config.permission.superadmin
 				| 
 				small: span.label.label-danger Super Admin
-			if ( permission.permission.slug == config.permission.admin )
+			if permission.permission.slug == config.permission.admin
 				| 
 				small: span.label.label-primary Admin
+			if member && member.can_admin && member.can_admin.indexOf( permission.permission.slug ) != -1
+				| 
+				small: span.label.label-primary Permission Admin
 	if permission.permission.description
 		p.list-group-item-text #{ permission.permission.description }
 	p.list-group-item-text Valid&nbsp;
@@ -22,15 +25,13 @@ span.list-group-item( class=( permission.date_added > moment() || permission.dat
 			|  onwards
 	span( style="position: absolute; top: 1em; right: 1em;" )
 		if admin_area
-			if ! permission.permission.superadmin_only || access == 'superadmin'
+			if can_admin && can_admin( permission.permission.slug ) || access( 'superadmin' )
 				a( href="/members/" + member.uuid + "/permissions/" + permission._id + "/modify", style="margin-right: 1em;" )
 					span.glyphicon.glyphicon-pencil
 				form( action="/members/" + member.uuid + "/permissions/" + permission._id + "/revoke", method="post", style="display:inline;" )
 					include csrf.pug
 					button.btn-link
 						span.glyphicon.glyphicon-remove
-			else
-				small Restricted to Super Admins
 		else
 			if moment() < permission.date_added
 				span.label.label-default Pending

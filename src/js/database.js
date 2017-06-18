@@ -29,7 +29,6 @@ var permissionsSchema = mongoose.Schema( {
 		required: true
 	},
 	description: String,
-	superadmin_only: Boolean,
 	group: {
 		id: String,
 		name: String,
@@ -189,6 +188,10 @@ var memberSchema = mongoose.Schema( {
 		},
 		date_expires: {
 			type: Date
+		},
+		admin: {
+			type: Boolean,
+			default: false
 		}
 	} ],
 	last_seen: Date
@@ -199,6 +202,14 @@ memberSchema.virtual( 'fullname' ).get( function() {
 memberSchema.virtual( 'gravatar' ).get( function() {
 	var md5 = crypto.createHash( 'md5' ).update( this.email ).digest( 'hex' );
 	return '//www.gravatar.com/avatar/' + md5;
+} );
+memberSchema.virtual( 'can_admin' ).get( function() {
+	var can_admin = [];
+	this.permissions.forEach( function( permission, p ) {
+		if ( permission.admin )
+			can_admin.push( permission.permission.slug )
+	} );
+	return can_admin;
 } );
 
 var paymentSchema = mongoose.Schema( {

@@ -47,7 +47,7 @@
 	"permission-updated": "Permission updated",
 	"permission-removed": "Permission removed",
 	"permission-expiry-error": "Expiry date must not be the same as or before the start date",
-	"permission-sa-only": "Permission can only be administered by super admin users",
+	"permission-admin-only": "Only admin users can modify permissions",
 	"permission-name-required": "Permissions must have a name",
 	"permission-slug-required": "Permissions must have a slug",
 	"permission-duplicate": "User already has this permission",

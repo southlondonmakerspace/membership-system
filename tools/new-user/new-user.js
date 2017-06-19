@@ -153,6 +153,7 @@ function processPassword( user, password ) {
 			user.password = {};
 			user.password.hash = result.hash;
 			user.password.salt = result.salt;
+			user.password.iterations = result.iterations;
 			resolve();
 		} );
 	} );

@@ -83,11 +83,13 @@ block contents
 						dt Activation Code
 						dd #{ member.activation_code ? member.activation_code + ' – ' + audience + '/activate/' + member.activation_code : '–' }
 						dt Password Reset Code
-						dd #{ member.password.reset_code ? member.password.reset_code + ' – ' + audience + '/password-reset/' + member.password.reset_code : '–' }
+						dd #{ member.password.reset_code ? member.password.reset_code + ' – ' + audience + '/password-reset/code/' + member.password.reset_code : '–' }
 						dt Password Tries
 						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
 						dt 2FA
 						dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
+						dt Password Iterations
+						dd #{ member.password.iterations }
 			if access( 'superadmin' )
 				.col-md-6
 					.page-header

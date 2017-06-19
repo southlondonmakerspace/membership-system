@@ -550,7 +550,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 			return;
 		}
 
-		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).slug ) && ! res.locals.access( 'superadmin' ) ) {
+		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
 			req.flash( 'danger', messages[ 'permission-admin-only' ] );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;
@@ -595,7 +595,7 @@ app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 			return;
 		}
 
-		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).slug ) && ! res.locals.access( 'superadmin' ) ) {
+		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
 			req.flash( 'danger', messages[ 'permission-admin-only' ] );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;
@@ -646,7 +646,7 @@ app.post( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 			return;
 		}
 
-		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).slug ) && ! res.locals.access( 'superadmin' ) ) {
+		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
 			req.flash( 'danger', messages[ 'permission-admin-only' ] );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;

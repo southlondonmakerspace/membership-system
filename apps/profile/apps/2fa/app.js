@@ -103,7 +103,7 @@ app.post( '/disable', auth.isLoggedIn, function( req, res ) {
 	var test = TOTP.verify( req.body.code, base32.decode( req.user.otp.key ) );
 	if ( test && Math.abs( test.delta ) < 2 ) {
 		// Check password
-		auth.hashPassword( req.body.password, req.user.password.salt, function( hash ) {
+		auth.hashPassword( req.body.password, req.user.password.salt, user.password.iterations, function( hash ) {
 			// Check the hashes match
 			if ( hash == req.user.password.hash ) {
 				req.user.otp.activated = false;

@@ -67,13 +67,28 @@ function templateLocals( req, res, next ) {
 	}
 
 	// Template permissions
-	res.locals.access = 'none';
+	res.locals.access = function( permission ) {
+		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
 
-	if ( req.user && req.user.quickPermissions ) {
-		if ( req.user.quickPermissions.indexOf( config.permission.member ) != -1 ) res.locals.access = 'member';
-		if ( req.user.quickPermissions.indexOf( config.permission.admin ) != -1 ) res.locals.access = 'admin';
-		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) res.locals.access = 'superadmin';
+		if ( permission == 'member' ) permission = config.permission.member;
+		if ( permission == 'admin' ) permission = config.permission.admin;
+		if ( permission == 'superadmin' ) permission = config.permission.superadmin;
+		if ( permission == 'access' ) permission = config.permission.access;
+
+		return ( req.user.quickPermissions.indexOf( permission ) != -1 ? true : false );
+	};
+
+	var admin_permissions = [];
+	if ( req.user ) {
+		for ( var p in req.user.permissions ) {
+			var perm = req.user.permissions[p];
+			if ( perm.admin ) admin_permissions.push( perm.permission.slug );
+		}
 	}
+	res.locals.can_admin = function( permission ) {
+		if ( res.locals.access( 'superadmin' ) ) return true;
+		return admin_permissions.indexOf( permission ) != -1;
+	};
 
 	// Delete login redirect URL if user navigates to anything other than the login page
 	if ( req.originalUrl != '/login' )
@@ -86,7 +101,7 @@ function templateLocals( req, res, next ) {
 			! req.user.gocardless.mandate_id ||
 			! req.user.gocardless.subscription_id ||
 			! req.user.discourse.activated ||
-			!req.user.discourse.username ||
+			! req.user.discourse.username ||
 			! req.user.tag.id
 		) )
 		res.locals.userSetup = false;
@@ -103,8 +118,6 @@ function templateLocals( req, res, next ) {
 	// Load config + prepare breadcrumbs
 	res.locals.config = config.globals;
 	res.locals.config.permission = config.permission;
-	res.locals.usersname = config.globals.title;
-	if ( req.user ) res.locals.usersname = req.user.fullname;
 	res.locals.breadcrumb = [];
 	res.locals.git = git;
 	if ( config.dev )

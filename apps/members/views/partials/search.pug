@@ -5,7 +5,7 @@ form( method="get" )
 			option( value="" ) Show all
 			each permission, p in permissions
 				option( value=permission.slug, selected=( search.permission == permission.slug ? true : false ) ) #{ permission.name }
-	if access == 'superadmin'
+	if access( 'superadmin' )
 		.form-group
 			label( for="show_inactive_members" )
 				input( type="checkbox" name="show_inactive_members", value='true', checked=search.show_inactive_members )#show_inactive_members
@@ -16,7 +16,7 @@ form( method="get" )
 	.form-group
 		label( for="lastname" ).control-label Last name
 		input( type='text', name="lastname", value=search.lastname ).form-control#lastname
-	if access == 'superadmin'
+	if access( 'superadmin' )
 		.form-group
 			label( for="email" ).control-label Email
 			input( type='text', name="email", value=search.email ).form-control#email

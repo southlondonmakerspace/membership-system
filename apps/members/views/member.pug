@@ -21,12 +21,12 @@ block contents
 					dd On file
 				else
 					dd Not held
-	if access.indexOf( 'admin' ) != -1
+	if access( 'admin' )
 		.row
 			.col-md-6
 				.page-header
 					h3 Profile
-						if access == 'superadmin'
+						if access( 'superadmin' )
 							a( href="/members/" + member.uuid + "/profile" ).btn.btn-default.pull-right
 								span.glyphicon.glyphicon-pencil
 								|  Edit Profile
@@ -37,14 +37,14 @@ block contents
 					dd  #{ member.lastname }
 					dt Email
 					dd  #{ member.email }
-					if access == 'superadmin'
+					if access( 'superadmin' )
 						dt Address
 						dd #{ member.address.replace( /\r\n/g, ", " ) }
 						dt Latitude
 						dd #{ member.postcode_coordinates.lat ? member.postcode_coordinates.lat : '–' }
 						dt Longitude
 						dd #{ member.postcode_coordinates.lng ? member.postcode_coordinates.lng : '–' }
-			if access == 'superadmin'
+			if access( 'superadmin' )
 				.col-md-6
 					.page-header
 						h3( style="padding-top: 6px;" ) Emergency Contact
@@ -59,7 +59,7 @@ block contents
 			.col-md-6
 				.page-header
 					h3 System
-						if access == 'superadmin'
+						if access( 'superadmin' )
 							.btn-group.pull-right
 								a( href="/members/" + member.uuid + "/activation" ).btn.btn-default
 									span.glyphicon.glyphicon-ok
@@ -70,7 +70,7 @@ block contents
 				dl.dl-horizontal
 					dt UUID
 					dd #{ member.uuid }
-					if access == 'superadmin'
+					if access( 'superadmin' )
 						dt DB ID
 						dd #{ member._id }
 					dt Joined
@@ -79,7 +79,7 @@ block contents
 					dd #{ member.last_seen ? moment( member.last_seen ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
 					dt Activated
 					dd #{ member.activated ? 'Yes' : 'No' }
-					if access == 'superadmin'
+					if access( 'superadmin' )
 						dt Activation Code
 						dd #{ member.activation_code ? member.activation_code + ' – ' + audience + '/activate/' + member.activation_code : '–' }
 						dt Password Reset Code
@@ -88,11 +88,11 @@ block contents
 						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
 						dt 2FA
 						dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
-			if access == 'superadmin'
+			if access( 'superadmin' )
 				.col-md-6
 					.page-header
 						h3 Tag
-							if access == 'superadmin'
+							if access( 'superadmin' )
 								a( href="/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
 									span.glyphicon.glyphicon-pencil
 									|  Edit Tag
@@ -101,7 +101,7 @@ block contents
 						dd #{ member.tag.id ? member.tag.id : '–' }
 						dt Hashed Tag
 						dd #{ member.tag.hashed ? member.tag.hashed : '–' }
-		if access == 'superadmin'
+		if access( 'superadmin' )
 			.row
 				.col-md-6
 					.page-header
@@ -142,7 +142,7 @@ block contents
 		.col-md-12
 			.page-header
 				h3 Permissions
-					if access.indexOf( 'admin' ) != -1
+					if access( 'admin' )
 						a( href="/members/" + member.uuid + "/permissions" ).btn.btn-default.pull-right
 							span.glyphicon.glyphicon-pencil
 							|  Edit Permissions
@@ -152,7 +152,7 @@ block contents
 						include ../../../src/views/partials/permission.pug
 			else
 				p Member has no permissions
-	if access == 'superadmin'
+	if access( 'superadmin' )
 		.row
 			.col-md-12
 				.page-header

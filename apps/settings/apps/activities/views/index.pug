@@ -6,7 +6,7 @@ block prepend title
 	- activeApp = 'settings'
 
 block contents
-	if access == 'superadmin'
+	if access( 'superadmin' )
 		p: a( href="/settings/activities/create" ).btn.btn-default
 			span.glyphicon.glyphicon-plus
 			|  Create Activity

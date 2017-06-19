@@ -46,7 +46,7 @@ block contents
 						option( disabled ) ──────────
 						each activity, a in activities
 							option( value=activity.slug, selected=( selected.activity == activity.slug ? true : false ) ) #{ activity.name }
-				if access.indexOf( 'admin' ) != -1
+				if access( 'admin' )
 					.form-group
 						label( for="admin_only" )
 							input( name="admin_only", type="checkbox", checked=( selected.admin_only != undefined && selected.admin_only == 'on' ? true : false ) )#admin_only

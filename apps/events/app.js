@@ -78,7 +78,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 
 			// Find event
 			Events.find( search ).populate( 'member' ).populate( 'permission' ).populate( 'activity' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
-				if ( res.locals.access.indexOf( 'admin' ) == -1 ) {
+				if ( res.locals.access( 'admin' ) ) {
 					events = events.filter( function( e ) {
 						if ( e.activity )
 							return ! e.activity.admin_only;

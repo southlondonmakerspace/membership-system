@@ -6,11 +6,11 @@ form( method="post" )
 			select( name="permission" )#permission.form-control
 				option( disabled selected ) –
 				each permission, p in permissions
-					option(
-						selected=( current != undefined && permission.slug == current.permission.slug ),
-						value=permission.slug,
-						disabled=( permission.superadmin_only && access != 'superadmin' )
-					) #{ permission.name } #{ permission.superadmin_only && access != 'superadmin' ? '– Restricted to Super Admins' : '' }
+					if can_admin( permission.slug )
+						option(
+							selected=( current != undefined && permission.slug == current.permission.slug ),
+							value=permission.slug
+						) #{ permission.name }
 	.form-group
 		label Start
 		br
@@ -27,5 +27,11 @@ form( method="post" )
 		input( type="time", name="expiry_time", value=( current && current.date_expires ? moment( current.date_expires ).format( 'HH:mm' ) : '' ), style="display: inline; width: auto;" ).form-control
 		| &nbsp;
 		input( type="date", name="expiry_date", value=( current && current.date_expires ? moment( current.date_expires ).format( 'YYYY-MM-DD' ) : '' ), style="display: inline; width: auto;" ).form-control
+	if access( 'superadmin' )
+		.form-group
+			label Administer
+			br
+			input( type="checkbox", name="admin", checked=( current && current.admin ? true : false ) )#admin
+			label( for="admin" ) Can administer other members with this permission.
 	.form-group
 		button.btn.btn-primary #{ action }

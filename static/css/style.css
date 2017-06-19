@@ -176,3 +176,7 @@ ul.nav.nav-tabs {
     padding-left: 1em;
   }
 }
+h4.list-group-item-heading .label {
+  position: relative;
+  top: -3px;
+}

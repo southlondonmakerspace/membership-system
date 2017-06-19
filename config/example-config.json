@@ -48,5 +48,6 @@
 		"port": 3002
 	},
 	"password-tries": 3,
+	"iterations": 50000,
 	"dev": true
 }

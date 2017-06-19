@@ -62,7 +62,6 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		event_unauthorised: req.body.event_unauthorised,
 		slug: req.body.slug,
 		description: req.body.description,
-		superadmin_only: ( req.body.superadmin_only ? true : false ),
 		group: {
 			id: req.body.group_id,
 			name: req.body.group_name,
@@ -110,7 +109,6 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		event_unauthorised: req.body.event_unauthorised,
 		slug: req.body.slug,
 		description: req.body.description,
-		superadmin_only: req.body.superadmin_only,
 		group: {
 			id: req.body.group_id,
 			name: req.body.group_name,

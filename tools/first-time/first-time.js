@@ -22,8 +22,7 @@ new Activities( {
 // Member
 new Permissions( {
 	name: 'Member',
-	slug: config.permission.member,
-	superadmin_only: true
+	slug: config.permission.member
 } ).save( function( err ) {
 	if ( ! err ) {
 		console.log( 'created member permission' );
@@ -35,8 +34,7 @@ new Permissions( {
 // Admin
 new Permissions( {
 	name: 'Admin',
-	slug: config.permission.admin,
-	superadmin_only: true
+	slug: config.permission.admin
 } ).save( function( err ) {
 	if ( ! err ) {
 		console.log( 'created admin permission' );
@@ -48,8 +46,7 @@ new Permissions( {
 // Super Admin
 new Permissions( {
 	name: 'Super Admin',
-	slug: config.permission.superadmin,
-	superadmin_only: true
+	slug: config.permission.superadmin
 } ).save( function( err ) {
 	if ( ! err ) {
 		console.log( 'created super admin permission' );
@@ -61,8 +58,7 @@ new Permissions( {
 // Access
 new Permissions( {
 	name: 'Access',
-	slug: config.permission.access,
-	superadmin_only: true
+	slug: config.permission.access
 } ).save( function( err ) {
 	if ( ! err ) {
 		console.log( 'created access permission' );

@@ -68,7 +68,7 @@ var Authentication = {
 										user.password = {
 											hash: password.hash,
 											salt: password.salt,
-											iterations: config.iterations
+											iterations: password.iterations
 										};
 										user.save( function ( err ) {} );
 									} );
@@ -201,7 +201,8 @@ var Authentication = {
 			Authentication.hashPassword( password, salt, config.iterations, function( hash ) {
 				callback( {
 					salt: salt,
-					hash: hash
+					hash: hash,
+					iterations: config.iterations
 				} );
 			} );
 		} );

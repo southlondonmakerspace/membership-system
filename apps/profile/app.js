@@ -250,6 +250,7 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 				Members.update( { _id: user._id }, { $set: {
 					'password.salt': password.salt,
 					'password.hash': password.hash,
+					'password.iterations': password.iterations,
 					'password.reset_code': null,
 				} }, function( status ) {
 					var options = {

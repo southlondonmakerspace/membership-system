@@ -100,7 +100,7 @@ app.post( '/change-password', function( req, res ) {
 					'password.hash': password.hash,
 					'password.reset_code': null,
 					'password.tries': 0,
-					'password.iterations': config.iterations
+					'password.iterations': password.iterations
 				} }, function( status ) {
 					req.session.passport = { user: { _id: user._id } };
 					req.flash( 'success', messages['password-changed'] );

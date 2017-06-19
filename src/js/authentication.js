@@ -38,7 +38,7 @@ var Authentication = {
 						}
 
 						// Hash the entered password with the members salt
-						Authentication.hashPassword( password, user.password.salt, function( hash ) {
+						Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
 							// Check the hashes match
 							if ( hash == user.password.hash ) {
 
@@ -60,6 +60,18 @@ var Authentication = {
 									user.password.tries = 0;
 									user.save( function ( err ) {} );
 									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', attempts ) } );
+								}
+
+								if ( user.password.iterations < config.iterations ) {
+									Authentication.generatePassword( password, function( password ) {
+										console.log( 'Password security upgraded for ' + user.email );
+										user.password = {
+											hash: password.hash,
+											salt: password.salt,
+											iterations: config.iterations
+										};
+										user.save( function ( err ) {} );
+									} );
 								}
 
 								// Successful login
@@ -177,8 +189,8 @@ var Authentication = {
 
 	// Hashes passwords through sha512 1000 times
 	// returns a 512 byte / 1024 character hex string
-	hashPassword: function( password, salt, callback ) {
-		crypto.pbkdf2( password, salt, 1000, 512, 'sha512', function( err, hash ) {
+	hashPassword: function( password, salt, iterations, callback ) {
+		crypto.pbkdf2( password, salt, iterations, 512, 'sha512', function( err, hash ) {
 			callback( hash.toString( 'hex' ) );
 		} );
 	},
@@ -186,7 +198,7 @@ var Authentication = {
 	// Utility function generates a salt and hash from a plain text password
 	generatePassword: function( password, callback ) {
 		Authentication.generateSalt( function( salt ) {
-			Authentication.hashPassword( password, salt, function( hash ) {
+			Authentication.hashPassword( password, salt, config.iterations, function( hash ) {
 				callback( {
 					salt: salt,
 					hash: hash

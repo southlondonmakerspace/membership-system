@@ -117,7 +117,8 @@ app.post( '/', function( req, res ) {
 
 				auth.generatePassword( req.body.password, function( password ) {
 					user.password = password;
-
+					user.password.iterations = config.iterations;
+					
 					// Store new member
 					new Members( user ).save( function( status ) {
 						if ( status ) {

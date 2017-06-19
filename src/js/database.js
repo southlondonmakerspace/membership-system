@@ -75,6 +75,10 @@ var memberSchema = mongoose.Schema( {
 			type: String,
 			required: true
 		},
+		iterations: {
+			type: Number,
+			default: 1000
+		},
 		reset_code: {
 			type: String
 		},

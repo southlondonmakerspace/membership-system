@@ -226,7 +226,7 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
  			return;
 	}
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		auth.hashPassword( req.body.current, user.password.salt, function( hash ) {
+		auth.hashPassword( req.body.current, user.password.salt, user.password.iterations, function( hash ) {
 			if ( hash != user.password.hash ) {
 				req.flash( 'danger', messages['password-invalid'] );
 				res.redirect( app.mountpath + '/change-password' );

@@ -61,7 +61,7 @@ app.post( '/', function( req, res ) {
 				return;
 			}
 
-			auth.hashPassword( req.body.password, user.password.salt, function( hash ) {
+			auth.hashPassword( req.body.password, user.password.salt, user.password.iterations, function( hash ) {
 				if ( user.password.hash != hash ) {
 					req.flash( 'danger', messages['activation-error'] );
 					res.redirect( app.mountpath + '/' + req.body.activation_code );

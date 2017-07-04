@@ -1,0 +1,13 @@
+form( method="post" ).form-horizontal
+	include ../../../../../../src/views/partials/csrf.pug
+	.form-group
+		label( for="key" ).col-md-2 Key:
+		.col-md-4
+			input( name="key", type="text", value=( option ? option.key : '' ), required )#key.form-control
+	.form-group
+		label( for="value" ).col-md-2 Value:
+		.col-md-4
+			input( name="value", type="text", value=( option ? option.value : '' ) )#value.form-control
+	.form-group
+		.col-md-4.col-md-offset-2
+			button.btn.btn-primary #{ action }

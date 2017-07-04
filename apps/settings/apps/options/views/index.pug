@@ -1,0 +1,21 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeApp = 'settings'
+
+block contents
+	p: a( href="/settings/options/create" ).btn.btn-default
+		span.glyphicon.glyphicon-plus
+		|  Create Option
+	.table-responsive
+		table.table.table-striped.table-condensed
+			thead
+				tr
+					th Key
+			tbody
+				each option, o in options
+					tr
+						td
+							a( href="/settings/options/" + option.key + "/edit" ) #{ option.key }

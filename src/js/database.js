@@ -4,7 +4,9 @@ var mongoose = require( 'mongoose' ),
 
 exports.connect = function( url ) {
 	mongoose.Promise = global.Promise;
-	mongoose.connect( url );
+	mongoose.connect( url, {
+		useMongoClient: true
+	} );
 	var db = mongoose.connection;
 	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
 	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
@@ -321,6 +323,25 @@ var apikeySchema = mongoose.Schema( {
 	}
 } );
 
+
+var optionsSchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+	key: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	value: {
+		type: String,
+		required: true
+	}
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
@@ -328,6 +349,7 @@ exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
 exports.activitySchema = activitySchema;
 exports.apikeySchema = apikeySchema;
+exports.optionsSchema = optionsSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
@@ -336,6 +358,7 @@ exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEvent
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.Activities = mongoose.model( 'Activities', exports.activitySchema );
 exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
+exports.Options = mongoose.model( 'Options', exports.optionsSchema )
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

@@ -14,7 +14,6 @@ var auth = require( __js + '/authentication.js' );
 
 var database = require( __js + '/database' ),
 	Permissions = database.Permissions,
-	Activities = database.Activities,
 	Members = database.Members,
 	Events = database.Events;
 
@@ -63,21 +62,6 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 	} );
 } );
 
-app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
-	Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
-		if ( activity ) {
-			new Events( {
-				activity: activity._id,
-				action: ( req.query.action ? req.query.action : '' )
-			} ).save( function( status ) {
-				res.sendStatus( 200 );
-			} );
-		} else {
-			res.sendStatus( 404 );
-		}
-	} );
-} );
-
 app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
 
@@ -105,7 +89,6 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	.sort( { happened: 'asc' } )
 	.populate( 'member' )
 	.populate( 'permission' )
-	.populate( 'activity' )
 	.exec( function( err, events ) {
 		var output = {
 			now: new Date(),
@@ -132,12 +115,6 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 				output_event.permission = {
 					name: event.permission.name,
 					action: event.permission.event_name
-				}
-
-			if ( event.activity )
-				output_event.activitiy = {
-					name: event.activity.name,
-					action: event.activity.event_name
 				}
 
 			output.events.push( output_event );

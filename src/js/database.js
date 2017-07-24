@@ -271,38 +271,11 @@ var eventsSchema = mongoose.Schema( {
 		type: ObjectId,
 		ref: 'Permissions'
 	},
-	activity: {
-		type: ObjectId,
-		ref: 'Activities'
-	},
 	successful: {
 		type: Boolean,
 		default: true
 	},
 	action: String
-} );
-
-var activitySchema = mongoose.Schema( {
-	_id: {
-		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId(); },
-		required: true,
-		unique: true
-	},
-	name: {
-		type: String,
-		required: true
-	},
-	slug: {
-		type: String,
-		unique: true,
-		required: true
-	},
-	event_name: String,
-	admin_only: {
-		type: Boolean,
-		default: false
-	}
 } );
 
 var apikeySchema = mongoose.Schema( {
@@ -347,7 +320,6 @@ exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
 exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
-exports.activitySchema = activitySchema;
 exports.apikeySchema = apikeySchema;
 exports.optionsSchema = optionsSchema;
 
@@ -356,9 +328,8 @@ exports.Members = mongoose.model( 'Members', exports.memberSchema );
 exports.Payments = mongoose.model( 'Payments', exports.paymentSchema );
 exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEventsSchema, 'HistoricEvent' );
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
-exports.Activities = mongoose.model( 'Activities', exports.activitySchema );
 exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
-exports.Options = mongoose.model( 'Options', exports.optionsSchema )
+exports.Options = mongoose.model( 'Options', exports.optionsSchema );
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

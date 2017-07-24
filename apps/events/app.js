@@ -12,8 +12,7 @@ var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Events = db.Events,
-	Permissions = db.Permissions,
-	Activities = db.Activities;
+	Permissions = db.Permissions;
 
 var messages = require( __src + '/messages.json' );
 
@@ -70,64 +69,31 @@ app.get( '/', auth.isMember, function( req, res ) {
 			search.permission = permission._id;
 		}
 
-		// FILTER: Activities
-		Activities.findOne( { slug: req.query.activity }, function( err, activity ) {
-			if ( activity ) {
-				search.activity = activity._id;
+		// Find event
+		Events.find( search ).populate( 'member' ).populate( 'permission' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
+			for ( var e = 1; e < events.length; e++ ) {
+				var event = events[e];
+				var prevEvent = events[e-1];
+				if ( event.happened.getDate() != prevEvent.happened.getDate() )
+					event.split = true;
 			}
-
-			// Find event
-			Events.find( search ).populate( 'member' ).populate( 'permission' ).populate( 'activity' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
-				if ( res.locals.access( 'admin' ) ) {
-					events = events.filter( function( e ) {
-						if ( e.activity )
-							return ! e.activity.admin_only;
-						return true;
-					} );
+			var previousDate = new Date( startDate );
+			previousDate.setMonth( startDate.getMonth() - 1 );
+			// Fetch full list of permissions
+			Permissions.find( { event_name: { $exists: true, $ne: '' } }, function( err, permissions ) {
+				var selected = req.query;
+				if ( Object.keys( req.query ).length === 0 ) {
+					selected.successful = 'on';
+					selected.unsuccessful = 'on';
 				}
-				for ( var e = 1; e < events.length; e++ ) {
-					var event = events[e];
-					var prevEvent = events[e-1];
-					if ( event.happened.getDate() != prevEvent.happened.getDate() )
-						event.split = true;
-				}
-				var previousDate = new Date( startDate );
-				previousDate.setMonth( startDate.getMonth() - 1 );
-				// Fetch full list of permissions
-				Permissions.find( { event_name: { $exists: true, $ne: '' } }, function( err, permissions ) {
-					// Fetch full list of activities
-					Activities.find( function( err, activities ) {
-						var selected = req.query;
-						if ( Object.keys( req.query ).length === 0 ) {
-							selected.successful = 'on';
-							selected.unsuccessful = 'on';
-							selected.admin_only = '';
-						}
 
-						if ( auth.canAdmin( req ) && req.query.admin_only && req.query.admin_only == 'on' ) {
-							events = events.filter( function ( event ) {
-								if ( event.activity ) {
-									if ( event.activity.admin_only ) {
-										return true;
-									} else {
-										return false;
-									}
-								} else {
-									return false;
-								}
-							} );
-						}
-
-						res.render( 'index', {
-							events: events,
-							previous: previousDate,
-							next: endDate,
-							searchDate: startDate,
-							permissions: permissions,
-							activities: activities,
-							selected: selected
-						} );
-					} );
+				res.render( 'index', {
+					events: events,
+					previous: previousDate,
+					next: endDate,
+					searchDate: startDate,
+					permissions: permissions,
+					selected: selected
 				} );
 			} );
 		} );

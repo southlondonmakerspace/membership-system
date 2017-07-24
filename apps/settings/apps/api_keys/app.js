@@ -59,7 +59,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		key: req.body.key
 	};
 
-	new APIKeys( key ).save( function( err, activity ) {
+	new APIKeys( key ).save( function( err ) {
 		req.flash( 'success', messages['apikey-created'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -93,12 +93,12 @@ app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 		return;
 	}
 
-	var activity = {
+	var apikey = {
 		name: req.body.name,
 		key: req.body.key
 	};
 
-	APIKeys.update( { _id: req.params.id }, activity, function( status ) {
+	APIKeys.update( { _id: req.params.id }, apikey, function( status ) {
 		req.flash( 'success', messages['apikey-update'] );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

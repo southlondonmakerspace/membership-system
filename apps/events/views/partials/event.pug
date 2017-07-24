@@ -1,9 +1,5 @@
 if event.successful || ( ! event.successful && event.permission.event_unauthorised )
-	li.list-group-item(
-		class=( event.activity && event.activity.admin_only ? 'list-group-item-warning' : '' )
-		class=( event.successful == false ? 'list-group-item-danger' : '' )
-		class=( event.activity ? 'list-group-item-info' : '' )
-	)
+	li.list-group-item( class=( event.successful == false ? 'list-group-item-danger' : '' ) )
 		if event.member && event.permission
 			a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
 			| &nbsp;
@@ -11,18 +7,6 @@ if event.successful || ( ! event.successful && event.permission.event_unauthoris
 				a( href="/members/?permission=" + event.permission.slug ) #{ event.permission.event_name }
 			else
 				a( href="/members/?permission=" + event.permission.slug ) #{ event.permission.event_unauthorised }
-		else if event.activity
-			if event.activity.slug == 'unknown-tag'
-				if event.action == 'linked'
-					| #{ event.activity.event_name }
-					small  (Linked to:&nbsp;
-						a( href="/members/" + event.member.uuid ) #{ event.member.fullname }
-						| )
-				else
-					| #{ event.activity.event_name }&nbsp;
-					a( href="/members/link/" + event._id ).btn.btn-xs.btn-warning Link
-			else
-				| #{ event.activity.event_name.replace( '$', event.action ) }
 		else
 			| #{ event.action }
 

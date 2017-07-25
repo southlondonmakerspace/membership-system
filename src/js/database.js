@@ -315,6 +315,33 @@ var optionsSchema = mongoose.Schema( {
 	}
 } );
 
+var itemsSchema = mongoose.Schema( {
+   _id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+   name: {
+      type: String,
+      required: true
+   },
+   slug: {
+		type: String,
+		unique: true,
+		required: true
+	},
+   description: String,
+   guide: {
+      url: String,
+      text: String
+   },
+   image: {
+      large: String,
+      icon: String
+   }
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
@@ -322,6 +349,7 @@ exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
 exports.apikeySchema = apikeySchema;
 exports.optionsSchema = optionsSchema;
+exports.itemsSchema = itemsSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
@@ -330,6 +358,7 @@ exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEvent
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 exports.Options = mongoose.model( 'Options', exports.optionsSchema );
+exports.Items = mongoose.model( 'Items', exports.itemsSchema );
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

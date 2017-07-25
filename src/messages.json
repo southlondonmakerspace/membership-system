@@ -104,5 +104,15 @@
 	"2fa-already-disabled": "Two factor authentication is already disabled",
 	"2fa-unable-to-disable": "Unable to disable two factor authentication",
 
-	"transaction-date-in-future": "Transactions do not occour in the future"
+	"transaction-date-in-future": "Transactions do not occour in the future",
+
+   "item-404": "Item not found",
+   "item-created": "Item created",
+   "item-updated": "Item updated",
+   "item-removed": "Item removed",
+   "item-expiry-error": "Expiry date must not be the same as or before the start date",
+   "item-admin-only": "Only admin users can modify items",
+   "item-name-required": "Items must have a name",
+   "item-slug-required": "Items must have a slug",
+   "item-duplicate": "User already has this Item"
 }

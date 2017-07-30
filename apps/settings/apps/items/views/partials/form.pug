@@ -19,6 +19,16 @@ form( method="post" ).form-horizontal
 		.col-md-4
 			input( name="guide", type="text", value=( item ? item.guide : '' ) )#guide_url.form-control
 			span.help-block A link to a guide about the item
+	.form-group
+		label( for="defaultState ").col-md-2 Default State:
+			select( name="defaultState", required )#startingState.form-control
+				option( disabled selected ) –
+				each state, s in states
+					option(
+						selected=( item && item.defaultState != undefined && item.defaultState.toString() == state._id),
+						value=state._id
+					) #{ state.text }
+			span.help-block The state which a thing must be in in order for the action to be possible
 			
 	.form-group
 		.col-md-4

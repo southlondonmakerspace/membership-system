@@ -275,7 +275,14 @@ var eventsSchema = mongoose.Schema( {
 		type: Boolean,
 		default: true
 	},
-	action: String
+	action: {
+		type: ObjectId,
+		ref: 'Actions'
+	},
+	item: {
+		type: ObjectId,
+		ref: 'Items'
+	}
 } );
 
 var apikeySchema = mongoose.Schema( {
@@ -351,7 +358,12 @@ var itemsSchema = mongoose.Schema( {
 			ref: 'States',
 			required: true
 		}
-	]
+	],
+	defaultState: {
+		type: ObjectId,
+		ref: 'States',
+		required: true
+	}
 } );
 
 var actionsSchema = mongoose.Schema( {

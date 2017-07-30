@@ -7,8 +7,9 @@ var	express = require( 'express' ),
 	app = express();
 
 var db = require( __js + '/database' ),
-	Items = db.Items
-	Actions = db.Actions
+	Items = db.Items,
+	Actions = db.Actions,
+	Stats = db.States
 
 var auth = require( __js + '/authentication' );
 
@@ -41,9 +42,10 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 		name: 'Create'
 	} );
 	Actions.find( function (err, actions) {
-		res.render( 'create', { actions: actions } );
-	})
-
+		States.find( function (err, states) {
+			res.render( 'create', { actions: actions, states: states } );
+		});
+	});
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
@@ -64,6 +66,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		slug: req.body.slug,
 		description: req.body.description,
 		guide: req.body.guide,
+		defaultState: req.body.defaultState
 	};
 
 	new Items( item ).save( function( err, item ) {
@@ -120,8 +123,10 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 			name: item.name
 		} );
 		Actions.find( function (err, actions) {
-			console.log(item)
-			res.render( 'edit', { item: item, actions: item.actions } );
+			States.find( function (err, states) {
+				res.render( 'edit', { item: item, actions: item.actions, states: states } );
+			});
+
 		} );
 	} );
 } );
@@ -144,6 +149,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		slug: req.body.slug,
 		description: req.body.description,
 		guide: req.body.guide,
+		defaultState: req.body.defaultState
 	};
 
 	Items.update( { slug: req.params.slug }, item, function( status ) {

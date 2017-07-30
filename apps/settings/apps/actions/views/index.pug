@@ -1,0 +1,32 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeApp = 'actions'
+
+block contents
+	if access( 'superadmin' )
+		p: a( href="/settings/actions/create" ).btn.btn-default
+			span.glyphicon.glyphicon-plus
+			|  Create Actions
+	.table-responsive
+		table.table.table-striped.table-condensed
+			thead
+				tr
+					th Slug
+					th Text
+					th Starting State
+					th Ending State
+					th Event Format
+					th Edit
+			tbody
+				each action, p in actions
+					tr
+						td #{ action.slug }
+						td #{ action.text }
+						td #{ action.startingState.text }
+						td #{ action.endingState.text }
+						td #{ action.eventFormat }
+						td: a( href="/settings/actions/" + action.slug + "/edit" )
+							span.glyphicon.glyphicon-pencil

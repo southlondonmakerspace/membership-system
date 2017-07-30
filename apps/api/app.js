@@ -62,6 +62,19 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 	} );
 } );
 
+app.post( '/item', auth.isAPIAuthenticated, function( req, res ) {
+	res.setHeader('Content-Type', 'application/json');
+
+	if ( ! req.query.slug )
+	{
+		res.send( JSON.stringify( {
+			error: 'Item slug is required'
+		}))
+		return
+	}
+	console.log(req.query)
+} );
+
 app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
 

@@ -1,10 +1,10 @@
 extends ../../../../../src/views/base.pug
 
 block prepend title
-	- title = 'Edit Item'
-	- heading = 'Edit "' + item.name + '" Item'
+	- title = 'Create Action'
+	- heading = title
 	- activeApp = 'settings'
 
 block contents
-	- formAction = 'Update'
+	- formAction = 'Create'
 	include partials/form.pug

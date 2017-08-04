@@ -14,8 +14,6 @@ var auth = require( __js + '/authentication' ),
 	Events = db.Events,
 	Permissions = db.Permissions;
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -46,7 +44,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	}
 
 	if ( moment( startDate ).isAfter( moment() ) ) {
-		req.flash( 'warning', messages['event-date-in-future'] );
+		req.flash( 'warning', 'event-date-in-future' );
 		res.redirect( app.mountpath );
 		return;
 	}

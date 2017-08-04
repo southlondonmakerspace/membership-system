@@ -22,7 +22,11 @@ var Options = {
 		var option = _options.find( function( opt ) {
 			if ( opt.key == key ) return opt;
 		} );
-		return option.value;
+		if ( option ) {
+			return option.value;
+		} else {
+			return;
+		}
 	},
 	getAll: function( callback ) {
 		callback( _options );

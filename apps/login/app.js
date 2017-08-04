@@ -6,8 +6,6 @@ var	express = require( 'express' ),
 
 var	passport = require( 'passport' );
 
-var messages = require( __src + '/messages.json' );
-
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -20,7 +18,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'index' );

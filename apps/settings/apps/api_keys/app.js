@@ -10,10 +10,6 @@ var APIKeys = require( __js + '/database' ).APIKeys;
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
-var config = require( __config + '/config.json' );
-
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -43,13 +39,13 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['apikey-name-required'] );
+		req.flash( 'danger', 'apikey-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.key || req.body.key.trim() === '' ) {
-		req.flash( 'danger', messages['apikey-key-required'] );
+		req.flash( 'danger', 'apikey-key-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -60,7 +56,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new APIKeys( key ).save( function( err ) {
-		req.flash( 'success', messages['apikey-created'] );
+		req.flash( 'success', 'apikey-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -68,7 +64,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	APIKeys.findById( req.params.id, function( err, key ) {
 		if ( ! key ) {
-			req.flash( 'warning', messages['apikey-404'] );
+			req.flash( 'warning', 'apikey-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
@@ -82,13 +78,13 @@ app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['apikey-name-required'] );
+		req.flash( 'danger', 'apikey-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.key || req.body.key.trim() === '' ) {
-		req.flash( 'danger', messages['apikey-key-required'] );
+		req.flash( 'danger', 'apikey-key-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -99,14 +95,14 @@ app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	APIKeys.update( { _id: req.params.id }, apikey, function( status ) {
-		req.flash( 'success', messages['apikey-update'] );
+		req.flash( 'success', 'apikey-update' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
 
 app.post( '/:id/delete', auth.isSuperAdmin, function( req, res ) {
 	APIKeys.remove( { _id: req.params.id }, function( err ) {
-		req.flash( 'success', messages['apikey-delete'] );
+		req.flash( 'success', 'apikey-delete' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

@@ -12,8 +12,6 @@ var	Members = require( __js + '/database' ).Members;
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -31,7 +29,7 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', function( req, res ) {
 	if ( ! req.body.email ) {
-		req.flash( 'danger', messages['information-ommited'] );
+		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.mountpath );
 		return;
 	}
@@ -54,12 +52,12 @@ app.post( '/', function( req, res ) {
 					__dirname + '/email-templates/reset.html.pug',
 					options,
 					function() {
-						req.flash( 'success', messages['password-reset'] );
+						req.flash( 'success', 'password-reset' );
 						res.redirect( app.mountpath );
 				} );
 			} );
 		} else {
-			req.flash( 'success', messages['password-reset'] );
+			req.flash( 'success', 'password-reset' );
 			res.redirect( app.mountpath );
 		}
 	} );
@@ -75,14 +73,14 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 
 app.post( '/change-password', function( req, res ) {
 	if ( ! req.body.password_reset_code ) {
-		req.flash( 'danger', messages['information-ommited'] );
+		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.mountpath );
 		return;
 	}
 	Members.findOne( { 'password.reset_code': req.body.password_reset_code }, function( err, user ) {
 		if ( user ) {
 			if ( req.body.password != req.body.verify ) {
-				req.flash( 'danger', messages['password-err-mismatch'] );
+				req.flash( 'danger', 'password-err-mismatch' );
 				res.redirect( app.mountpath + '/code/' + req.body.password_reset_code );
 				return;
 			}
@@ -103,12 +101,12 @@ app.post( '/change-password', function( req, res ) {
 					'password.iterations': password.iterations
 				} }, function( status ) {
 					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', messages['password-changed'] );
+					req.flash( 'success', 'password-changed' );
 					res.redirect( '/profile' );
 				} );
 			} );
 		} else {
-			req.flash( 'danger', messages['password-reset-code-err'] );
+			req.flash( 'danger', 'password-reset-code-err' );
 			res.redirect( '/login' );
 		}
 	} );

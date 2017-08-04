@@ -6,13 +6,11 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var messages = require( __src + '/messages.json' );
-
 app.get( '/' , function( req, res ) {
 	delete req.session.method;
 	delete req.session.userSetupShown;
 	req.logout();
-	req.flash( 'success', messages['logged-out'] );
+	req.flash( 'success', 'logged-out' );
 	res.redirect( '/' );
 } );
 

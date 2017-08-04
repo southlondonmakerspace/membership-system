@@ -15,8 +15,6 @@ var	Members = require( __js + '/database' ).Members;
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -31,7 +29,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else {
 		var user = {
@@ -49,7 +47,7 @@ app.get( '/' , function( req, res ) {
 
 app.post( '/', function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else {
 		var user = {
@@ -60,28 +58,28 @@ app.post( '/', function( req, res ) {
 		};
 
 		if ( ! req.body.firstname ) {
-			req.flash( 'danger', messages['user-firstname'] );
+			req.flash( 'danger', 'user-firstname' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
 			return;
 		}
 
 		if ( ! req.body.lastname ) {
-			req.flash( 'danger', messages['user-lastname'] );
+			req.flash( 'danger', 'user-lastname' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
 			return;
 		}
 
 		if ( ! req.body.address ) {
-			req.flash( 'danger', messages['user-address'] );
+			req.flash( 'danger', 'user-address' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
 			return;
 		}
 
 		if ( req.body.password != req.body.verify ) {
-			req.flash( 'danger', messages['password-err-mismatch'] );
+			req.flash( 'danger', 'password-err-mismatch' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
 			return;
@@ -128,7 +126,7 @@ app.post( '/', function( req, res ) {
 									req.flash( 'danger', status.errors[key].message );
 								}
 							} else if ( status.code == 11000 ) {
-								req.flash( 'danger', messages['duplicate-user'] );
+								req.flash( 'danger', 'duplicate-user' );
 							}
 							res.redirect( app.mountpath );
 						} else {
@@ -144,7 +142,7 @@ app.post( '/', function( req, res ) {
 								__dirname + '/email-templates/join.html.pug',
 								options,
 								function() {
-									req.flash( 'success', messages['account-created'] );
+									req.flash( 'success', 'account-created' );
 									res.redirect( '/' );
 							} );
 						}

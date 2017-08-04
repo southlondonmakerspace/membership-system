@@ -32,9 +32,10 @@ block contents
 					.col-md-5
 						select( name="day_of_month" )#day_of_month.form-control
 							each date, d in dates
-								option( class= ( date == next_possible_charge_date ? 'selected' : '' ) ) #{ date }
 								if date == next_possible_charge_date
-									| &mdash; Earlist possible charge date
+									option.selected( selected=true ) #{ date } &mdash; Earlist possible charge date
+								else
+									option #{ date }
 							option( value='-1' ) Last day of the month
 						if next_possible_charge_date
 							span#helpBlock.help-block Direct Debits usually take around 7 days to process. Therefore, we've set the charge date to be as early as possible. However if you prefer to pay for your membership on a specific date (eg. the day after payday), please select it here. Note that this will delay the start of your membership.

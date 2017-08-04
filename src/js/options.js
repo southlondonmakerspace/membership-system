@@ -60,8 +60,6 @@ var Options = {
 
 module.exports = function() {
 	if ( global.MS_Options == undefined ) {
-		console.log( 'Creating Options' );
-
 		var defaultKeys = Object.keys( defaults );
 
 		defaultKeys.forEach( function( key ) {
@@ -86,6 +84,5 @@ module.exports = function() {
 
 		global.MS_Options = Options;
 	}
-	console.log( 'Returning Options' );
 	return global.MS_Options;
 };

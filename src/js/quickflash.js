@@ -19,7 +19,6 @@ module.exports = function( req, res, next ) {
 
 			if ( ! option ) {
 				option = message;
-				console.log( 'Unknown message: ' + message );
 			}
 
 			flashes.push( {

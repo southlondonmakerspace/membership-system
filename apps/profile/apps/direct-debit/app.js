@@ -114,15 +114,14 @@ app.get( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.mandate_id ) {
 		GoCardless.cancelMandate( req.user.gocardless.mandate_id, function( error, status, body ) {
+			Members.update( { _id: req.user._id }, { $set: { 'gocardless.mandate_id': '' } }, function( err ) {} );
 			if ( error ) {
 				req.flash( 'danger', messages['gocardless-mandate-cancellation-err'] );
 				res.redirect( app.parent.mountpath + app.mountpath );
 			} else {
 				if ( status ) {
-					Members.update( { _id: req.user._id }, { $set: { 'gocardless.mandate_id': '' } }, function( err ) {
-						req.flash( 'success', messages['gocardless-mandate-cancelled'] );
-						res.redirect( app.parent.mountpath + app.mountpath );
-					} );
+					req.flash( 'success', messages['gocardless-mandate-cancelled'] );
+					res.redirect( app.parent.mountpath + app.mountpath );
 				} else {
 					req.flash( 'danger', messages['gocardless-mandate-cancellation-err'] );
 					res.redirect( app.parent.mountpath + app.mountpath );
@@ -181,15 +180,14 @@ app.get( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.subscription_id ) {
 		GoCardless.cancelSubscription( req.user.gocardless.subscription_id, function( error, status, body ) {
+			Members.update( { _id: req.user._id }, { $set: { 'gocardless.subscription_id': '' } }, function( err ) {} );
 			if ( error ) {
-				req.flash( 'danger', messages['gocardless-error'] );
+				req.flash( 'danger', messages['gocardless-subscription-cancellation-err'] );
 				res.redirect( app.parent.mountpath + app.mountpath );
 			} else {
 				if ( status ) {
-					Members.update( { _id: req.user._id }, { $set: { 'gocardless.subscription_id': '' } }, function( err ) {
-						req.flash( 'success', messages['gocardless-subscription-cancelled'] );
-						res.redirect( app.parent.mountpath + app.mountpath );
-					} );
+					req.flash( 'success', messages['gocardless-subscription-cancelled'] );
+					res.redirect( app.parent.mountpath + app.mountpath );
 				} else {
 					req.flash( 'danger', messages['gocardless-subscription-cancellation-err'] );
 					res.redirect( app.parent.mountpath + app.mountpath );

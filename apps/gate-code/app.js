@@ -6,8 +6,7 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var	db = require( __js + '/database' ),
-	Options = db.Options;
+var	Options = require( __js + '/options' )();
 
 var auth = require( __js + '/authentication' );
 
@@ -30,13 +29,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isMember, function( req, res ) {
-	Options.findOne( { key: 'gate-code' }, function( err, option ) {
-		if ( ! option ) {
-			return res.redirect( '/' );
-		}
-
-		res.render( 'index', { "code": option.value } );
-	} );
+	res.render( 'index' );
 } );
 
 module.exports = function( config ) {

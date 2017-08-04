@@ -6,9 +6,9 @@ html
 		link( rel="shortcut icon" href="/imgs/favicon.ico" )
 		block title
 			if title
-				title #{ title } &mdash; #{ config.title } &mdash; #{ config.organisation }
+				title #{ title } &mdash; #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
 			else
-				title #{ config.title } &mdash; #{ config.organisation }
+				title #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
 		block head
 			block css
 				link( rel="stylesheet", href="/css/theme.min.css" )
@@ -35,7 +35,7 @@ html
 					.row
 						.col-md-12
 							hr
-							small.text-muted #{ config.organisation }, #{ config.title } &mdash;
+							small.text-muted #{ Options( 'organisation' ) }, #{ Options( 'software-name' ) } &mdash;
 								|  
 								a( href="https://github.com/southlondonmakerspace/membership-system", target="_blank" ) Contribute on GitHub
 							small.text-muted.pull-right

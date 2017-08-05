@@ -7,6 +7,8 @@ var	express = require( 'express' ),
 	app = express(),
 	discourse = require( __js + '/discourse' );
 
+var Options = require( __js + '/options.js' )();
+
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
 
@@ -427,7 +429,7 @@ app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: 'GoCardless'
 		} );
-		res.render( 'gocardless', { member: member, minimum: config.gocardless.minimum } );
+		res.render( 'gocardless', { member: member } );
 	} );
 } );
 

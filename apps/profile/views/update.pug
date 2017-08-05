@@ -26,7 +26,7 @@ block contents
 					label( for="email" ).col-md-3.control-label Email
 					.col-md-5
 						input( type="email", value=user.email, name="email", required, disabled )#email.form-control
-						span.help-block This can only be changed by an administrator.
+						span.help-block #{ Options( 'content-email-admin' ) }
 				hr
 				.form-group
 					label( for="firstname" ).col-md-3.control-label First Name

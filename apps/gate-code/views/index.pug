@@ -4,9 +4,6 @@ block prepend title
 	- title = app.title
 	- heading = title
 
-block append js
-	script( src="/js/filter.js" )
-
 block contents
 	h4 The gate code at present is:
-	h1 #{ code }
+	h1 #{ Options( 'gate-code' ) }

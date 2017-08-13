@@ -3,7 +3,8 @@ var __src = __root + '/src';
 var __js = __src + '/js';
 var __config = __root + '/config';
 
-var auth = require( __js + '/authentication' );
+var auth = require( __js + '/authentication' ),
+	Options = require( __js + '/options' )();
 
 var config = require( __config + '/config.json' );
 
@@ -116,7 +117,8 @@ function templateLocals( req, res, next ) {
 	req.session.userSetupShown++;
 
 	// Load config + prepare breadcrumbs
-	res.locals.config = config.globals;
+	res.locals.Options = Options.getPUG;
+	res.locals.config = {};
 	res.locals.config.permission = config.permission;
 	res.locals.breadcrumb = [];
 	res.locals.git = git;

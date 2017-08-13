@@ -80,7 +80,6 @@ app.get( '/', auth.isMember, function( req, res ) {
 		.exec( function( err, events ) {
 			for ( var e = 1; e < events.length; e++ ) {
 				var event = events[e];
-				console.log(event)
 				var prevEvent = events[e-1];
 				if ( event.happened.getDate() != prevEvent.happened.getDate() )
 					event.split = true;

@@ -1,0 +1,21 @@
+form( method="post" ).form-horizontal
+	include ../../../../../../src/views/partials/csrf.pug
+	.form-group
+		label( for="slug" ).col-md-2 Slug:
+		.col-md-4
+			input( name="slug", type="text", value=( state ? state.slug : '' ), required )#slug.form-control
+			span.help-block Used by the API for linking to actions.
+	.form-group
+		label( for="text" ).col-md-2 Text:
+		.col-md-4
+			input( name="text", type="text", value=( state ? state.text : '' ), required )#text.form-control
+			span.help-block The text describing the state
+	.form-group
+		label( for="colour" ).col-md-2 Colour:
+		.col-md-4
+			input( name="colour", type="text", value=( action ? action.colour : '' ), required )#colour.form-control
+			span.help-block The colour which represents this state (red, yellow, green)
+
+	.form-group
+		.col-md-4.col-md-offset-2
+			button.btn.btn-primary #{ formAction }

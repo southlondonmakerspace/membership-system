@@ -275,7 +275,14 @@ var eventsSchema = mongoose.Schema( {
 		type: Boolean,
 		default: true
 	},
-	action: String
+	action: {
+		type: ObjectId,
+		ref: 'Actions'
+	},
+	item: {
+		type: ObjectId,
+		ref: 'Items'
+	}
 } );
 
 var apikeySchema = mongoose.Schema( {
@@ -315,6 +322,92 @@ var optionsSchema = mongoose.Schema( {
 	}
 } );
 
+var itemsSchema = mongoose.Schema( {
+   _id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+   name: {
+      type: String,
+      required: true
+   },
+   slug: {
+		type: String,
+		unique: true,
+		required: true
+	},
+   description: String,
+   guide:  String,
+   image: {
+      large: String,
+      icon: String
+   },
+	actions: [
+		{
+			type: ObjectId,
+			ref: 'Actions',
+			required: true,
+			unique: true // no duplicates!
+		}
+	],
+	states: [
+		{
+			type: ObjectId,
+			ref: 'States',
+			required: true
+		}
+	],
+	defaultState: {
+		type: ObjectId,
+		ref: 'States',
+		required: true
+	}
+} );
+
+var actionsSchema = mongoose.Schema( {
+   _id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+   slug: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	text: String,
+	eventFormat: String,
+	startingState: {
+		type: ObjectId,
+		ref: 'States',
+		required: true
+	},
+	endingState: {
+		type: ObjectId,
+		ref: 'States',
+		required: true
+	}
+});
+
+var statesSchema = mongoose.Schema( {
+   _id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+   slug: {
+		type: String,
+		unique: true,
+		required: true
+	},
+   text: String,
+	colour: String
+});
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
@@ -322,6 +415,9 @@ exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
 exports.apikeySchema = apikeySchema;
 exports.optionsSchema = optionsSchema;
+exports.itemsSchema = itemsSchema;
+exports.actionsSchema = actionsSchema;
+exports.statesSchema = statesSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
@@ -330,6 +426,10 @@ exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEvent
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 exports.Options = mongoose.model( 'Options', exports.optionsSchema );
+exports.Items = mongoose.model( 'Items', exports.itemsSchema );
+exports.Actions = mongoose.model( 'Actions', exports.actionsSchema );
+exports.States = mongoose.model( 'States', exports.statesSchema)
+
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

@@ -70,7 +70,14 @@ app.get( '/', auth.isMember, function( req, res ) {
 		}
 
 		// Find event
-		Events.find( search ).populate( 'member' ).populate( 'permission' ).sort( [ [ "happened", -1 ] ] ).exec( function( err, events ) {
+		Events.find( search ).populate( 'member' )
+		.populate( 'permission' )
+		.populate('item')
+		.populate('action')
+		.populate('action.startingState')
+		.populate('action.endingState')
+		.sort( [ [ "happened", -1 ] ] )
+		.exec( function( err, events ) {
 			for ( var e = 1; e < events.length; e++ ) {
 				var event = events[e];
 				var prevEvent = events[e-1];
@@ -86,7 +93,6 @@ app.get( '/', auth.isMember, function( req, res ) {
 					selected.successful = 'on';
 					selected.unsuccessful = 'on';
 				}
-
 				res.render( 'index', {
 					events: events,
 					previous: previousDate,

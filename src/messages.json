@@ -104,5 +104,34 @@
 	"2fa-already-disabled": "Two factor authentication is already disabled",
 	"2fa-unable-to-disable": "Unable to disable two factor authentication",
 
-	"transaction-date-in-future": "Transactions do not occour in the future"
+	"transaction-date-in-future": "Transactions do not occour in the future",
+
+   "item-404": "Item not found",
+   "item-created": "Item created",
+   "item-updated": "Item updated",
+   "item-removed": "Item removed",
+   "item-expiry-error": "Expiry date must not be the same as or before the start date",
+   "item-admin-only": "Only admin users can modify items",
+   "item-name-required": "Items must have a name",
+   "item-slug-required": "Items must have a slug",
+   "item-duplicate": "User already has this Item",
+	"item-action-duplicate": "Item already has this action",
+
+   "action-404": "Action not found",
+   "action-created": "Action created",
+   "action-updated": "Action updated",
+   "action-removed": "Action removed",
+   "action-expiry-error": "Expiry date must not be the same as or before the start date",
+   "action-admin-only": "Only admin users can modify actions",
+   "action-slug-required": "Action must have a slug",
+   "action-duplicate": "User already has this action",
+
+	"state-404": "State not found",
+   "state-created": "State created",
+   "state-updated": "State updated",
+   "state-removed": "State removed",
+   "state-expiry-error": "Expiry date must not be the same as or before the start date",
+   "state-admin-only": "Only admin users can modify states",
+   "state-slug-required": "State must have a slug",
+   "state-duplicate": "User already has this state"
 }

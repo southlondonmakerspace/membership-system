@@ -28,31 +28,20 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	if ( req.user.tag.id ) {
-		req.flash( 'danger', 'enroll-tag-exists' );
-		res.redirect( '/profile/tag' );
-	} else {
-		res.render( 'index' );
-	}
+	res.render( 'index' );
 } );
 
 app.get( '/:enrollment_code', auth.isLoggedIn, function( req, res ) {
-	if ( req.user.tag.id ) {
-		req.flash( 'danger', 'enroll-tag-exists' );
-		res.redirect( '/profile/tag' );
+	if ( req.params.enrollment_code.match( /^\w{20}$/ ) === null ) {
+		res.redirect( app.parent.mountpath + app.mountpath );
 	} else {
-		if ( req.params.enrollment_code.match( /^\w{20}$/ ) === null ) {
-			res.redirect( app.parent.mountpath + app.mountpath );
-		} else {
-			res.render( 'index', { enrollment_code: req.params.enrollment_code } );
-		}
+		res.render( 'index', { enrollment_code: req.params.enrollment_code } );
 	}
 } );
 
 app.post( '/', auth.isLoggedIn, function( req, res ) {
-	if ( req.user.tag.id ) {
-		req.flash( 'danger', 'enroll-tag-exists' );
-		res.redirect( '/profile/tag' );
+	if ( req.user.tag.id && req.body.replace !== 'true' ) {
+		res.render( 'replace', { code: req.body.enrollment_code } );
 	} else {
 		if ( ! req.body.enrollment_code ) {
 				req.flash( 'danger', 'information-ommited' );

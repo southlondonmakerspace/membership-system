@@ -1,0 +1,28 @@
+extends ../../../../../src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+	- activeApp = 'items'
+
+block contents
+	if access( 'superadmin' )
+		p: a( href="/settings/items/create" ).btn.btn-default
+			span.glyphicon.glyphicon-plus
+			|  Create Items
+	.table-responsive
+		table.table.table-striped.table-condensed
+			thead
+				tr
+					th Name
+					th Slug
+					th Description
+					th Edit
+			tbody
+				each item, p in items
+					tr
+						td #{ item.name }
+						td #{ item.slug }
+						td #{ item.description }
+						td: a( href="/settings/items/" + item.slug + "/edit" )
+							span.glyphicon.glyphicon-pencil

@@ -445,7 +445,7 @@ exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 exports.Options = mongoose.model( 'Options', exports.optionsSchema );
 exports.Items = mongoose.model( 'Items', exports.itemsSchema );
 exports.Actions = mongoose.model( 'Actions', exports.actionsSchema );
-exports.States = mongoose.model( 'States', exports.statesSchema)
+exports.States = mongoose.model( 'States', exports.statesSchema );
 exports.Enroll = mongoose.model( 'Enroll', exports.enrollSchema );
 
 exports.ObjectId = ObjectId;

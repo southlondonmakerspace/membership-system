@@ -12,8 +12,6 @@ var auth = require( __js + '/authentication' ),
 	Permissions = db.Permissions,
 	Members = db.Members;
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -42,7 +40,7 @@ app.post( '/revoke', auth.isLoggedIn, function( req, res ) {
 	req.user.tag.id = '';
 	req.user.tag.hashed = '';
 	req.user.save( function( err ) {
-		req.flash( 'danger', messages['tag-revoked'] );
+		req.flash( 'danger', 'tag-revoked' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

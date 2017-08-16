@@ -10,8 +10,6 @@ var	Options = require( __js + '/options' )();
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};

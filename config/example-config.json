@@ -31,7 +31,6 @@
 	"gocardless": {
 		"access_token": "",
 		"secret": "",
-		"minimum": 20,
 		"sandbox": true,
 		"port": 3002
 	},

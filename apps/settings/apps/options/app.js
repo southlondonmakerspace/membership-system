@@ -10,8 +10,6 @@ var Options = require( __js + '/options' )();
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -37,7 +35,7 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 	Options.get( req.params.key, function( option ) {
 		if ( ! option ) {
-			req.flash( 'warning', messages['options-404'] );
+			req.flash( 'warning', 'option-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
@@ -52,7 +50,7 @@ app.get( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 	Options.set( req.params.key, req.body.value, function( status ) {
-		req.flash( 'success', messages['options-update'] );
+		req.flash( 'success', 'option-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -60,7 +58,7 @@ app.post( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 	Options.get( req.params.key, function( option ) {
 		if ( ! option ) {
-			req.flash( 'warning', messages['options-404'] );
+			req.flash( 'warning', 'option-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
@@ -75,7 +73,7 @@ app.get( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 	Options.reset( req.params.key, function( status ) {
-		req.flash( 'success', messages['options-update'] );
+		req.flash( 'success', 'option-reset' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

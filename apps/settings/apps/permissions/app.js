@@ -12,8 +12,6 @@ var db = require( __js + '/database' ),
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -45,13 +43,13 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['permission-name-required'] );
+		req.flash( 'danger', 'permission-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['permission-slug-required'] );
+		req.flash( 'danger', 'permission-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -70,7 +68,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new Permissions( permission ).save( function( err, permission ) {
-		req.flash( 'success', messages['permission-created'] );
+		req.flash( 'success', 'permission-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -78,7 +76,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	Permissions.findOne( { slug: req.params.slug }, function( err, permission ) {
 		if ( ! permission ) {
-			req.flash( 'warning', messages['permission-404'] );
+			req.flash( 'warning', 'permission-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
@@ -92,13 +90,13 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['permission-name-required'] );
+		req.flash( 'danger', 'permission-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['permission-slug-required'] );
+		req.flash( 'danger', 'permission-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -117,7 +115,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	Permissions.update( { slug: req.params.slug }, permission, function( status ) {
-		req.flash( 'success', messages['permission-update'] );
+		req.flash( 'success', 'permission-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

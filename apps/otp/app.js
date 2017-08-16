@@ -6,8 +6,6 @@ var	express = require( 'express' ),
 
 var	passport = require( 'passport' );
 
-var messages = require( __src + '/messages.json' );
-
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -20,10 +18,10 @@ app.use( function( req, res, next ) {
 
 app.get( '/' , function( req, res ) {
 	if ( ! req.user.otp.activated ) {
-		req.flash( 'warning', messages['2fa-unnecessary'] );
+		req.flash( 'warning', '2fa-unnecessary' );
 		res.redirect( '/profile/2fa' );
 	} else if ( req.user.otp.activated && req.session.method === 'totp' ) {
-		req.flash( 'warning', messages['2fa-already-complete'] );
+		req.flash( 'warning', '2fa-already-complete' );
 		res.redirect( '/profile' );
 	} else {
 		res.locals.userSetup = true;
@@ -33,7 +31,7 @@ app.get( '/' , function( req, res ) {
 } );
 
 app.post( '/', passport.authenticate( 'totp', {
-	failureFlash: messages[ '2fa-invalid' ],
+	failureFlash: '2fa-invalid',
 	failureRedirect: '/otp'
 } ), function ( req, res ) {
 	req.session.method = 'totp';

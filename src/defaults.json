@@ -125,7 +125,7 @@
 
 	"flash-enroll-invalid": "Enroll code invalid",
 	"flash-enroll-expired": "Enroll code expired",
-	"flash-enroll-success": "Tag successful enrolled",,
+	"flash-enroll-success": "Tag successful enrolled",
 
 	"flash-item-404": "Item not found",
 	"flash-item-created": "Item created",
@@ -153,6 +153,7 @@
 	"flash-state-removed": "State removed",
 	"flash-state-expiry-error": "Expiry date must not be the same as or before the start date",
 	"flash-state-admin-only": "Only admin users can modify states",
+	"flash-state-name-required": "State must have text to describe it",
 	"flash-state-slug-required": "State must have a slug",
 	"flash-state-duplicate": "User already has this state"
 }

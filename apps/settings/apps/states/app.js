@@ -11,8 +11,6 @@ var db = require( __js + '/database' ),
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -45,7 +43,7 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['state-slug-required'] );
+		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -57,7 +55,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new States( state ).save( function( err, action ) {
-		req.flash( 'success', messages['state-created'] );
+		req.flash( 'success', 'state-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -65,27 +63,27 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	States.findOne( { slug: req.params.slug }, function( err, state ) {
 		if ( ! state ) {
-			req.flash( 'warning', messages['state-404'] );
+			req.flash( 'warning', 'state-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
 
 		res.locals.breadcrumb.push( {
-			name: action.slug
+			name: state.slug
 		} );
 		res.render( 'edit', { state: state } );
 	} );
 } );
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
-	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['state-name-required'] );
+	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
+		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['state-slug-required'] );
+	if ( ! req.body.text || req.body.text.trim() === '' ) {
+		req.flash( 'danger', 'state-text-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -97,7 +95,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	States.update( { slug: req.params.slug }, state, function( status ) {
-		req.flash( 'success', messages['state-update'] );
+		req.flash( 'success', 'state-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

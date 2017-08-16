@@ -125,6 +125,34 @@
 
 	"flash-enroll-invalid": "Enroll code invalid",
 	"flash-enroll-expired": "Enroll code expired",
-	"flash-enroll-success": "Tag successful enrolled",
-	"flash-enroll-tag-dupe": "Tag already associated to another member's account"
+	"flash-enroll-success": "Tag successful enrolled",,
+
+	"flash-item-404": "Item not found",
+	"flash-item-created": "Item created",
+	"flash-item-updated": "Item updated",
+	"flash-item-removed": "Item removed",
+	"flash-item-expiry-error": "Expiry date must not be the same as or before the start date",
+	"flash-item-admin-only": "Only admin users can modify items",
+	"flash-item-name-required": "Items must have a name",
+	"flash-item-slug-required": "Items must have a slug",
+	"flash-item-duplicate": "User already has this Item",
+	"flash-item-action-duplicate": "Item already has this action",
+
+	"flash-action-404": "Action not found",
+	"flash-action-created": "Action created",
+	"flash-action-updated": "Action updated",
+	"flash-action-removed": "Action removed",
+	"flash-action-expiry-error": "Expiry date must not be the same as or before the start date",
+	"flash-action-admin-only": "Only admin users can modify actions",
+	"flash-action-slug-required": "Action must have a slug",
+	"flash-action-duplicate": "User already has this action",
+
+	"flash-state-404": "State not found",
+	"flash-state-created": "State created",
+	"flash-state-updated": "State updated",
+	"flash-state-removed": "State removed",
+	"flash-state-expiry-error": "Expiry date must not be the same as or before the start date",
+	"flash-state-admin-only": "Only admin users can modify states",
+	"flash-state-slug-required": "State must have a slug",
+	"flash-state-duplicate": "User already has this state"
 }

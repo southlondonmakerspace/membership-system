@@ -8,10 +8,12 @@ var	express = require( 'express' ),
 
 var config = require( __config + '/config.json' );
 
-var auth = require( __js + '/authentication.js' );
+var auth = require( __js + '/authentication.js' ),
+	Mail = require( __js + '/mail' );
 
 var database = require( __js + '/database' ),
-	Members = database.Members;
+	Members = database.Members,
+	Enroll = database.Enroll;
 
 var app_config = {};
 
@@ -48,8 +50,40 @@ app.get( '/identify/:tag', auth.isAPIAuthenticated, function( req, res ) {
 } );
 
 app.get( '/enroll', auth.isAPIAuthenticated, function( req, res ) {
-	res.json( {
-		valid: true
+	Enroll.findOne( { tag: req.query.tag }, function( err, record ) {
+		if ( record ) {
+			res.json( {
+				error: 'Tag enrollment already in progress.'
+			} );
+		} else {
+			auth.generateActivationCode( function( code ) {
+				new Enroll( {
+					tag: req.query.tag,
+					code: code
+				} ).save( function( status ) {
+					if ( status ) {
+						res.json( {
+							error: 'Error enrolling tag.'
+						} );
+					} else {
+						Mail.sendMail(
+							req.query.email,
+							'Enroll Tag',
+							__dirname + '/email-templates/enroll.text.pug',
+							__dirname + '/email-templates/enroll.html.pug',
+							{
+								enroll_url: config.audience + '/profile/enroll/' + code
+							},
+							function() {
+								res.json( {
+									error: false
+								} );
+							}
+						);
+					}
+				} );
+			} );
+		}
 	} );
 } );
 

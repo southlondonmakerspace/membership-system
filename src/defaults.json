@@ -121,5 +121,11 @@
 
 	"flash-option-404": "Option not found",
 	"flash-option-updated": "Option updated",
-	"flash-option-reset": "Option reset to default"
+	"flash-option-reset": "Option reset to default",
+
+	"flash-enroll-invalid": "Enroll code invalid",
+	"flash-enroll-expired": "Enroll code expired",
+	"flash-enroll-success": "Tag successful enrolled",
+	"flash-enroll-tag-exists": "You already have a tag associated with your account",
+	"flash-enroll-tag-dupe": "Tag already associated to another member's account"
 }

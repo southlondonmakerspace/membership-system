@@ -296,7 +296,6 @@ var apikeySchema = mongoose.Schema( {
 	}
 } );
 
-
 var optionsSchema = mongoose.Schema( {
 	_id: {
 		type: ObjectId,
@@ -315,6 +314,30 @@ var optionsSchema = mongoose.Schema( {
 	}
 } );
 
+var enrollSchema = mongoose.Schema( {
+	_id: {
+		type: ObjectId,
+		default: function() { return new mongoose.Types.ObjectId(); },
+		required: true,
+		unique: true
+	},
+	code: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	tag: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	created: {
+		type: Date,
+		default: Date.now,
+		required: true
+	}
+} );
+
 exports.permissionsSchema = permissionsSchema;
 exports.memberSchema = memberSchema;
 exports.paymentSchema = paymentSchema;
@@ -322,6 +345,7 @@ exports.historicEventsSchema = historicEventsSchema;
 exports.eventsSchema = eventsSchema;
 exports.apikeySchema = apikeySchema;
 exports.optionsSchema = optionsSchema;
+exports.enrollSchema = enrollSchema;
 
 exports.Permissions = mongoose.model( 'Permissions', exports.permissionsSchema );
 exports.Members = mongoose.model( 'Members', exports.memberSchema );
@@ -330,6 +354,7 @@ exports.HistoricEvents = mongoose.model( 'HistoricEvents', exports.historicEvent
 exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 exports.Options = mongoose.model( 'Options', exports.optionsSchema );
+exports.Enroll = mongoose.model( 'Enroll', exports.enrollSchema );
 
 exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;

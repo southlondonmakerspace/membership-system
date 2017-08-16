@@ -4,6 +4,127 @@
 	"google-maps-key": "",
 	"home-text": "Hello there Makers!",
 	"home-link-text": "Find out more",
-	"home-link-url": "http://localhost/about",
-	"gate-code": ""
+	"home-link-url": "http://example.com/about",
+	"gate-code": "",
+	"gocardless-minimum": "20",
+
+	"content-email-admin": "This can only be changed by an administrator.",
+	"leaders": "directors",
+	"leader_email": "directors@example.com",
+
+	"flash-logged-in": "Login successful",
+	"flash-logged-out": "Logged out",
+	"flash-login-failed": "Login unsuccessful",
+	"flash-login-required": "You must be logged in",
+	"flash-inactive-account": "Account not activated",
+	"flash-already-logged-in": "You are already logged in",
+	"flash-inactive-membership": "Your membership is inactive",
+	"flash-403": "You do not have access to this area",
+	"flash-information-ommited": "Important information was ommited",
+
+	"flash-user-duplicate": "Unable to create account",
+	"flash-user-firstname": "First name required",
+	"flash-user-lastname": "Last name required",
+	"flash-user-address": "Address name required",
+
+	"flash-password-changed": "Password changed",
+	"flash-password-invalid": "Incorrect current password",
+	"flash-password-reset-code-err": "Invalid password reset code",
+	"flash-password-err-mismatch": "Passwords did not match",
+	"flash-password-err-length": "Password must be at least 8 characters long",
+	"flash-password-err-number": "Password must contain at least 1 number",
+	"flash-password-err-letter-up": "Password must contain at least 1 uppercase letter",
+	"flash-password-err-letter-low": "Password must contain at least 1 lowercase letter",
+
+	"flash-password-reset": "If there is an account associated with the email address you will receive an email shortly",
+	"flash-password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled.",
+
+	"flash-account-created": "Account created, please check your email for a registration link",
+	"flash-member-created": "Member successful created",
+
+	"flash-activation-error": "Activation code or password did not match",
+	"flash-activation-success": "You account is now active.",
+	"flash-activation-updated": "Activation updated",
+
+	"flash-account-locked": "Maximum number of password attempts exceeded.",
+	"flash-account-attempts": "There has been % attempt(s) to login to your account since you last logged in.",
+
+	"flash-member-404": "Member not found",
+
+	"flash-profile-updated": "Profile updated",
+
+	"flash-emergency-contact-updated": "Emergency contact updated",
+
+	"flash-permission-404": "Permission not found",
+	"flash-permission-created": "Permission created",
+	"flash-permission-updated": "Permission updated",
+	"flash-permission-removed": "Permission removed",
+	"flash-permission-expiry-error": "Expiry date must not be the same as or before the start date",
+	"flash-permission-admin-only": "Only admin users can modify permissions",
+	"flash-permission-name-required": "Permissions must have a name",
+	"flash-permission-slug-required": "Permissions must have a slug",
+	"flash-permission-duplicate": "User already has this permission",
+
+	"flash-tag-updated": "Tag updated",
+
+	"flash-discourse-updated": "Discourse updated",
+	"flash-discourse-activation-sent": "Activation code sent to your Discourse private messages",
+	"flash-discourse-activation-dupe": "Activation code has already been sent",
+	"flash-discourse-linked": "Discourse user linked",
+	"flash-discourse-activation-code-err": "You must enter a valid activation code",
+	"flash-discouse-id-duplicate": "Discourse ID already associated with another member",
+	"flash-discourse-invalid-user": "Selected user is invalid",
+	"flash-discourse-cancelled": "Activation cancelled",
+
+	"flash-gocardless-updated": "GoCardless updated",
+	"flash-gocardless-subscription-success": "Subscription setup succesfully",
+	"flash-gocardless-subscription-min": "Minimum direct debit amount is £%",
+	"flash-gocardless-subscription-invalid-day": "Subscription payment date must be between 1st and 28th of the month or last day of the month",
+	"flash-gocardless-subscription-err": "Error setting up subscription",
+	"flash-gocardless-subscription-cancelled": "Subscription cancelled",
+	"flash-gocardless-subscription-cancellation-err": "Error cancelling subscription",
+	"flash-gocardless-subscription-404": "Your account has no subscription",
+	"flash-gocardless-mandate-success": "Direct Debit mandate setup succesfully",
+	"flash-gocardless-mandate-err": "Error setting up Direct Debit mandate",
+	"flash-gocardless-mandate-cancelled": "Direct Debit mandate cancelled",
+	"flash-gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate",
+	"flash-gocardless-mandate-404": "Your account has no mandate",
+
+	"flash-event-404": "Event not found",
+	"flash-event-not-linkable": "Tag cannot be linked",
+	"flash-event-linked": "Tag linked to user",
+	"flash-event-date-in-future": "Events do not occour in the future",
+
+	"flash-apikey-404": "API Key not found",
+	"flash-apikey-created": "API Key created",
+	"flash-apikey-update": "API Key updated",
+	"flash-apikey-delete": "API Key deleted",
+	"flash-apikey-name-required": "API Key requires a name",
+	"flash-apikey-key-required": "API Key requires a secret key",
+
+	"flash-tag-revoked": "Your tag has been revoked",
+	"flash-discourse-unlinked": "Your Discourse account has been unlinked",
+
+	"flash-2fa-disabled": "Two factor authentication has been disabled",
+	"flash-2fa-enabled": "Two factor authentication has been enabled",
+	"flash-2fa-setup-failed": "The verification code did not match",
+	"flash-2fa-required": "You must complete two factor authentication first",
+	"flash-2fa-already-complete": "You've already completed two factor authentication",
+	"flash-2fa-unnecessary": "You do not have two factor authentication enabled on your account",
+	"flash-2fa-no-change": "There was no change to two factor authentication",
+	"flash-2fa-invalid": "Your one time password is invalid",
+	"flash-2fa-already-enabled": "Two factor authentication is already enabled",
+	"flash-2fa-already-disabled": "Two factor authentication is already disabled",
+	"flash-2fa-unable-to-disable": "Unable to disable two factor authentication",
+
+	"flash-transaction-date-in-future": "Transactions do not occour in the future",
+
+	"flash-option-404": "Option not found",
+	"flash-option-updated": "Option updated",
+	"flash-option-reset": "Option reset to default",
+
+	"flash-enroll-invalid": "Enroll code invalid",
+	"flash-enroll-expired": "Enroll code expired",
+	"flash-enroll-success": "Tag successful enrolled",
+	"flash-enroll-tag-dupe": "Tag already associated to another member's account"
 }

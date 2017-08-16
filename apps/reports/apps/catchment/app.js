@@ -12,8 +12,6 @@ var auth = require( __js + '/authentication' ),
 	Permissions = db.Permissions,
 	Members = db.Members;
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};

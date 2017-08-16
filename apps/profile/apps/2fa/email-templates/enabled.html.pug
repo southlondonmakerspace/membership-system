@@ -2,5 +2,5 @@ extends ../../../../../src/views/email.html.pug
 
 block content
 	p Hello #{ firstname },
-	p Two factor authentication on your #{ config.globals.organisation } account has been enabled.
+	p Two factor authentication on your #{ Options( 'organisation' ) } account has been enabled.
 	p If you didn't do this please contact us ASAP.

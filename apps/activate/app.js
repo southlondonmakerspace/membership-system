@@ -8,8 +8,6 @@ var	express = require( 'express' ),
 var	Members = require( __js + '/database' ).Members,
 	auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -21,7 +19,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'index' );
@@ -30,7 +28,7 @@ app.get( '/' , function( req, res ) {
 
 app.get( '/:activation_code' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else if ( req.params.activation_code.match( /^\w{20}$/ ) === null ) {
 		res.redirect( '/activate' );
@@ -41,29 +39,29 @@ app.get( '/:activation_code' , function( req, res ) {
 
 app.post( '/', function( req, res ) {
 	if ( ! req.body.activation_code || ! req.body.password ) {
-			req.flash( 'danger', messages['information-ommited'] );
+			req.flash( 'danger', 'information-ommited' );
 			res.redirect( '/activate' );
 			return;
 	}
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else if ( ! req.body.activation_code.match( /^\w{20}$/ ) ) {
-		req.flash( 'danger', messages['activation-error'] );
+		req.flash( 'danger', 'activation-error' );
 		res.redirect( '/activate' );
 	} else {
 		Members.findOne( {
 			activation_code: req.body.activation_code,
 		}, function ( err, user ) {
 			if ( ! user ) {
-				req.flash( 'danger', messages['activation-error'] );
+				req.flash( 'danger', 'activation-error' );
 				res.redirect( app.mountpath + '/' + req.body.activation_code );
 				return;
 			}
 
 			auth.hashPassword( req.body.password, user.password.salt, user.password.iterations, function( hash ) {
 				if ( user.password.hash != hash ) {
-					req.flash( 'danger', messages['activation-error'] );
+					req.flash( 'danger', 'activation-error' );
 					res.redirect( app.mountpath + '/' + req.body.activation_code );
 					return;
 				}
@@ -78,7 +76,7 @@ app.post( '/', function( req, res ) {
 					}
 				}, function ( status ) {
 					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', messages['activation-success'] );
+					req.flash( 'success', 'activation-success' );
 					res.redirect( '/profile/setup' );
 				} );
 			} );

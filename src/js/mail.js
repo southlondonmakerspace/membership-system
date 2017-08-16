@@ -4,6 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config/config.json';
 
 var config = require( __config );
+var Options = require( __js + '/options.js' )();
 
 var pug = require( 'pug' );
 var nodemailer = require( 'nodemailer' );
@@ -13,7 +14,8 @@ var Mail = {
 		var message = {};
 
 		options.config = config;
-
+		options.Options = Options.getPUG;
+		
 		message.text = pug.renderFile( text, options );
 		message.html = pug.renderFile( html, options );
 
@@ -21,7 +23,7 @@ var Mail = {
 
 		message.from = config.smtp.from;
 		message.to = to;
-		message.subject = subject + ' – ' + config.globals.organisation;
+		message.subject = subject + ' – ' + Options.getPUG( 'organisation' );
 
 		transporter.sendMail( message, function( err, info ) {
 			var status;

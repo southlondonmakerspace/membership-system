@@ -2,7 +2,7 @@ extends ../../../src/views/email.html.pug
 
 block content
 	p Hello #{ firstname },
-	p Thanks for setting up your #{ config.globals.organisation } membership account!
+	p Thanks for setting up your #{ Options( 'organisation' ) } membership account!
 	p Now, to confirm your email just click Activate below and follow the instructions.
 
 block action

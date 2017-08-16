@@ -20,8 +20,6 @@ var db = require( __js + '/database' ),
 	Events = db.Events,
 	Permissions = db.Permissions;
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var auth = require( __js + '/authentication' );
@@ -130,7 +128,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.firstname ||
 		 ! req.body.lastname ||
  		 ! req.body.address ) {
- 			req.flash( 'danger', messages['information-ommited'] );
+ 			req.flash( 'danger', 'information-ommited' );
  			res.redirect( app.mountpath + '/update' );
  			return;
 	}
@@ -165,7 +163,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 					req.flash( 'danger', status.errors[key].message );
 				}
 			} else {
-				req.flash( 'success', messages['profile-updated'] );
+				req.flash( 'success', 'profile-updated' );
 			}
 			res.redirect( app.mountpath );
 		} );
@@ -201,7 +199,7 @@ app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 				req.flash( 'danger', status.errors[key].message );
 			}
 		} else {
-			req.flash( 'success', messages['emergency-contact-updated'] );
+			req.flash( 'success', 'emergency-contact-updated' );
 		}
 		res.redirect( app.mountpath );
 	} );
@@ -221,14 +219,14 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.current ||
 		 ! req.body.new ||
  		 ! req.body.verify ) {
- 			req.flash( 'danger', messages['information-ommited'] );
+ 			req.flash( 'danger', 'information-ommited' );
  			res.redirect( app.mountpath );
  			return;
 	}
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		auth.hashPassword( req.body.current, user.password.salt, user.password.iterations, function( hash ) {
 			if ( hash != user.password.hash ) {
-				req.flash( 'danger', messages['password-invalid'] );
+				req.flash( 'danger', 'password-invalid' );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
@@ -241,7 +239,7 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 			}
 
 			if ( req.body.new != req.body.verify ) {
-				req.flash( 'danger', messages['password-mismatch'] );
+				req.flash( 'danger', 'password-mismatch' );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
@@ -264,7 +262,7 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 						__dirname + '/email-templates/password-changed.html.pug',
 						options,
 						function() {
-							req.flash( 'success', messages['password-changed'] );
+							req.flash( 'success', 'password-changed' );
 							res.redirect( app.mountpath );
 					} );
 				} );

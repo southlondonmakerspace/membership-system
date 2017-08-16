@@ -123,10 +123,6 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	} );
 } );
 
-app.get( '*', function ( req, res ) {
-	res.sendStatus( 501 );
-} );
-
 module.exports = function( config ) {
 	app_config = config;
 	return app;

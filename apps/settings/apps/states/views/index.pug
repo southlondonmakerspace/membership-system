@@ -6,10 +6,9 @@ block prepend title
 	- activeApp = 'actions'
 
 block contents
-	if access( 'superadmin' )
-		p: a( href="/settings/states/create" ).btn.btn-default
-			span.glyphicon.glyphicon-plus
-			|  Create Actions
+	p: a( href="/settings/states/create" ).btn.btn-default
+		span.glyphicon.glyphicon-plus
+		|  Create State
 	.table-responsive
 		table.table.table-striped.table-condensed
 			thead

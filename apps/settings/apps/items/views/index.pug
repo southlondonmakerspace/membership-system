@@ -6,10 +6,9 @@ block prepend title
 	- activeApp = 'items'
 
 block contents
-	if access( 'superadmin' )
-		p: a( href="/settings/items/create" ).btn.btn-default
-			span.glyphicon.glyphicon-plus
-			|  Create Items
+	p: a( href="/settings/items/create" ).btn.btn-default
+		span.glyphicon.glyphicon-plus
+		|  Create Items
 	.table-responsive
 		table.table.table-striped.table-condensed
 			thead

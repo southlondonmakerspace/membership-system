@@ -12,8 +12,6 @@ var db = require( __js + '/database' ),
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -49,7 +47,7 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['action-slug-required'] );
+		req.flash( 'danger', 'action-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -61,9 +59,8 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		endingState: req.body.endingState,
 		eventFormat: req.body.eventFormat
 	};
-	console.log(action)
 	new Actions( action ).save( function( err, action ) {
-		req.flash( 'success', messages['action-created'] );
+		req.flash( 'success', 'action-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -71,7 +68,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	Actions.findOne( { slug: req.params.slug }, function( err, action ) {
 		if ( ! action ) {
-			req.flash( 'warning', messages['action-404'] );
+			req.flash( 'warning', 'action-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
@@ -89,7 +86,7 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['action-slug-required'] );
+		req.flash( 'danger', 'action-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -100,9 +97,8 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		endingState: req.body.endingState,
 		eventFormat: req.body.eventFormat
 	};
-	console.log(action)
 	Actions.update( { slug: req.params.slug }, action, function( status ) {
-		req.flash( 'success', messages['action-update'] );
+		req.flash( 'success', 'action-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

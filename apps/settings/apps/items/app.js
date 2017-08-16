@@ -13,8 +13,6 @@ var db = require( __js + '/database' ),
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -50,13 +48,13 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['item-name-required'] );
+		req.flash( 'danger', 'item-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['item-slug-required'] );
+		req.flash( 'danger', 'item-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -70,7 +68,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new Items( item ).save( function( err, item ) {
-		req.flash( 'success', messages['item-created'] );
+		req.flash( 'success', 'item-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -81,40 +79,32 @@ app.get( '/:slug/edit/action', auth.isSuperAdmin, function (req, res) {
 	} );
 } );
 
-app.post( '/:slug/edit/action', auth.isSuperAdmin, function (req, res) {
-	Items.findOne( { slug: req.params.slug }, function( err, item ) {
-		if (! item ) {
-			req.flash( 'warning', messages['item-404'] );
-			res.redirect( app.parent.mountpath + app.mountpath );
-			return;
-		}
-
-		/*if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-			req.flash( 'danger', messages['item-slug-required'] );
-			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.slug + '/edit');
-			return;
-		}*/
-		// if the action already is in the items list of actions...
-		if ( item.actions.indexOf(req.body.id) != -1)
-		{
-			req.flash( 'warning', messages['item-action-duplicate'] );
-			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.slug + '/edit');
-			return;
-		}
-		item.actions.push(req.body.id);
-		Items.update( { slug: req.params.slug }, item, function (status) {
-			req.flash( 'success', messages['item-update'] );
-			res.redirect( app.parent.mountpath + app.mountpath  + '/' + req.params.slug + '/edit');
-			console.log(status)
-		})
-	} );
-} );
-
+// app.post( '/:slug/edit/action', auth.isSuperAdmin, function (req, res) {
+// 	Items.findOne( { slug: req.params.slug }, function( err, item ) {
+// 		if (! item ) {
+// 			req.flash( 'warning', 'item-404' );
+// 			res.redirect( app.parent.mountpath + app.mountpath );
+// 			return;
+// 		}
+//
+// 		if ( item.actions.indexOf(req.body.id) != -1)
+// 		{
+// 			req.flash( 'warning', 'item-action-duplicate' );
+// 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.slug + '/edit');
+// 			return;
+// 		}
+// 		item.actions.push(req.body.id);
+// 		Items.update( { slug: req.params.slug }, item, function (status) {
+// 			req.flash( 'success', 'item-updated' );
+// 			res.redirect( app.parent.mountpath + app.mountpath  + '/' + req.params.slug + '/edit');
+// 		})
+// 	} );
+// } );
 
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	Items.findOne( { slug: req.params.slug }).populate('actions').exec ( function( err, item ) {
 		if ( ! item ) {
-			req.flash( 'warning', messages['item-404'] );
+			req.flash( 'warning', 'item-404' );
 			res.redirect( app.parent.mountpath + app.mountpath);
 			return;
 		}
@@ -133,18 +123,18 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['item-name-required'] );
+		req.flash( 'danger', 'item-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['item-slug-required'] );
+		req.flash( 'danger', 'item-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-   var item = {
+	var item = {
 		name: req.body.name,
 		slug: req.body.slug,
 		description: req.body.description,
@@ -153,7 +143,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	Items.update( { slug: req.params.slug }, item, function( status ) {
-		req.flash( 'success', messages['item-update'] );
+		req.flash( 'success', 'item-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

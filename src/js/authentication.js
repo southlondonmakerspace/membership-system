@@ -302,6 +302,7 @@ var Authentication = {
 				res.redirect( '/' );
 				return;
 			case Authentication.REQUIRES_2FA:
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				res.redirect( '/otp' );
 				return;
 			default:
@@ -337,6 +338,7 @@ var Authentication = {
 				res.redirect( '/profile' );
 				return;
 			case Authentication.REQUIRES_2FA:
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'warning', '2fa-required' );
 				res.redirect( '/otp' );
 				return;
@@ -368,6 +370,7 @@ var Authentication = {
 				res.redirect( '/profile' );
 				return;
 			case Authentication.REQUIRES_2FA:
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'warning', '2fa-required' );
 				res.redirect( '/otp' );
 				return;
@@ -399,6 +402,7 @@ var Authentication = {
 				res.redirect( '/profile' );
 				return;
 			case Authentication.REQUIRES_2FA:
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'warning', '2fa-required' );
 				res.redirect( '/otp' );
 				return;

@@ -92,7 +92,7 @@ function templateLocals( req, res, next ) {
 	};
 
 	// Delete login redirect URL if user navigates to anything other than the login page
-	if ( req.originalUrl != '/login' )
+	if ( req.originalUrl != '/login' && req.originalUrl != '/otp' )
 		delete req.session.requestedUrl;
 
 	// Check if user is setup

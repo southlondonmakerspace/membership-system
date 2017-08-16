@@ -1,5 +1,6 @@
 {
 	"title": "Enroll Tag",
 	"path": "enroll",
-	"menu": "none"
+	"menu": "none",
+	"hidden": true
 }

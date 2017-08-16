@@ -80,12 +80,14 @@ block contents
 					dt Activated
 					dd #{ member.activated ? 'Yes' : 'No' }
 					if access( 'superadmin' )
-						dt Activation Code
-						dd #{ member.activation_code ? member.activation_code + ' – ' + audience + '/activate/' + member.activation_code : '–' }
-						dt Password Reset Code
-						dd #{ member.password.reset_code ? member.password.reset_code + ' – ' + audience + '/password-reset/code/' + member.password.reset_code : '–' }
+						if member.activation_code
+							dt Activation Code
+							dd On file
+						if member.password.reset_code
+							dt Password Reset Code
+							dd On file
 						dt Password Tries
-						dd #{ member.password.tries ? member.password.tries : '–' } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
+						dd #{ member.password.tries } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
 						dt 2FA
 						dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
 						dt Password Iterations
@@ -116,8 +118,9 @@ block contents
 						dd #{ member.discourse.username ? member.discourse.username : '–' }
 						dt Activated
 						dd #{ member.discourse.activated ? 'Yes' : 'No' }
-						dt Activation Code
-						dd #{ member.discourse.activation_code ? member.discourse.activation_code : '–' } #{ member.discourse.activation_code ? audience + '/profile/discourse?code=' + member.discourse.activation_code : '' }
+						if member.discourse.activation_code
+							dt Activation Code
+							dd On file
 				.col-md-6
 					.page-header
 						h3 GoCardless

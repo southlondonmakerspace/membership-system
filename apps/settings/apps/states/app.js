@@ -45,7 +45,7 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['state-slug-required'] );
+		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -57,7 +57,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new States( state ).save( function( err, action ) {
-		req.flash( 'success', messages['state-created'] );
+		req.flash( 'success', 'state-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -65,7 +65,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	States.findOne( { slug: req.params.slug }, function( err, state ) {
 		if ( ! state ) {
-			req.flash( 'warning', messages['state-404'] );
+			req.flash( 'warning', 'state-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
@@ -79,13 +79,13 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['state-name-required'] );
+		req.flash( 'danger', 'state-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['state-slug-required'] );
+		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -97,7 +97,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	States.update( { slug: req.params.slug }, state, function( status ) {
-		req.flash( 'success', messages['state-update'] );
+		req.flash( 'success', 'state-update' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

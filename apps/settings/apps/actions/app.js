@@ -12,8 +12,6 @@ var db = require( __js + '/database' ),
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};

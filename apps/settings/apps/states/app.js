@@ -7,12 +7,9 @@ var	express = require( 'express' ),
 	app = express();
 
 var db = require( __js + '/database' ),
-	Activities = db.Activities,
-	Members = db.Members;
+	States = db.States
 
 var auth = require( __js + '/authentication' );
-
-var messages = require( __src + '/messages.json' );
 
 var config = require( __config + '/config.json' );
 
@@ -31,8 +28,8 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isSuperAdmin, function( req, res ) {
-	Activities.find( function( err, activities ) {
-		res.render( 'index', { activities: activities } );
+	States.find( function( err, states ) {
+		res.render( 'index', { states: states } );
 	} );
 } );
 
@@ -44,68 +41,61 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
-	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['activity-name-required'] );
-		res.redirect( app.parent.mountpath + app.mountpath );
-		return;
-	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['activity-slug-required'] );
+		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	var activity = {
-		name: req.body.name,
-		event_name: req.body.event,
+	var state = {
 		slug: req.body.slug,
-		admin_only: req.body.admin_only
+		text: req.body.text,
+		colour: req.body.colour,
 	};
 
-	new Activities( activity ).save( function( err, activity ) {
-		req.flash( 'success', messages['activity-created'] );
+	new States( state ).save( function( err, action ) {
+		req.flash( 'success', 'state-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
 
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
-	Activities.findOne( { slug: req.params.slug }, function( err, activity ) {
-		if ( ! activity ) {
-			req.flash( 'warning', messages['activity-404'] );
+	States.findOne( { slug: req.params.slug }, function( err, state ) {
+		if ( ! state ) {
+			req.flash( 'warning', 'state-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
 		}
 
 		res.locals.breadcrumb.push( {
-			name: activity.name
+			name: action.slug
 		} );
-		res.render( 'edit', { activity: activity } );
+		res.render( 'edit', { state: state } );
 	} );
 } );
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['activity-name-required'] );
+		req.flash( 'danger', 'state-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['activity-slug-required'] );
+		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	var activity = {
-		name: req.body.name,
-		event_name: req.body.event,
+	var state = {
 		slug: req.body.slug,
-		admin_only: req.body.admin_only
+		text: req.body.text,
+		colour: req.body.colour,
 	};
 
-	Activities.update( { slug: req.params.slug }, activity, function( status ) {
-		req.flash( 'success', messages['activity-update'] );
+	States.update( { slug: req.params.slug }, state, function( status ) {
+		req.flash( 'success', 'state-update' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

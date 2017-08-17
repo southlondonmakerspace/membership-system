@@ -7,8 +7,6 @@ var	express = require( 'express' ),
 	app = express(),
 	request= require( 'request' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var discourse = require( __js + '/discourse' ),
@@ -58,7 +56,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/link', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.search ) {
-		req.flash( 'danger', messages['information-ommited'] );
+		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
@@ -72,7 +70,7 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 					if ( index > 0 || index < users.length ) {
 						Members.findOne( { "discourse.id": user.id }, function( err, member ) {
 							if ( member ) {
-								req.flash( 'warning', messages['discouse-id-duplicate'] );
+								req.flash( 'warning', 'discouse-id-duplicate' );
 								res.redirect( app.parent.mountpath + app.mountpath );
 							} else {
 								auth.generateActivationCode( function( code ) {
@@ -85,23 +83,23 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 
 									discourse.sendActivationMessage( user.username, code );
 
-									req.flash( 'info', messages['discourse-activation-sent'] );
+									req.flash( 'info', 'discourse-activation-sent' );
 									res.redirect( app.parent.mountpath + app.mountpath );
 								} );
 							}
 						} );
 					} else {
-						req.flash( 'danger', messages['discourse-invalid-user'] );
+						req.flash( 'danger', 'discourse-invalid-user' );
 						res.redirect( app.parent.mountpath + app.mountpath );
 					}
 				} else {
-					req.flash( 'danger', messages['discourse-invalid-user'] );
+					req.flash( 'danger', 'discourse-invalid-user' );
 					res.redirect( app.parent.mountpath + app.mountpath );
 				}
 			}
 		} );
 	} else {
-		req.flash( 'warning', messages['discourse-activation-dupe'] );
+		req.flash( 'warning', 'discourse-activation-dupe' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	}
 } );
@@ -113,7 +111,7 @@ app.get( '/cancel', auth.isLoggedIn, function( req, res ) {
 		activated: false
 	};
 	req.user.save( function( err ) {
-		req.flash( 'warning', messages['discourse-cancelled'] );
+		req.flash( 'warning', 'discourse-cancelled' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
@@ -125,12 +123,12 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 				"discourse.activated": true,
 				"discourse.activation_code": null
 			} }, function ( error ) {} );
-			req.flash( 'info', messages['discourse-linked'] );
+			req.flash( 'info', 'discourse-linked' );
 			return res.redirect( app.parent.mountpath + app.mountpath );
 		}
 	}
 	setTimeout( function() {
-		req.flash( 'warning', messages['discourse-activation-code-err'] );
+		req.flash( 'warning', 'discourse-activation-code-err' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	}, 1000 );
 } );
@@ -146,7 +144,7 @@ app.post( '/unlink', auth.isLoggedIn, function( req, res ) {
 		activated: false
 	};
 	req.user.save( function( err ) {
-		req.flash( 'danger', messages['discourse-unlinked'] );
+		req.flash( 'danger', 'discourse-unlinked' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

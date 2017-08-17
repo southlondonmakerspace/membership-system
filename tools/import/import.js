@@ -16,12 +16,10 @@ var	Permissions = db.Permissions,
 	Payments = db.Payments,
 	HistoricEvents = db.HistoricEvents,
 	Events = db.Events,
-	Activities = db.Activities,
 	APIKeys = db.APIKeys;
 
 var map = {
 	permissions: {},
-	activities: {},
 	members: {},
 	payments: {},
 	HistoricEvents: {},
@@ -58,19 +56,6 @@ function importData() {
 			permission._id = id;
 
 			new Permissions( permission ).save( log );
-		}
-	}
-
-	if ( data.activities ) {
-		console.log( 'Importing: Activities - ' + data.activities.length );
-		for ( var a in data.activities ) {
-			var activity = data.activities[a];
-
-			var id = new db.mongoose.Types.ObjectId();
-			map.activities[ activity._id ] = id;
-			activity._id = id;
-
-			new Activities( activity ).save( log );
 		}
 	}
 
@@ -131,7 +116,6 @@ function importData() {
 			event._id = id;
 
 			if ( event.member ) event.member = map.members[ event.member ];
-			if ( event.activity ) event.activity = map.activities[ event.activity ];
 			if ( event.permission ) event.permission = map.permissions[ event.permission ];
 
 			new Events( event ).save( log );

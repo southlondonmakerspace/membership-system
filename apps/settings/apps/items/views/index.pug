@@ -3,26 +3,26 @@ extends ../../../../../src/views/base.pug
 block prepend title
 	- title = app.title
 	- heading = title
-	- activeApp = 'settings'
+	- activeApp = 'items'
 
 block contents
 	if access( 'superadmin' )
-		p: a( href="/settings/activities/create" ).btn.btn-default
+		p: a( href="/settings/items/create" ).btn.btn-default
 			span.glyphicon.glyphicon-plus
-			|  Create Activity
+			|  Create Items
 	.table-responsive
 		table.table.table-striped.table-condensed
 			thead
 				tr
 					th Name
 					th Slug
-					th Admin Only
+					th Description
 					th Edit
 			tbody
-				each activity, a in activities
+				each item, p in items
 					tr
-						td #{ activity.name }
-						td #{ activity.slug }
-						td #{ activity.admin_only ? 'Yes' : 'No' }
-						td: a( href="/settings/activities/" + activity.slug + "/edit" )
+						td #{ item.name }
+						td #{ item.slug }
+						td #{ item.description }
+						td: a( href="/settings/items/" + item.slug + "/edit" )
 							span.glyphicon.glyphicon-pencil

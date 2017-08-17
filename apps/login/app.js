@@ -1,12 +1,14 @@
 var __root = '../..';
 var __src = __root + '/src';
+var __js = __src + '/js';
 
 var	express = require( 'express' ),
 	app = express();
 
 var	passport = require( 'passport' );
 
-var messages = require( __src + '/messages.json' );
+var db = require( __js + '/database' ),
+	Members = db.Members;
 
 var app_config = {};
 
@@ -20,7 +22,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/' , function( req, res ) {
 	if ( req.user ) {
-		req.flash( 'warning', messages['already-logged-in'] );
+		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else {
 		res.render( 'index' );
@@ -32,13 +34,23 @@ app.post( '/', passport.authenticate( 'local', {
 	failureFlash: true,
 	successFlash: true
 } ), function ( req, res ) {
-	req.session.method = 'plain';
-	if ( req.session.requestedUrl ) {
-		res.redirect( req.session.requestedUrl );
-		delete req.session.requestedUrl;
-	} else {
-		res.redirect( '/profile' );
-	}
+	Members.findById( req.user, function( err, user ) {
+		if ( user ) {
+			req.session.method = 'plain';
+			if ( user.otp.activated ) {
+				res.redirect( '/otp' );
+			} else {
+				if ( req.session.requestedUrl ) {
+					res.redirect( req.session.requestedUrl );
+					delete req.session.requestedUrl;
+				} else {
+					res.redirect( '/profile' );
+				}
+			}
+		} else {
+			res.redirect( '/' );
+		}
+	} );
 } );
 
 module.exports = function( config ) {

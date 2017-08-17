@@ -14,9 +14,10 @@ var auth = require( __js + '/authentication.js' );
 
 var database = require( __js + '/database' ),
 	Permissions = database.Permissions,
-	Activities = database.Activities,
 	Members = database.Members,
 	Events = database.Events;
+	Items = database.Items;
+	Actions = database.Actions;
 
 var app_config = {};
 
@@ -62,20 +63,85 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 		}
 	} );
 } );
-
-app.get( '/event/:slug', auth.isAPIAuthenticated, function( req, res ) {
-	Activities.findOne( { slug: req.params.slug }, function ( err, activity ) {
-		if ( activity ) {
-			new Events( {
-				activity: activity._id,
-				action: ( req.query.action ? req.query.action : '' )
-			} ).save( function( status ) {
-				res.sendStatus( 200 );
-			} );
-		} else {
+app.get( '/item/:slug', auth.isAPIAuthenticated, function( req, res ) {
+	res.setHeader('Content-Type', 'application/json');
+	if ( ! req.params.slug )
+	{
+		res.sendStatus( 404 );
+		return
+	}
+	// find the item
+	Items.findOne({'slug': req.params.slug }).exec( function (err, item) {
+		if (err)
+		{
 			res.sendStatus( 404 );
+			return
 		}
-	} );
+		// find the last state by looking back in the event log
+		Events.findOne({'item': item._id})
+		.populate({path: 'action',select: 'endingState', populate: {path: 'endingState', select: "slug"}})
+		.populate()
+		.populate('item')
+		.sort( [ [ "happened", -1 ] ] ).exec( function (err, myEvent) {
+
+			res.send(JSON.stringify({currentStatus: myEvent.action.endingState.slug}))
+		});
+	});
+});
+
+app.get( '/item/:slug/:state', auth.isAPIAuthenticated, function( req, res ) {
+	res.setHeader('Content-Type', 'application/json');
+	if ( ! req.params.slug )
+	{
+		res.sendStatus( 404 );
+		return
+	}
+	// find the item
+	Items.findOne({'slug': req.params.slug }).populate('actions').exec( function (err, item) {
+		if (err)
+		{
+			res.sendStatus( 404 );
+			return
+		}
+		var initialState = null
+		// find the last state by looking back in the event log
+		Events.findOne({'item': item._id}).populate('action').sort( [ [ "happened", -1 ] ] ).exec( function (err, myEvent) {
+
+			if (err || myEvent == null)
+			{
+				// no event found for the item
+				// we use the default state
+				initialState = item.defaultState
+			} else {
+				initialState = myEvent.action.endingState;
+			}
+			States.findOne({'slug': req.params.state}, function (err, finalStateDoc) {
+				if (err || finalStateDoc == null)
+				{
+					res.sendStatus(403); // something bad happened
+					return
+				}
+
+				finalState = finalStateDoc._id
+				Actions.findOne({'startingState': initialState, 'endingState': finalState}, function (err, action) {
+					if (err || action == null)
+					{
+						res.sendStatus(404);
+						return
+					}
+					var newEvent = {
+						action: action._id,
+						successful: true,
+						item: item._id
+					}
+					new Events ( newEvent ).save(function( status ) {
+						res.send(status)
+					} );
+
+				})
+			});
+		});
+	});
 } );
 
 app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
@@ -105,7 +171,6 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	.sort( { happened: 'asc' } )
 	.populate( 'member' )
 	.populate( 'permission' )
-	.populate( 'activity' )
 	.exec( function( err, events ) {
 		var output = {
 			now: new Date(),
@@ -134,20 +199,10 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 					action: event.permission.event_name
 				}
 
-			if ( event.activity )
-				output_event.activitiy = {
-					name: event.activity.name,
-					action: event.activity.event_name
-				}
-
 			output.events.push( output_event );
 		}
 		res.send( JSON.stringify( output ) );
 	} );
-} );
-
-app.get( '*', function ( req, res ) {
-	res.sendStatus( 501 );
 } );
 
 module.exports = function( config ) {

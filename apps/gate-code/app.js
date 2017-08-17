@@ -33,6 +33,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	Options.findOne( { key: 'gate-code' }, function( err, option ) {
 		if ( ! option ) {
 			res.redirect( '/' );
+			return
 		}
 
 		res.render( 'index', { "code": option.value } );

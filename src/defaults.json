@@ -125,7 +125,7 @@
 
 	"flash-enroll-invalid": "Enroll code invalid",
 	"flash-enroll-expired": "Enroll code expired",
-	"flash-enroll-success": "Tag successful enrolled",,
+	"flash-enroll-success": "Tag successful enrolled",
 
 	"flash-item-404": "Item not found",
 	"flash-item-created": "Item created",

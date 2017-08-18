@@ -77,7 +77,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 				}
 
 				req.user.tag.id = record.tag;
-				req.user.tag.hashed = auth.hashCard( record.tag );
+				req.user.tag.hashed = auth.hashTag( record.tag );
 				req.user.save( function( error ) {
 					record.remove( function( error ) {} );
 					req.flash( 'success', 'enroll-success' );

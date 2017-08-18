@@ -355,7 +355,14 @@ app.post( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	var profile = {};
 
 	if ( req.body.tag ) {
-		var hashed_tag = auth.hashCard( req.body.tag );
+		var validateTag = auth.validateTag( req.body.tag );
+		if ( validateTag ) {
+			req.flash( 'danger', validateTag );
+			res.redirect( app.mountpath + '/' + req.params.uuid );
+			return;
+		}
+
+		var hashed_tag = auth.hashTag( req.body.tag );
 		profile = {
 			'tag.id': req.body.tag,
 			'tag.hashed': hashed_tag

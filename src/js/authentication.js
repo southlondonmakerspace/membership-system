@@ -416,7 +416,7 @@ var Authentication = {
 	},
 
 	// Hashes a members tag with a salt using md5, per the legacy membership system
-	hashCard: function( id ) {
+	hashTag: function( id ) {
 		var md5 = crypto.createHash( 'md5' );
 		md5.update( config.tag_salt );
 		md5.update( id.toLowerCase() );

@@ -423,6 +423,15 @@ var Authentication = {
 		return md5.digest( 'hex' );
 	},
 
+	validateTag: function( tag ) {
+		if ( tag.match( /^[0-9a-f]{8}$/i ) === null ) return 'tag-invalid-malformed'
+		if ( tag == '21222324' ) return 'tag-invalid-visa';
+		if ( tag == '01020304' ) return 'tag-invalid-android';
+		if ( tag.match( /^0+$/ ) !== null ) return 'tag-invalid-amex';
+		if ( tag.substr( 0, 2 ) == '08' ) return 'tag-invalid-long-uid';
+		return false;
+	},
+
 	// Checks password meets requirements
 	passwordRequirements: function( password ) {
 		if ( password.length < 8 )

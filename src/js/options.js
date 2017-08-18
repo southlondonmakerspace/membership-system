@@ -18,7 +18,7 @@ var Options = {
 			if ( opt.key == key ) return opt;
 		} ) );
 	},
-	getPUG: function( key ) {
+	getText: function( key ) {
 		var option = _options.find( function( opt ) {
 			if ( opt.key == key ) return opt;
 		} );
@@ -55,7 +55,7 @@ var Options = {
 		callback();
 	},
 	_save: function( key ) {
-		OptionsDB.update( { key: key }, { value: Options.getPUG( key ) }, { upsert: true }, function( err, status ) {} );
+		OptionsDB.update( { key: key }, { value: Options.getText( key ) }, { upsert: true }, function( err, status ) {} );
 	},
 	_unset: function( key ) {
 		OptionsDB.remove( { key: key }, function( err, status ) {} );

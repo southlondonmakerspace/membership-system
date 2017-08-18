@@ -15,7 +15,7 @@ module.exports = function( req, res, next ) {
 
 		for ( var m in messages ) {
 			var message = messages[ m ];
-			var option = Options.getPUG( 'flash-' + message );
+			var option = Options.getText( 'flash-' + message );
 
 			if ( ! option ) {
 				option = message;

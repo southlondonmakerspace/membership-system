@@ -58,7 +58,7 @@ var Authentication = {
 									var attempts = user.password.tries;
 									user.password.tries = 0;
 									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: Options.getPUG( 'flash-account-attempts' ).replace( '%', attempts ) } );
+									return done( null, { _id: user._id }, { message: Options.getText( 'account-attempts' ).replace( '%', attempts ) } );
 								}
 
 								if ( user.password.iterations < config.iterations ) {

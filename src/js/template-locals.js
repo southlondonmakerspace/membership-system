@@ -117,7 +117,7 @@ function templateLocals( req, res, next ) {
 	req.session.userSetupShown++;
 
 	// Load config + prepare breadcrumbs
-	res.locals.Options = Options.getPUG;
+	res.locals.Options = Options.getText;
 	res.locals.config = {};
 	res.locals.config.permission = config.permission;
 	res.locals.breadcrumb = [];

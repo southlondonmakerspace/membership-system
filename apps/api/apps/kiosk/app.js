@@ -64,7 +64,7 @@ app.get( '/enroll', auth.isAPIAuthenticated, function( req, res ) {
 			error: Options.getText( 'flash-' + validateTag )
 		} );
 	}
-	Member.findOne( { 'tag.id': req.query.tag }, function( err, member ) {
+	Members.findOne( { 'tag.id': req.query.tag }, function( err, member ) {
 		if ( member ) {
 			return res.json( {
 				error: Options.getText( 'flash-enroll-duplicate' )

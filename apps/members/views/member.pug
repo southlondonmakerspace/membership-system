@@ -3,7 +3,7 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = 'Member'
 	- activeApp = 'members'
-
+	
 block contents
 	.row
 		.col-md-2
@@ -39,11 +39,7 @@ block contents
 					dd  #{ member.email }
 					if access( 'superadmin' )
 						dt Address
-						dd #{ member.address.replace( /\r\n/g, ", " ) }
-						dt Latitude
-						dd #{ member.postcode_coordinates.lat ? member.postcode_coordinates.lat : '–' }
-						dt Longitude
-						dd #{ member.postcode_coordinates.lng ? member.postcode_coordinates.lng : '–' }
+						dd #{ member.address.replace( /\r?\n/g, ", " ) }
 			if access( 'superadmin' )
 				.col-md-6
 					.page-header
@@ -60,13 +56,10 @@ block contents
 				.page-header
 					h3 System
 						if access( 'superadmin' )
-							.btn-group.pull-right
+							.pull-right
 								a( href="/members/" + member.uuid + "/activation" ).btn.btn-default
 									span.glyphicon.glyphicon-ok
 									|  Edit Activation
-								a( href="/members/" + member.uuid + "/2fa" ).btn.btn-default
-									span.glyphicon.glyphicon-lock
-									|  Edit 2FA
 				dl.dl-horizontal
 					dt UUID
 					dd #{ member.uuid }
@@ -79,32 +72,33 @@ block contents
 					dd #{ member.last_seen ? moment( member.last_seen ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
 					dt Activated
 					dd #{ member.activated ? 'Yes' : 'No' }
-					if access( 'superadmin' )
-						if member.activation_code
-							dt Activation Code
-							dd On file
-						if member.password.reset_code
-							dt Password Reset Code
-							dd On file
-						dt Password Tries
-						dd #{ member.password.tries } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
-						dt 2FA
-						dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
-						dt Password Iterations
-						dd #{ member.password.iterations }
 			if access( 'superadmin' )
 				.col-md-6
 					.page-header
-						h3 Tag
+						h3 Security
 							if access( 'superadmin' )
-								a( href="/members/" + member.uuid + "/tag" ).btn.btn-default.pull-right
-									span.glyphicon.glyphicon-pencil
-									|  Edit Tag
+								.btn-group.pull-right
+									a( href="/members/" + member.uuid + "/tag" ).btn.btn-default
+										span.glyphicon.glyphicon-pencil
+										|  Edit Tag
+									if member.otp.activated
+										a( href="/members/" + member.uuid + "/2fa" ).btn.btn-default.pull-right
+											span.glyphicon.glyphicon-lock
+											|  Edit 2FA
 					dl.dl-horizontal
 						dt Tag
 						dd #{ member.tag.id ? member.tag.id : '–' }
-						dt Hashed Tag
-						dd #{ member.tag.hashed ? member.tag.hashed : '–' }
+						if access( 'superadmin' )
+							if member.activation_code
+								dt Activation Code
+								dd On file
+							if member.password.reset_code
+								dt Password Reset Code
+								dd On file
+							dt Password Tries
+							dd #{ member.password.tries } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
+							dt 2FA
+							dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
 		if access( 'superadmin' )
 			.row
 				.col-md-6

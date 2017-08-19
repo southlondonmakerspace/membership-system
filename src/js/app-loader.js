@@ -101,6 +101,8 @@ function loadApps() {
 }
 
 function routeApps() {
+	console.log( "Loading express routes:" );
+
 	for ( var a in apps ) {
 		var _app = apps[a];
 		console.log( "	Route: /" + _app.path );

@@ -71,6 +71,8 @@
 	"flash-tag-invalid-android": "Android phones cannot be used",
 	"flash-tag-invalid-amex": "AMEX cards cannot be used",
 	"flash-tag-invalid-long-uid": "This tag is not supported",
+	"flash-tag-invalid-not-unique": "This tag is already used by another member",
+	"flash-tag-unchanged": "Tag is unchanged",
 
 	"flash-discourse-updated": "Discourse updated",
 	"flash-discourse-activation-sent": "Activation code sent to your Discourse private messages",

@@ -354,37 +354,49 @@ app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 app.post( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	var profile = {};
 
-	if ( req.body.tag ) {
-		var validateTag = auth.validateTag( req.body.tag );
-		if ( validateTag ) {
-			req.flash( 'danger', validateTag );
-			res.redirect( app.mountpath + '/' + req.params.uuid );
+	Members.findOne( { 'tag.id': req.body.tag }, function( err, member ) {
+		if ( member ) {
+			if ( member.uuid === req.params.uuid ) {
+				req.flash( 'info', 'tag-unchanged' );
+			} else {
+				req.flash( 'danger', 'tag-invalid-not-unique' );
+			}
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/tag' );
 			return;
 		}
 
-		var hashed_tag = auth.hashTag( req.body.tag );
-		profile = {
-			'tag.id': req.body.tag,
-			'tag.hashed': hashed_tag
-		};
-	} else {
-		profile = {
-			'tag.id': '',
-			'tag.hashed': ''
-		};
-	}
-
-	Members.update( { uuid: req.params.uuid }, { $set: profile }, function( status ) {
-		if ( status ) {
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
+		if ( req.body.tag ) {
+			var validateTag = auth.validateTag( req.body.tag );
+			if ( validateTag ) {
+				req.flash( 'danger', validateTag );
+				res.redirect( app.mountpath + '/' + req.params.uuid + '/tag' );
+				return;
 			}
+
+			var hashed_tag = auth.hashTag( req.body.tag );
+			profile = {
+				'tag.id': req.body.tag,
+				'tag.hashed': hashed_tag
+			};
 		} else {
-			req.flash( 'success', 'tag-updated' );
+			profile = {
+				'tag.id': '',
+				'tag.hashed': ''
+			};
 		}
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+
+		Members.update( { uuid: req.params.uuid }, { $set: profile }, function( status ) {
+			if ( status ) {
+				var keys = Object.keys( status.errors );
+				for ( var k in keys ) {
+					var key = keys[k];
+					req.flash( 'danger', status.errors[key].message );
+				}
+			} else {
+				req.flash( 'success', 'tag-updated' );
+			}
+			res.redirect( app.mountpath + '/' + req.params.uuid );
+		} );
 	} );
 } );
 

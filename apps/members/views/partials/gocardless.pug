@@ -1,0 +1,18 @@
+.page-header
+	h3 GoCardless
+dl.dl-horizontal
+	dt Mandate ID
+	if member.gocardless.mandate_id
+		dd: a( href="https://manage.gocardless.com/mandates/" + member.gocardless.mandate_id ) #{ member.gocardless.mandate_id }
+	else
+		dd –
+	dt Subscription ID
+	if member.gocardless.subscription_id
+		dd: a( href="https://manage.gocardless.com/subscriptions/" + member.gocardless.subscription_id ) #{ member.gocardless.subscription_id }
+	else
+		dd –
+	dt Minimum
+	dd #{ Options( 'gocardless-minimum' ) ? '£' + Options( 'gocardless-minimum' ) : '–' }
+	if member.gocardless.next_possible_charge_date
+		dt Earliest charge date
+		dd #{ moment( member.gocardless.next_possible_charge_date ).format( 'DD/MM/YYYY' ) }

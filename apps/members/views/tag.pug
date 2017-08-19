@@ -2,16 +2,21 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = 'Tag'
-	- heading = title
-	- activeApp = 'members'
+	- page = 'tag'
 
 block contents
-	form( method="post" ).form-horizontal
-		include ../../../src/views/partials/csrf.pug
-		.form-group
-			label( for="tag" ).col-md-2 Tag
-			.col-md-4
-				input( type="tag", value=member.tag.id, name="tag", minlength=8, maxlength=8 )#tag.form-control
-		.form-group
-			.col-md-4.col-md-offset-2
-				button.btn.btn-primary Update
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			form( method="post" ).form-horizontal
+				include ../../../src/views/partials/csrf.pug
+				.form-group
+					label( for="tag" ).col-md-2 ID
+					.col-md-4
+						input( type="tag", value=member.tag.id, name="tag", minlength=8, maxlength=8 )#tag.form-control
+				.form-group
+					.col-md-4.col-md-offset-2
+						button.btn.btn-primary Update

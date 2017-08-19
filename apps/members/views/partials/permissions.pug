@@ -1,0 +1,8 @@
+.page-header
+	h3 Permissions
+if member.permissions.length > 0
+	.list-group
+		each permission, p in member.permissions
+			include ../../../../src/views/partials/permission.pug
+else
+	p Member has no permissions

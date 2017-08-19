@@ -3,189 +3,55 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = 'Member'
 	- activeApp = 'members'
+	- page = 'overview'
 	
 block contents
-	.row
-		.col-md-2
-			img( style="border-radius: 100%", src=member.gravatar + "?s=150&d=mm&r=g" )
-		.col-md-10
-			.page-header
-				h2 #{ member.fullname }
-				
-			dl.dl-horizontal
-				if member.discourse.activated && discourse != undefined
-					dt Discourse
-					dd: a( target="_blank", href=discourse_path + '/users/' + discourse.user.username ) @#{ discourse.user.username }
-				dt Emergency Contact
-				if member.emergency_contact.telephone
-					dd On file
-				else
-					dd Not held
-	if access( 'admin' )
+	if ! access( 'admin' )
 		.row
-			.col-md-6
+			.col-md-2
+				img( style="border-radius: 100%", src=member.gravatar + "?s=150&d=mm&r=g" )
+			.col-md-10
 				.page-header
-					h3 Profile
-						if access( 'superadmin' )
-							a( href="/members/" + member.uuid + "/profile" ).btn.btn-default.pull-right
-								span.glyphicon.glyphicon-pencil
-								|  Edit Profile
+					h2 #{ member.fullname }
+					
 				dl.dl-horizontal
-					dt First Name
-					dd  #{ member.firstname }
-					dt Last Name
-					dd  #{ member.lastname }
-					dt Email
-					dd  #{ member.email }
-					if access( 'superadmin' )
-						dt Address
-						dd #{ member.address.replace( /\r?\n/g, ", " ) }
-			if access( 'superadmin' )
-				.col-md-6
-					.page-header
-						h3( style="padding-top: 6px;" ) Emergency Contact
-					dl.dl-horizontal
-						dt First Name
-						dd #{ member.emergency_contact.firstname ? member.emergency_contact.firstname : '–'  }
-						dt Last Name
-						dd #{ member.emergency_contact.lastname ? member.emergency_contact.lastname : '–'  }
-						dt Telephone
-						dd #{ member.emergency_contact.telephone ? member.emergency_contact.telephone : '–'  }
+					if member.discourse.activated && discourse != undefined
+						dt Discourse
+						dd: a( target="_blank", href=discourse_path + '/users/' + discourse.user.username ) @#{ discourse.user.username }
+					dt Emergency Contact
+					if member.emergency_contact.telephone
+						dd On file
+					else
+						dd Not held
+			.col-md-10.col-md-offset-2
+				include partials/permissions.pug
+	else 
 		.row
-			.col-md-6
-				.page-header
-					h3 System
-						if access( 'superadmin' )
-							.pull-right
-								a( href="/members/" + member.uuid + "/activation" ).btn.btn-default
-									span.glyphicon.glyphicon-ok
-									|  Edit Activation
-				dl.dl-horizontal
-					dt UUID
-					dd #{ member.uuid }
+			.col-md-3
+				include partials/sidebar.pug
+			.col-md-9
+				.row
+					div( class=( access( 'superadmin' ) ? 'col-md-6' : 'col-md-12' ) )
+						include partials/profile.pug
 					if access( 'superadmin' )
-						dt DB ID
-						dd #{ member._id }
-					dt Joined
-					dd #{ moment( member.joined ).format( 'HH:mm:ss DD/MM/YYYY' ) }
-					dt Last seen
-					dd #{ member.last_seen ? moment( member.last_seen ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
-					dt Activated
-					dd #{ member.activated ? 'Yes' : 'No' }
-			if access( 'superadmin' )
-				.col-md-6
-					.page-header
-						h3 Security
-							if access( 'superadmin' )
-								.btn-group.pull-right
-									a( href="/members/" + member.uuid + "/tag" ).btn.btn-default
-										span.glyphicon.glyphicon-pencil
-										|  Edit Tag
-									if member.otp.activated
-										a( href="/members/" + member.uuid + "/2fa" ).btn.btn-default.pull-right
-											span.glyphicon.glyphicon-lock
-											|  Edit 2FA
-					dl.dl-horizontal
-						dt Tag
-						dd #{ member.tag.id ? member.tag.id : '–' }
-						if access( 'superadmin' )
-							if member.activation_code
-								dt Activation Code
-								dd On file
-							if member.password.reset_code
-								dt Password Reset Code
-								dd On file
-							dt Password Tries
-							dd #{ member.password.tries } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
-							dt 2FA
-							dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }
-		if access( 'superadmin' )
-			.row
-				.col-md-6
-					.page-header
-						h3 Discourse
-							a( href="/members/" + member.uuid + "/discourse" ).btn.btn-default.pull-right
-								span.glyphicon.glyphicon-pencil
-								|  Edit Discourse
-					dl.dl-horizontal
-						dt Username
-						dd #{ member.discourse.username ? member.discourse.username : '–' }
-						dt Activated
-						dd #{ member.discourse.activated ? 'Yes' : 'No' }
-						if member.discourse.activation_code
-							dt Activation Code
-							dd On file
-				.col-md-6
-					.page-header
-						h3 GoCardless
-							a( href="/members/" + member.uuid + "/gocardless" ).btn.btn-default.pull-right
-								span.glyphicon.glyphicon-pencil
-								|  Edit GoCardless
-					dl.dl-horizontal
-						dt Mandate ID
-						if member.gocardless.mandate_id
-							dd: a( href="https://manage.gocardless.com/mandates/" + member.gocardless.mandate_id ) #{ member.gocardless.mandate_id }
-						else
-							dd –
-						dt Subscription ID
-						if member.gocardless.subscription_id
-							dd: a( href="https://manage.gocardless.com/subscriptions/" + member.gocardless.subscription_id ) #{ member.gocardless.subscription_id }
-						else
-							dd –
-						dt Minimum
-						dd #{ Options( 'gocardless-minimum' ) ? '£' + Options( 'gocardless-minimum' ) : '–' }
-						if member.gocardless.next_possible_charge_date
-							dt Earliest charge date
-							dd #{ moment( member.gocardless.next_possible_charge_date ).format( 'DD/MM/YYYY' ) }
-	.row
-		.col-md-12
-			.page-header
-				h3 Permissions
-					if access( 'admin' )
-						a( href="/members/" + member.uuid + "/permissions" ).btn.btn-default.pull-right
-							span.glyphicon.glyphicon-pencil
-							|  Edit Permissions
-			if member.permissions.length > 0
-				.list-group
-					each permission, p in member.permissions
-						include ../../../src/views/partials/permission.pug
-			else
-				p Member has no permissions
-	if access( 'superadmin' )
-		.row
-			.col-md-12
-				.page-header
-					h3 Payments
-				if payments.length > 0
-					.table-responsive
-						table.table.table-striped.table-condensed
-							thead
-								tr
-									th Payment ID
-									th Subscription ID
-									th Created
-									th Updated
-									th Charge Date
-									th Description
-									th Status
-									th Amount
-							tbody
-								each payment, p in payments
-									tr
-										td
-											a( href="https://manage.gocardless.com/payments/" + payment.payment_id ) #{ payment.payment_id }
-										td 
-											a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id ) #{ payment.subscription_id }
-										td #{ moment( payment.created ).format( 'HH:mm:ss DD/MM/YYYY' ) }
-										td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
-										td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
-										td #{ payment.description }
-										td
-											include ../../profile/apps/statement/views/partials/status.pug
-										td #{ payment.amount ? '£' + payment.amount : '–' }
-							tfoot
-								tr
-									th( colspan=7 ) Total
-									th £ #{ total }
-				else
-					p Member has no payment history
+						.col-md-6
+							include partials/emergency_contact.pug
+				if access( 'superadmin' )
+					.row
+						.col-md-6
+							include partials/system.pug
+						.col-md-6
+							include partials/security.pug
+				if access( 'superadmin' )
+					.row
+						.col-md-6
+							include partials/discourse.pug
+						.col-md-6
+							include partials/gocardless.pug
+				.row
+					.col-md-12
+						include partials/permissions.pug
+				if access( 'superadmin' )
+					.row
+						.col-md-12
+							include partials/payments.pug

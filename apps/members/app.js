@@ -294,7 +294,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 
 		Members.update( { uuid: req.params.uuid }, member, function( status ) {
 			req.flash( 'success', 'profile-updated' );
-			res.redirect( app.mountpath + '/' + req.params.uuid );
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/update' );
 		} );
 	} );
 } );
@@ -328,7 +328,7 @@ app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 
 	Members.update( { uuid: req.params.uuid }, member, function( status ) {
 		req.flash( 'success', 'activation-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/activation' );
 	} );
 } );
 
@@ -425,11 +425,11 @@ app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 		'discourse.activated': ( req.body.activated ? true : false )
 	};
 
-	if ( req.body.clear ) member['discourse.activation_code'] = null;
+	if ( req.body.activated ) member['discourse.activation_code'] = null;
 
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', 'discourse-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/discourse' );
 	} );
 } );
 
@@ -461,7 +461,7 @@ app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', 'gocardless-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/gocardless' );
 	} );
 } );
 

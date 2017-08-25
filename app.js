@@ -5,6 +5,8 @@ var __src = __root + '/src';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
+console.log( "Starting Membership System\n" );
+
 var config = require( __config );
 
 var database = require( __js + '/database' ).connect( config.mongo );
@@ -18,8 +20,6 @@ var express = require( 'express' ),
 
 // Use helmet
 app.use( helmet() );
-
-console.log( "Starting..." );
 
 // Handle authentication
 require( __js + '/authentication' ).auth( app );

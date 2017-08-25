@@ -1,0 +1,14 @@
+.page-header
+	h3 System
+dl.dl-horizontal
+	dt UUID
+	dd #{ member.uuid }
+	if access( 'superadmin' )
+		dt DB ID
+		dd #{ member._id }
+	dt Joined
+	dd #{ moment( member.joined ).format( 'HH:mm:ss DD/MM/YYYY' ) }
+	dt Last seen
+	dd #{ member.last_seen ? moment( member.last_seen ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
+	dt Activated
+	dd #{ member.activated ? 'Yes' : 'No' }

@@ -294,7 +294,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 
 		Members.update( { uuid: req.params.uuid }, member, function( status ) {
 			req.flash( 'success', 'profile-updated' );
-			res.redirect( app.mountpath + '/' + req.params.uuid );
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/update' );
 		} );
 	} );
 } );
@@ -328,7 +328,7 @@ app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 
 	Members.update( { uuid: req.params.uuid }, member, function( status ) {
 		req.flash( 'success', 'activation-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/activation' );
 	} );
 } );
 
@@ -354,37 +354,49 @@ app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 app.post( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	var profile = {};
 
-	if ( req.body.tag ) {
-		var validateTag = auth.validateTag( req.body.tag );
-		if ( validateTag ) {
-			req.flash( 'danger', validateTag );
-			res.redirect( app.mountpath + '/' + req.params.uuid );
+	Members.findOne( { 'tag.id': req.body.tag }, function( err, member ) {
+		if ( member ) {
+			if ( member.uuid === req.params.uuid ) {
+				req.flash( 'info', 'tag-unchanged' );
+			} else {
+				req.flash( 'danger', 'tag-invalid-not-unique' );
+			}
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/tag' );
 			return;
 		}
 
-		var hashed_tag = auth.hashTag( req.body.tag );
-		profile = {
-			'tag.id': req.body.tag,
-			'tag.hashed': hashed_tag
-		};
-	} else {
-		profile = {
-			'tag.id': '',
-			'tag.hashed': ''
-		};
-	}
-
-	Members.update( { uuid: req.params.uuid }, { $set: profile }, function( status ) {
-		if ( status ) {
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
+		if ( req.body.tag ) {
+			var validateTag = auth.validateTag( req.body.tag );
+			if ( validateTag ) {
+				req.flash( 'danger', validateTag );
+				res.redirect( app.mountpath + '/' + req.params.uuid + '/tag' );
+				return;
 			}
+
+			var hashed_tag = auth.hashTag( req.body.tag );
+			profile = {
+				'tag.id': req.body.tag,
+				'tag.hashed': hashed_tag
+			};
 		} else {
-			req.flash( 'success', 'tag-updated' );
+			profile = {
+				'tag.id': '',
+				'tag.hashed': ''
+			};
 		}
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+
+		Members.update( { uuid: req.params.uuid }, { $set: profile }, function( status ) {
+			if ( status ) {
+				var keys = Object.keys( status.errors );
+				for ( var k in keys ) {
+					var key = keys[k];
+					req.flash( 'danger', status.errors[key].message );
+				}
+			} else {
+				req.flash( 'success', 'tag-updated' );
+			}
+			res.redirect( app.mountpath + '/' + req.params.uuid );
+		} );
 	} );
 } );
 
@@ -413,11 +425,11 @@ app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 		'discourse.activated': ( req.body.activated ? true : false )
 	};
 
-	if ( req.body.clear ) member['discourse.activation_code'] = null;
+	if ( req.body.activated ) member['discourse.activation_code'] = null;
 
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', 'discourse-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/discourse' );
 	} );
 } );
 
@@ -449,7 +461,7 @@ app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 
 	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
 		req.flash( 'success', 'gocardless-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/gocardless' );
 	} );
 } );
 

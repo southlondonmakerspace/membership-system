@@ -20,8 +20,12 @@ var express = require( 'express' ),
 	helmet = require( 'helmet' ),
 	flash = require( 'express-flash' ),
 	app = express(),
-	http = require( 'http' ).Server( app ),
-	app_loader = require( __js + '/app-loader' );
+	http = require( 'http' ).Server( app );
+
+var Options = require( __js + '/options' )();
+app.use( Options.load );
+
+var app_loader = require( __js + '/app-loader' );
 
 // Use helmet
 app.use( helmet() );

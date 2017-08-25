@@ -21,6 +21,7 @@ form( method="post" ).form-horizontal
 			span.help-block A link to a guide about the item
 	.form-group
 		label( for="defaultState ").col-md-2 Default State:
+		.col-md-4
 			select( name="defaultState", required )#startingState.form-control
 				option( disabled selected ) –
 				each state, s in states
@@ -29,18 +30,6 @@ form( method="post" ).form-horizontal
 						value=state._id
 					) #{ state.text }
 			span.help-block The state which a thing must be in in order for the action to be possible
-			
-	.form-group
-		.col-md-4
-			if item != undefined
-				.list-group
-				each action, p in item.actions
-					h4.list-group-item-heading #{ action.text }
-					p.list-group-item-text #{ action.slug }
-				.form-group
-					p: a( href="/settings/items/" + item.slug + "/edit/action").btn.btn-default
-						span.glyphicon.glyphicon-plus
-						|  Add Action
 	.form-group
 		.col-md-4.col-md-offset-2
 			button.btn.btn-primary #{ formAction }

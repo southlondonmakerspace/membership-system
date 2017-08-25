@@ -275,7 +275,16 @@ var eventsSchema = mongoose.Schema( {
 		type: Boolean,
 		default: true
 	},
-	action: String
+	item: {
+    type: ObjectId,
+    ref: 'Items',
+    required: false
+  },
+  state: {
+    type: ObjectId,
+    ref: 'States',
+    required: false
+  }
 } );
 
 var apikeySchema = mongoose.Schema( {
@@ -336,53 +345,12 @@ var itemsSchema = mongoose.Schema( {
 		large: String,
 		icon: String
 	},
-	actions: [
-		{
-			type: ObjectId,
-			ref: 'Actions',
-			required: true,
-			unique: true // no duplicates!
-		}
-	],
-	states: [
-		{
-			type: ObjectId,
-			ref: 'States',
-			required: true
-		}
-	],
 	defaultState: {
 		type: ObjectId,
 		ref: 'States',
 		required: true
 	}
 } );
-
-var actionsSchema = mongoose.Schema( {
-	_id: {
-		type: ObjectId,
-		default: function() { return new mongoose.Types.ObjectId(); },
-		required: true,
-		unique: true
-	},
-	slug: {
-		type: String,
-		unique: true,
-		required: true
-	},
-	text: String,
-	eventFormat: String,
-	startingState: {
-		type: ObjectId,
-		ref: 'States',
-		required: true
-	},
-	endingState: {
-		type: ObjectId,
-		ref: 'States',
-		required: true
-	}
-});
 
 var statesSchema = mongoose.Schema( {
 	_id: {
@@ -396,6 +364,8 @@ var statesSchema = mongoose.Schema( {
 		unique: true,
 		required: true
 	},
+  verbPast: String,
+  verbPresent: String,
 	text: String,
 	colour: String
 });
@@ -432,7 +402,6 @@ exports.eventsSchema = eventsSchema;
 exports.apikeySchema = apikeySchema;
 exports.optionsSchema = optionsSchema;
 exports.itemsSchema = itemsSchema;
-exports.actionsSchema = actionsSchema;
 exports.statesSchema = statesSchema;
 exports.enrollSchema = enrollSchema;
 
@@ -444,7 +413,6 @@ exports.Events = mongoose.model( 'Events', exports.eventsSchema );
 exports.APIKeys = mongoose.model( 'APIKeys', exports.apikeySchema );
 exports.Options = mongoose.model( 'Options', exports.optionsSchema );
 exports.Items = mongoose.model( 'Items', exports.itemsSchema );
-exports.Actions = mongoose.model( 'Actions', exports.actionsSchema );
 exports.States = mongoose.model( 'States', exports.statesSchema );
 exports.Enroll = mongoose.model( 'Enroll', exports.enrollSchema );
 

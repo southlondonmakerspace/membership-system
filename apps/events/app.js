@@ -71,11 +71,15 @@ app.get( '/', auth.isMember, function( req, res ) {
 		Events.find( search ).populate( 'member' )
 		.populate( 'permission' )
 		.populate('item')
-		.populate('action')
-		.populate('action.startingState')
-		.populate('action.endingState')
+    .populate('state')
 		.sort( [ [ "happened", -1 ] ] )
 		.exec( function( err, events ) {
+      console.log(err, events)
+      if (events == null)
+      {
+        res.render ('error', {error: 'No events'})
+        return
+      }
 			for ( var e = 1; e < events.length; e++ ) {
 				var event = events[e];
 				var prevEvent = events[e-1];

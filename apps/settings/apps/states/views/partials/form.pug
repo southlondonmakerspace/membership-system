@@ -13,9 +13,18 @@ form( method="post" ).form-horizontal
 	.form-group
 		label( for="colour" ).col-md-2 Colour:
 		.col-md-4
-			input( name="colour", type="text", value=( action ? action.colour : '' ), required )#colour.form-control
+			input( name="colour", type="text", value=( state ? state.colour : '' ), required )#colour.form-control
 			span.help-block The colour which represents this state (red, yellow, green)
-
+	.form-group
+		label( for="colour" ).col-md-2 Verb (past tense):
+		.col-md-4
+			input( name="verbPast", type="text", value=( state ? state.verbPast : '' ), required )#verbPast.form-control
+			span.help-block The past tense version of a state (e.g. "the door was opened")
+	.form-group
+		label( for="colour" ).col-md-2 Verb (present tense):
+		.col-md-4
+			input( name="verbPresent", type="text", value=( state ? state.verbPresent : '' ), required )#verbPresent.form-control
+			span.help-block The present tense version of a state (e.g. "the door is open")
 	.form-group
 		.col-md-4.col-md-offset-2
 			button.btn.btn-primary #{ formAction }

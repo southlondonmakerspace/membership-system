@@ -8,8 +8,7 @@ var	express = require( 'express' ),
 
 var db = require( __js + '/database' ),
 	Items = db.Items,
-	Actions = db.Actions,
-	Stats = db.States
+	States = db.States
 
 var auth = require( __js + '/authentication' );
 
@@ -39,11 +38,10 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
-	Actions.find( function (err, actions) {
 		States.find( function (err, states) {
-			res.render( 'create', { actions: actions, states: states } );
+			res.render( 'create', { states: states } );
 		});
-	});
+
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
@@ -73,36 +71,8 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:slug/edit/action', auth.isSuperAdmin, function (req, res) {
-	Actions.find().populate('startingState').populate('endingState').exec( function (err, actions) {
-			res.render('add_action', { actions: actions })
-	} );
-} );
-
-// app.post( '/:slug/edit/action', auth.isSuperAdmin, function (req, res) {
-// 	Items.findOne( { slug: req.params.slug }, function( err, item ) {
-// 		if (! item ) {
-// 			req.flash( 'warning', 'item-404' );
-// 			res.redirect( app.parent.mountpath + app.mountpath );
-// 			return;
-// 		}
-//
-// 		if ( item.actions.indexOf(req.body.id) != -1)
-// 		{
-// 			req.flash( 'warning', 'item-action-duplicate' );
-// 			res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.slug + '/edit');
-// 			return;
-// 		}
-// 		item.actions.push(req.body.id);
-// 		Items.update( { slug: req.params.slug }, item, function (status) {
-// 			req.flash( 'success', 'item-updated' );
-// 			res.redirect( app.parent.mountpath + app.mountpath  + '/' + req.params.slug + '/edit');
-// 		})
-// 	} );
-// } );
-
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
-	Items.findOne( { slug: req.params.slug }).populate('actions').exec ( function( err, item ) {
+	Items.findOne( { slug: req.params.slug }).exec ( function( err, item ) {
 		if ( ! item ) {
 			req.flash( 'warning', 'item-404' );
 			res.redirect( app.parent.mountpath + app.mountpath);
@@ -112,12 +82,9 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: item.name
 		} );
-		Actions.find( function (err, actions) {
 			States.find( function (err, states) {
-				res.render( 'edit', { item: item, actions: item.actions, states: states } );
-			});
-
-		} );
+				res.render( 'edit', { item: item, states: states } );
+			} );
 	} );
 } );
 

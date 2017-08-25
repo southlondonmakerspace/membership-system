@@ -21,15 +21,6 @@ block contents
 								span( aria-hidden="true" ) &nbsp;&rarr;
 			form
 				.form-group
-					.page-header
-						label( for="permission_input" )
-							h4 Permission
-					select( name="permission" )#permission_input.form-control
-						option( selected, value="" ) All
-						option( disabled ) ──────────
-						each permission, p in permissions
-							option( value=permission.slug, selected=( selected.permission == permission.slug ? true : false ) ) #{ permission.name }
-				.form-group
 					label( for="successful" )
 						input( name="successful", type="checkbox", checked=( selected.successful != undefined && selected.successful == 'on' ? true : false ) )#successful
 						|  Successful

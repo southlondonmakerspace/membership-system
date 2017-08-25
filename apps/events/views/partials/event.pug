@@ -9,7 +9,8 @@ if event.successful || ( ! event.successful && event.permission.event_unauthoris
 				a( href="/members/?permission=" + event.permission.slug ) #{ event.permission.event_unauthorised }
 		if event.item && event.action
 			p #{ event.item.name } #{ event.action.eventFormat }
-			
+		if event.item && event.state
+			a #{ event.item.name } #{ event.state.verbPast }
 		if relative
 			span.badge
 				time( datetime=moment( event.happened, moment.ISO_8601 ), title=moment( event.happened ).format( 'HH:mm:ss D/M/Y' ) ) #{ moment( event.happened ).fromNow() }

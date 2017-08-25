@@ -43,10 +43,8 @@ module.exports =  function( app ) {
 	app.use( function( req, res, next ) {
 		// Exclude API
 		if ( req.url.match( /^\/api/i ) ) {
-			console.log( "CSRF Bypassed" );
 			next();
 		} else {
-			console.log( "CSRF Active" );
 			csrf()( req, res, next );
 			res.locals.csrf = req.csrfToken();
 		}

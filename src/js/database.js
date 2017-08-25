@@ -16,16 +16,27 @@ exports.connect = function( url ) {
 		useMongoClient: true
 	} );
 	var db = mongoose.connection;
-	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
-	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
+	db.on( 'connected', function( error ) {
+		console.log( 'Connected to Mongo database.' );
+		console.log();
+	} );
+	db.on( 'error', function( error ) {
+		console.log( 'Error connecting to Mongo database:' );
+		console.log( error );
+		console.log();
+		process.exit();
+	} );
 
 	return exports;
 };
 
-console.log( 'Loading database models:' );
+console.log( 'Loading models:' );
+
 var files = fs.readdirSync( __models );
 for ( var f = 0; f < files.length; f++ ) {
 	var model = require( __models + '/' + files[f] );
 	console.log( '	' + model.name );
 	exports[ model.name ] = model.model;
 }
+
+console.log();

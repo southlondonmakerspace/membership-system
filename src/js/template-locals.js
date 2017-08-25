@@ -17,6 +17,7 @@ var git = '';
 
 gitRev.short( function( str ) {
 	console.log( 'Git hash: ' + str );
+	console.log();
 	git = str;
 } );
 

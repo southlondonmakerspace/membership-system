@@ -101,11 +101,11 @@ function loadApps() {
 }
 
 function routeApps() {
-	console.log( "Loading express routes:" );
+	console.log( "Loading routes:" );
 
 	for ( var a in apps ) {
 		var _app = apps[a];
-		console.log( "	Route: /" + _app.path );
+		console.log( "	/" + _app.path );
 
 		var new_app = require( _app.app )( _app );
 		new_app.use( helmet() );
@@ -114,7 +114,7 @@ function routeApps() {
 		if ( _app.subapps.length > 0 ) {
 			for ( var s in _app.subapps ) {
 				var _sapp = _app.subapps[s];
-				console.log( "	       /" + _app.path + "/" + _sapp.path  );
+				console.log( "	  /" + _sapp.path  );
 
 				var new_sub_app = require( _sapp.app )( _sapp );
 				new_sub_app.use( helmet() );
@@ -122,4 +122,6 @@ function routeApps() {
 			}
 		}
 	}
+
+	console.log();
 }

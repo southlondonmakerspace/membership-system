@@ -6,8 +6,10 @@ var __views = __src + '/views';
 var __js = __src + '/js';
 
 console.log();
-console.log( "Starting Membership System" );
-console.log( "==========================" );
+console.log( "Membership System" );
+console.log( "=================" );
+console.log();
+console.log( "Starting..." );
 console.log();
 
 var config = require( __config );

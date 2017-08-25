@@ -3,5 +3,6 @@
 	"path": "permissions",
 	"permissions": [
 		"superadmin"
-	]
+	],
+  "priority": 7
 }

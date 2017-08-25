@@ -40,15 +40,20 @@ module.exports =  function( app ) {
 	app.use( passport.session() );
 
 	// CSRF
-	app.use( csrf() );
-
 	app.use( function( req, res, next ) {
-		res.locals.csrf= req.csrfToken();
-		next();
+		// Exclude API
+		if ( req.url.match( /^\/api/i ) ) {
+			next();
+		} else {
+			csrf()( req, res, next );
+			res.locals.csrf = req.csrfToken();
+		}
 	} );
 
 	app.use( function( err, req, res, next ) {
-		if ( err.code == 'EBADCSRFTOKEN' ) return res.sendStatus( 403 );
+		if ( err.code == 'EBADCSRFTOKEN' ) {
+			return res.status( 403 ).send( 'Error: Please make sure cookies are enabled. (CSRF token invalid)' );
+		}
 		next( err );
 	} );
 };

@@ -1,23 +1,27 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Member Permissions'
-	- activeApp = 'members'
+	- title = 'Permissions'
+	- page = 'permissions'
 
 block contents
 	.row
-		.col-md-4
-			.page-header
-				h3 Grant Permission
-			- action = 'Grant'
-			include partials/permission-form.pug
-		.col-md-8
-			.page-header
-				h3 Permissions
-			.list-group
-				if member.permissions.length > 0
-					- admin_area = true
-					each permission, p in member.permissions
-						include ../../../src/views/partials/permission.pug
-				else
-					p This member has no permissions.
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			.col-md-8
+				.page-header
+					h3 Permissions
+				.list-group
+					if member.permissions.length > 0
+						- admin_area = true
+						each permission, p in member.permissions
+							include ../../../src/views/partials/permission.pug
+					else
+						p This member has no permissions.
+			.col-md-4
+				.page-header
+					h3 Grant
+				- action = 'Grant'
+				include partials/permission-form.pug
+			

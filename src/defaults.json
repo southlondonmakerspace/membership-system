@@ -37,17 +37,17 @@
 	"flash-password-err-letter-low": "Password must contain at least 1 lowercase letter",
 
 	"flash-password-reset": "If there is an account associated with the email address you will receive an email shortly",
-	"flash-password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled.",
+	"flash-password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled",
 
 	"flash-account-created": "Account created, please check your email for a registration link",
 	"flash-member-created": "Member successful created",
 
 	"flash-activation-error": "Activation code or password did not match",
-	"flash-activation-success": "You account is now active.",
+	"flash-activation-success": "You account is now active",
 	"flash-activation-updated": "Activation updated",
 
-	"flash-account-locked": "Maximum number of password attempts exceeded.",
-	"flash-account-attempts": "There has been % attempt(s) to login to your account since you last logged in.",
+	"flash-account-locked": "Maximum number of password attempts exceeded",
+	"flash-account-attempts": "There has been % attempt(s) to login to your account since you last logged in",
 
 	"flash-member-404": "Member not found",
 
@@ -66,6 +66,13 @@
 	"flash-permission-duplicate": "User already has this permission",
 
 	"flash-tag-updated": "Tag updated",
+	"flash-tag-invalid-malformed": "Malformd tag ID",
+	"flash-tag-invalid-visa": "Visa cards cannot be used",
+	"flash-tag-invalid-android": "Android phones cannot be used",
+	"flash-tag-invalid-amex": "AMEX cards cannot be used",
+	"flash-tag-invalid-long-uid": "This tag is not supported",
+	"flash-tag-invalid-not-unique": "This tag is already used by another member",
+	"flash-tag-unchanged": "Tag is unchanged",
 
 	"flash-discourse-updated": "Discourse updated",
 	"flash-discourse-activation-sent": "Activation code sent to your Discourse private messages",
@@ -123,10 +130,6 @@
 	"flash-option-updated": "Option updated",
 	"flash-option-reset": "Option reset to default",
 
-	"flash-enroll-invalid": "Enroll code invalid",
-	"flash-enroll-expired": "Enroll code expired",
-	"flash-enroll-success": "Tag successful enrolled",
-
 	"flash-item-404": "Item not found",
 	"flash-item-created": "Item created",
 	"flash-item-updated": "Item updated",
@@ -155,5 +158,12 @@
 	"flash-state-admin-only": "Only admin users can modify states",
 	"flash-state-name-required": "State must have text to describe it",
 	"flash-state-slug-required": "State must have a slug",
-	"flash-state-duplicate": "User already has this state"
+	"flash-state-duplicate": "User already has this state",
+
+	"flash-enroll-invalid": "Enroll code invalid",
+	"flash-enroll-expired": "Enroll code expired",
+	"flash-enroll-success": "Tag successful enrolled",
+	"flash-enroll-inprogress": "Tag enrollment already in progress",
+	"flash-enroll-duplicate": "Tag already enrolled",
+	"flash-enroll-error": "Error enrolling tag"
 }

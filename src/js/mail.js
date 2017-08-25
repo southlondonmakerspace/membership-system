@@ -14,8 +14,8 @@ var Mail = {
 		var message = {};
 
 		options.config = config;
-		options.Options = Options.getPUG;
-		
+		options.Options = Options.getText;
+
 		message.text = pug.renderFile( text, options );
 		message.html = pug.renderFile( html, options );
 
@@ -23,7 +23,7 @@ var Mail = {
 
 		message.from = config.smtp.from;
 		message.to = to;
-		message.subject = subject + ' – ' + Options.getPUG( 'organisation' );
+		message.subject = subject + ' – ' + Options.getText( 'organisation' );
 
 		transporter.sendMail( message, function( err, info ) {
 			var status;

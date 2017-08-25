@@ -77,7 +77,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			next_possible_charge_date = req.user.gocardless.next_possible_charge_date.getDate();
 
 		res.render( 'setup-subscription', {
-			amount: ( req.user.gocardless.minimum ? req.user.gocardless.minimum : Options.getPUG( 'gocardless-minimum' ) ),
+			amount: ( req.user.gocardless.minimum ? req.user.gocardless.minimum : Options.getText( 'gocardless-minimum' ) ),
 			next_possible_charge_date: next_possible_charge_date,
 			dates: dates
 		} );
@@ -140,10 +140,10 @@ app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.parent.mountpath );
 		return;
 	}
-	var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : Options.getPUG( 'gocardless-minimum' ) );
+	var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : Options.getText( 'gocardless-minimum' ) );
 
 	if ( req.body.amount < min ) {
-		req.flash( 'danger', Options.getPUG( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
+		req.flash( 'danger', Options.getText( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
 		return res.redirect( app.parent.mountpath + app.mountpath );
 	}
 

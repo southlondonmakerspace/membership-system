@@ -8,8 +8,9 @@ var	express = require( 'express' ),
 
 var config = require( __config + '/config.json' );
 
-var auth = require( __js + '/authentication.js' ),
-	Mail = require( __js + '/mail' );
+var auth = require( __js + '/authentication' ),
+	Mail = require( __js + '/mail' ),
+	Options = require( __js + '/options' )();
 
 var database = require( __js + '/database' ),
 	Members = database.Members,
@@ -50,40 +51,60 @@ app.get( '/identify/:tag', auth.isAPIAuthenticated, function( req, res ) {
 } );
 
 app.get( '/enroll', auth.isAPIAuthenticated, function( req, res ) {
-	Enroll.findOne( { tag: req.query.tag }, function( err, record ) {
-		if ( record ) {
-			res.json( {
-				error: 'Tag enrollment already in progress.'
+
+	if ( ! req.query.tag || ! req.query.email ) {
+		return res.json( {
+			error: Options.getText( 'flash-information-ommited' )
+		} );
+	}
+
+	var validateTag = auth.validateTag( req.query.tag );
+	if ( validateTag ) {
+		return res.json( {
+			error: Options.getText( 'flash-' + validateTag )
+		} );
+	}
+	Members.findOne( { 'tag.id': req.query.tag }, function( err, member ) {
+		if ( member ) {
+			return res.json( {
+				error: Options.getText( 'flash-enroll-duplicate' )
 			} );
-		} else {
+		}
+
+		Enroll.findOne( { tag: req.query.tag }, function( err, record ) {
+			if ( record ) {
+				return res.json( {
+					error: Options.getText( 'flash-enroll-inprogress' )
+				} );
+			}
+
 			auth.generateActivationCode( function( code ) {
 				new Enroll( {
 					tag: req.query.tag,
 					code: code
 				} ).save( function( status ) {
 					if ( status ) {
-						res.json( {
-							error: 'Error enrolling tag.'
+						return res.json( {
+							error: Options.getText( 'flash-enroll-error' )
 						} );
-					} else {
-						Mail.sendMail(
-							req.query.email,
-							'Enroll Tag',
-							__dirname + '/email-templates/enroll.text.pug',
-							__dirname + '/email-templates/enroll.html.pug',
-							{
-								enroll_url: config.audience + '/profile/enroll/' + code
-							},
-							function() {
-								res.json( {
-									error: false
-								} );
-							}
-						);
 					}
+					Mail.sendMail(
+						req.query.email,
+						'Enroll Tag',
+						__dirname + '/email-templates/enroll.text.pug',
+						__dirname + '/email-templates/enroll.html.pug',
+						{
+							enroll_url: config.audience + '/profile/enroll/' + code
+						},
+						function() {
+							res.json( {
+								error: false
+							} );
+						}
+					);
 				} );
 			} );
-		}
+		} );
 	} );
 } );
 

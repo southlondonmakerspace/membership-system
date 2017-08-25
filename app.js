@@ -5,6 +5,13 @@ var __src = __root + '/src';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
+console.log();
+console.log( "Membership System" );
+console.log( "=================" );
+console.log();
+console.log( "Starting..." );
+console.log();
+
 var config = require( __config );
 
 var database = require( __js + '/database' ).connect( config.mongo );
@@ -18,8 +25,6 @@ var express = require( 'express' ),
 
 // Use helmet
 app.use( helmet() );
-
-console.log( "Starting..." );
 
 // Handle authentication
 require( __js + '/authentication' ).auth( app );
@@ -45,4 +50,5 @@ app_loader( app );
 // Start server
 var listener = app.listen( config.port ,config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
+	console.log();
 } );

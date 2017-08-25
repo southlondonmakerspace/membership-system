@@ -40,11 +40,16 @@ module.exports =  function( app ) {
 	app.use( passport.session() );
 
 	// CSRF
-	app.use( csrf() );
-
 	app.use( function( req, res, next ) {
-		res.locals.csrf= req.csrfToken();
-		next();
+		// Exclude API
+		if ( req.url.match( /^\/api/i ) ) {
+			console.log( "CSRF Bypassed" );
+			next();
+		} else {
+			console.log( "CSRF Active" );
+			csrf()( req, res, next );
+			res.locals.csrf = req.csrfToken();
+		}
 	} );
 
 	app.use( function( err, req, res, next ) {

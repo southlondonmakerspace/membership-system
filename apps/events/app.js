@@ -74,7 +74,6 @@ app.get( '/', auth.isMember, function( req, res ) {
     .populate('state')
 		.sort( [ [ "happened", -1 ] ] )
 		.exec( function( err, events ) {
-      console.log(err, events)
       if (events == null)
       {
         res.render ('error', {error: 'No events'})

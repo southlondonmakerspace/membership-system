@@ -17,7 +17,7 @@ var database = require( __js + '/database' ),
 	Members = database.Members,
 	Events = database.Events;
 	Items = database.Items;
-	Actions = database.Actions;
+	States = database.States;
 
 var app_config = {};
 
@@ -63,6 +63,7 @@ app.get( '/permission/:slug/:tag', auth.isAPIAuthenticated, function( req, res )
 		}
 	} );
 } );
+
 app.get( '/item/:slug', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
 	if ( ! req.params.slug )
@@ -79,12 +80,9 @@ app.get( '/item/:slug', auth.isAPIAuthenticated, function( req, res ) {
 		}
 		// find the last state by looking back in the event log
 		Events.findOne({'item': item._id})
-		.populate({path: 'action',select: 'endingState', populate: {path: 'endingState', select: "slug"}})
-		.populate()
 		.populate('item')
 		.sort( [ [ "happened", -1 ] ] ).exec( function (err, myEvent) {
-
-			res.send(JSON.stringify({currentStatus: myEvent.action.endingState.slug}))
+			res.send(JSON.stringify({item: myEvent.item , state: myEvent.state}))
 		});
 	});
 });
@@ -97,51 +95,30 @@ app.get( '/item/:slug/:state', auth.isAPIAuthenticated, function( req, res ) {
 		return
 	}
 	// find the item
-	Items.findOne({'slug': req.params.slug }).populate('actions').exec( function (err, item) {
+	Items.findOne({'slug': req.params.slug }).exec( function (err, item) {
 		if (err)
 		{
 			res.sendStatus( 404 );
 			return
 		}
-		var initialState = null
-		// find the last state by looking back in the event log
-		Events.findOne({'item': item._id}).populate('action').sort( [ [ "happened", -1 ] ] ).exec( function (err, myEvent) {
 
-			if (err || myEvent == null)
+		States.findOne({'slug': req.params.state}, function (err, myStateDoc) {
+			if (err || myStateDoc == null)
 			{
-				// no event found for the item
-				// we use the default state
-				initialState = item.defaultState
-			} else {
-				initialState = myEvent.action.endingState;
+				res.sendStatus( 403 ); // something bad happened
+				return
 			}
-			States.findOne({'slug': req.params.state}, function (err, finalStateDoc) {
-				if (err || finalStateDoc == null)
-				{
-					res.sendStatus(403); // something bad happened
-					return
-				}
 
-				finalState = finalStateDoc._id
-				Actions.findOne({'startingState': initialState, 'endingState': finalState}, function (err, action) {
-					if (err || action == null)
-					{
-						res.sendStatus(404);
-						return
-					}
-					var newEvent = {
-						action: action._id,
-						successful: true,
-						item: item._id
-					}
-					new Events ( newEvent ).save(function( status ) {
-						res.send(status)
-					} );
-
-				})
-			});
-		});
-	});
+			var newEvent = {
+				successful: true,
+				item: item._id,
+        state: myStateDoc._id
+			}
+			new Events ( newEvent ).save(function( status ) {
+				res.send(status)
+			} );
+		} );
+	} );
 } );
 
 app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
@@ -171,6 +148,7 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 	.sort( { happened: 'asc' } )
 	.populate( 'member' )
 	.populate( 'permission' )
+  .populate( 'state' )
 	.exec( function( err, events ) {
 		var output = {
 			now: new Date(),
@@ -196,7 +174,6 @@ app.get( '/events', auth.isAPIAuthenticated, function( req, res ) {
 			if ( event.permission )
 				output_event.permission = {
 					name: event.permission.name,
-					action: event.permission.event_name
 				}
 
 			output.events.push( output_event );

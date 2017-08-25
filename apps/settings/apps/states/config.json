@@ -3,5 +3,6 @@
 	"path": "states",
 	"permissions": [
 		"superadmin"
-	]
+	],
+	"priority": 5
 }

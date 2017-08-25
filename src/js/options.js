@@ -59,6 +59,10 @@ var Options = {
 	},
 	_unset: function( key ) {
 		OptionsDB.remove( { key: key }, function( err, status ) {} );
+	},
+	load: function( req, res, next ) {
+		res.locals.Options = Options.getText;
+		next();
 	}
 };
 

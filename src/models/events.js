@@ -27,7 +27,14 @@ module.exports = {
 			type: Boolean,
 			default: true
 		},
-		action: String
+		item: {
+      type: ObjectId,
+      ref: 'Items'
+    },
+    state: {
+      type: ObjectId,
+      ref: 'States'
+    }
 	} )
 };
 

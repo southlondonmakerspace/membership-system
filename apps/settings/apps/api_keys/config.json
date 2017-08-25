@@ -4,5 +4,5 @@
 	"permissions": [
 		"superadmin"
 	],
-	"priority": 2
+	"priority": 1
 }

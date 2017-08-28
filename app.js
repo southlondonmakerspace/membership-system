@@ -20,10 +20,20 @@ var express = require( 'express' ),
 	helmet = require( 'helmet' ),
 	flash = require( 'express-flash' ),
 	app = express(),
+	bunyan = require('bunyan'),
+   bunyanMiddleware = require('bunyan-middleware'),
 	http = require( 'http' ).Server( app );
 
 var Options = require( __js + '/options' )();
 app.use( Options.load );
+
+// Bunyan logging
+var logger = bunyan.createLogger({name: 'Membership-System'});
+
+app.use(bunyanMiddleware({
+	logger: logger
+	})
+)
 
 var app_loader = require( __js + '/app-loader' );
 

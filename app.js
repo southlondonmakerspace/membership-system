@@ -20,10 +20,25 @@ var express = require( 'express' ),
 	helmet = require( 'helmet' ),
 	flash = require( 'express-flash' ),
 	app = express(),
+	bunyan = require('bunyan'),
+   bunyanMiddleware = require('bunyan-middleware'),
 	http = require( 'http' ).Server( app );
 
 var Options = require( __js + '/options' )();
 app.use( Options.load );
+
+// Bunyan logging
+var requestLogger = bunyan.createLogger( {
+	name: 'Membership-System',
+	streams: [ {
+		type: "rotating-file",
+		path: "./access.log",
+		period: '1d', // rotates every dya
+		count: 7 // keeps 7 days
+	} ]
+} );
+
+app.use( bunyanMiddleware( { logger: requestLogger } ) );
 
 var app_loader = require( __js + '/app-loader' );
 

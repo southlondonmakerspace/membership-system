@@ -108,6 +108,7 @@ function routeApps() {
 		console.log( "	/" + _app.path );
 
 		var new_app = require( _app.app )( _app );
+		new_app.locals.basedir = __root;
 		new_app.use( helmet() );
 		app.use( '/' + _app.path, new_app );
 
@@ -117,6 +118,7 @@ function routeApps() {
 				console.log( "	  /" + _sapp.path  );
 
 				var new_sub_app = require( _sapp.app )( _sapp );
+				new_sub_app.locals.basedir = __root;
 				new_sub_app.use( helmet() );
 				new_app.use( '/' + _sapp.path, new_sub_app );
 			}

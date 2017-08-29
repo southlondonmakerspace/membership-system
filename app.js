@@ -21,7 +21,7 @@ var express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	app = express(),
 	bunyan = require('bunyan'),
-   bunyanMiddleware = require('bunyan-middleware'),
+	bunyanMiddleware = require('bunyan-middleware'),
 	http = require( 'http' ).Server( app );
 
 var Options = require( __js + '/options' )();

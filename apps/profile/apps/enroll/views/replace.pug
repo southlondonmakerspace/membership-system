@@ -13,7 +13,7 @@ block contents
 				h3 Replace Tag
 			p You already have a tag associated with your account, would you like to replace it with the tag enrolled at the kiosk on #{ date }?
 				form( method="post", action="/profile/enroll" )
-					include ../../../../../src/views/partials/csrf.pug
+					+csrf
 					input( type="hidden", name="enrollment_code", value=code )
 					input( type="hidden", name="replace", value="true" )
 					p

@@ -8,7 +8,7 @@ block prepend title
 block contents
 	p Are you sure you want to reset this option to defaults?
 	form( method="post" )
-		include ../../../../../src/views/partials/csrf.pug
+		+csrf
 		button.btn.btn-danger Yes, reset to defaults
 		| 
 		a( href="/settings/options" ).btn.btn-default Cancel

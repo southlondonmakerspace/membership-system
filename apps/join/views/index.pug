@@ -18,7 +18,7 @@ block contents
 				h2 #{ app.title }
 			p Thanks for choosing to join #{ Options( 'organisation' ) }. Just so you know, you must be over 18 to become a member.
 			form( method="post" ).form-horizontal
-				include ../../../src/views/partials/csrf.pug
+				+csrf
 				.form-group
 					.col-md-12
 						.page-header

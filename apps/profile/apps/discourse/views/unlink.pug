@@ -13,7 +13,7 @@ block contents
 				h3 #{ title }
 			p Are you sure you want to unlink your Discourse profile from your membership, you will no longer have access to private areas of Discourse.
 			form( method="post" )
-				include ../../../../../src/views/partials/csrf.pug
+				+csrf
 				button.btn.btn-danger Yes, Unlink
 				|  
 				a( href="/profile/discourse" ).btn.btn-default No

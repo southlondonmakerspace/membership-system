@@ -15,7 +15,7 @@ block contents
 			p Please click the link or copy the code to link your accounts.
 
 			form( method="post", action="/profile/discourse/activate" ).form-horizontal
-				include ../../../../../src/views/partials/csrf.pug
+				+csrf
 				.form-group
 					label( for="activation_code" ).col-md-3.control-label Activation code:
 					.col-md-6

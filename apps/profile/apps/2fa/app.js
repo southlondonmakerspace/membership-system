@@ -6,11 +6,14 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
+var querystring = require("querystring");
+
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
-	Members = db.Members;
+	Members = db.Members,
+	Options = require( __js + '/options' )();
 
 var TOTP = require( 'notp' ).totp;
 var base32 = require( 'thirty-two' );
@@ -46,7 +49,13 @@ app.get( '/setup', auth.isLoggedIn, function( req, res ) {
 	auth.generateOTPSecret( function( secret ) {
 		req.user.otp.key = secret;
 		req.user.save( function( err ) {
-			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/' + req.user.email + '?secret=' + secret;
+			var otpoptions = querystring.stringify( {
+					 issuer: ( ( config.dev ) ? ' [DEV] ' : '' ) + Options.getText( 'organisation' ),
+					 secret: secret
+			 } );
+			 var otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
+			var otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions
+			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent( otpauth );
 			res.render( 'setup', {
 				qr: url,
 				secret: secret

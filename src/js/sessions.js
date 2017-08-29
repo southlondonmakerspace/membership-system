@@ -41,12 +41,10 @@ module.exports =  function( app ) {
 
 	// CSRF
 	app.use( function( req, res, next ) {
-		// Exclude API
 		if ( req.url.match( /^\/api/i ) ) {
 			next();
 		} else {
 			csrf()( req, res, next );
-			res.locals.csrf = req.csrfToken();
 		}
 	} );
 

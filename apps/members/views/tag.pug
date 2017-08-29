@@ -12,7 +12,7 @@ block contents
 			.page-header
 				h3 #{ title }
 			form( method="post" ).form-horizontal
-				include ../../../src/views/partials/csrf.pug
+				+csrf
 				.form-group
 					label( for="tag" ).col-md-2 ID
 					.col-md-4

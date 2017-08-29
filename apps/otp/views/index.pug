@@ -9,7 +9,7 @@ block navbar
 block contents
 	p Your account is secured with a one time password. Please enter the current code to complete your login.
 	form( method="post" ).form-horizontal
-		include ../../../src/views/partials/csrf.pug
+		+csrf
 		.form-group
 			label( for="code" ).control-label.col-md-2 Code:
 			.col-md-3

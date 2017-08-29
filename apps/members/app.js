@@ -265,7 +265,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 		 ! req.body.email ||
 		 ! req.body.address ) {
  			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath + '/' + req.params.uuid + '/update' );
+ 			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
  			return;
 	}
 
@@ -294,7 +294,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 
 		Members.update( { uuid: req.params.uuid }, member, function( status ) {
 			req.flash( 'success', 'profile-updated' );
-			res.redirect( app.mountpath + '/' + req.params.uuid + '/update' );
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
 		} );
 	} );
 } );

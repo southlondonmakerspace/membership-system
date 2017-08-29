@@ -1,5 +1,5 @@
 form( method="post" )
-	include ../../../../src/views/partials/csrf.pug
+	+csrf
 	if ! partial
 		.form-group
 			label( for="permission" ) Permission:

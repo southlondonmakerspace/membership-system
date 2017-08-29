@@ -1,5 +1,5 @@
 form( method="post" ).form-horizontal
-	include ../../../../../../src/views/partials/csrf.pug
+	+csrf
 	.form-group
 		label( for="name" ).col-md-2 Name:
 		.col-md-4

@@ -1,4 +1,4 @@
-extends ../../../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = 'Transactions'
@@ -58,7 +58,7 @@ block contents
 									td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
 									td #{ payment.description }
 									td
-										include ../../../../profile/apps/statement/views/partials/status.pug
+										include /apps/profile/apps/statement/views/partials/status.pug
 									td #{ payment.amount ? '£' + payment.amount : '–' }
 						tfoot
 							tr

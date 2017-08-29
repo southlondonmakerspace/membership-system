@@ -14,7 +14,7 @@ block contents
 			p For security reasons, you need to reauthenticate your password and your current one time password.
 			hr
 			form( method="post" ).form-horizontal
-				include ../../../../../src/views/partials/csrf.pug	
+				+csrf	
 				.form-group
 					label( for='password' ).control-label.col-md-3 Password
 					.col-md-4

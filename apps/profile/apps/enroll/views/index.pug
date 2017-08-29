@@ -13,7 +13,7 @@ block contents
 				h3 #{ title }
 			p To complete the tag enrollment process please click Enroll below.
 			form( method="post" action="/profile/enroll" ).form-horizontal
-				include ../../../../../src/views/partials/csrf.pug
+				+csrf
 				.form-group
 					label( for="enrollment_code" ).col-md-2 Code:
 					.col-md-4

@@ -45,8 +45,10 @@ module.exports =  function( app ) {
 		if ( req.url.match( /^\/api/i ) ) {
 			next();
 		} else {
-			csrf()( req, res, next );
-			res.locals.csrf = req.csrfToken();
+			csrf()( req, res, function() {
+				res.locals.csrf = req.csrfToken();
+				next();
+			} );
 		}
 	} );
 

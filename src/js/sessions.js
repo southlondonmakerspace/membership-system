@@ -48,13 +48,6 @@ module.exports =  function( app ) {
 		}
 	} );
 
-	app.use( function( req, res, next ) {
-		if ( ! req.url.match( /^\/api/i ) ) {
-			res.locals.csrf = req.csrfToken();
-		}
-		next()
-	} );
-
 	app.use( function( err, req, res, next ) {
 		if ( err.code == 'EBADCSRFTOKEN' ) {
 			return res.status( 403 ).send( 'Error: Please make sure cookies are enabled. (CSRF token invalid)' );

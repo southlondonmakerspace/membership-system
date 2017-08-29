@@ -116,6 +116,9 @@ function templateLocals( req, res, next ) {
 
 	req.session.userSetupShown++;
 
+	// Prepare a CSRF token if available
+	if ( req.csrfToken ) res.locals.csrf = req.csrfToken();
+
 	// Load config + prepare breadcrumbs
 	res.locals.config = {};
 	res.locals.config.permission = config.permission;

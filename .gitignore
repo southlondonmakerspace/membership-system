@@ -29,3 +29,4 @@ node_modules
 static/css/style.css
 config/config.json
 .DS_Store
+*.log*

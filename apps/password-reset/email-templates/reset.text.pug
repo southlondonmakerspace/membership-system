@@ -1,4 +1,4 @@
-extends ../../../src/views/email.text.pug
+extends /src/views/email.text.pug
 
 block content
 	| Hello #{ firstname },
@@ -9,4 +9,4 @@ block content
 block action
 	- action = 'Change Password'
 	- url = reset_url
-	include ../../../src/views/partials/action.text.pug
+	include /src/views/partials/action.text.pug

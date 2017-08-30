@@ -13,6 +13,8 @@ var config = require( __config ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
+var Options = require( __js + '/options' )();
+
 var Members = db.Members,
 	Permissions = db.Permissions,
 	Payments = db.Payments;
@@ -182,7 +184,7 @@ function grantMembership( member ) {
 function sendNewMemberEmail( member ) {
 	Mail.sendMail(
 		member.email,
-		'Welcome to ' + config.globals.organisation,
+		'Welcome to ' + Options.getText( 'organisation' ),
 		__views + '/email-templates/new-member.text.pug',
 		__views + '/email-templates/new-member.html.pug',
 		{

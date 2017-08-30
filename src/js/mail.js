@@ -15,6 +15,7 @@ var Mail = {
 
 		options.config = config;
 		options.Options = Options.getText;
+		options.basedir = __dirname + '/' + __root;
 
 		message.text = pug.renderFile( text, options );
 		message.html = pug.renderFile( html, options );

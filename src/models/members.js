@@ -186,4 +186,16 @@ module.exports.schema.virtual( 'can_admin' ).get( function() {
 	return can_admin;
 } );
 
+module.exports.schema.virtual( 'setupComplete' ).get( function() {
+	if (	! this.emergency_contact.telephone ||
+			! this.gocardless.mandate_id ||
+			! this.gocardless.subscription_id ||
+			! this.discourse.activated ||
+			! this.discourse.username ||
+			! this.tag.id
+		)
+		return false;
+	return true;
+} );
+
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

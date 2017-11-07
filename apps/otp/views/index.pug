@@ -1,13 +1,13 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = "One Time Password"
+	- title = "One Time Code"
 	- heading = title
 
 block navbar
 
 block contents
-	p Your account is secured with a one time password. Please enter the current code to complete your login.
+	p Your account is secured with a one time code. Please enter the current code to complete your login.
 	form( method="post" ).form-horizontal
 		+csrf
 		.form-group

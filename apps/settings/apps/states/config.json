@@ -1,0 +1,8 @@
+{
+	"title": "States",
+	"path": "states",
+	"permissions": [
+		"superadmin"
+	],
+	"priority": 2
+}

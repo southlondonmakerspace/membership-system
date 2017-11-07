@@ -1,4 +1,4 @@
-extends ../../../src/views/base.pug
+extends /src/views/base.pug
 
 block navbar
 
@@ -16,9 +16,9 @@ block contents
 		.col-md-8
 			.page-header
 				h2 #{ app.title }
-			p Thanks for choosing to join #{ config.organisation }. Just so you know, you must be over 18 to become a member.
+			p Thanks for choosing to join #{ Options( 'organisation' ) }. Just so you know, you must be over 18 to become a member.
 			form( method="post" ).form-horizontal
-				include ../../../src/views/partials/csrf.pug
+				+csrf
 				.form-group
 					.col-md-12
 						.page-header
@@ -60,4 +60,4 @@ block contents
 			.page-header
 				h2 Existing member
 			p If you are already a member you can just login.
-			include ../../login/views/partials/form.pug
+			include /apps/login/views/partials/form.pug

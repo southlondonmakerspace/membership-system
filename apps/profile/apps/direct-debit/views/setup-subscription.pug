@@ -1,4 +1,4 @@
-extends ../../../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = 'Direct Debit'
@@ -7,7 +7,7 @@ block contents
 	.row
 		.col-md-3
 			- page = 'direct-debit'
-			include ../../../views/partials/sidebar.pug
+			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
 			.page-header
 				h3 Direct Debit
@@ -16,7 +16,7 @@ block contents
 				h3 Subscription
 			p Setting up a subscription will allow us to charge you on a day of your choice each month.
 			form( action="/profile/direct-debit/create-subscription", method="post" ).form-horizontal
-				include ../../../../../src/views/partials/csrf.pug
+				+csrf
 				.form-group
 					label( for="amount" ).col-md-3.control-label Amount:
 					.col-md-5
@@ -26,15 +26,19 @@ block contents
 							.input-group-addon .00
 				.form-group
 					.col-md-offset-3.col-md-9
-						span#helpBlock.help-block Our minimum membership fee is &pound;20 per month. However, if you cannot afford this, please email <a href="mailto:directors@southlondonmakerspace.org?Subject=Discount">directors@southlondonmakerspace.org</a> and we can discuss alternatives. If you feel that the membership is worth more we invite you to pay what you think it's worth.
+						span#helpBlock.help-block Our minimum membership fee is &pound;#{ Options( 'gocardless-minimum' ) } per month. However, if you cannot afford this, please email 
+							a( href="mailto:" + Options( 'leader_email' ) + "?Subject=Discount" )=Options( 'leader_email' )
+							|  and we can discuss alternatives. If you feel that the membership is worth more we invite you to pay what you think it's worth.
+						
 				.form-group
 					label( for="day_of_month" ).col-md-3.control-label Day of month:
 					.col-md-5
 						select( name="day_of_month" )#day_of_month.form-control
 							each date, d in dates
-								option( class= ( date == next_possible_charge_date ? 'selected' : '' ) ) #{ date }
 								if date == next_possible_charge_date
-									| &mdash; Earlist possible charge date
+									option.selected( selected=true ) #{ date } &mdash; Earlist possible charge date
+								else
+									option #{ date }
 							option( value='-1' ) Last day of the month
 						if next_possible_charge_date
 							span#helpBlock.help-block Direct Debits usually take around 7 days to process. Therefore, we've set the charge date to be as early as possible. However if you prefer to pay for your membership on a specific date (eg. the day after payday), please select it here. Note that this will delay the start of your membership.

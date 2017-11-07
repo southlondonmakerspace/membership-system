@@ -10,18 +10,6 @@
 		"path": "/",
 		"maxAge": 267840000
 	},
-	"globals": {
-		"organisation": "UK Makerspace",
-		"about": {
-			"text": "Hello there Makers!",
-			"link": {
-				"text": "Find out more",
-				"url": "http://localhost/about"
-			}
-		},
-		"title": "Membership System",
-		"google_map_key": "AIzaSyDWYuDWHlWLgIXyfVnJlLaFbbVD-hpDxrM"
-	},
 	"tag_salt": "",
 	"permission": {
 		"admin": "admin",
@@ -43,7 +31,6 @@
 	"gocardless": {
 		"access_token": "",
 		"secret": "",
-		"minimum": 20,
 		"sandbox": true,
 		"port": 3002
 	},

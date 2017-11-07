@@ -7,7 +7,7 @@ var __js = __src + '/js';
 var config = require( __config );
 
 var fs = require( 'fs' );
-helmet = require( 'helmet' );
+	helmet = require( 'helmet' );
 
 var app;
 var apps = [];
@@ -101,23 +101,29 @@ function loadApps() {
 }
 
 function routeApps() {
+	console.log( "Loading routes:" );
+
 	for ( var a in apps ) {
 		var _app = apps[a];
-		console.log( "	Route: /" + _app.path );
+		console.log( "	/" + _app.path );
 
 		var new_app = require( _app.app )( _app );
+		new_app.locals.basedir = __root;
 		new_app.use( helmet() );
 		app.use( '/' + _app.path, new_app );
 
 		if ( _app.subapps.length > 0 ) {
 			for ( var s in _app.subapps ) {
 				var _sapp = _app.subapps[s];
-				console.log( "	       /" + _app.path + "/" + _sapp.path  );
+				console.log( "	  /" + _sapp.path  );
 
 				var new_sub_app = require( _sapp.app )( _sapp );
+				new_sub_app.locals.basedir = __root;
 				new_sub_app.use( helmet() );
 				new_app.use( '/' + _sapp.path, new_sub_app );
 			}
 		}
 	}
+
+	console.log();
 }

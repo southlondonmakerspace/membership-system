@@ -14,8 +14,6 @@ var db = require( __js + '/database' ),
 
 var auth = require( __js + '/authentication' );
 
-var messages = require( __src + '/messages.json' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -39,7 +37,7 @@ app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
 	}
 
 	if ( moment( start ).isAfter( moment() ) ) {
-		req.flash( 'warning', messages['transaction-date-in-future'] );
+		req.flash( 'warning', 'transaction-date-in-future' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}

@@ -16,6 +16,7 @@ var git = '';
 
 gitRev.short( function( str ) {
 	console.log( 'Git hash: ' + str );
+	console.log();
 	git = str;
 } );
 
@@ -69,7 +70,6 @@ function templateLocals( req, res, next ) {
 	// Template permissions
 	res.locals.access = function( permission ) {
 		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
-
 		if ( permission == 'member' ) permission = config.permission.member;
 		if ( permission == 'admin' ) permission = config.permission.admin;
 		if ( permission == 'superadmin' ) permission = config.permission.superadmin;
@@ -91,37 +91,21 @@ function templateLocals( req, res, next ) {
 	};
 
 	// Delete login redirect URL if user navigates to anything other than the login page
-	if ( req.originalUrl != '/login' )
+	if ( req.originalUrl != '/login' && req.originalUrl != '/otp' )
 		delete req.session.requestedUrl;
 
-	// Check if user is setup
-	res.locals.userSetup = true;
-	if ( req.user &&
-		 (	! req.user.emergency_contact.telephone ||
-			! req.user.gocardless.mandate_id ||
-			! req.user.gocardless.subscription_id ||
-			! req.user.discourse.activated ||
-			! req.user.discourse.username ||
-			! req.user.tag.id
-		) )
-		res.locals.userSetup = false;
+	// Check if user setup is complete
+	if ( req.user ) res.locals.setupComplete = req.user.setupComplete;
 
-	// Hide setup prompt after 10 views
-	if ( ! req.session.userSetupShown )
-		req.session.userSetupShown = 0;
-
-	if ( req.session.userSetupShown > 10 )
-		res.locals.userSetup = true;
-
-	req.session.userSetupShown++;
+	// Prepare a CSRF token if available
+	if ( req.csrfToken ) res.locals.csrf = req.csrfToken();
 
 	// Load config + prepare breadcrumbs
-	res.locals.config = config.globals;
+	res.locals.config = {};
 	res.locals.config.permission = config.permission;
 	res.locals.breadcrumb = [];
 	res.locals.git = git;
-	if ( config.dev )
-		res.locals.dev = true;
+	if ( config.dev ) res.locals.dev = true;
 
 	// Moment.js
 	res.locals.moment = moment;

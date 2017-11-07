@@ -1,11 +1,16 @@
-extends ../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = 'Edit Member Permission'
-	- heading = 'Update "' + current.permission.name + '" Permission'
-	- activeApp = 'members'
+	- page = 'permissions'
 
 block contents
 	- action = 'Update'
 	- partial = true
-	include partials/permission-form.pug
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 Update "#{ current.permission.name }" Permission
+			include partials/permission-form.pug

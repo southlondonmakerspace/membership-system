@@ -1,18 +1,25 @@
-extends ../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = 'Activation'
-	- heading = title
-	- activeApp = 'members'
+	- page = 'activation'
 
 block contents
-	form( method="post" ).form-horizontal
-		include ../../../src/views/partials/csrf.pug
-		.form-group
-			.col-md-12
-				label( for="activated" )
-					input( type="checkbox", name="activated", checked=member.activated, value="true" )#activated.checkbox-control
-					|  User activated
-		.form-group
-			.col-md-12
-				button.btn.btn-primary Update
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			form( method="post" ).form-horizontal
+				+csrf
+				.form-group
+					.col-md-12
+						if member.activated
+							input( type="hidden", name="activated", value="" )
+							p Are you sure you want to deactivate this members account?
+							button.btn.btn-danger Yes, deactivate account
+						else
+							input( type="hidden", name="activated", value="true" )
+							p Are you sure you want to activate this members account?
+							button.btn.btn-primary Yes, activate account

@@ -7,12 +7,10 @@ var	express = require( 'express' ),
 	app = express();
 
 var db = require( __js + '/database' ),
-	Activities = db.Activities,
-	Members = db.Members;
+	Items = db.Items,
+	States = db.States
 
 var auth = require( __js + '/authentication' );
-
-var messages = require( __src + '/messages.json' );
 
 var config = require( __config + '/config.json' );
 
@@ -31,8 +29,8 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isSuperAdmin, function( req, res ) {
-	Activities.find( function( err, activities ) {
-		res.render( 'index', { activities: activities } );
+	Items.find( function( err, items ) {
+		res.render( 'index', { items: items } );
 	} );
 } );
 
@@ -40,72 +38,79 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
-	res.render( 'create' );
+		States.find( function (err, states) {
+			res.render( 'create', { states: states } );
+		});
+
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['activity-name-required'] );
+		req.flash( 'danger', 'item-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['activity-slug-required'] );
+		req.flash( 'danger', 'item-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	var activity = {
+	var item = {
 		name: req.body.name,
-		event_name: req.body.event,
 		slug: req.body.slug,
-		admin_only: req.body.admin_only
+		description: req.body.description,
+		guide: req.body.guide,
+		defaultState: req.body.defaultState
 	};
 
-	new Activities( activity ).save( function( err, activity ) {
-		req.flash( 'success', messages['activity-created'] );
+	new Items( item ).save( function( err, item ) {
+		req.flash( 'success', 'item-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
 
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
-	Activities.findOne( { slug: req.params.slug }, function( err, activity ) {
-		if ( ! activity ) {
-			req.flash( 'warning', messages['activity-404'] );
-			res.redirect( app.parent.mountpath + app.mountpath );
+	Items.findOne( { slug: req.params.slug }).exec ( function( err, item ) {
+		if ( ! item ) {
+			req.flash( 'warning', 'item-404' );
+			res.redirect( app.parent.mountpath + app.mountpath);
 			return;
 		}
 
 		res.locals.breadcrumb.push( {
-			name: activity.name
+			name: item.name
 		} );
-		res.render( 'edit', { activity: activity } );
+			States.find( function (err, states) {
+				res.render( 'edit', { item: item, states: states } );
+			} );
 	} );
 } );
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
-		req.flash( 'danger', messages['activity-name-required'] );
+		req.flash( 'danger', 'item-name-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
-		req.flash( 'danger', messages['activity-slug-required'] );
+		req.flash( 'danger', 'item-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	var activity = {
+	var item = {
 		name: req.body.name,
-		event_name: req.body.event,
 		slug: req.body.slug,
-		admin_only: req.body.admin_only
+		description: req.body.description,
+		guide: req.body.guide,
+		defaultState: req.body.defaultState
 	};
 
-	Activities.update( { slug: req.params.slug }, activity, function( status ) {
-		req.flash( 'success', messages['activity-update'] );
+	Items.update( { slug: req.params.slug }, item, function( status ) {
+		req.flash( 'success', 'item-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

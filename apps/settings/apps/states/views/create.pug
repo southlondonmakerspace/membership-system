@@ -1,10 +1,10 @@
-extends ../../../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
-	- title = 'Create Option'
+	- title = 'Create State'
 	- heading = title
 	- activeApp = 'settings'
 
 block contents
-	- action = 'Create'
+	- formAction = 'Create'
 	include partials/form.pug

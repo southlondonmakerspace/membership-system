@@ -1,8 +1,8 @@
-extends ../../../../../src/views/email.text.pug
+extends /src/views/email.text.pug
 
 block content
 	| Hello #{ firstname }
 	| #{'\n'}
-	| Two factor authentication on your #{ config.globals.organisation } account has been disabled.
+	| Two factor authentication on your #{ Options( 'organisation' ) } account has been disabled.
 	| #{'\n'}
 	| If you didn't do this please contact us ASAP.

@@ -1,4 +1,4 @@
-extends ../../../src/views/base.pug
+extends /src/views/base.pug
 
 block navbar
 
@@ -6,11 +6,11 @@ block contents
 	.row
 		.col-md-12
 			h2
-				strong #{ config.organisation }
+				strong #{ Options( 'organisation' ) }
 				br
-				| #{ config.title }
-			h4 #{ config.about.text }
-			p: a( href=config.about.link.url, target="_blank").btn #{ config.about.link.text }
+				| #{ Options( 'software-name' ) }
+			h4 #{ Options( 'home-text' ) }
+			p: a( href=Options( 'home-link-url' ), target="_blank").btn #{ Options( 'home-link-text' ) }
 			.bg
 	.row
 		.col-md-6
@@ -21,5 +21,5 @@ block contents
 		.col-md-6
 			.page-header
 				h3 Existing member
-			include ../../login/views/partials/form.pug
+			include /apps/login/views/partials/form.pug
 		

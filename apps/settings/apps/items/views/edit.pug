@@ -1,0 +1,10 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Edit Item'
+	- heading = 'Edit "' + item.name + '" Item'
+	- activeApp = 'settings'
+
+block contents
+	- formAction = 'Update'
+	include partials/form.pug

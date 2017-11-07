@@ -1,4 +1,4 @@
-extends ../../../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = app.title
@@ -8,7 +8,7 @@ block contents
 	.row
 		.col-md-3
 			- page = 'discourse'
-			include ../../../views/partials/sidebar.pug
+			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
 			.page-header
 				h3 Search
@@ -23,7 +23,7 @@ block contents
 				.page-header
 					h3 Results
 				form( method="post", action="/profile/discourse/link" )
-					include ../../../../../src/views/partials/csrf.pug
+					+csrf
 					input( type="hidden", value=search, name="search" )
 					each user, u in users
 						.col-md-2

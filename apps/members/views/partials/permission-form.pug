@@ -1,5 +1,5 @@
 form( method="post" )
-	include ../../../../src/views/partials/csrf.pug
+	+csrf
 	if ! partial
 		.form-group
 			label( for="permission" ) Permission:
@@ -31,7 +31,8 @@ form( method="post" )
 		.form-group
 			label Administer
 			br
-			input( type="checkbox", name="admin", checked=( current && current.admin ? true : false ) )#admin
-			label( for="admin" ) Can administer other members with this permission.
+			label( for="admin" )
+				input( type="checkbox", name="admin", checked=( current && current.admin ? true : false ) )#admin
+				| Can administer other members with this permission.
 	.form-group
 		button.btn.btn-primary #{ action }

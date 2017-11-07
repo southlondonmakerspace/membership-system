@@ -1,0 +1,14 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Reset Option'
+	- heading = 'Reset "' + key + '" to default'
+	- activeApp = 'settings'
+
+block contents
+	p Are you sure you want to reset this option to defaults?
+	form( method="post" )
+		+csrf
+		button.btn.btn-danger Yes, reset to defaults
+		| 
+		a( href="/settings/options" ).btn.btn-default Cancel

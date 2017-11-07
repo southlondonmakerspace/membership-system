@@ -1,0 +1,10 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block contents
+	.row
+		.col-md-3
+			h3( style="margin-bottom: 0; font-weight: normal;" ) Error:
+			p=error

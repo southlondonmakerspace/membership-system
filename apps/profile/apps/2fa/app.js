@@ -6,18 +6,19 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
+var querystring = require("querystring");
+
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
-	Members = db.Members;
+	Members = db.Members,
+	Options = require( __js + '/options' )();
 
 var TOTP = require( 'notp' ).totp;
 var base32 = require( 'thirty-two' );
 
 var Mail = require( __js + '/mail' );
-
-var messages = require( __src + '/messages.json' );
 
 var config = require( __config + '/config.json' );
 
@@ -41,14 +42,20 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 
 app.get( '/setup', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.otp.activated ) {
-		req.flash( 'danger', messages['2fa-already-enabled'] );
+		req.flash( 'danger', '2fa-already-enabled' );
 		res.redirect( '/profile/2fa' );
 		return;
 	}
 	auth.generateOTPSecret( function( secret ) {
 		req.user.otp.key = secret;
 		req.user.save( function( err ) {
-			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/' + req.user.email + '?secret=' + secret;
+			var otpoptions = querystring.stringify( {
+					 issuer: ( ( config.dev ) ? ' [DEV] ' : '' ) + Options.getText( 'organisation' ),
+					 secret: secret
+			 } );
+			 var otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
+			var otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions
+			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent( otpauth );
 			res.render( 'setup', {
 				qr: url,
 				secret: secret
@@ -59,7 +66,7 @@ app.get( '/setup', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.otp.activated ) {
-		req.flash( 'danger', messages['2fa-already-enabled'] );
+		req.flash( 'danger', '2fa-already-enabled' );
 		res.redirect( '/profile/2fa' );
 		return;
 	}
@@ -79,12 +86,12 @@ app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 				__dirname + '/email-templates/enabled.html.pug',
 				options,
 				function() {
-					req.flash( 'success', messages['2fa-enabled'] );
+					req.flash( 'success', '2fa-enabled' );
 					res.redirect( '/profile/2fa' );
 			} );
 		} );
 	} else {
-		req.flash( 'danger', messages['2fa-setup-failed'] );
+		req.flash( 'danger', '2fa-setup-failed' );
 		res.redirect( '/profile/2fa' );
 	}
 } );
@@ -93,7 +100,7 @@ app.get( '/disable', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.otp.activated ) {
 		res.render( 'disable' );
 	} else {
-		req.flash( 'warning', messages['2fa-already-disabled'] );
+		req.flash( 'warning', '2fa-already-disabled' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	}
 } );
@@ -103,7 +110,7 @@ app.post( '/disable', auth.isLoggedIn, function( req, res ) {
 	var test = TOTP.verify( req.body.code, base32.decode( req.user.otp.key ) );
 	if ( test && Math.abs( test.delta ) < 2 ) {
 		// Check password
-		auth.hashPassword( req.body.password, req.user.password.salt, user.password.iterations, function( hash ) {
+		auth.hashPassword( req.body.password, req.user.password.salt, req.user.password.iterations, function( hash ) {
 			// Check the hashes match
 			if ( hash == req.user.password.hash ) {
 				req.user.otp.activated = false;
@@ -120,17 +127,17 @@ app.post( '/disable', auth.isLoggedIn, function( req, res ) {
 						__dirname + '/email-templates/disabled.html.pug',
 						options,
 						function() {
-							req.flash( 'success', messages['2fa-disabled'] );
+							req.flash( 'success', '2fa-disabled' );
 							res.redirect( '/profile/2fa' );
 					} );
 				} );
 			} else {
-				req.flash( 'warning', messages['2fa-unable-to-disable'] );
+				req.flash( 'warning', '2fa-unable-to-disable' );
 				res.redirect( '/profile/2fa/disable' );
 			}
 		} );
 	} else {
-		req.flash( 'warning', messages['2fa-unable-to-disable'] );
+		req.flash( 'warning', '2fa-unable-to-disable' );
 		res.redirect( '/profile/2fa/disable' );
 	}
 } );

@@ -1,4 +1,4 @@
-extends ../../../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = app.title
@@ -7,7 +7,7 @@ block contents
 	.row
 		.col-md-3
 			- page = 'tag'
-			include ../../../views/partials/sidebar.pug
+			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
 			.page-header
 				h3 #{ title }
@@ -21,8 +21,8 @@ block contents
 						p We can issue a replacement or reassociate your tag if you find it.
 						a( href="/profile/tag/revoke" ).btn.btn-danger.outline Revoke Tag
 					else
-						p Once you've setup your direct debit you can collect a tag from #{ config.organisation }.
-						p Visit #{ config.organisation } at any time when it's open to collect a tag.
+						p Once you've setup your direct debit you can collect a tag from #{ Options( 'organisation' ) }.
+						p Visit #{ Options( 'organisation' ) } at any time when it's open to collect a tag.
 						p Open evenings and public events are a good time to visit.
-						p Scan the tag on a reader at #{ config.organisation } then contact the directors with the date/time you scanned it.
+						p You can use the kiosk in #{ Options( 'organisation' ) } to enroll the tag onto your account.
 				.col-md-4( style="background-image:url(/imgs/tag.png);background-position:center;background-repeat:no-repeat;background-size:contain;height:250px;" )

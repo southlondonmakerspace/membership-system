@@ -1,24 +1,23 @@
-extends ../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = 'Two Factor Authentication'
-	- heading = title
-	- activeApp = 'members'
+	- page = '2fa'
 
 block contents
-	form( method="post" ).form-horizontal
-		include ../../../src/views/partials/csrf.pug
-		if member.otp.activated
-			.panel.panel-info
-				.panel-body Two factor authentication is enabled on this account. By disabling it the user will have to set it up again.
-			.form-group
-				.col-md-12
-					label( for="2fa-enabled" )
-						input( type="checkbox", name="2fa-enabled", checked=member.otp.activated ? true : false, value="true" )#2fa-enabled.checkbox-control
-						|  2FA Enabled
-			.form-group
-				.col-md-12
-					button.btn.btn-primary Update
-		else
-			.panel.panel-info
-				.panel-body This user does not have two factor authentication enabled. It can only be enabled by the user once they've logged in.
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			form( method="post" ).form-horizontal
+				+csrf
+				if member.otp.activated
+					.form-group
+						.col-md-12
+							p Are you sure you want to disable 2FA on this user account, the user will be notified.
+							input( type="hidden", name="2fa-enabled", value="" )
+							button.btn.btn-danger Yes, disable 2FA on this account
+				else
+					p This user does not have two factor authentication enabled. It can only be enabled by the user once they've logged in.

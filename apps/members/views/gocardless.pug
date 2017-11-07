@@ -1,28 +1,33 @@
-extends ../../../src/views/base.pug
+extends /src/views/base.pug
 
 block prepend title
 	- title = 'GoCardless'
-	- heading = title
-	- activeApp = 'members'
+	- page = 'gocardless'
 
 block contents
-	form( method="post" ).form-horizontal
-		include ../../../src/views/partials/csrf.pug
-		.form-group
-			label( for="mandate_id" ).col-md-2 Mandate ID
-			.col-md-4
-				input( type="mandate_id", value=member.gocardless.mandate_id, name="mandate_id" )#mandate_id.form-control
-		.form-group
-			label( for="subscription_id" ).col-md-2 Subscription ID
-			.col-md-4
-				input( type="subscription_id", value=member.gocardless.subscription_id, name="subscription_id" )#subscription_id.form-control
-		.form-group
-			label( for="minimum" ).col-md-2 Minimum
-			.col-md-4
-				.input-group
-					.input-group-addon £
-					input( type="number", value=member.gocardless.minimum, placeholder=minimum name="minimum" )#minimum.form-control
-					.input-group-addon .00
-		.form-group
-			.col-md-4.col-md-offset-2
-				button.btn.btn-primary Update
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			.page-header
+				h3 #{ title }
+			form( method="post" ).form-horizontal
+				+csrf
+				.form-group
+					label( for="mandate_id" ).col-md-2 Mandate ID
+					.col-md-4
+						input( type="mandate_id", value=member.gocardless.mandate_id, name="mandate_id" )#mandate_id.form-control
+				.form-group
+					label( for="subscription_id" ).col-md-2 Subscription ID
+					.col-md-4
+						input( type="subscription_id", value=member.gocardless.subscription_id, name="subscription_id" )#subscription_id.form-control
+				.form-group
+					label( for="minimum" ).col-md-2 Minimum
+					.col-md-4
+						.input-group
+							.input-group-addon £
+							input( type="number", value=member.gocardless.minimum, placeholder=Options( 'gocardless-minimum' ), name="minimum" )#minimum.form-control
+							.input-group-addon .00
+				.form-group
+					.col-md-4.col-md-offset-2
+						button.btn.btn-primary Update

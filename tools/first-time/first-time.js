@@ -2,22 +2,7 @@ var __root = __dirname + '/../..';
 
 var config = require( __root + '/config/config.json' ),
 	db = require( __root + '/src/js/database' ).connect( config.mongo ),
-	Permissions = db.Permissions,
-	Activities = db.Activities;
-
-// Unknown tag
-new Activities( {
-	name:  'Unknown Tag',
-	slug: 'unknown-tag',
-	event_name: '',
-	admin_only: true
-} ).save( function( err ) {
-	if ( ! err ) {
-		console.log( 'created unknown tag activity' );
-	} else {
-		console.log( err );
-	}
-} );
+	Permissions = db.Permissions;
 
 // Member
 new Permissions( {

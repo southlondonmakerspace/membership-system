@@ -3,7 +3,8 @@ var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
 
-var config = require( __config );
+var config = require( __config ),
+	Options = require( __js + '/options.js' )();
 
 var db = require( __js + '/database' ),
 	Permissions = db.Permissions,
@@ -16,8 +17,6 @@ var passport = require( 'passport' ),
 
 var crypto = require( 'crypto' ),
 	base32 = require( 'thirty-two' );
-
-var messages = require( __src + '/messages.json' );
 
 var Authentication = {
 	auth: function( app ) {
@@ -34,7 +33,7 @@ var Authentication = {
 
 						// Has account exceeded it's password tries?
 						if ( user.password.tries >= config['password-tries'] ) {
-							return done( null, false, { message: messages['account-locked'] } );
+							return done( null, false, { message: 'account-locked' } );
 						}
 
 						// Hash the entered password with the members salt
@@ -44,14 +43,14 @@ var Authentication = {
 
 								// Check the user account is activated (or is a config superadmin)
 								if ( ! ( user.activated ) ) {
-									return done( null, false, { message: messages['inactive-account'] } );
+									return done( null, false, { message: 'inactive-account' } );
 								}
 
 								// Clear any pending password resets and notify
 								if ( user.password.reset_code ) {
 									user.password.reset_code = null;
 									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: messages['password-reset-attempt'] } );
+									return done( null, { _id: user._id }, { message: 'password-reset-attempt' } );
 								}
 
 								// Clear password tries and notify
@@ -59,7 +58,7 @@ var Authentication = {
 									var attempts = user.password.tries;
 									user.password.tries = 0;
 									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: messages['account-attempts'].replace( '%', attempts ) } );
+									return done( null, { _id: user._id }, { message: Options.getText( 'account-attempts' ).replace( '%', attempts ) } );
 								}
 
 								if ( user.password.iterations < config.iterations ) {
@@ -75,19 +74,19 @@ var Authentication = {
 								}
 
 								// Successful login
-								return done( null, { _id: user._id }, { message: messages['logged-in'] } );
+								return done( null, { _id: user._id }, { message: 'logged-in' } );
 							} else {
 								// If password doesn't match, increment tries and save
 								user.password.tries++;
 								user.save( function ( err ) {} );
 								// Delay by 1 second to slow down password guessing
-								return setTimeout( function() { return done( null, false, { message: messages['login-failed'] } ); }, 1000 );
+								return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
 							}
 						} );
 					} else {
 						// If email address doesn't match
 						// Delay by 1 second to slow down password guessing
-						return setTimeout( function() { return done( null, false, { message: messages['login-failed'] } ); }, 1000 );
+						return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
 					}
 				} );
 			}
@@ -151,7 +150,7 @@ var Authentication = {
 					return done( null, user );
 				} else {
 					// Display login required message if user _id not found.
-					return done( null, false, { message: messages['login-required'] } );
+					return done( null, false, { message: 'login-required' } );
 				}
 			} );
 		} );
@@ -299,16 +298,17 @@ var Authentication = {
 			case Authentication.LOGGED_IN:
 				return next();
 			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', messages['inactive-account'] );
+				req.flash( 'warning', 'inactive-account' );
 				res.redirect( '/' );
 				return;
 			case Authentication.REQUIRES_2FA:
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				res.redirect( '/otp' );
 				return;
 			default:
 			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', messages['login-required'] );
+				req.flash( 'error', 'login-required' );
 				res.redirect( '/login' );
 				return;
 		}
@@ -330,21 +330,22 @@ var Authentication = {
 			case Authentication.LOGGED_IN:
 				return next();
 			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', messages['inactive-account'] );
+				req.flash( 'warning', 'inactive-account' );
 				res.redirect( '/' );
 				return;
 			case Authentication.NOT_MEMBER:
-				req.flash( 'warning', messages['inactive-membership'] );
+				req.flash( 'warning', 'inactive-membership' );
 				res.redirect( '/profile' );
 				return;
 			case Authentication.REQUIRES_2FA:
-				req.flash( 'warning', messages['2fa-required'] );
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+				req.flash( 'warning', '2fa-required' );
 				res.redirect( '/otp' );
 				return;
 			default:
 			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', messages['login-required'] );
+				req.flash( 'error', 'login-required' );
 				res.redirect( '/login' );
 				return;
 		}
@@ -357,25 +358,26 @@ var Authentication = {
 			case Authentication.LOGGED_IN:
 				return next();
 			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', messages['inactive-account'] );
+				req.flash( 'warning', 'inactive-account' );
 				res.redirect( '/' );
 				return;
 			case Authentication.NOT_MEMBER:
-				req.flash( 'warning', messages['inactive-membership'] );
+				req.flash( 'warning', 'inactive-membership' );
 				res.redirect( '/profile' );
 				return;
 			case Authentication.NOT_ADMIN:
-				req.flash( 'warning', messages['403'] );
+				req.flash( 'warning', '403' );
 				res.redirect( '/profile' );
 				return;
 			case Authentication.REQUIRES_2FA:
-				req.flash( 'warning', messages['2fa-required'] );
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+				req.flash( 'warning', '2fa-required' );
 				res.redirect( '/otp' );
 				return;
 			default:
 			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', messages['login-required'] );
+				req.flash( 'error', 'login-required' );
 				res.redirect( '/login' );
 				return;
 		}
@@ -388,51 +390,61 @@ var Authentication = {
 			case Authentication.LOGGED_IN:
 				return next();
 			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', messages['inactive-account'] );
+				req.flash( 'warning', 'inactive-account' );
 				res.redirect( '/' );
 				return;
 			case Authentication.NOT_MEMBER:
-				req.flash( 'warning', messages['inactive-membership'] );
+				req.flash( 'warning', 'inactive-membership' );
 				res.redirect( '/profile' );
 				return;
 			case Authentication.NOT_ADMIN:
-				req.flash( 'warning', messages['403'] );
+				req.flash( 'warning', '403' );
 				res.redirect( '/profile' );
 				return;
 			case Authentication.REQUIRES_2FA:
-				req.flash( 'warning', messages['2fa-required'] );
+				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+				req.flash( 'warning', '2fa-required' );
 				res.redirect( '/otp' );
 				return;
 			default:
 			case Authentication.NOT_LOGGED_IN:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', messages['login-required'] );
+				req.flash( 'error', 'login-required' );
 				res.redirect( '/login' );
 				return;
 		}
 	},
 
 	// Hashes a members tag with a salt using md5, per the legacy membership system
-	hashCard: function( id ) {
+	hashTag: function( id ) {
 		var md5 = crypto.createHash( 'md5' );
 		md5.update( config.tag_salt );
 		md5.update( id.toLowerCase() );
 		return md5.digest( 'hex' );
 	},
 
+	validateTag: function( tag ) {
+		if ( tag.match( /^[0-9a-f]{8}$/i ) === null ) return 'tag-invalid-malformed'
+		if ( tag == '21222324' ) return 'tag-invalid-visa';
+		if ( tag == '01020304' ) return 'tag-invalid-android';
+		if ( tag.match( /^0+$/ ) !== null ) return 'tag-invalid-amex';
+		if ( tag.substr( 0, 2 ) == '08' ) return 'tag-invalid-long-uid';
+		return false;
+	},
+
 	// Checks password meets requirements
 	passwordRequirements: function( password ) {
 		if ( password.length < 8 )
-			return messages['password-err-length'];
+			return 'password-err-length';
 
 		if ( password.match( /\d/g ) === null )
-			return messages['password-err-number'];
+			return 'password-err-number';
 
 		if ( password.match( /[A-Z]/g ) === null )
-			return messages['password-err-letter-up'];
+			return 'password-err-letter-up';
 
 		if ( password.match( /[a-z]/g ) === null )
-			return messages['password-err-letter-low'];
+			return 'password-err-letter-low';
 
 		return true;
 	}

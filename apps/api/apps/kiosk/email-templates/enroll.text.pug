@@ -1,0 +1,12 @@
+extends /src/views/email.text.pug
+
+block content
+	| Hello
+	| #{'\n'}
+	| Thanks for swiping up your #{ Options( 'organisation' ) } membership tag.
+	| #{'\n'}
+	| Now, to enroll your tag just click Enroll below and follow the instructions.
+block action
+	- action = 'Enroll'
+	- url = enroll_url
+	include /src/views/partials/action.text.pug

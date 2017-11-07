@@ -1,0 +1,11 @@
+extends /src/views/email.html.pug
+
+block content
+	p Hello,
+	p Thanks for swiping up your #{ Options( 'organisation' ) } membership tag.
+	p Now, to enroll your tag just click Enroll below and follow the instructions.
+
+block action
+	- action = 'Enroll'
+	- url = enroll_url
+	include /src/views/partials/action.html.pug

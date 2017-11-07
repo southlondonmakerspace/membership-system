@@ -1,5 +1,5 @@
-extends ../../../src/views/email.html.pug
+extends /src/views/email.html.pug
 
 block content
 	p Hello #{ firstname },
-	p Two factor authentication on your #{ config.globals.organisation } account has been disabled by an administrator.
+	p Two factor authentication on your #{ Options( 'organisation' ) } account has been disabled by an administrator.

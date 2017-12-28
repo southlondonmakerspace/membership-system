@@ -18,13 +18,13 @@ form( method="post" ).form-horizontal
 	.form-group
 		label( for="colour" ).col-md-2 Verb (past tense):
 		.col-md-4
-			input( name="verbPast", type="text", value=( state ? state.verbPast : '' ), required )#verbPast.form-control
-			span.help-block The past tense version of a state (e.g. "the door was opened")
+			input( name="pastTense", type="text", value=( state ? state.pastTense : '' ), required )#pastTense.form-control
+			span.help-block The past tense version of a state (e.g. "was opened")
 	.form-group
 		label( for="colour" ).col-md-2 Verb (present tense):
 		.col-md-4
-			input( name="verbPresent", type="text", value=( state ? state.verbPresent : '' ), required )#verbPresent.form-control
-			span.help-block The present tense version of a state (e.g. "the door is open")
+			input( name="presentTense", type="text", value=( state ? state.presentTense : '' ), required )#presentTense.form-control
+			span.help-block The present tense version of a state (e.g. "is open")
 	.form-group
 		.col-md-4.col-md-offset-2
 			button.btn.btn-primary #{ formAction }

@@ -17,7 +17,8 @@ var app_config = {};
 var auth = require( __js + '/authentication' );
 
 var	db = require( __js + '/database' ),
-	Items = db.Items;
+	Items = db.Items,
+	Events = db.Events;
 
 app.set( 'views', __dirname + '/views' );
 
@@ -31,8 +32,43 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isSuperAdmin, function( req, res ) {
-	Items.find().populate( 'defaultState' ).sort( { name: 1 } ).exec( function( err, items ) {
-		res.render( 'index', { items: items } );
+	var items = [];
+
+	Items.find().populate( 'defaultState' ).sort( { name: 1 } ).exec( function( err, results ) {
+		var itemQueries = [];
+		for ( var i in results ) {
+			itemQueries.push( Events.findOne( { 'item': results[i]._id } ).populate( 'state' ).sort( { "happened": -1 } ) );
+		}
+		Promise.all( itemQueries ).then( function( queryResults ) {
+			for ( var r in results ) {
+				var item = results[r];
+				var event = queryResults[r];
+				var outputState;
+
+				if ( event ) {
+					var state = event.state;
+					outputState = {
+						text: state.text,
+						slug: state.slug,
+						colour: state.colour,
+						pastTense: state.pastTense,
+						presentTense: state.presentTense,
+						updated: event.happened
+					};
+				} else {
+					outputState = item.defaultState;
+				}
+
+				items.push( {
+					name: item.name,
+					slug: item.slug,
+					description: item.description,
+					guide: item.guide,
+					status: outputState
+				} );
+			}
+			res.render( 'index', { items: items } );
+		} );
 	} );
 } );
 

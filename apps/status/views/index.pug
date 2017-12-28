@@ -8,20 +8,16 @@ block contents
 	.row
 		for item in items
 			.col-md-3
-				.panel( class=( item.status ? "panel-" + item.status.colour : "panel-default" ) )
-					if item.guide
-						.panel-heading: a( href=item.guide target="_blank" )=item.name
-					else
-						.panel-heading=item.name
-					if item.status
-						.panel-body=item.description
-							br
-							| Status: #{ item.status.text }
+				.panel.panel-default
+					.panel-heading
+						if item.guide
+							strong: a( href=item.guide target="_blank" )=item.name
+						else
+							strong=item.name
+						.label.pull-right( style="padding-top: 0.3em;" class=( item.status.colour ? "label-" + item.status.colour : "label-default" ) ) #{ item.status.text }
+					.panel-body
+						| #{ item.description }
+						
+					if item.status.updated
 						.panel-footer
-							small: em Last updated: #{ item.status.updated }
-					else
-						.panel-body=item.description
-							br
-							| Status: Unknown
-						.panel-footer
-							small: em Last updated: unknown
+							small: em Last updated: #{ moment( item.status.updated ).fromNow() }

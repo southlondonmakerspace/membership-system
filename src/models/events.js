@@ -28,13 +28,13 @@ module.exports = {
 			default: true
 		},
 		item: {
-      type: ObjectId,
-      ref: 'Items'
-    },
-    state: {
-      type: ObjectId,
-      ref: 'States'
-    }
+			type: ObjectId,
+			ref: 'Items'
+		},
+		state: {
+			type: ObjectId,
+			ref: 'States'
+		}
 	} )
 };
 

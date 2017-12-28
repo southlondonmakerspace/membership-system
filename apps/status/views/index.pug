@@ -1,0 +1,27 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = title
+
+block contents
+	.row
+		for item in items
+			.col-md-3
+				.panel( class=( item.status ? "panel-" + item.status.colour : "panel-default" ) )
+					if item.guide
+						.panel-heading: a( href=item.guide target="_blank" )=item.name
+					else
+						.panel-heading=item.name
+					if item.status
+						.panel-body=item.description
+							br
+							| Status: #{ item.status.text }
+						.panel-footer
+							small: em Last updated: #{ item.status.updated }
+					else
+						.panel-body=item.description
+							br
+							| Status: Unknown
+						.panel-footer
+							small: em Last updated: unknown

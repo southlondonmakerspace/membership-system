@@ -1,2 +1,5 @@
 mixin csrf
 	input( type="hidden", name="_csrf", value=csrf )
+
+mixin messageBlock( status, text )
+	p( style="padding: 1em; margin-top: 1em;" class="bg-" + status )=text

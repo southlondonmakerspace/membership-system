@@ -6,8 +6,7 @@ block prepend title
 	- activeapp = 'reports'
 
 block contents
-	.panel.panel-default
-		.panel-body This part of the system is very basic. There are many reports, but modifying the URL is necessary to select the permission you are querying.
+	+messageBlock( 'info', 'This part of the system is very basic. There are many reports, but modifying the URL is necessary to select the permission you are querying.' )
 	ul.list-group
 		li.list-group-item
 			h4.list-group-item-heading Days of week (Year)

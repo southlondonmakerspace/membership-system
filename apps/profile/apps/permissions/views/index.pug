@@ -12,8 +12,8 @@ block contents
 			.page-header
 				h3 #{ title }
 			.list-group
-				if permissions.length
+				if permissions.length > 0
 					each permission, p in permissions
 						include /src/views/partials/permission.pug
 				else
-					p You currently haven't been granted any permissions.
+					+messageBlock( 'info', "You currently haven't been granted any permissions." )

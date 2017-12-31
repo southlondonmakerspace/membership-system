@@ -21,4 +21,4 @@ block contents
 				include partials/table.pug
 				include partials/pagination.pug
 			else
-				p No members found.
+				+messageBlock( 'info', 'There are no members to display.' )

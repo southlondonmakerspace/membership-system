@@ -74,4 +74,4 @@ block contents
 								th Total
 								th #{ total }
 			else
-				ul.list-group: li.list-group-item.list-group-item-default There are no events to count.
+				+messageBlock( 'info', 'There are no events to count.' )

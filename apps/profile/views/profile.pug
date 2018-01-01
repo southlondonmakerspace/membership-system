@@ -9,8 +9,7 @@ block contents
 		.col-md-2
 			img( style="border-radius: 100%", src=user.gravatar + "?s=150&d=mm&r=g" )
 		.col-md-7
-			.page-header
-				h3 Hello #{ user.firstname }!
+			+page_header( 'Hello ' + user.firstname + '!' )
 			dl
 				dt Joined
 				dd( style="margin-bottom: 1em;" ) #{ moment( user.joined ).fromNow() }

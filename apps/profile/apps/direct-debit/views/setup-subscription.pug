@@ -9,21 +9,13 @@ block contents
 			- page = 'direct-debit'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 Direct Debit
+			+page_header( 'Direct Debit' )
 			p You have setup a Direct Debit mandate, which authorises us to collect money from your account. The next step is to setup a monthly subscription.
-			.page-header
-				h3 Subscription
+			+page_header( 'Subscription' )
 			p Setting up a subscription will allow us to charge you on a day of your choice each month.
 			form( action="/profile/direct-debit/create-subscription", method="post" ).form-horizontal
 				+csrf
-				.form-group
-					label( for="amount" ).col-md-3.control-label Amount:
-					.col-md-5
-						.input-group
-							.input-group-addon &pound;
-							input( name="amount", type="number", value=amount, min=amount )#amount.form-control
-							.input-group-addon .00
+				+input( 'number', 'Amount', 'amount', { before: '£', after: '.00', value: amount, min: amount, left: 3, right: 5 } )
 				.form-group
 					.col-md-offset-3.col-md-9
 						span#helpBlock.help-block Our minimum membership fee is &pound;#{ Options( 'gocardless-minimum' ) } per month. However, if you cannot afford this, please email 
@@ -42,10 +34,7 @@ block contents
 							option( value='-1' ) Last day of the month
 						if next_possible_charge_date
 							span#helpBlock.help-block Direct Debits usually take around 7 days to process. Therefore, we've set the charge date to be as early as possible. However if you prefer to pay for your membership on a specific date (eg. the day after payday), please select it here. Note that this will delay the start of your membership.
-				.form-group
-					.col-md-offset-3.col-md-5
-						button( role="button" ).btn.btn-primary Create Subscription
-			.page-header
-				h3 Mandate
+				+form_button( 'Create Subscription', 'primary', { left: 3 } )
+			+page_header( 'Mandate' )
 			p You can cancel your Direct Debit mandate here or through your bank. This will cancel all pending and future payments.
 			p: a( href="/profile/direct-debit/cancel-mandate" ).btn.btn-danger.outline Cancel Mandate

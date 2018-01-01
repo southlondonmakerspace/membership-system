@@ -9,14 +9,12 @@ block contents
 			- page = 'tag'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 #{ title }
+			+page_header( title )
 			.row
 				.col-md-8
 					if user.tag.id
 						p You have a tag associated with your account, please keep it safe.
-						.page-header
-							h3 Lost Tag
+						+page_header( 'Lost Tag' )
 						p If you've lost your tag, click "Revoke my tag" to ensure no one else can use it as soon as possible.
 						p We can issue a replacement or reassociate your tag if you find it.
 						a( href="/profile/tag/revoke" ).btn.btn-danger.outline Revoke Tag

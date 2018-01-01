@@ -10,18 +10,13 @@ block contents
 			- page = 'discourse'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 Search
+			+page_header( 'Search' )
 			p Search for your Discourse credentials address to start linking your account.
-			form( method="get", action="/profile/discourse", style="max-width: 300px;" )
-				p
-					label( for="search" ) Search:
-					input( type="text", placeholder="Discourse name, username or email...", name="search" )#search.form-control
-				p
-					button.btn.btn-primary Search
+			form( method="get", action="/profile/discourse" ).form-horizontal
+				+input( 'text', 'Search', 'search', { placeholder: 'Discourse name, username, or email' } )
+				+form_button( 'Search', 'primary' )
 			if users
-				.page-header
-					h3 Results
+				+page_header( 'Results' )
 				form( method="post", action="/profile/discourse/link" )
 					+csrf
 					input( type="hidden", value=search, name="search" )

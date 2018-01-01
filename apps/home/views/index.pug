@@ -14,12 +14,10 @@ block contents
 			.bg
 	.row
 		.col-md-6
-			.page-header
-				h3 New member
+			+page_header( 'New member' )
 			p Becoming a new member is straightforward. Click below to get started. 
 			a( href="/join" ).btn.btn-primary Join
 		.col-md-6
-			.page-header
-				h3 Existing member
+			+page_header( 'Existing member' )
 			include /apps/login/views/partials/form.pug
 		

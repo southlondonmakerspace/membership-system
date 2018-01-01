@@ -9,25 +9,10 @@ block contents
 		.col-md-3
 			include partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 #{ title }
+			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				.form-group
-					label( for="mandate_id" ).col-md-2 Mandate ID
-					.col-md-4
-						input( type="mandate_id", value=member.gocardless.mandate_id, name="mandate_id" )#mandate_id.form-control
-				.form-group
-					label( for="subscription_id" ).col-md-2 Subscription ID
-					.col-md-4
-						input( type="subscription_id", value=member.gocardless.subscription_id, name="subscription_id" )#subscription_id.form-control
-				.form-group
-					label( for="minimum" ).col-md-2 Minimum
-					.col-md-4
-						.input-group
-							.input-group-addon £
-							input( type="number", value=member.gocardless.minimum, placeholder=Options( 'gocardless-minimum' ), name="minimum" )#minimum.form-control
-							.input-group-addon .00
-				.form-group
-					.col-md-4.col-md-offset-2
-						button.btn.btn-primary Update
+				+input( 'text', 'Mandate ID', 'mandate_id', { value: member.gocardless.mandate_id, right: 4 } )
+				+input( 'text', 'Subscription ID', 'subscription_id', { value: member.gocardless.subscription_id, right: 4 } )
+				+input( 'number', 'Minimum', 'minimum', { before: '£', after: '.00', value: member.gocardless.minimum, placeholder:Options( 'gocardless-minimum' ), right: 4 } )
+				+form_button( 'Update', 'primary' )

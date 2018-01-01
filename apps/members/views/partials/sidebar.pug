@@ -1,5 +1,4 @@
-.page-header
-	h3: strong #{ member.fullname }
++page_header( member.fullname, { strong: true } )
 ul.nav.nav-pills.nav-stacked
 	li( class=( page == 'overview' ? 'active' : '' ) ): a( href='/members/' + member.uuid ) Overview
 	if access( 'superadmin' )

@@ -3,3 +3,60 @@ mixin csrf
 
 mixin messageBlock( status, text )
 	p( style="padding: 1em; margin-top: 1em;" class="bg-" + status )=text
+
+mixin input( type, label, name, opts )
+	unless opts
+		- opts = {}
+	unless opts.id
+		- opts.id = name
+	.form-group
+		label( for=name, class=( opts.left ? 'col-md-' + opts.left : 'col-md-2' ) ).control-label #{ label }
+		div( class=( opts.right ? 'col-md-' + opts.right : 'col-md-3' ) )
+			div( class=( opts.before || opts.after ? 'input-group' : null ) )
+				if opts.before
+					.input-group-addon=opts.before
+				case type
+					when 'password'
+					when 'text'
+					default
+						input( name=name, type=type, value=opts.value, required=opts.required id=opts.id, readonly=opts.readonly, class=opts.class, minlength=opts.minlength, maxlength=opts.maxlength, placeholder=opts.placeholder, autocomplete=opts.autocomplete ).form-control
+						- break
+					when 'textarea'
+						textarea( name=name, required=opts.required, id=opts.id, readonly=opts.readonly, rows=( opts.rows ? opts.rows : 4 ), class=opts.class, placeholder=opts.placeholder ).form-control #{ opts.value }
+					when 'checkbox'
+					when 'radio'
+						- i = 0
+						for text, value in opts.options
+							- i++
+							div( class=type )
+								label( for=name + "_" + i )
+									input( name=name, type=type, value=value, checked=( opts.value === true || value == opts.value ), id=name + "_" + i )
+									|  #{ text }
+						- break
+				if opts.after
+					.input-group-addon=opts.after
+			if opts.helpblock
+				span.help-block #{ opts.helpblock }
+
+mixin form_button( label, colour, opts )
+	unless opts
+		- opts = {}
+	.form-group
+		div( class=( opts.right ? 'col-md-' + opts.right : 'col-md-3' ), class=( opts.left ? 'col-md-offset-' + opts.left : 'col-md-offset-2' ) )
+			button.btn( class="btn-" + ( colour ? colour : 'default' ) )=label
+
+mixin page_header( title, opts )
+	if ! opts
+		- opts = {}
+	if ! opts.level
+		- opts.level = 'h3'
+	.page-header
+		if opts.strong
+			#{ opts.level }
+				strong #{ title }
+				if opts.small
+					small  #{ opts.small }
+		else
+			#{ opts.level } #{ title }
+				if opts.small
+					small  #{ opts.small }

@@ -9,8 +9,7 @@ block contents
 			- page = 'statement'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 #{ title }
+			+page_header( title )
 			if payments.length > 0
 				.table-responsive
 					table.table.table-striped.table-hover.table-condensed
@@ -37,26 +36,25 @@ block contents
 				+messageBlock( 'info', 'You have no payment history at this time.' )
 
 			if historic.length > 0
-				.page-header
-					h3 Historic Payments
-					.table-responsive
-						table.table.table-striped.table-hover.table-condensed
-							thead
+				+page_header( 'Historic Payments' )
+				.table-responsive
+					table.table.table-striped.table-hover.table-condensed
+						thead
+							tr
+							th Charge Date
+							th Description
+							th Status
+							th Amount
+						tbody
+							each payment, p in historic
 								tr
-								th Charge Date
-								th Description
-								th Status
-								th Amount
-							tbody
-								each payment, p in historic
-									tr
-										td
-											time( datetime=moment( payment.created, moment.ISO_8601 ) ) #{ moment( payment.created ).format( 'd/M/Y' ) }
-										td Membership
-										td
-											include partials/status.pug
-										td
-											if payment.renumeration
-												| &pound;#{ payment.renumeration }
-											else
-												| &mdash;
+									td
+										time( datetime=moment( payment.created, moment.ISO_8601 ) ) #{ moment( payment.created ).format( 'd/M/Y' ) }
+									td Membership
+									td
+										include partials/status.pug
+									td
+										if payment.renumeration
+											| &pound;#{ payment.renumeration }
+										else
+											| &mdash;

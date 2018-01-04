@@ -93,7 +93,7 @@ app.post( '/', function( req, res ) {
 			return;
 		}
 
-		if ( req.body.address.split( '\n' ).length <= 3 ) {
+		if ( req.body.address.split( '\n' ).length <= 2 ) {
 			req.flash( 'danger', 'user-address' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );

@@ -1,30 +1,18 @@
 form( method="post" ).form-horizontal
 	+csrf
+	+input( 'text', 'Text', 'text', { value: ( state ? state.text : '' ), required: true, helpblock: 'The text describing the state', right: 4 } )
+	+input( 'text', 'Slug', 'slug', { value: ( state ? state.slug : '' ), required: true, helpblock: 'Used by the API for linking to actions', right: 4 } )
 	.form-group
-		label( for="slug" ).col-md-2 Slug:
+		label( for="colour" ).col-md-2.control-label Colour
 		.col-md-4
-			input( name="slug", type="text", value=( state ? state.slug : '' ), required )#slug.form-control
-			span.help-block Used by the API for linking to actions.
-	.form-group
-		label( for="text" ).col-md-2 Text:
-		.col-md-4
-			input( name="text", type="text", value=( state ? state.text : '' ), required )#text.form-control
-			span.help-block The text describing the state
-	.form-group
-		label( for="colour" ).col-md-2 Colour:
-		.col-md-4
-			input( name="colour", type="text", value=( state ? state.colour : '' ), required )#colour.form-control
-			span.help-block The colour which represents this state (red, yellow, green)
-	.form-group
-		label( for="colour" ).col-md-2 Verb (past tense):
-		.col-md-4
-			input( name="pastTense", type="text", value=( state ? state.pastTense : '' ), required )#pastTense.form-control
-			span.help-block The past tense version of a state (e.g. "was opened")
-	.form-group
-		label( for="colour" ).col-md-2 Verb (present tense):
-		.col-md-4
-			input( name="presentTense", type="text", value=( state ? state.presentTense : '' ), required )#presentTense.form-control
-			span.help-block The present tense version of a state (e.g. "is open")
-	.form-group
-		.col-md-4.col-md-offset-2
-			button.btn.btn-primary #{ formAction }
+			select( name="colour", id="colour", required ).form-control
+				option( value='', selected=( state && state.colour == '' ? true : false ) ) Grey
+				option( value='primary', selected=( state && state.colour == 'primary' ? true : false ) ) Dark Blue
+				option( value='info', selected=( state && state.colour == 'info' ? 'true' : false ) ) Light Blue
+				option( value='success', selected=( state && state.colour == 'success' ? true : false ) ) Green
+				option( value='danger', selected=( state && state.colour == 'warning' ? true : false ) ) Red
+				option( value='warning', selected=( state && state.colour == 'danger' ? true : false ) ) Yellow
+			span.help-block The colour which represents this state
+	+input( 'text', 'Past tense', 'pastTense', { value: ( state ? state.pastTense : '' ), required: true, helpblock: 'The past tense version of a state (e.g. "was opened")', right: 4 } )
+	+input( 'text', 'Present tense', 'presentTense', { value: ( state ? state.presentTense : '' ), required: true, helpblock: 'The present tense version of a state (e.g. "is open")', right: 4 } )
+	+form_button( formAction, 'primary' )

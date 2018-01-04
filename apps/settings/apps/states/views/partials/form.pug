@@ -6,7 +6,7 @@ form( method="post" ).form-horizontal
 		label( for="colour" ).col-md-2.control-label Colour
 		.col-md-4
 			select( name="colour", id="colour", required ).form-control
-				option( value='', selected=( state && state.colour == '' ? true : false ) ) Grey
+				option( value='default', selected=( state && state.colour == 'default' ? true : false ) ) Grey
 				option( value='primary', selected=( state && state.colour == 'primary' ? true : false ) ) Dark Blue
 				option( value='info', selected=( state && state.colour == 'info' ? 'true' : false ) ) Light Blue
 				option( value='success', selected=( state && state.colour == 'success' ? true : false ) ) Green

@@ -1,0 +1,28 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Manage Inductors'
+	- heading = 'Manage "' + induction.name + '" Inductors'
+
+block contents
+	.row
+		.col-md-3
+			form( action="/inductions/" + induction.slug + '/inductors/add', method='post' )
+				+csrf
+				.form-group
+					label( for='member' ) Add member
+					select.form-control( name='member', id='member' )
+						option( selected, disabled ) &mdash;
+						for member in members
+							option( value=member.uuid )=member.fullname
+				.form-group
+					button.btn.btn-primary Add
+		.col-md-9
+			for inductor in induction.inductors
+				.panel.panel-default
+					.panel-body
+						a( href="/members/" + inductor.uuid )=inductor.fullname
+						span.pull-right
+							form( action="/inductions/" + induction.slug + '/inductors/remove/' + inductor.uuid, method='post' )
+								+csrf
+								button.btn-link: span.glyphicon.glyphicon-remove

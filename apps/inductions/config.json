@@ -1,0 +1,9 @@
+{
+	"title": "Inductions",
+	"path": "inductions",
+	"permissions": [
+		"superadmin", "admin", "member"
+	],
+	"menu": "main",
+	"priority": 3
+}

@@ -1,0 +1,24 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Induction Dates'
+	- heading = '"' + induction.name + '" Dates'
+
+block contents
+	.row
+		.col-md-3
+			form( action="/inductions/" + induction.slug + '/dates/add', method='post' )
+				+csrf
+				+input( 'number', 'Duration', 'duration', { wide: true } )
+				+input( 'select', 'Type', 'type', { options: [ 'rr', 'Round robin', 'fcfs', 'First come, first serve' ], wide: true } )
+				+input( 'number', 'Places', 'places', { wide: true } )
+				+input( 'number', 'Booking window', 'booking_window', { wide: true } )
+				+input( 'number', 'Cancellation window', 'cancellation_window', { wide: true } )
+				+form_button( 'Add', 'primary', { wide: true } )
+		.col-md-9
+			for date in induction.dates
+				.panel.panel-default
+					.panel-body
+						a( href="/members/" + inductor.uuid )=moment( date.when ).format( 'dddd Do MMMM YYYY at HH:mm' )
+						span.pull-right
+							a( href="/inductions/" + induction.slug + '/dates/' + date.uuid + '/cancel' ).btn.btn-sm.btn-danger Cancel

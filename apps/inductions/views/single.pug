@@ -1,0 +1,19 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block contents
+	.page-header
+		h3=induction.name
+			.btn-group.pull-right
+				if access( 'admin' )
+					a.btn.btn-default( href='/inductions/' + induction.slug + '/edit' )
+						span.glyphicon.glyphicon-pencil
+						|  Edit
+					a.btn.btn-default( href='/inductions/' + induction.slug + '/dates' )
+						span.glyphicon.glyphicon-calendar
+						|  Dates
+					a.btn.btn-default( href='/inductions/' + induction.slug + '/inductors' )
+						span.glyphicon.glyphicon-user
+						|  Inductors

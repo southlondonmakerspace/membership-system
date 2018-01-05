@@ -165,5 +165,17 @@
 	"flash-enroll-success": "Tag successful enrolled",
 	"flash-enroll-inprogress": "Tag enrollment already in progress",
 	"flash-enroll-duplicate": "Tag already enrolled",
-	"flash-enroll-error": "Error enrolling tag"
+	"flash-enroll-error": "Error enrolling tag",
+
+	"flash-induction-name-required": "Inductions must have a name",
+	"flash-induction-slug-required": "Inductions must have a URL slug",
+	"flash-induction-type-required": "Inductions must have a default type selected",
+	"flash-induction-cancellation-window-required": "Inductions must have a default cancellation window",
+	"flash-induction-places-required": "Inductions must have a default number of places",
+	"flash-induction-created": "Induction created",
+	"flash-induction-updated": "Induction updated",
+	"flash-induction-404": "Induction not found",
+	"flash-induction-inductor-dupe": "This inductor can already manage this induction",
+	"flash-induction-inductor-added": "Inductor added",
+	"flash-induction-inductor-removed": "Inductor removed"
 }

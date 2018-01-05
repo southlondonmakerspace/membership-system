@@ -15,7 +15,7 @@ block contents
 
 			form( method="post", action="/profile/discourse/activate" ).form-horizontal
 				+csrf
-				+input( 'text', 'Activation code', 'activation_code', { left: 3, right: 4, value: activation_code, readonly: ( activation_code ? true : false ) } )
+				+input( 'text', 'Activation code', 'activation_code', { left: 3, value: activation_code, readonly: ( activation_code ? true : false ) } )
 				.form-group
 					.col-md-offset-3.col-md-6
 						button.btn.btn-primary Activate

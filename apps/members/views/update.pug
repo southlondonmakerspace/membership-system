@@ -12,9 +12,9 @@ block contents
 			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'email', 'Email', 'email', { value: member.email, required: true, helpblock: "This will change the users login details.", right: 4 } )
+				+input( 'email', 'Email', 'email', { value: member.email, required: true, helpblock: "This will change the users login details." } )
 				hr
-				+input( 'text', 'First Name', 'firstname', { value: member.firstname, required: true, right: 4 } )
-				+input( 'text', 'Last Name', 'lastname', { value: member.lastname, required: true, right: 4 } )
-				+input( 'textarea', 'Address', 'address', { value: member.address, required: true, right: 4 } )
-				+form_button( 'Update', 'primary' )
+				+input( 'text', 'First Name', 'firstname', { value: member.firstname, required: true } )
+				+input( 'text', 'Last Name', 'lastname', { value: member.lastname, required: true } )
+				+input( 'textarea', 'Address', 'address', { value: member.address, required: true } )
+				+form_button( 'Update' )

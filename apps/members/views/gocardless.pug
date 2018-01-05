@@ -12,7 +12,7 @@ block contents
 			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'text', 'Mandate ID', 'mandate_id', { value: member.gocardless.mandate_id, right: 4 } )
-				+input( 'text', 'Subscription ID', 'subscription_id', { value: member.gocardless.subscription_id, right: 4 } )
-				+input( 'number', 'Minimum', 'minimum', { before: '£', after: '.00', value: member.gocardless.minimum, placeholder:Options( 'gocardless-minimum' ), right: 4 } )
-				+form_button( 'Update', 'primary' )
+				+input( 'text', 'Mandate ID', 'mandate_id', { value: member.gocardless.mandate_id } )
+				+input( 'text', 'Subscription ID', 'subscription_id', { value: member.gocardless.subscription_id } )
+				+input( 'number', 'Minimum', 'minimum', { before: '£', after: '.00', value: member.gocardless.minimum, placeholder:Options( 'gocardless-minimum' ) } )
+				+form_button( 'Update' )

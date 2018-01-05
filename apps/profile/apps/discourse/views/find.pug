@@ -14,7 +14,7 @@ block contents
 			p Search for your Discourse credentials address to start linking your account.
 			form( method="get", action="/profile/discourse" ).form-horizontal
 				+input( 'text', 'Search', 'search', { placeholder: 'Discourse name, username, or email' } )
-				+form_button( 'Search', 'primary' )
+				+form_button( 'Search' )
 			if users
 				+page_header( 'Results' )
 				form( method="post", action="/profile/discourse/link" )

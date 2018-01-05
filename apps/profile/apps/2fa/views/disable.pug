@@ -14,8 +14,8 @@ block contents
 			hr
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'password', 'Password', 'password', { required: true, left: 3, right: 4 } )
-				+input( 'number', 'One time code', 'code', { required: true, autocomplete: 'off', left: 3, right: 4 } )
+				+input( 'password', 'Password', 'password', { required: true, left: 3 } )
+				+input( 'number', 'One time code', 'code', { required: true, autocomplete: 'off', left: 3 } )
 				.form-group
 					.col-md-offset-3.col-md-9
 						button.btn.btn-danger Disable

@@ -1,11 +1,7 @@
 form( method="post", action="/login" )
 	+csrf
-	.form-group
-		label( for="email" ) Email:
-		input( name="email", type="text" )#email.form-control
-	.form-group
-		label( for="password" ) Password:
-		input( name="password", type="password" )#password.form-control
+	+input( 'email', 'Email', 'email', { wide: true } )
+	+input( 'password', 'Password', 'password', { wide: true } )
 	.form-group
 		button( role="button" ).btn.btn-primary Login
 		| &nbsp;

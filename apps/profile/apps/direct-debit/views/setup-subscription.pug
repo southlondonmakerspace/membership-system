@@ -34,7 +34,7 @@ block contents
 							option( value='-1' ) Last day of the month
 						if next_possible_charge_date
 							span#helpBlock.help-block Direct Debits usually take around 7 days to process. Therefore, we've set the charge date to be as early as possible. However if you prefer to pay for your membership on a specific date (eg. the day after payday), please select it here. Note that this will delay the start of your membership.
-				+form_button( 'Create Subscription', 'primary', { left: 3 } )
+				+form_button( 'Create Subscription', { left: 3 } )
 			+page_header( 'Mandate' )
 			p You can cancel your Direct Debit mandate here or through your bank. This will cancel all pending and future payments.
 			p: a( href="/profile/direct-debit/cancel-mandate" ).btn.btn-danger.outline Cancel Mandate

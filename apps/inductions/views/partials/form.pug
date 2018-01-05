@@ -11,4 +11,4 @@ form( method="post" ).form-horizontal
 	+input( 'text', 'Booking window', 'booking_window', { value: ( induction ? induction.default.booking_window : '' ) } )
 	+input( 'radio', 'Type', 'type', { value: ( induction ? induction.default.type : '' ), required: true, options: { rr: 'Round robin', fcfs: 'First come, first served' } } )
 	
-	+form_button( formAction, 'primary' )
+	+form_button( formAction )

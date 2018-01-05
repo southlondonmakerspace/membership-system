@@ -31,4 +31,4 @@ if payments.length > 0
 					th( colspan=7 ) Total
 					th £ #{ total }
 else
-	p Member has no payment history
+	+messageBlock( 'info', 'Member has no payment history' )

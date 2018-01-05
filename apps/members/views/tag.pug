@@ -12,5 +12,5 @@ block contents
 			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'text', 'ID', 'tag', { value: member.tag.id, minlength: 8, maxlength: 8, right: 4 } )
-				+form_button( 'Update', 'primary' )
+				+input( 'text', 'ID', 'tag', { value: member.tag.id, minlength: 8, maxlength: 8 } )
+				+form_button( 'Update' )

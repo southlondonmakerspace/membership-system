@@ -20,9 +20,7 @@ block contents
 					hr
 					form( method="post" )
 						+csrf
-						.form-group
-							label( for=code ).control-label Code
-							input( type='text', name='code', autocomplete="off" ).form-control#code
+						+input( 'number', 'Code', 'code', { autocomplete: false, wide: true } )
 						.form-group
 							button.btn.btn-primary Activate
 							|  

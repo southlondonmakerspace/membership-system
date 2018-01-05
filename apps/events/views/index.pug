@@ -12,27 +12,13 @@ block contents
 			nav( aria-label="..." )
 				ul.pager
 					li.previous
-						a( href="?year=" + moment( previous ).format( 'Y' ) + "&month=" + moment( previous ).format( 'M' ) + "&permission=" + selected.permission + "&successful=" + ( selected.successful ? 'on' : '' ) + "&unsuccessful=" + ( selected.unsuccessful ? 'on' : '' ) )
+						a( href="?year=" + moment( previous ).format( 'Y' ) + "&month=" + moment( previous ).format( 'M' ) )
 							span( aria-hidden="true" ) &larr;&nbsp;
 							| #{ moment( previous ).format( 'MMMM' ) }
 					if moment( next ).isBefore( moment() )
 						li.next
-							a( href="?year=" + moment( next ).format( 'Y' ) + "&month=" + moment( next ).format( 'M' ) + "&permission=" + selected.permission + "&successful=" + ( selected.successful ? 'on' : '' ) + "&unsuccessful=" + ( selected.unsuccessful ? 'on' : '' ) ) #{ moment( next ).format( 'MMMM' ) }
+							a( href="?year=" + moment( next ).format( 'Y' ) + "&month=" + moment( next ).format( 'M' ) ) #{ moment( next ).format( 'MMMM' ) }
 								span( aria-hidden="true" ) &nbsp;&rarr;
-			form
-				.form-group
-					label( for="successful" )
-						input( name="successful", type="checkbox", checked=( selected.successful != undefined && selected.successful == 'on' ? true : false ) )#successful
-						|  Successful
-				.form-group
-					label( for="unsuccessful" )
-						input( name="unsuccessful", type="checkbox", checked=( selected.unsuccessful != undefined && selected.unsuccessful == 'on' ? true : false ) )#unsuccessful
-						|  Unsuccessful
-				hr
-				.form-group
-					input( name="month", type="hidden", value=moment( searchDate ).format( 'MM' ) )
-					input( name="year", type="hidden", value=moment( searchDate ).format( 'YYYY' ) )
-					button.btn.btn-primary Filter
 		.col-md-9
 			if events.length > 0
 				each event, e in events

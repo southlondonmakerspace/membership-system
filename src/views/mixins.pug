@@ -12,10 +12,11 @@ mixin input( type, label, name, opts )
 	- left = ''
 	- right = ''
 	unless opts.wide
-		- left = ( opts.right ? 'col-md-' + opts.right : 'col-md-3' )
-		- right = ( opts.left ? 'col-md-' + opts.left : 'col-md-2' )
+		- left = ( opts.left ? 'col-md-' + opts.left : 'col-md-2' )
+		- right = ( opts.right ? 'col-md-' + opts.right : 'col-md-3' )
 	.form-group
-		label( for=name, class=left ).control-label #{ label }
+		if label
+			label( for=name, class=left ).control-label #{ label }
 		div( class=right )
 			div( class=( opts.before || opts.after ? 'input-group' : null ) )
 				if opts.before
@@ -52,17 +53,17 @@ mixin input( type, label, name, opts )
 			if opts.helpblock
 				span.help-block #{ opts.helpblock }
 
-mixin form_button( label, colour, opts )
+mixin form_button( label, opts )
 	unless opts
 		- opts = {}
-		- left = ''
-		- right = ''
-		unless opts.wide 
-			- left = ( opts.right ? 'col-md-' + opts.right : 'col-md-3' )
-			- right = ( opts.left ? 'col-md-offset-' + opts.left : 'col-md-offset-2' )
+	- left = ''
+	- right = ''
+	unless opts && opts.wide 
+		- left = ( opts.left ? 'col-md-offset-' + opts.left : 'col-md-offset-2' )
+		- right = ( opts.right ? 'col-md-' + opts.right : 'col-md-3' )
 	.form-group
 		div( class=left, class=right )
-			button.btn( class="btn-" + ( colour ? colour : 'default' ) )=label
+			button.btn( class="btn-" + ( opts.colour ? opts.colour : 'primary' ) )=label
 
 mixin page_header( title, opts )
 	if ! opts

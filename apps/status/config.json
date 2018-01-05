@@ -1,9 +1,9 @@
 {
-	"title": "Gate Code",
-	"path": "gate-code",
+	"title": "Status",
+	"path": "status",
 	"permissions": [
 		"superadmin", "admin", "member"
 	],
 	"menu": "main",
-	"priority": 1
+	"priority": 3
 }

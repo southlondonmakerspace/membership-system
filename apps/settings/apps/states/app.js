@@ -52,8 +52,8 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		slug: req.body.slug,
 		text: req.body.text,
 		colour: req.body.colour,
-    verbPast: req.body.verbPast,
-    verbPresent: req.body.verbPresent
+		pastTense: req.body.pastTense,
+		presentTense: req.body.presentTense
 	};
 
 	new States( state ).save( function( err, action ) {
@@ -94,8 +94,8 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		slug: req.body.slug,
 		text: req.body.text,
 		colour: req.body.colour,
-    verbPast: req.body.verbPast,
-    verbPresent: req.body.verbPresent
+		pastTense: req.body.pastTense,
+		presentTense: req.body.presentTense
 	};
 
 	States.update( { slug: req.params.slug }, state, function( status ) {

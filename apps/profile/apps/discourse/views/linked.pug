@@ -9,8 +9,7 @@ block contents
 			- page = 'discourse'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 #{ title }
+			+page_header( title )
 			.row
 				.col-md-2
 					p: img( style="border-radius: 100%", src=discourse_user.avatar )
@@ -19,7 +18,6 @@ block contents
 						|  
 						a( target="_blank", href=discourse_path + "/users/" + discourse_user.user.username) @#{ discourse_user.user.username }
 						| .
-					.page-header
-						h3 Unlink your account
+					+page_header( 'Unlink your account' )
 					p You can unlink your account from Discourse by clicking below.
 					a( href="/profile/discourse/unlink" ).btn.btn-danger.outline Unlink from Discourse

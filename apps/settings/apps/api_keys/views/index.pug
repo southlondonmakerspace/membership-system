@@ -9,23 +9,27 @@ block contents
 	p: a( href="/settings/api-keys/create" ).btn.btn-default
 		span.glyphicon.glyphicon-plus
 		|  Create API Key
-	.table-responsive
-		table.table.table-striped.table-condensed
-			thead
-				tr
-					th Name
-					th Key
-					th Edit
-					th Delete
-			tbody
-				each key, k in keys
+	if keys.length > 0
+		.table-responsive
+			table.table.table-striped.table-condensed
+				thead
 					tr
-						td #{ key.name }
-						td #{ key.key }
-						td: a( href="/settings/api-keys/" + key._id + "/edit" )
-							span.glyphicon.glyphicon-pencil
-						td
-							form( action="/settings/api-keys/" + key._id + "/delete", method="post" )
-								+csrf
-								button.btn-link
-									span.glyphicon.glyphicon-remove
+						th Name
+						th Key
+						th Edit
+						th Delete
+				tbody
+					each key, k in keys
+						tr
+							td #{ key.name }
+							td #{ key.key }
+							td: a( href="/settings/api-keys/" + key._id + "/edit" )
+								span.glyphicon.glyphicon-pencil
+							td
+								form( action="/settings/api-keys/" + key._id + "/delete", method="post" )
+									+csrf
+									button.btn-link
+										span.glyphicon.glyphicon-remove
+	else
+		hr
+		+messageBlock( 'info', 'There are no API Keys to display.' )

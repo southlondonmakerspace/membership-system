@@ -26,44 +26,76 @@ app.get( '/:slug', auth.isAPIAuthenticated, function( req, res ) {
 		return
 	}
 	// find the item
-	Items.findOne( { 'slug': req.params.slug } ).exec( function ( err, item ) {
+	Items.findOne( { 'slug': req.params.slug } )
+		.populate( 'defaultState' )
+		.exec( function ( err, item ) {
 		if ( err ) {
 			res.sendStatus( 404 );
 			return
 		}
-		// find the last state by looking back in the event log
+
 		Events.findOne( { 'item': item._id } )
-		.populate( 'item' )
-		.sort( [ [ "happened", -1 ] ] ).exec( function ( err, myEvent ) {
-			res.send( JSON.stringify( { item: myEvent.item, state: myEvent.state } ) );
+			.populate( 'item' )
+			.populate( 'state' )
+			.sort( { "happened": -1 } )
+			.exec( function ( err, event ) {
+
+			var output = {
+				name: item.name,
+				slug: item.slug
+			};
+
+			if ( item.description ) output.description = item.description;
+			if ( item.guide ) output.description = item.guide;
+
+			if ( ! event ) {
+				output.state = {
+					text: event.state.text,
+					slug: event.state.slug,
+					colour: event.state.colour
+				}
+			} else {
+				output.state = {
+					text: item.defaultState.text,
+					slug: item.defaultState.slug,
+					colour: item.defaultState.colour
+				}
+			}
+
+			res.send( JSON.stringify( output ) );
 		} );
 	} );
 });
 
 app.get( '/:slug/:state', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
+
 	if ( ! req.params.slug ) {
 		res.sendStatus( 404 );
 		return
 	}
+
 	// find the item
-	Items.findOne( { 'slug': req.params.slug } ).exec( function( err, item ) {
+	Items.findOne( { 'slug': req.params.slug } )
+		.exec( function( err, item ) {
+			
 		if ( err ) {
 			res.sendStatus( 404 );
 			return
 		}
 
-		States.findOne( { 'slug': req.params.state }, function( err, myStateDoc ) {
-			if ( err || myStateDoc == null ) {
-				res.sendStatus( 403 ); // something bad happened
+		States.findOne( { 'slug': req.params.state }, function( err, lastState ) {
+			if ( err || lastState == null ) {
+				res.sendStatus( 404 );
 				return
 			}
 
 			var newEvent = {
 				successful: true,
 				item: item._id,
-				state: myStateDoc._id
+				state: lastState._id
 			}
+
 			new Events ( newEvent ).save( function( status ) {
 				res.send( status )
 			} );

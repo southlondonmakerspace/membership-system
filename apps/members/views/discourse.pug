@@ -9,19 +9,9 @@ block contents
 		.col-md-3
 			include partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 #{ title }
+			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				.form-group
-					label( for="username" ).col-md-2 Username
-					.col-md-4
-						input( type="username", value=member.discourse.username, name="username" )#username.form-control
-				.form-group
-					.col-md-4.col-md-offset-2
-						label( for="activated" )
-							input( type="checkbox", name="activated", checked=member.discourse.activated, value="true" )#activated.checkbox-control
-							|  Activated
-				.form-group
-					.col-md-4.col-md-offset-2
-						button.btn.btn-primary Update
+				+input( 'text', 'Username', 'username', { value: member.discourse.username, right: 4 } )
+				+input( 'checkbox', '', 'activated', { value: member.discourse.activated, options: { activated: 'Activated' }, right: 4 } )
+				+form_button( 'Update', 'primary' )

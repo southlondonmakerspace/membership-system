@@ -11,9 +11,7 @@ block contents
 			.col-md-2
 				img( style="border-radius: 100%", src=member.gravatar + "?s=150&d=mm&r=g" )
 			.col-md-10
-				.page-header
-					h2 #{ member.fullname }
-					
+				+page_header( member.fullname, { level: 'h2' } )
 				dl.dl-horizontal
 					if member.discourse.activated && discourse != undefined
 						dt Discourse

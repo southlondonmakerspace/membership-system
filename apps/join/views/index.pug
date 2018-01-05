@@ -14,50 +14,27 @@ block append css
 block contents
 	.row
 		.col-md-8
-			.page-header
-				h2 #{ app.title }
+			+page_header( app.title, { level: 'h2' } )
 			p Thanks for choosing to join #{ Options( 'organisation' ) }. Just so you know, you must be over 18 to become a member.
+			
 			form( method="post" ).form-horizontal
 				+csrf
-				.form-group
-					.col-md-12
-						.page-header
-							h3 Login Details
-						p To keep things simple we use your email address as your login username.
-				.form-group
-					label( for="email" ).col-md-3.control-label Email
-					.col-md-5
-						input( name="email", type="email", value=user.email )#email.form-control
-				.form-group
-					label( for="password" ).col-md-3.control-label Password
-					.col-md-5
-						input( name="password", type="password" )#password.form-control.pw-req
-				.form-group
-					label( for="verify" ).col-md-3.control-label Verify password
-					.col-md-5
-						input( name="verify" type="password" )#verify.form-control.pw-mat
-				.form-group
-					.col-md-12
-						.page-header
-							h3 Personal Details
-						p As a membership organisation, we are legally required to keep your name and address on record and available for inspection.
-				.form-group
-					label( for="firstname" ).col-md-3.control-label First Name
-					.col-md-5
-						input( name="firstname", type="text", value=user.firstname )#firstname.form-control
-				.form-group
-					label( for="lastname" ).col-md-3.control-label Last Name
-					.col-md-5
-						input( name="lastname", type="text", value=user.lastname)#lastname.form-control
-				.form-group
-					label( for="address" ).col-md-3.control-label Address
-					.col-md-5
-						textarea( name="address", rows=4 )#address.form-control #{ user.address }
-				.form-group
-					.col-md-offset-3.col-md-9
-						button.btn.btn-primary Next
+				+page_header( 'Login Details' )
+				p To keep things simple we use your email address as your login username.
+				
+				+input( 'email', 'Email', 'email', { values: user.email, required: true, left: 3, right: 4 } )
+				
+				+input( 'password', 'Password', 'pw-req', { required: true, id: 'password', class: 'pw-req', left: 3, right: 4 } )
+				+input( 'password', 'Verify password', 'pw-mat', { required: true, id: 'verify', class: 'pw-mat', left: 3, right: 4 } )
+				
+				+page_header( 'Personal Details' )
+				p As a membership organisation, we are legally required to keep your name and address on record and available for inspection.
+				
+				+input( 'text', 'First Name', 'firstname', { value: user.firstname, required: true, left: 3, right: 4 } )
+				+input( 'text', 'Last Name', 'lastname', { value: user.lastname,  required: true, left: 3, right: 4 } )
+				+input( 'textarea', 'Address', 'address', { value: user.address, required: true, left: 3, right: 4 } )
+				+form_button( 'Next', 'primary', { left: 3 } )
 		.col-md-4
-			.page-header
-				h2 Existing member
+			+page_header( 'Existing member' )
 			p If you are already a member you can just login.
 			include /apps/login/views/partials/form.pug

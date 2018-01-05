@@ -55,5 +55,4 @@ block contents
 						include partials/event.pug
 				</div>
 			else
-				ul.list-group
-					li.list-group-item.list-group-item-default There are no events this month.
+				+messageBlock( 'info', 'There are no events to display.' )

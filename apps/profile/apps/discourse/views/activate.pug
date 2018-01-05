@@ -9,17 +9,13 @@ block contents
 			- page = 'discourse'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 Activate Discourse Link
+			+page_header( 'Activate Discourse Link' )
 			p We've sent an activation link to your Discourse Private Messages
 			p Please click the link or copy the code to link your accounts.
 
 			form( method="post", action="/profile/discourse/activate" ).form-horizontal
 				+csrf
-				.form-group
-					label( for="activation_code" ).col-md-3.control-label Activation code:
-					.col-md-6
-						input( name="activation_code", type="text", value=activation_code, class=(  activation_code ? 'readonly' : '' ) )#activation_code.form-control
+				+input( 'text', 'Activation code', 'activation_code', { left: 3, right: 4, value: activation_code, readonly: ( activation_code ? true : false ) } )
 				.form-group
 					.col-md-offset-3.col-md-6
 						button.btn.btn-primary Activate

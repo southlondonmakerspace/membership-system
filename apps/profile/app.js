@@ -126,19 +126,37 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.firstname ||
-		 ! req.body.lastname ||
- 		 ! req.body.address ) {
+		 ! req.body.lastname ) {
  			req.flash( 'danger', 'information-ommited' );
  			res.redirect( app.mountpath + '/update' );
  			return;
 	}
 
-	var postcode = '';
-	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
+	if ( ! req.body.address ) {
+		req.flash( 'danger', 'user-address' );
+		res.redirect( app.mountpath + '/update' );
+		return;
+	}
+
+	if ( req.body.address.split( '\n' ).length <= 2 ) {
+		req.flash( 'danger', 'user-address' );
+		res.redirect( app.mountpath + '/update' );
+		return;
+	}
+
+	var postcode;
+	var results = req.body.address.match( /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})/ );
 
 	if ( results ) {
 		postcode = results[0];
 	}
+
+	if ( ! postcode ) {
+		req.flash( 'danger', 'user-postcode' );
+		res.redirect( app.mountpath + '/update' );
+		return;
+	}
+
 	postcodes.lookup( postcode, function( err, data ) {
 		var profile = {
 			firstname: req.body.firstname,

@@ -70,15 +70,14 @@ app.get( '/', auth.isMember, function( req, res ) {
 		// Find event
 		Events.find( search ).populate( 'member' )
 		.populate( 'permission' )
-		.populate('item')
-    .populate('state')
+		.populate( 'item' )
+		.populate( 'state' )
 		.sort( [ [ "happened", -1 ] ] )
 		.exec( function( err, events ) {
-      if (events == null)
-      {
-        res.render ('error', {error: 'No events'})
-        return
-      }
+			if ( events == null ) {
+				res.render( 'error', { error: 'No events' } );
+				return;
+			}
 			for ( var e = 1; e < events.length; e++ ) {
 				var event = events[e];
 				var prevEvent = events[e-1];

@@ -9,8 +9,7 @@ block contents
 		.col-md-3
 			include partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 #{ title }
+			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
 				.form-group

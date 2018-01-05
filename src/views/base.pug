@@ -29,8 +29,7 @@ html
 				include partials/flash.pug
 				block heading
 					if heading
-						.page-header
-							h2 #{ heading }
+						+page_header( heading )
 				block contents
 				block footer
 					.row

@@ -9,8 +9,7 @@ block contents
 			- page = 'profile'
 			include partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 Edit Profile
+			+page_header( 'Edit Profile' )
 			form( method="post" ).form-horizontal
 				+csrf
 				.form-group
@@ -22,24 +21,9 @@ block contents
 							a( href="https://gravatar.com", target="_blank" ) Gravatar.com
 							|  using your email address #{ user.email }
 				hr
-				.form-group
-					label( for="email" ).col-md-3.control-label Email
-					.col-md-5
-						input( type="email", value=user.email, name="email", required, disabled )#email.form-control
-						span.help-block #{ Options( 'content-email-admin' ) }
+				+input( 'email', 'Email', 'email', { value: user.email, readonly: true, left: 3, right: 4, helpblock: Options( 'content-email-admin' ) } )
 				hr
-				.form-group
-					label( for="firstname" ).col-md-3.control-label First Name
-					.col-md-5
-						input( type="text", value=user.firstname, name="firstname", required )#firstname.form-control
-				.form-group
-					label( for="lastname" ).col-md-3.control-label Last Name
-					.col-md-5
-						input( type="text", value=user.lastname, name="lastname", required )#lastname.form-control
-				.form-group
-					label( for="address" ).col-md-3.control-label Address
-					.col-md-5
-						textarea( rows="4", name="address", required )#address.form-control #{ user.address }
-				.form-group
-					.col-md-5.col-md-offset-3
-						button.btn.btn-primary Update
+				+input( 'text', 'First name', 'firstname', { value: user.firstname, left: 3, right: 4 } )
+				+input( 'text', 'Last name', 'lastname', { value: user.lastname, left: 3, right: 4 } )
+				+input( 'textarea', 'Address', 'address', { value: user.address, left: 3, right: 4 } )
+				+form_button( 'Update', 'primary', { left: 3 } )

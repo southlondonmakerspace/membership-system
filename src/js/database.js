@@ -3,6 +3,7 @@ var __root = __dirname + '/../..',
 	__models = __src + '/models';
 
 var fs = require( 'fs' ),
+	path = require( 'path' ),
 	mongoose = require( 'mongoose' ),
 	ObjectId = mongoose.Schema.ObjectId,
 	crypto = require( 'crypto' );
@@ -34,9 +35,12 @@ console.log( 'Loading models:' );
 
 var files = fs.readdirSync( __models );
 for ( var f = 0; f < files.length; f++ ) {
-	var model = require( __models + '/' + files[f] );
-	console.log( '	' + model.name );
-	exports[ model.name ] = model.model;
+	var file = __models + '/' + files[f];
+	if ( path.extname( file ) == '.js' ) {
+		var model = require( file );
+		console.log( '	' + model.name );
+		exports[ model.name ] = model.model;
+	}
 }
 
 console.log();

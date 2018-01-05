@@ -37,4 +37,4 @@ block contents
 								th Total
 								th #{ total }
 			else
-				ul.list-group: li.list-group-item.list-group-item-default There are no events to count in #{ moment( start ).format( 'MMMM' ) } #{ moment( start ).format( 'Y' ) }.
+				+messageBlock( 'info', 'There are no events to count.' )

@@ -9,8 +9,7 @@ block contents
 			- page = 'tag'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			.page-header
-				h3 Replace Tag
+			+page_header( 'Replace Tag' )
 			p You already have a tag associated with your account, would you like to replace it with the tag enrolled at the kiosk on #{ date }?
 				form( method="post", action="/profile/enroll" )
 					+csrf

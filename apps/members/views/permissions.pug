@@ -10,8 +10,7 @@ block contents
 			include partials/sidebar.pug
 		.col-md-9
 			.col-md-8
-				.page-header
-					h3 Permissions
+				+page_header( "Permissions" )
 				.list-group
 					if member.permissions.length > 0
 						- admin_area = true
@@ -20,8 +19,7 @@ block contents
 					else
 						p This member has no permissions.
 			.col-md-4
-				.page-header
-					h3 Grant
+				+page_header( "Grant" )
 				- action = 'Grant'
 				include partials/permission-form.pug
 			

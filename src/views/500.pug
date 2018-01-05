@@ -9,6 +9,5 @@ block breadcrumb
 block contents
 	p The server suffered an error.
 	if error
-		.page-header
-			h3 Error:
-			pre #{ error }
+		+page_header( 'Error' )
+		pre #{ error }

@@ -16,7 +16,9 @@ module.exports = {
 			required: true
 		},
 		text: String,
-		colour: String
+		colour: String,
+		pastTense: String,
+		presentTense: String
 	} )
 };
 

@@ -18,9 +18,12 @@ mixin input( type, label, name, opts )
 		if label
 			label( for=name, class=left ).control-label #{ label }
 		div( class=right )
-			div( class=( opts.before || opts.after ? 'input-group' : null ) )
+			div( class=( opts.before || opts.after || opts.rightIcon || opts.leftIcon ? 'input-group' : null ) )
 				if opts.before
 					.input-group-addon=opts.before
+				if opts.leftIcon
+					.input-group-addon
+						span.glyphicon( class='glyphicon-' + opts.leftIcon )
 				case type
 					when 'password'
 					when 'text'
@@ -48,6 +51,9 @@ mixin input( type, label, name, opts )
 								- value = opts.options[i++]
 								option( value=key, selected=( opts.value == key ? true : false ) )=value
 						- break;
+				if opts.rightIcon
+					.input-group-addon
+						span.glyphicon( class='glyphicon-' + opts.rightIcon )
 				if opts.after
 					.input-group-addon=opts.after
 			if opts.helpblock

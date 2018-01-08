@@ -3,12 +3,13 @@ form( method="post" ).form-horizontal
 
 	+input( 'text', 'Name', 'name', { value: ( induction ? induction.name : '' ), required: true } )
 	+input( 'text', 'Slug', 'slug', { value: ( induction ? induction.slug : '' ), required: true } )
-	+input( 'text', 'Description', 'description', { value: ( induction ? induction.description : '' ) } )
+	+input( 'textarea', 'Description', 'description', { value: ( induction ? induction.description : '' ) } )
 	
 	+page_header( 'Defaults' )
-	+input( 'text', 'Places', 'places', { value: ( induction ? induction.default.places : '' ), required: true } )
-	+input( 'text', 'Cancellation window', 'cancellation_window', { value: ( induction ? induction.default.cancellation_window : '' ), required: true } )
-	+input( 'text', 'Booking window', 'booking_window', { value: ( induction ? induction.default.booking_window : '' ) } )
+	+input( 'text', 'Duration', 'duration', { value: ( induction ? induction.default.duration : '' ), required: true, after: 'minutes' } )
+	+input( 'text', 'Cancellation window', 'cancellation_window', { value: ( induction ? induction.default.cancellation_window : '' ), required: true, after: 'hours' } )
+	+input( 'text', 'Booking window', 'booking_window', { value: ( induction ? induction.default.booking_window : '' ), after: 'hours' } )
 	+input( 'radio', 'Type', 'type', { value: ( induction ? induction.default.type : '' ), required: true, options: { rr: 'Round robin', fcfs: 'First come, first served' } } )
+	+input( 'text', 'Places', 'places', { value: ( induction ? induction.default.places : '' ), required: true } )
 	
 	+form_button( formAction )

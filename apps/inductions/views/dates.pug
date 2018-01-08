@@ -1,5 +1,25 @@
 extends /src/views/base.pug
 
+block append js
+	script( type="text/javascript" src="/js/moment.min.js" )
+	script( type="text/javascript" src="/js/bootstrap-datetimepicker.min.js" )
+	script.
+		var dp;
+		jQuery( document ).ready( function() {
+			dp = jQuery( '[type="datetime"]' ).datetimepicker( {
+				locale: 'en-gb',
+				sideBySide: true,
+				format: 'ddd Do MMM YYYY [at] HH:mm'
+			} );
+			dp.on( 'dp.change', function( e ) {
+				console.log( e.date.toISOString() );
+				jQuery( '[name="when"]' ).val( e.date.toISOString() )
+			} )
+		} );
+
+block append css
+	link( rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css" )
+
 block prepend title
 	- title = 'Induction Dates'
 	- heading = '"' + induction.name + '" Dates'
@@ -9,16 +29,18 @@ block contents
 		.col-md-3
 			form( action="/inductions/" + induction.slug + '/dates/add', method='post' )
 				+csrf
-				+input( 'number', 'Duration', 'duration', { wide: true } )
-				+input( 'select', 'Type', 'type', { options: [ 'rr', 'Round robin', 'fcfs', 'First come, first serve' ], wide: true } )
-				+input( 'number', 'Places', 'places', { wide: true } )
-				+input( 'number', 'Booking window', 'booking_window', { wide: true } )
-				+input( 'number', 'Cancellation window', 'cancellation_window', { wide: true } )
+				+input( 'datetime', 'Date', 'datetime', { wide: true, rightIcon: 'calendar' } )
+				input( type="hidden", name="when" )
+				+input( 'number', 'Duration', 'duration', { value: ( induction.default.duration ? induction.default.duration : '' ), wide: true, after: 'minutes' } )
+				+input( 'number', 'Booking window', 'booking_window', { value: ( induction.default.booking_window ? induction.default.booking_window : '' ), wide: true, after: 'hours' } )
+				+input( 'number', 'Cancellation window', 'cancellation_window', { value: ( induction.default.cancellation_window ? induction.default.cancellation_window : '' ), wide: true, after: 'hours' } )
+				+input( 'select', 'Type', 'type', { value: ( induction.default.type ? induction.default.type : '' ), options: [ 'rr', 'Round robin', 'fcfs', 'First come, first serve' ], wide: true } )
+				+input( 'number', 'Places', 'places', { value: ( induction.default.places ? induction.default.places : '' ), wide: true } )
 				+form_button( 'Add', { wide: true } )
 		.col-md-9
 			for date in induction.dates
 				.panel.panel-default
 					.panel-body
-						a( href="/members/" + inductor.uuid )=moment( date.when ).format( 'dddd Do MMMM YYYY at HH:mm' )
+						a( href="/members/" + inductor.uuid )=moment( date.when ).format( 'dddd Do MMMM YYYY [at] HH:mm' )
 						span.pull-right
 							a( href="/inductions/" + induction.slug + '/dates/' + date.uuid + '/cancel' ).btn.btn-sm.btn-danger Cancel

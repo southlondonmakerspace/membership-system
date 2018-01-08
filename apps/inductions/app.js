@@ -20,6 +20,8 @@ var	db = require( __js + '/database' ),
 	Inductions = db.Inductions,
 	Members = db.Members;
 
+var moment = require( 'moment' );
+
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
@@ -98,6 +100,7 @@ app.post( '/create', auth.isAdmin, function( req, res ) {
 		default: {
 			type: req.body.type,
 			places: req.body.places,
+			duration: req.body.duration,
 			booking_window: req.body.booking_window,
 			cancellation_window: req.body.cancellation_window
 		}
@@ -191,6 +194,7 @@ app.post( '/:slug/edit', auth.isAdmin, function( req, res ) {
 		default: {
 			type: req.body.type,
 			places: req.body.places,
+			duration: req.body.duration,
 			booking_window: req.body.booking_window,
 			cancellation_window: req.body.cancellation_window
 		}
@@ -313,6 +317,34 @@ app.get( '/:slug/dates', auth.isAdmin, function( req, res ) {
 		} );
 
 		res.render( 'dates', { induction: induction } );
+	} );
+} );
+
+app.post( '/:slug/dates/add', auth.isAdmin, function( req, res ) {
+	Inductions.findOne( { slug: req.params.slug }, function( err, induction ) {
+		if ( ! induction ) {
+			req.flash( 'warning', 'induction-404' );
+			res.redirect( app.mountpath );
+			return;
+		}
+
+		induction.dates.push( {
+			when: moment( req.body.when ).toDate(),
+			duration: parseInt( req.body.duration ),
+			type: req.body.type,
+			places: parseInt( req.body.places ),
+			booking_window: parseInt( req.body.booking_window ),
+			cancellation_window: parseInt( req.body.cancellation_window ),
+			bookings: []
+		} );
+
+		console.log( induction.dates );
+
+		// induction.save( function( a, b, c ) {
+		// 	console.log( a );
+			req.flash( 'success', 'induction-date-added' );
+			res.redirect( app.mountpath + '/' + induction.slug + '/dates' );
+		// } );
 	} );
 } );
 

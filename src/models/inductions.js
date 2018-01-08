@@ -54,30 +54,28 @@ module.exports = {
 				last_offer: Date
 			}
 		],
-		dates: [
-			{
-				uuid: {
-					type: String,
-					unique: true,
-					default: function () { // pseudo uuid4
-						function s4() {
-							return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
-						}
-						return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-					}
-				},
-				when: Date,
-				duration: Number,
+		dates: [ {
+			uuid: {
 				type: String,
-				places: Number,
-				booking_window: Number,
-				cancellation_window: Number,
-				bookings: [ {
-					type: ObjectId,
-					ref: 'Members',
-				} ]
-			}
-		]
+				unique: true,
+				default: function () { // pseudo uuid4
+					function s4() {
+						return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
+					}
+					return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+				}
+			},
+			when: Date,
+			duration: Number,
+			type: String,
+			places: Number,
+			booking_window: Number,
+			cancellation_window: Number,
+			bookings: [ {
+				type: ObjectId,
+				ref: 'Members',
+			} ]
+		} ]
 	} )
 };
 

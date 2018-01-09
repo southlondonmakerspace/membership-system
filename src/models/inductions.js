@@ -67,7 +67,9 @@ module.exports = {
 			},
 			when: Date,
 			duration: Number,
-			type: String,
+			type: {
+				type: String
+			},
 			places: Number,
 			booking_window: Number,
 			cancellation_window: Number,

@@ -71,13 +71,7 @@ app.get( '/enroll', auth.isAPIAuthenticated, function( req, res ) {
 			} );
 		}
 
-		Enroll.findOne( { tag: req.query.tag }, function( err, record ) {
-			if ( record ) {
-				return res.json( {
-					error: Options.getText( 'flash-enroll-inprogress' )
-				} );
-			}
-
+		Enroll.findOne( { tag: req.query.tag } ).remove().exec();//, function( err, record ) {
 			auth.generateActivationCode( function( code ) {
 				new Enroll( {
 					tag: req.query.tag,
@@ -104,7 +98,7 @@ app.get( '/enroll', auth.isAPIAuthenticated, function( req, res ) {
 					);
 				} );
 			} );
-		} );
+		// } );
 	} );
 } );
 

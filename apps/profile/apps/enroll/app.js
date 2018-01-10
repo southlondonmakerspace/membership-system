@@ -76,9 +76,14 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 					return;
 				}
 
+				if ( req.body.replace && req.user.tag && req.user.tag.id ) {
+					console.log( 'Revoking tag: ' + req.user.tag.id + ' for user: ' + req.user.email );
+				}
 				req.user.tag.id = record.tag;
 				req.user.tag.hashed = auth.hashTag( record.tag );
 				req.user.save( function( error ) {
+					console.log( 'Enrolling tag: ' + record.tag + ' for user: ' + req.user.email );
+
 					record.remove( function( error ) {} );
 					req.flash( 'success', 'enroll-success' );
 					res.redirect( '/profile/tag' );

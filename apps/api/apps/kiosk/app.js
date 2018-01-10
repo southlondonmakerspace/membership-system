@@ -67,7 +67,7 @@ app.get( '/enroll', auth.isAPIAuthenticated, function( req, res ) {
 	Members.findOne( { 'tag.id': req.query.tag }, function( err, member ) {
 		if ( member ) {
 			return res.json( {
-				error: Options.getText( 'flash-enroll-duplicate' )
+				error: Options.getText( 'flash-enroll-dupe' )
 			} );
 		}
 

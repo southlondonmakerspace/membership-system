@@ -163,6 +163,6 @@
 	"flash-enroll-invalid": "Enroll code invalid",
 	"flash-enroll-expired": "Enroll code expired",
 	"flash-enroll-success": "Tag successful enrolled",
-	"flash-enroll-duplicate": "Tag already enrolled",
+	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag"
 }

@@ -1,0 +1,28 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block contents
+	.page-header
+		h2=title
+			if access( 'admin' )
+				a.pull-right.btn.btn-default( href="/inductions/create" )
+					span.glyphicon.glyphicon-plus
+					|  Create
+	if inductions.length > 0
+		for induction in inductions
+			.panel.panel-default
+				.panel-heading: strong: a( href="/inductions/" + induction.slug )=induction.name
+				.panel-body=induction.description
+				if induction.inductors.length > 0
+					.panel-body
+						dl.dl-horizontal
+							dt Inductors: 
+							dd
+								for inductor in induction.inductors
+									a( href="/members/" + inductor.uuid )
+										.badge.badge=inductor.fullname
+									|  
+	else
+		+messageBlock( 'info', 'There are no inductions to display.' )

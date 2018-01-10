@@ -1,43 +1,16 @@
 form( method="post" ).form-horizontal
 	+csrf
-	.form-group
-		label( for="name" ).col-md-2 Name:
-		.col-md-4
-			input( name="name", type="text", value=( permission ? permission.name : '' ), required )#name.form-control
-	.form-group
-		label( for="slug" ).col-md-2 Slug:
-		.col-md-4
-			input( name="slug", type="text", value=( permission ? permission.slug : '' ), required )#slug.form-control
-			span.help-block Used by the API for verifying permissions.
-	.form-group
-		label( for="description" ).col-md-2 Description:
-		.col-md-4
-			input( name="description", type="text", value=( permission ? permission.description : '' ) )#description.form-control
-			span.help-block Displayed on member pages to explain what the permission allows.
+	+input( 'text', 'Name', 'name', { value: ( permission ? permission.name : '' ), required: true } )
+	+input( 'text', 'Slug', 'slug', { value: ( permission ? permission.slug : '' ), required: true, helpblock: 'Used by the API for verifying permissions' } )
+	+input( 'text', 'Description', 'description', { value: ( permission ? permission.description : '' ), required: true, helpblock: 'Displayed on member pages to explain what the permission allows' } )
+	
 	+page_header( 'Event Logging' )
-	.form-group
-		label( for="event" ).col-md-2 Authorised:
-		.col-md-4
-			input( name="event", type="text", value=( permission ? permission.event_name : '' ) )#event.form-control
-			span.help-block What text should appear in the event log when this permission is used with the API successfully.
-	.form-group
-		label( for="event_unauthorised" ).col-md-2 Unauthorised:
-		.col-md-4
-			input( name="event_unauthorised", type="text", value=( permission ? permission.event_unauthorised : '' ) )#event_unauthorised.form-control
-			span.help-block What text should appear in the event log when the user is prevented from using this permission on the API.
+	+input( 'text', 'Authorised', 'event', { value: ( permission ? permission.event_name : '' ), helpblock: 'What text should appear in the event log when this permission is used with the API successfully' } )
+	+input( 'text', 'Unauthorised', 'event_unauthorised', { value: ( permission ? permission.event_unauthorised : '' ), helpblock: 'What text should appear in the event log when the user is prevented from using this permission on the API' } )
+	
 	+page_header( 'Discourse Group' )
-	.form-group
-		label( for="group_id" ).col-md-2 ID:
-		.col-md-4
-			input( name="group_id", type="text", value=( permission ? permission.group.id : '' ) )#group_id.form-control
-	.form-group
-		label( for="group_name" ).col-md-2 Name:
-		.col-md-4
-			input( name="group_name", type="text", value=( permission ? permission.group.name : '' ) )#group_name.form-control
-	.form-group
-		label( for="group_order" ).col-md-2 Primary Group Order:
-		.col-md-4
-			input( name="group_order", type="text", value=( permission ? permission.group.order : '' ) )#group_order.form-control
-	.form-group
-		.col-md-4.col-md-offset-2
-			button.btn.btn-primary #{ action }
+	+input( 'text', 'ID', 'group_id', { value: ( permission ? permission.group.id : '' )} )
+	+input( 'text', 'Name', 'group_name', { value: ( permission ? permission.group.name : '' ) } )
+	+input( 'text', 'Primary Group Order', 'group_order', { value: ( permission ? permission.group.order : '' ) } )
+	
+	+form_button( action )

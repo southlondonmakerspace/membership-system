@@ -12,6 +12,6 @@ block contents
 			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'text', 'Username', 'username', { value: member.discourse.username, right: 4 } )
-				+input( 'checkbox', '', 'activated', { value: member.discourse.activated, options: { activated: 'Activated' }, right: 4 } )
-				+form_button( 'Update', 'primary' )
+				+input( 'text', 'Username', 'username', { value: member.discourse.username } )
+				+input( 'checkbox', '', 'activated', { value: member.discourse.activated, options: { activated: 'Activated' } } )
+				+form_button( 'Update' )

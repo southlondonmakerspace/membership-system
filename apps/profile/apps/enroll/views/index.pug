@@ -14,4 +14,4 @@ block contents
 			form( method="post" action="/profile/enroll" ).form-horizontal
 				+csrf
 				+input( 'text', 'Code', 'enrollment_code', { readonly: ( enrollment_code ? true : false ) } )
-				+form_button( 'Enroll', 'primary' )
+				+form_button( 'Enroll' )

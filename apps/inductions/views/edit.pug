@@ -1,0 +1,9 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Edit Induction'
+	- heading = 'Edit "' + induction.name + '" Induction'
+
+block contents
+	- formAction = 'Update'
+	include partials/form.pug

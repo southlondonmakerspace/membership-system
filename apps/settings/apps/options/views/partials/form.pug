@@ -1,9 +1,4 @@
 form( method="post" ).form-horizontal
 	+csrf
-	.form-group
-		label( for="value" ).col-md-2 Value:
-		.col-md-4
-			input( name="value", type="text", value=( option && ! option.default ? option.value : '' ), placeholder=( option && option.default ? option.value : '' ) )#value.form-control
-	.form-group
-		.col-md-4.col-md-offset-2
-			button.btn.btn-primary #{ action }
+	+input( 'text', 'Value', 'value', { value: ( option && ! option.default ? option.value : '' ), placeholder: ( option && option.default ? option.value : '' ) } )
+	+form_button( action )

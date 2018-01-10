@@ -1,0 +1,9 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Create Induction'
+	- heading = title
+
+block contents
+	- formAction = 'Create'
+	include partials/form.pug

@@ -57,51 +57,32 @@ app.get( '/', auth.isMember, function( req, res ) {
 			$lt: endDate
 		}
 	};
-	// FILTER: Permission Success
-	if ( req.query.successful && ! req.query.unsuccessful ) search.successful = { $ne: false };
-	if ( req.query.unsuccessful && ! req.query.successful ) search.successful = false;
 
-	// FILTER: Permission
-	Permissions.findOne( { slug: req.query.permission }, function( err, permission ) {
-		if ( permission ) {
-			search.permission = permission._id;
-		}
-
-		// Find event
-		Events.find( search ).populate( 'member' )
+	// Find event
+	Events.find( search ).populate( 'member' )
 		.populate( 'permission' )
 		.populate( 'item' )
 		.populate( 'state' )
 		.sort( [ [ "happened", -1 ] ] )
 		.exec( function( err, events ) {
-			if ( events == null ) {
-				res.render( 'error', { error: 'No events' } );
-				return;
-			}
-			for ( var e = 1; e < events.length; e++ ) {
-				var event = events[e];
-				var prevEvent = events[e-1];
-				if ( event.happened.getDate() != prevEvent.happened.getDate() )
-					event.split = true;
-			}
-			var previousDate = new Date( startDate );
-			previousDate.setMonth( startDate.getMonth() - 1 );
-			// Fetch full list of permissions
-			Permissions.find( { event_name: { $exists: true, $ne: '' } }, function( err, permissions ) {
-				var selected = req.query;
-				if ( Object.keys( req.query ).length === 0 ) {
-					selected.successful = 'on';
-					selected.unsuccessful = 'on';
-				}
-				res.render( 'index', {
-					events: events,
-					previous: previousDate,
-					next: endDate,
-					searchDate: startDate,
-					permissions: permissions,
-					selected: selected
-				} );
-			} );
+		if ( events == null ) {
+			res.render( 'error', { error: 'No events' } );
+			return;
+		}
+		for ( var e = 1; e < events.length; e++ ) {
+			var event = events[e];
+			var prevEvent = events[e-1];
+			if ( event.happened.getDate() != prevEvent.happened.getDate() )
+				event.split = true;
+		}
+		var previousDate = new Date( startDate );
+		previousDate.setMonth( startDate.getMonth() - 1 );
+
+		res.render( 'index', {
+			events: events,
+			previous: previousDate,
+			next: endDate,
+			searchDate: startDate
 		} );
 	} );
 } );

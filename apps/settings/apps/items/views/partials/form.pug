@@ -1,12 +1,12 @@
 form( method="post" ).form-horizontal
 	+csrf
-	+input( 'text', 'Name', 'name', { value: ( item ? item.name : '' ), required: true, right: 4 } )
-	+input( 'text', 'Slug', 'slug', { value: ( item ? item.slug : '' ), required: true, helpblock: 'Use by the API for linking items', right: 4 } )
-	+input( 'text', 'Description', 'description', { value: ( item ? item.description : '' ), required: true, helpblock: 'Displayed where the item is listed', right: 4 } )
-	+input( 'text', 'Guide URL', 'guide', { value: ( item ? item.guide : '' ), required: true, helpblock: 'A link to a guide about the item', right: 4 } )
+	+input( 'text', 'Name', 'name', { value: ( item ? item.name : '' ), required: true } )
+	+input( 'text', 'Slug', 'slug', { value: ( item ? item.slug : '' ), required: true, helpblock: 'Use by the API for linking items' } )
+	+input( 'text', 'Description', 'description', { value: ( item ? item.description : '' ), required: true, helpblock: 'Displayed where the item is listed' } )
+	+input( 'text', 'Guide URL', 'guide', { value: ( item ? item.guide : '' ), required: true, helpblock: 'A link to a guide about the item' } )
 	.form-group
 		label( for="defaultState ").col-md-2.control-label Default State
-		.col-md-4
+		.col-md-3
 			select( name="defaultState", required )#startingState.form-control
 				option( disabled selected ) –
 				each state, s in states
@@ -15,4 +15,4 @@ form( method="post" ).form-horizontal
 						value=state._id
 					) #{ state.text }
 			span.help-block The state which a thing must be in in order for the action to be possible
-	+form_button( formAction, 'primary' )
+	+form_button( formAction )

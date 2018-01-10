@@ -9,12 +9,21 @@ mixin input( type, label, name, opts )
 		- opts = {}
 	unless opts.id
 		- opts.id = name
+	- left = ''
+	- right = ''
+	unless opts.wide
+		- left = ( opts.left ? 'col-md-' + opts.left : 'col-md-2' )
+		- right = ( opts.right ? 'col-md-' + opts.right : 'col-md-3' )
 	.form-group
-		label( for=name, class=( opts.left ? 'col-md-' + opts.left : 'col-md-2' ) ).control-label #{ label }
-		div( class=( opts.right ? 'col-md-' + opts.right : 'col-md-3' ) )
-			div( class=( opts.before || opts.after ? 'input-group' : null ) )
+		if label
+			label( for=name, class=left ).control-label #{ label }
+		div( class=right )
+			div( class=( opts.before || opts.after || opts.rightIcon || opts.leftIcon ? 'input-group' : null ) )
 				if opts.before
 					.input-group-addon=opts.before
+				if opts.leftIcon
+					.input-group-addon
+						span.glyphicon( class='glyphicon-' + opts.leftIcon )
 				case type
 					when 'password'
 					when 'text'
@@ -33,17 +42,34 @@ mixin input( type, label, name, opts )
 									input( name=name, type=type, value=value, checked=( opts.value === true || value == opts.value ), id=name + "_" + i )
 									|  #{ text }
 						- break
+					when 'select'
+						select( name=name, type=type, required=opts.required id=opts.id, readonly=opts.readonly, class=opts.class ).form-control
+							option( disabled, selected ) #{ opts.default }
+							- i = 0
+							while i < opts.options.length
+								- key = opts.options[i++]
+								- value = opts.options[i++]
+								option( value=key, selected=( opts.value == key ? true : false ) )=value
+						- break;
+				if opts.rightIcon
+					.input-group-addon
+						span.glyphicon( class='glyphicon-' + opts.rightIcon )
 				if opts.after
 					.input-group-addon=opts.after
 			if opts.helpblock
 				span.help-block #{ opts.helpblock }
 
-mixin form_button( label, colour, opts )
+mixin form_button( label, opts )
 	unless opts
 		- opts = {}
+	- left = ''
+	- right = ''
+	unless opts && opts.wide 
+		- left = ( opts.left ? 'col-md-offset-' + opts.left : 'col-md-offset-2' )
+		- right = ( opts.right ? 'col-md-' + opts.right : 'col-md-3' )
 	.form-group
-		div( class=( opts.right ? 'col-md-' + opts.right : 'col-md-3' ), class=( opts.left ? 'col-md-offset-' + opts.left : 'col-md-offset-2' ) )
-			button.btn( class="btn-" + ( colour ? colour : 'default' ) )=label
+		div( class=left, class=right )
+			button.btn( class="btn-" + ( opts.colour ? opts.colour : 'primary' ) )=label
 
 mixin page_header( title, opts )
 	if ! opts

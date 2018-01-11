@@ -32,7 +32,7 @@ var requestLogger = bunyan.createLogger( {
 	name: 'Membership-System',
 	streams: [ {
 		type: "rotating-file",
-		path: "./access.log",
+		path: config.log,
 		period: '1d', // rotates every day
 		count: 7 // keeps 7 days
 	} ]

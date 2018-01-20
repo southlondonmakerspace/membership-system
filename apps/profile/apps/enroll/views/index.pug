@@ -13,5 +13,5 @@ block contents
 			p To complete the tag enrollment process please click Enroll below.
 			form( method="post" action="/profile/enroll" ).form-horizontal
 				+csrf
-				+input( 'text', 'Code', 'enrollment_code', { readonly: ( enrollment_code ? true : false ) } )
+				+input( 'text', 'Code', 'enrollment_code', { value: enrollment_code, readonly: ( enrollment_code ? true : false ) } )
 				+form_button( 'Enroll', 'primary' )

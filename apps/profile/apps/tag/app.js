@@ -37,6 +37,7 @@ app.get( '/revoke', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/revoke', auth.isLoggedIn, function( req, res ) {
+	console.log( 'Revoking tag: ' + req.user.tag.id + ' for user: ' + req.user.email );
 	req.user.tag.id = '';
 	req.user.tag.hashed = '';
 	req.user.save( function( err ) {

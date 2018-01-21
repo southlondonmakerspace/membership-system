@@ -434,6 +434,9 @@ var Authentication = {
 
 	// Checks password meets requirements
 	passwordRequirements: function( password ) {
+		if ( ! password )
+			return 'password-err-length';
+
 		if ( password.length < 8 )
 			return 'password-err-length';
 

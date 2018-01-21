@@ -1,13 +1,17 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
+var __config = __root + '/config/config.json';
+
+var config = require( __config );
 
 var	express = require( 'express' ),
 	app = express();
 
-var	database = require( __js + '/database' ),
-	Members = database.Members,
-	Enroll = database.Enroll;
+var	db = require( __js + '/database' ),
+	Members = db.Members,
+	Enroll = db.Enroll,
+	Permissions = db.Permissions;
 
 var moment = require( 'moment' );
 
@@ -76,14 +80,39 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 					return;
 				}
 
+				if ( req.body.replace && req.user.tag && req.user.tag.id ) {
+					console.log( 'Revoking tag: ' + req.user.tag.id + ' for user: ' + req.user.email );
+				}
 				req.user.tag.id = record.tag;
 				req.user.tag.hashed = auth.hashTag( record.tag );
-				req.user.save( function( error ) {
-					record.remove( function( error ) {} );
-					req.flash( 'success', 'enroll-success' );
-					res.redirect( '/profile/tag' );
-				} );
 
+				Permissions.findOne( { slug: config.permission.access }, function( err, permission ) {
+					var foundPermission = false;
+					for ( var p = 0; p < req.user.permissions.length; p++ ) {
+						if ( req.user.permissions[p].permission.slug == config.permission.access ) {
+							foundPermission = true;
+						}
+					}
+
+					if ( ! foundPermission ) {
+						req.user.permissions.push( {
+							permission: permission.id,
+							date_added: new Date()
+						} );
+					}
+
+					req.user.save( function( error ) {
+						console.log( 'Enrolling tag: ' + record.tag + ' for user: ' + req.user.email );
+
+						if ( ! foundPermission ) {
+							console.log( 'Granting "' + req.user.email + '" access permission' );
+						}
+
+						record.remove( function( error ) {} );
+						req.flash( 'success', 'enroll-success' );
+						res.redirect( '/profile/tag' );
+					} );
+				} );
 			} );
 		} );
 	}

@@ -86,18 +86,18 @@ function loadApps() {
 					}
 				}
 
-				output.subapps.sort( function( a, b ) {
-					return a.priority < b.priority;
-				} );
+				output.subapps.sort( sortPriority );
 
 				apps.push( output );
 			}
 		}
 	}
 
-	apps.sort( function( a, b ) {
-		return a.priority < b.priority;
-	} );
+	apps.sort( sortPriority );
+}
+
+function sortPriority( a, b ) {
+	return b.priority - a.priority;
 }
 
 function routeApps() {

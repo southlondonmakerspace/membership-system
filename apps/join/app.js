@@ -57,6 +57,15 @@ app.post( '/', function( req, res ) {
 			address: req.body.address,
 		};
 
+		if ( ! req.body.email ) {
+			req.flash( 'danger', 'user-email' );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
+			return;
+		} else {
+			req.body.email = req.body.email.toLowerCase();
+		}
+
 		if ( ! req.body.firstname ) {
 			req.flash( 'danger', 'user-firstname' );
 			req.session.joinForm = user;

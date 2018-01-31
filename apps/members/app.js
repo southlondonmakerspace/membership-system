@@ -279,7 +279,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 		var member = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
-			email: req.body.email,
+			email: req.body.email.toLowerCase(),
 			address: req.body.address
 		};
 

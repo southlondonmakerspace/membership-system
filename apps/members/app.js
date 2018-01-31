@@ -76,6 +76,8 @@ app.get( '/', auth.isMember, function( req, res ) {
 			}
 		}
 
+		var path = {};
+
 		// Add permission list to search parameters
 		var search = { $and: [] };
 		if ( filter_permissions.length > 0 ) {
@@ -95,9 +97,9 @@ app.get( '/', auth.isMember, function( req, res ) {
 				} );
 			}
 			if ( filter != [] ) search['$and'] = filter;
+			path['permission'] = 'permission=' + req.query.permission;
 		}
 
-		var path = {};
 		if ( req.query.firstname ) {
 			search['$and'].push( { firstname: new RegExp( '.*' + escapeStringRegexp( req.query.firstname ) + '.*', 'i' ) } );
 			path['firstname'] = 'firstname=' + req.query.firstname;

@@ -25,10 +25,10 @@
     "express-flash": "0.0.2",
     "express-session": "^1.12.1",
     "git-rev": "^0.2.1",
-    "helmet": "^3.5.0",
+    "helmet": "^3.10.0",
     "inquirer": "^3.0.6",
     "moment": "^2.15.1",
-    "mongoose": "^4.2.5",
+    "mongoose": "^4.13.10",
     "nodemailer": "^2.3.2",
     "notp": "^2.0.3",
     "passport": "^0.3.2",
@@ -49,8 +49,8 @@
     "watch": "npm run watch-css"
   },
   "devDependencies": {
-    "less": "^2.5.3",
     "catw": "^1.0.1",
-    "watchify": "^3.6.1"
+    "less": "^2.5.3",
+    "watchify": "^3.10.0"
   }
 }

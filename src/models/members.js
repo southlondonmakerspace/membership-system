@@ -138,6 +138,9 @@ module.exports = {
 			},
 			next_possible_charge_date: {
 				type: Date
+			},
+			amount: {
+				type: Number
 			}
 		},
 		permissions: [ {

@@ -246,6 +246,7 @@ function cancelledSubscription( event ) {
 		if ( ! member ) return console.log( 'Subscription ID: ' + event.links.subscription + ' was not associated with a user' );
 		console.log( 'Removing subscription ID: ' + event.links.subscription + ' for user: ' + member.email );
 		member.gocardless.subscription_id = '';
+		member.gocardless.amount = '';
 		member.save( function( err ) {} );
 	} );
 }
@@ -281,6 +282,8 @@ function cancelledMandate( event ) {
 		if ( ! member ) return console.log( 'Mandate ID: ' + event.links.mandate + ' was not associated with a user' );
 		console.log( 'Removing mandate ID: ' + event.links.mandate + ' for user: ' + member.email );
 		member.gocardless.mandate_id = '';
+		member.gocardless.next_possible_charge_date = '';
 		member.save( function( err ) {} );
+
 	} );
 }

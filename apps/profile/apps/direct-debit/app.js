@@ -82,7 +82,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			dates: dates
 		} );
 	} else {
-		res.render( 'complete' );
+		res.render( 'complete', { amount: req.user.gocardless.amount } );
 	}
 } );
 
@@ -113,7 +113,7 @@ app.get( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.mandate_id ) {
 		GoCardless.cancelMandate( req.user.gocardless.mandate_id, function( error, status, body ) {
-			Members.update( { _id: req.user._id }, { $set: { 'gocardless.mandate_id': '' } }, function( err ) {} );
+			Members.update( { _id: req.user._id }, { $unset: { 'gocardless.mandate_id': true, 'gocardless.next_possible_charge_date': true } }, function( err ) {} );
 			if ( error ) {
 				req.flash( 'danger', 'gocardless-mandate-cancellation-err' );
 				res.redirect( app.parent.mountpath + app.mountpath );
@@ -154,12 +154,12 @@ app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
 		return res.redirect( app.parent.mountpath + app.mountpath );
 	}
 
-	GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id, body ) {
+	GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id, body, amount ) {
 		if ( error ) {
 			req.flash( 'danger', 'gocardless-subscription-err' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 		} else {
-			Members.update( { _id: req.user._id }, { $set: { "gocardless.subscription_id": subscription_id } }, function ( err ) {
+			Members.update( { _id: req.user._id }, { $set: { "gocardless.subscription_id": subscription_id, 'gocardless.amount': req.body.amount } }, function ( err ) {
 				req.flash( 'success', 'gocardless-subscription-success' );
 				res.redirect( app.parent.mountpath + app.mountpath );
 			} );
@@ -179,7 +179,7 @@ app.get( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.subscription_id ) {
 		GoCardless.cancelSubscription( req.user.gocardless.subscription_id, function( error, status, body ) {
-			Members.update( { _id: req.user._id }, { $set: { 'gocardless.subscription_id': '' } }, function( err ) {} );
+			Members.update( { _id: req.user._id }, { $unset: { 'gocardless.subscription_id': true, 'gocardless.amount': true } }, function( err ) {} );
 			if ( error ) {
 				req.flash( 'danger', 'gocardless-subscription-cancellation-err' );
 				res.redirect( app.parent.mountpath + app.mountpath );

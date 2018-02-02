@@ -4,6 +4,13 @@ var __src = __dirname + '/src';
 var __js = __src + '/js';
 var __views = __src + '/views';
 
+console.log();
+console.log( "GoCardless Web Hook" );
+console.log( "===================" );
+console.log();
+console.log( "Starting..." );
+console.log();
+
 var config = require( __config ),
 	db = require( __dirname + '/src/js/database' ).connect( config.mongo ),
 	express = require( 'express' ),
@@ -20,8 +27,6 @@ var Members = db.Members,
 	Payments = db.Payments;
 
 var Mail = require( __js + '/mail' );
-
-console.log( "Starting..." );
 
 app.post( '/', textBodyParser, function( req, res ) {
 	if ( req.headers['webhook-signature'] && req.headers['content-type'] == 'application/json' ) {
@@ -46,26 +51,49 @@ app.post( '/', textBodyParser, function( req, res ) {
 // Start server
 var listener = app.listen( config.gocardless.port, config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
+	console.log();
 } );
 
 function handleResourceEvent( event ) {
-	if ( event.resource_type == 'payments' ) {
-		switch( event.action ) {
-			case 'created': // Pending
-				createPayment( event );
-				break;
-			case 'confirmed': // Collected
-				extendMembership( event );
-			case 'submitted': // Processing
-			case 'cancelled': // Cancelled
-			case 'failed': // Failed
-			case 'paid_out': // Received
-				updatePayment( event );
-				break;
-			default:
-				console.log( 'Unknown event: ' );
-				console.log( event );
-		}
+	if ( config.dev ) {
+		console.log();
+		console.log( event );
+		console.log();
+	}
+
+	switch( event.resource_type ) {
+		case 'payments':
+			handlePaymentResourceEvent( event );
+			break;
+		case 'subscriptions':
+			handleSubscriptionResourceEvent( event );
+			break;
+		case 'mandates':
+			handleMandateResourceEvent( event );
+			break;
+		default:
+			console.log( 'Unknown event resource type: ' );
+			console.log( event );
+			break;
+	}
+}
+
+function handlePaymentResourceEvent( event ) {
+	switch( event.action ) {
+		case 'created': // Pending
+			createPayment( event );
+			break;
+		case 'confirmed': // Collected
+			extendMembership( event );
+		case 'submitted': // Processing
+		case 'cancelled': // Cancelled
+		case 'failed': // Failed
+		case 'paid_out': // Received
+			updatePayment( event );
+			break;
+		default:
+			console.log( 'Unknown payment event: ' );
+			console.log( event );
 	}
 }
 
@@ -191,4 +219,68 @@ function sendNewMemberEmail( member ) {
 			firstname: member.firstname
 		}
 	);
+}
+
+function handleSubscriptionResourceEvent( event ) {
+	switch( event.action ) {
+		case 'created':
+		case 'customer_approval_granted':
+		case 'payment_created':
+		case 'amended':
+			// Do nothing, we already have the details on file.
+			break;
+		case 'customer_approval_denied':
+		case 'cancelled':
+		case 'finished':
+			// Remove the subscription from the database
+			cancelledSubscription( event );
+			break;
+		default:
+			console.log( 'Unknown subscription event: ' );
+			console.log( event );
+	}
+}
+
+function cancelledSubscription( event ) {
+	Members.findOne( { 'gocardless.subscription_id': event.links.subscription }, function( err, member ) {
+		if ( ! member ) return console.log( 'Subscription ID: ' + event.links.subscription + ' was not associated with a user' );
+		console.log( 'Removing subscription ID: ' + event.links.subscription + ' for user: ' + member.email );
+		member.gocardless.subscription_id = '';
+		member.save( function( err ) {} );
+	} );
+}
+
+function handleMandateResourceEvent( event ) {
+	switch( event.action ) {
+		case 'created':
+		case 'customer_approval_granted':
+		case 'customer_approval_skipped':
+		case 'submitted':
+		case 'active':
+		case 'transferred':
+			// Do nothing, we already have the details on file.
+			break;
+		case 'reinstated':
+			console.log( 'Mandate reinstated, its likely this mandate wont be linked to a member...' )
+			console.log( event );
+			break;
+		case 'cancelled':
+		case 'failed':
+		case 'expired':
+			// Remove the mandate from the database
+			cancelledMandate( event );
+			break;
+		default:
+			console.log( 'Unknown mandate event: ' );
+			console.log( event );
+	}
+}
+
+function cancelledMandate( event ) {
+	Members.findOne( { 'gocardless.mandate_id': event.links.mandate }, function( err, member ) {
+		if ( ! member ) return console.log( 'Mandate ID: ' + event.links.mandate + ' was not associated with a user' );
+		console.log( 'Removing mandate ID: ' + event.links.mandate + ' for user: ' + member.email );
+		member.gocardless.mandate_id = '';
+		member.save( function( err ) {} );
+	} );
 }

@@ -81,7 +81,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			next_possible_charge_date: next_possible_charge_date,
 			dates: dates
 		} );
-	} else if ( hasMandate && hasSubscription ) {
+	} else {
 		res.render( 'complete' );
 	}
 } );

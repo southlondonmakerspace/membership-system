@@ -1,0 +1,44 @@
+.row
+	.col-md-10
+		if pagination.total > 1
+			ul.pagination
+				li( class=( ! pagination.prev ? 'disabled' : null ) ): a( href=( pagination.prev ? pagination.prev.path : null ) ) &larr;
+				each page, p in pagination.pages
+					if pagination.total > 15
+						- window = 5
+						- first = window
+						- last = pagination.total - window;
+						- half = Math.floor( pagination.total / 2 )
+						
+						if pagination.page > first && pagination.page <= last
+							- first = first - 1
+							- last = last + 1
+							
+						if page.number > first && page.number <= half && page.number == pagination.page
+							include page.pug					
+							li( class='disabled' ): a &hellip;
+						
+						if page.number <= last && page.number > half && page.number == pagination.page
+							include page.pug
+							li( class='disabled' ): a &hellip;
+						
+						if page.number == first + 1
+							li( class='disabled' ): a &hellip;
+							
+						if page.number <= first
+							include page.pug
+						
+						if page.number > last
+							include page.pug
+					else
+						include page.pug
+				li( class=( ! pagination.next ? 'disabled' : null ) ): a( href=( pagination.next ? pagination.next.path : null ) ) &rarr;
+	.col-md-2
+		if total > 10
+			.dropdown.pull-right
+				button( type="button", data-toggle="dropdown" )#limit.btn.btn-default.dropdown-toggle Per Page: #{ pagination.limit }
+					|  
+					span.caret
+				ul.dropdown-menu
+					each limit in limits
+						li: a( href=limit.path ) #{ limit.number }

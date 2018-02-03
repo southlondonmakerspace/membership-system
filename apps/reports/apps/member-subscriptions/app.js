@@ -71,6 +71,23 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 				}
 				pages.push( item );
 			}
+			// Limit
+			append_path = [];
+			Object.keys( path ).forEach( function( key ) {
+				if ( key == 'limit' ) return;
+				if ( key == 'page' ) return;
+				append_path.push( path[key] );
+			} );
+			append_path = append_path.join( '&' );
+
+			var limits = [ 10, 25, 50, 100, 250, 500, 1000 ];
+			limits.forEach( function( limit, l ) {
+				limits[l] = {
+					number: limit,
+					path: '?limit=' + limit + ( append_path ? '&' + append_path : '' )
+				}
+			} );
+			
 			var next = ( page + 1 ) <= pages.length ? pages[ page ] : null;
 			var prev = ( page - 1 ) > 0 ? pages[ page - 2 ] : null;
 			var pagination = {

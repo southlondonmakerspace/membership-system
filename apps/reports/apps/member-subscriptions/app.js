@@ -214,6 +214,11 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 					"$replaceRoot": {
 						"newRoot": "$member"
 					}
+				},
+				{
+					"$sort": {
+						"lastname": 1
+					}
 				}
 			])
 			.exec( function( err, members ) {
@@ -222,7 +227,7 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 					members[i].gravatar = '//www.gravatar.com/avatar/' + crypto.createHash( 'md5' ).update( members[i].email ).digest( 'hex' )
 				}
 				// add more detail to Members
-				console.log(members)
+
 				res.render( 'index', {
 					members: members,
 					permissions: permissions,

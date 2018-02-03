@@ -133,7 +133,6 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 
 				res.render( 'index', {
 					members: members,
-					permissions: permissions,
 					pagination: pagination,
 					limits: limits,
 					count: members ? members.length : 0,

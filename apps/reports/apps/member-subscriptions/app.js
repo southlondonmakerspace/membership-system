@@ -199,9 +199,10 @@ app.get( '/', auth.isMember, function( req, res ) {
 				members.forEach(function (member) {
 						Payments.find({member:member._id}).sort({charge_date: 'descending'}).limit(1).exec( function (err, payments) {
 							console.log(payments)
+							member.payments = payments
 						})
 				})
-
+				console.log(members)
 				res.render( 'index', {
 					members: members,
 					permissions: permissions,

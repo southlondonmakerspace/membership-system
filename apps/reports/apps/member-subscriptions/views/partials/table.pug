@@ -29,3 +29,15 @@
 									if access( 'superadmin' )
 										a.btn.btn-sm( title="Email User", href="mailto:" + member.email, class=( member.activated ? 'btn-success' : 'btn-default' ) )
 											span.glyphicon.glyphicon-envelope
+							if member.activated
+								if member.gocardless.minimum
+									td #{ member.gocardless.minimum }
+								else
+									td Default
+								if member.payments
+									td #{ member.payments[0].amount }
+								else
+									td No Payments
+							else
+								td(style="text-align:center",colspan=2) Not activated
+								

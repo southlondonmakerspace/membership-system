@@ -196,8 +196,8 @@ app.get( '/', auth.isMember, function( req, res ) {
 			Members.aggregate([
 				{ "$lookup": {
 					"from": "payments",
-					"localField": "members._id",
-					"foreignField": "member",
+					"localField": "member",
+					"foreignField": "members._id",
 					"as":"payments"
 				}}
 			])

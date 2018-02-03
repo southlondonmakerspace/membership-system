@@ -26,6 +26,8 @@ var Authentication = {
 			usernameField: 'email'
 		}, function( email, password, done ) {
 
+				if ( email ) email = email.toLowerCase();
+				
 				// Search for member by email address
 				Members.findOne( { email: email }, function( err, user ) {
 					// If a user is found validate password

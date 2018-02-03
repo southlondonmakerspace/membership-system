@@ -41,7 +41,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
+app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		var filter_permissions = [];
 
@@ -215,6 +215,10 @@ app.get( '/', auth.isMember, function( req, res ) {
 				}
 			])
 			.exec( function( err, members ) {
+				for (var i=0;i<members.length;i++)
+				{
+					members[i].gravatar = '//www.gravatar.com/avatar/' + crypto.createHash( 'md5' ).update( members[i].email ).digest( 'hex' )
+				}
 				// add more detail to Members
 				console.log(members)
 				res.render( 'index', {

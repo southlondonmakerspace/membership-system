@@ -197,7 +197,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 			Members.find( search ).limit( limit ).skip( limit * ( page - 1 ) ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
 				// add more detail to Members
 				members.forEach(function (member) {
-						Payments.find({member:member._id}).exec( function (err, payments) {
+						Payments.find({member:member._id}).sort({charge_date: 'descending'}).limit(1).exec( function (err, payments) {
 							console.log(payments)
 						})
 				})

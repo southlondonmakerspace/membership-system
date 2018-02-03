@@ -193,15 +193,16 @@ app.get( '/', auth.isMember, function( req, res ) {
 				show_inactive_members: req.query.show_inactive_members,
 				permission: req.query.permission
 			}
-
-			Members.find( search ).limit( limit ).skip( limit * ( page - 1 ) ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
+			Members.aggregate([
+				{ "$lookup": {
+					"from": "payments",
+					"localField": "members._id",
+					"foreignField": "member",
+					"as":"payments"
+				}}
+			])
+			.exec( function( err, members ) {
 				// add more detail to Members
-				members.forEach(function (member) {
-						Payments.find({member:member._id}).sort({charge_date: 'descending'}).limit(1).exec( function (err, payments) {
-							console.log(payments)
-							member.payments = payments
-						})
-				})
 				console.log(members)
 				res.render( 'index', {
 					members: members,

@@ -1,0 +1,31 @@
+.row
+	.col-md-12
+		.table-responsive
+			table.table.table-striped.table-condensed.table-hover
+				colgroup
+					col( width='50px' )
+					if ( access( 'admin' ) )
+						col( span=3 )
+						if ( access == 'admin' )
+							col( width='50px' )
+						if access( 'superadmin' )
+							col( width='250px' )
+				thead
+					tr
+						th Gravatar
+						th First name
+						th Last name
+						th Email
+						th Minimum Subscription
+						th Current Amount
+				tbody
+					each member, m in members
+						tr( data-href="/members/" + member.uuid, style="cursor: pointer;" )
+							td: img( style="border-radius: 100%", src=member.gravatar + "?s=50&d=mm&r=g" )
+							td #{ member.firstname }
+							td #{ member.lastname }
+							td
+								.btn-group.admin-btns
+									if access( 'superadmin' )
+										a.btn.btn-sm( title="Email User", href="mailto:" + member.email, class=( member.activated ? 'btn-success' : 'btn-default' ) )
+											span.glyphicon.glyphicon-envelope

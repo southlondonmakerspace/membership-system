@@ -1,0 +1,24 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- activeApp = 'members'
+
+block append js
+	script( src="/js/filter.js" )
+
+block contents
+	.row
+		.col-md-3
+			.page-header
+				h3 Search
+			include partials/search.pug
+		.col-md-9
+			.page-header
+				h3 #{ title } 
+					small #{ count } of #{ total } displayed
+			if count > 0
+				include partials/table.pug
+				include partials/pagination.pug
+			else
+				p No members found.

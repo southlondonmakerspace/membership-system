@@ -47,6 +47,8 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 		if ( req.query.page && req.query.page > 0 )
 			page = parseInt( req.query.page );
 
+		var path = {}
+
 		// Perform search
 		Members.count({} , function( err, total ) {
 			if ( req.query.show_inactive_members ) path.show_inactive_members = 'show_inactive_members=true';

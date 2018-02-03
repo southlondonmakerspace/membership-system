@@ -14,6 +14,8 @@ var PostcodesIO = require( 'postcodesio-client' ),
 
 var escapeStringRegexp = require( 'escape-string-regexp' );
 
+var crypto = require( 'crypto' );
+
 var moment = require( 'moment' );
 var	db = require( __js + '/database' ),
 	Permissions = db.Permissions,

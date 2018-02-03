@@ -98,22 +98,6 @@ app.get( '/', auth.isMember, function( req, res ) {
 		}
 
 		var path = {};
-		if ( req.query.firstname ) {
-			search['$and'].push( { firstname: new RegExp( '.*' + escapeStringRegexp( req.query.firstname ) + '.*', 'i' ) } );
-			path['firstname'] = 'firstname=' + req.query.firstname;
-		}
-		if ( req.query.lastname ) {
-			search['$and'].push( { lastname: new RegExp( '.*' + escapeStringRegexp( req.query.lastname ) + '.*', 'i' ) } );
-			path['lastname'] = 'lastname=' + req.query.lastname;
-		}
-		if ( req.query.email && auth.canSuperAdmin( req ) == true ) {
-			search['$and'].push( { email: new RegExp( '.*' + escapeStringRegexp( req.query.email ) + '.*', 'i' ) } );
-			path['email'] = 'email=' + req.query.email;
-		}
-		if ( req.query.discourse ) {
-			search['$and'].push( { 'discourse.username': new RegExp( '.*' + escapeStringRegexp( req.query.discourse ) + '.*', 'i' ) } );
-			path['discourse'] = 'discourse=' + req.query.discourse;
-		}
 		if ( search['$and'].length == 0 ) search = {};
 
 		// Process pagination
@@ -182,24 +166,53 @@ app.get( '/', auth.isMember, function( req, res ) {
 				if ( key == 'page' ) return;
 				append_path.push( path[key] );
 			} );
-			inactive_members_path = append_path.join( '&' );
 
-			// Search data
-			var search_data = {
-				firstname: req.query.firstname,
-				lastname: req.query.lastname,
-				email: req.query.email,
-				discourse: req.query.discourse,
-				show_inactive_members: req.query.show_inactive_members,
-				permission: req.query.permission
-			}
+/*,
+{
+	"$group": {
+		"_id": "$_id",
+		"lastPayment": {
+			"$last":"$payment"
+		}
+	}
+}*/
+
 			Members.aggregate([
-				{ "$lookup": {
-					"from": "payments",
-					"localField": "member",
-					"foreignField": "members._id",
-					"as":"payments"
-				}}
+				{
+					"$skip": limit * ( page - 1 )
+				},
+				{
+					"$limit": limit
+				},
+				{
+					"$lookup": {
+						"from": "payments",
+						"localField": "member",
+						"foreignField": "members._id",
+						"as":"payments"
+					}
+				},
+				{
+					"$unwind":  "$payments"
+				},
+				{
+					"$sort": {
+						"payments.updated": 1
+					}
+				},
+				{
+					"$group": {
+						"_id":  "$_id",
+						"member": {
+							"$last": "$$ROOT"
+						}
+					}
+				},
+				{
+					"$replaceRoot": {
+						"newRoot": "$member"
+					}
+				}
 			])
 			.exec( function( err, members ) {
 				// add more detail to Members
@@ -210,8 +223,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 					pagination: pagination,
 					limits: limits,
 					count: members ? members.length : 0,
-					total: total,
-					search: search_data
+					total: total
 				} );
 			} );
 		} );

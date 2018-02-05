@@ -1,0 +1,8 @@
+{
+	"title": "Member Subscriptions",
+	"path": "member-subscriptions",
+	"permissions": [
+		"superadmin", "admin"
+	],
+	"priority": 5
+}

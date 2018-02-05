@@ -27,7 +27,7 @@ var Authentication = {
 		}, function( email, password, done ) {
 
 				if ( email ) email = email.toLowerCase();
-				
+
 				// Search for member by email address
 				Members.findOne( { email: email }, function( err, user ) {
 					// If a user is found validate password
@@ -60,7 +60,7 @@ var Authentication = {
 									var attempts = user.password.tries;
 									user.password.tries = 0;
 									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: Options.getText( 'account-attempts' ).replace( '%', attempts ) } );
+									return done( null, { _id: user._id }, { message: Options.getText( 'flash-account-attempts' ).replace( '%', attempts ) } );
 								}
 
 								if ( user.password.iterations < config.iterations ) {

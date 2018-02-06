@@ -1,0 +1,11 @@
+version: '3'
+services:
+   db:
+     image: mongo:latest
+   membership:
+     build: .
+     depends_on:
+       - db
+     ports:
+       - "3001:3001"
+       - "3002:3002"

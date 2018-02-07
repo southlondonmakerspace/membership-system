@@ -72,7 +72,7 @@ if (config.syslog == true) {
 }
 
 var requestLogger = bunyan.createLogger( bunyanConfig );
-requestLogger.error({foo: 'bar'}, 'hello %s', 'world');
+
 app.use( bunyanMiddleware( { logger: requestLogger } ) );
 
 var app_loader = require( __js + '/app-loader' );

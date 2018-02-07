@@ -22,6 +22,7 @@ var express = require( 'express' ),
 	app = express(),
 	bunyan = require('bunyan'),
 	bunyanMiddleware = require('bunyan-middleware'),
+	SyslogStream = require('bunyan-syslog-unixdgram'),
 	http = require( 'http' ).Server( app );
 
 var Options = require( __js + '/options' )();
@@ -33,8 +34,7 @@ var bunyanConfig = {
 	streams: []
 };
 
-if (config.log != undefined)
-{
+if (config.log != undefined) {
 	bunyanConfig.streams.push({
 		type: "rotating-file",
 		path: config.log,
@@ -43,8 +43,36 @@ if (config.log != undefined)
 	})
 }
 
-var requestLogger = bunyan.createLogger( bunyanConfig );
+if (config.syslog == true) {
+	var streamOptions = {
+	    path: '/var/run/syslog'
+	}
 
+  var supported = true;
+	switch(process.platform) {
+		case 'darwin':
+			streamOptions.path = '/var/run/syslog'
+			break;
+		case 'linux':
+			streamOptions.path = '/dev/log'
+			break;
+		default:
+			console.error("syslog output only supported on Linux and OS X")
+			supported = false
+	}
+
+	if (supported) {
+		var stream = new SyslogStream( streamOptions );
+		bunyanConfig.streams.push({
+		        level: 'debug',
+		        type: 'raw', // Always use 'raw' bunyan stream
+		        stream: stream
+		    })
+	}
+}
+
+var requestLogger = bunyan.createLogger( bunyanConfig );
+requestLogger.error({foo: 'bar'}, 'hello %s', 'world');
 app.use( bunyanMiddleware( { logger: requestLogger } ) );
 
 var app_loader = require( __js + '/app-loader' );

@@ -28,15 +28,22 @@ var Options = require( __js + '/options' )();
 app.use( Options.load );
 
 // Bunyan logging
-var requestLogger = bunyan.createLogger( {
+var bunyanConfig = {
 	name: 'Membership-System',
-	streams: [ {
+	streams: []
+};
+
+if (config.log != undefined)
+{
+	bunyanConfig.streams.push({
 		type: "rotating-file",
 		path: config.log,
 		period: '1d', // rotates every day
 		count: 7 // keeps 7 days
-	} ]
-} );
+	})
+}
+
+var requestLogger = bunyan.createLogger( bunyanConfig );
 
 app.use( bunyanMiddleware( { logger: requestLogger } ) );
 

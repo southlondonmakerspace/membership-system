@@ -45,29 +45,29 @@ if (config.log != undefined) {
 
 if (config.syslog == true) {
 	var streamOptions = {
-	    path: '/var/run/syslog'
+		path: '/var/run/syslog'
 	}
 
-  var supported = true;
-	switch(process.platform) {
+	var supported = true;
+	switch ( process.platform ) {
 		case 'darwin':
-			streamOptions.path = '/var/run/syslog'
+			streamOptions.path = '/var/run/syslog';
 			break;
 		case 'linux':
-			streamOptions.path = '/dev/log'
+			streamOptions.path = '/dev/log';
 			break;
 		default:
-			console.error("syslog output only supported on Linux and OS X")
+			console.error( "syslog output only supported on Linux and OS X" );
 			supported = false
 	}
 
-	if (supported) {
+	if ( supported ) {
 		var stream = new SyslogStream( streamOptions );
-		bunyanConfig.streams.push({
-		        level: 'debug',
-		        type: 'raw', // Always use 'raw' bunyan stream
-		        stream: stream
-		    })
+		bunyanConfig.streams.push( {
+			level: 'debug',
+			type: 'raw',
+			stream: stream
+		} );
 	}
 }
 

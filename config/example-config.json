@@ -37,5 +37,6 @@
 	"password-tries": 3,
 	"iterations": 50000,
 	"dev": true,
-	"log": "/var/log/membership.log"
+	"log": "/var/log/membership.log",
+	"logStdout": false
 }

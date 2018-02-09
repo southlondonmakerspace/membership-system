@@ -12,5 +12,9 @@ block contents
 			+page_header( 'Direct Debit' )
 			.row
 				.col-md-8
-					p Your Direct Debit mandate and subscription are set up. If you wish to make changes to the subscription, you must cancel it and set it up again.
+					p Your Direct Debit mandate and subscription are set up
+						if amount
+							| , you currently pay £#{ amount } per month
+						| .
+					p If you wish to make changes to the subscription, you must cancel it and set it up again.
 					a( href="/profile/direct-debit/cancel-subscription" ).btn.btn-danger.outline Cancel Subscription

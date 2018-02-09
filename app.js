@@ -28,7 +28,7 @@ app.use( Options.load );
 var app_loader = require( __js + '/app-loader' );
 
 // Add logging capabilities
-app.use( require( __js + '/logging' ) );
+require( __js + '/logging' )( app );
 
 // Use helmet
 app.use( helmet() );

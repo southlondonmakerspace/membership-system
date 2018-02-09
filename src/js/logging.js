@@ -18,11 +18,17 @@ var bunyanConfig = {
 	streams: []
 };
 
-if ( config.logStdout != undefined ) {
+if ( config.logStdout != undefined && config.logStdout == true) {
 	bunyanConfig.streams.push(
 		{
-			level: 'debug',
+			level: 'info',
 			stream: process.stdout
+		}
+	)
+	bunyanConfig.streams.push(
+		{
+			level: 'error',
+			stream: process.stderr
 		}
 	)
 }
@@ -64,6 +70,43 @@ if (config.syslog == true) {
 	}
 }
 
+function loggingMiddleware(req, res, next) {
+	var log = req.log;
+	function logAThing( level, params )
+	{
+		if (params.sensitive)
+		{
+			log[level](params);
+			delete params.sensitive;
+		}
+		log[level](params);
+	}
+
+	req.log = {
+		info: function (params)
+		{
+			logAThing( 'info', params );
+		},
+		debug: function (params)
+		{
+			logAThing( 'debug', params );
+		},
+		error: function (params)
+		{
+			logAThing( 'error', params );
+		},
+		fatal: function (params)
+		{
+			logAThing( 'fatal', params );
+		}
+	}
+	next();
+}
+
 var requestLogger = bunyan.createLogger( bunyanConfig );
 
-module.exports =  bunyanMiddleware( { logger: requestLogger } );
+
+module.exports = function (app) {
+	app.use( bunyanMiddleware( { logger: requestLogger, level: "debug" } ) );
+	app.use( loggingMiddleware );
+}

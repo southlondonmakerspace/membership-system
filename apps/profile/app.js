@@ -127,18 +127,45 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.firstname ||
 		 ! req.body.lastname ) {
- 			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath + '/update' );
- 			return;
+			req.log.debug( {
+				app: 'profile',
+				action: 'update',
+				error: 'First or last name were not provided',
+				sensitive: {
+					body: req.body
+				}
+			} );
+
+			req.flash( 'danger', 'information-ommited' );
+			res.redirect( app.mountpath + '/update' );
+			return;
 	}
 
 	if ( ! req.body.address ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'Address was not provided',
+			sensitive: {
+				body: req.body
+			}
+		} );
+
 		req.flash( 'danger', 'user-address' );
 		res.redirect( app.mountpath + '/update' );
 		return;
 	}
 
 	if ( req.body.address.split( '\n' ).length <= 2 ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'Address did not have enough lines',
+			sensitive: {
+				body: req.body
+			}
+		} );
+
 		req.flash( 'danger', 'user-address' );
 		res.redirect( app.mountpath + '/update' );
 		return;
@@ -152,6 +179,15 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	}
 
 	if ( ! postcode ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'Postcode was invalid or absent',
+			sensitive: {
+				body: req.body
+			}
+		} );
+
 		req.flash( 'danger', 'user-postcode' );
 		res.redirect( app.mountpath + '/update' );
 		return;
@@ -175,12 +211,30 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 
 		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 			if ( status ) {
+				req.log.debug( {
+					app: 'profile',
+					action: 'update',
+					error: 'Validation errors',
+					validation: status.errors,
+					sensitive: {
+						body: req.body
+					}
+				} );
+
 				var keys = Object.keys( status.errors );
 				for ( var k in keys ) {
 					var key = keys[k];
 					req.flash( 'danger', status.errors[key].message );
 				}
 			} else {
+				req.log.info( {
+					app: 'profile',
+					action: 'update',
+					sensitive: {
+						profile: profile
+					}
+				} );
+
 				req.flash( 'success', 'profile-updated' );
 			}
 			res.redirect( app.mountpath );

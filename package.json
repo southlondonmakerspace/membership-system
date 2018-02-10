@@ -42,7 +42,7 @@
     "thirty-two": "^1.0.2"
   },
   "scripts": {
-    "start": "node app",
+    "start": "node app | bunyan -c 'this.sensitive == false'",
     "webhook": "node webhook.js",
     "production": "npm-run-all --parallel start webhook",
     "first-time": "node tools/first-time/first-time",

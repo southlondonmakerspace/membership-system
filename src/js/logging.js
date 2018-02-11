@@ -21,7 +21,7 @@ var bunyanConfig = {
 if ( config.logStdout != undefined && config.logStdout == true) {
 	bunyanConfig.streams.push(
 		{
-			level: 'info',
+			level: 'debug',
 			stream: process.stdout
 		}
 	)
@@ -107,6 +107,6 @@ var requestLogger = bunyan.createLogger( bunyanConfig );
 
 
 module.exports = function (app) {
-	app.use( bunyanMiddleware( { logger: requestLogger, level: "debug" } ) );
+	app.use( bunyanMiddleware( { logger: requestLogger, level: "trace" } ) );
 	app.use( loggingMiddleware );
 }

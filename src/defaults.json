@@ -30,7 +30,7 @@
 	"flash-password-changed": "Password changed",
 	"flash-password-invalid": "Incorrect current password",
 	"flash-password-reset-code-err": "Invalid password reset code",
-	"flash-password-err-mismatch": "Passwords did not match",
+	"flash-password-mismatch": "Passwords did not match",
 	"flash-password-err-length": "Password must be at least 8 characters long",
 	"flash-password-err-number": "Password must contain at least 1 number",
 	"flash-password-err-letter-up": "Password must contain at least 1 uppercase letter",

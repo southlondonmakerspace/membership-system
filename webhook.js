@@ -28,6 +28,10 @@ var Members = db.Members,
 
 var Mail = require( __js + '/mail' );
 
+app.get( '/ping', function( req, res ) {
+	res.sendStatus( 200 );
+} );
+
 app.post( '/', textBodyParser, function( req, res ) {
 	if ( req.headers['webhook-signature'] && req.headers['content-type'] == 'application/json' ) {
 		GoCardless.validateWebhook( req.headers['webhook-signature'], req.body, function( valid ) {

@@ -43,7 +43,7 @@ var Authentication = {
 							// Check the hashes match
 							if ( hash == user.password.hash ) {
 
-								// Check the user account is activated (or is a config superadmin)
+								// Check the user account is activated
 								if ( ! ( user.activated ) ) {
 									return done( null, false, { message: 'inactive-account' } );
 								}

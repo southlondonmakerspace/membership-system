@@ -89,7 +89,8 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 					res.render( 'profile', {
 						user: req.user,
 						count: result,
-						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null ),
+						membership_amount: ( req.user.gocardless.amount !== undefined ? req.user.gocardless.amount: null )
 					} );
 				} );
 			} );

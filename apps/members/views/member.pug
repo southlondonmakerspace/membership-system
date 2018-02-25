@@ -21,6 +21,11 @@ block contents
 						dd On file
 					else
 						dd Not held
+					dt Tag
+					if member.tag.id
+						dd Yes
+					else
+						dd No
 			.col-md-10.col-md-offset-2
 				include partials/permissions.pug
 	else 

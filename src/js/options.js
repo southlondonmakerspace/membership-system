@@ -28,6 +28,33 @@ var Options = {
 			return;
 		}
 	},
+	getInt: function( key ) {
+		var option = _options.find( function( opt ) {
+			if ( opt.key == key ) return opt;
+		} );
+		if ( option ) {
+			return parseInt( option.value );
+		} else {
+			return;
+		}
+	},
+	getBool: function( key ) {
+		var option = _options.find( function( opt ) {
+			if ( opt.key == key ) return opt;
+		} );
+		if ( option ) {
+			switch ( option.value ) {
+				case 'true':
+					return true;
+				case 'false':
+					return false;
+				default:
+					return;
+			}
+		} else {
+			return;
+		}
+	},
 	getAll: function( callback ) {
 		callback( _options );
 	},

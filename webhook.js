@@ -208,9 +208,42 @@ function grantMembership( member ) {
 				} else {
 					sendNewMemberEmail( member );
 				}
+
+				checkMembershipCap();
 			});
 		}
 	} );
+}
+setTimeout( function() { checkMembershipCap(); }, 250 );
+
+function checkMembershipCap() {
+	if ( Options.getInt( 'signup-cap' ) > 0 ) {
+		Permissions.find( function( err, permissions ) {
+			var filter_permissions = [];
+			var member = permissions.filter( function( permission ) {
+				if ( permission.slug == config.permission.member ) return true;
+				return false;
+			} )[0];
+
+			var search = { permissions: {
+				$elemMatch: {
+					permission: member._id,
+					date_added: { $lte: new Date() },
+					$or: [
+						{ date_expires: null },
+						{ date_expires: { $gt: new Date() } }
+					]
+				}
+			} };
+
+			Members.count( search, function( err, total ) {
+				if ( total >= Options.getInt( 'signup-cap' ) ) {
+					Options.set( 'signup-closed', 'true' );
+					Options.set( 'signup-cap', '0' );
+				}
+			} );
+		} );
+	}
 }
 
 function sendNewMemberEmail( member ) {

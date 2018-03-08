@@ -1,0 +1,24 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Direct Debit'
+
+block contents
+	.row
+		.col-md-3
+			- page = 'direct-debit'
+			include /apps/profile/views/partials/sidebar.pug
+		.col-md-9
+			if show_cancel_mandate
+				+page_header( 'Cancel Membership' )
+				p You currently have a mandate setup which you can cancel here or through your bank.
+				p This will cancel all pending and future payments.
+				p You will not be able to signup again in future because we've closed signup to new and rejoining members.
+				p: a( href="/profile/direct-debit/cancel-mandate" ).btn.btn-danger.outline Cancel Subscription &amp; Mandate
+			else
+				+page_header( 'Signup Closed' )
+				p Unfortunately we are currently not taking new membership signups, click below to find out why.
+				.row
+					.col-md-9
+						p 
+						a( href=Options( 'signup-redirect' ) ).btn.btn-primary Find out more

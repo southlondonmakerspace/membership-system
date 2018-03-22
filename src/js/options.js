@@ -38,6 +38,7 @@ var Options = {
 			return;
 		}
 	},
+	// {'key':'theKEy','value':'avalue'}
 	getBool: function( key ) {
 		var option = _options.find( function( opt ) {
 			if ( opt.key == key ) return opt;
@@ -89,22 +90,10 @@ var Options = {
 	},
 	load: function( req, res, next ) {
 		res.locals.Options = Options.getText;
-		next();
-	}
-};
-
-module.exports = function() {
-	if ( global.MS_Options == undefined ) {
-		var defaultKeys = Object.keys( defaults );
-
-		defaultKeys.forEach( function( key ) {
-			_options.push( {
-				key: key,
-				value: defaults[ key ],
-				default: true
-			} );
-		} );
-
+		Options.loadFromDb(next);
+	},
+	loadFromDb: function (callback)
+	{
 		OptionsDB.find( function( err, opts ) {
 			for ( var o in opts ) {
 				var option = opts[o];
@@ -115,8 +104,24 @@ module.exports = function() {
 					}
 				} )
 			}
+			callback();
 		} );
+	},
+	firstTime: function () {
+		var defaultKeys = Object.keys( defaults );
+		defaultKeys.forEach( function( key ) {
+			_options.push( {
+				key: key,
+				value: defaults[ key ],
+				default: true
+			} );
+		} );
+	}
+};
 
+module.exports = function() {
+	if ( global.MS_Options == undefined ) {
+		Options.firstTime();
 		global.MS_Options = Options;
 	}
 	return global.MS_Options;

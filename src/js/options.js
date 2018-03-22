@@ -123,7 +123,6 @@ var Options = {
 module.exports = function() {
 	if ( global.MS_Options == undefined ) {
 		Options.firstTime();
-		Options.loadFromDb();
 		global.MS_Options = Options;
 	}
 	return global.MS_Options;

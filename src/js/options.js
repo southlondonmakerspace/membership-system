@@ -33,6 +33,7 @@ var Options = {
 			if ( opt.key == key ) return opt;
 		} );
 		if ( option ) {
+			console.log(option.value)
 			return parseInt( option.value );
 		} else {
 			return;
@@ -122,6 +123,7 @@ var Options = {
 module.exports = function() {
 	if ( global.MS_Options == undefined ) {
 		Options.firstTime();
+		Options.loadFromDb();
 		global.MS_Options = Options;
 	}
 	return global.MS_Options;

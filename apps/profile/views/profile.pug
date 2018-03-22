@@ -14,8 +14,20 @@ block contents
 				dt Joined
 				dd( style="margin-bottom: 1em;" ) #{ moment( user.joined ).fromNow() }
 				if membership_expires != undefined
-					dt Membership
+					dt Membership Expiry
 					dd( style="margin-bottom: 1em;" ) Renews #{ moment( membership_expires ).fromNow() }
+				if membership_amount != undefined
+					dt Membership Amount
+					dd( style="margin-bottom: 1em;" ) You pay £#{ membership_amount } per month
 				if count != undefined && count[0] != undefined && count[0].count != undefined
-					dt Visits this month
-					dd #{ count[0].count }
+					- count = count[0].count
+					dt Visits
+					dd( style="margin-bottom: 1em;" ) You've visited #{ ( count > 2 ? count + ' times' : ( count > 1 ? 'twice' : 'once' ) ) } this month
+					
+					if membership_amount != undefined && count > 3
+						- visit_amount = Math.round( ( membership_amount / count ) * 100 ) / 100
+						dt Cost of making
+						if visit_amount <= 3.50
+							dd( style="margin-bottom: 1em;" ) Thats only £#{ visit_amount } per visit, have you thought about contributing a bit more?
+						else
+							dd( style="margin-bottom: 1em;" ) Thats only £#{ visit_amount } per visit

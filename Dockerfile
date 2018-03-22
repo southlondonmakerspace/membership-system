@@ -1,5 +1,10 @@
 FROM node:8.9-alpine
-
+RUN apk add --update \
+    python \
+    python-dev \
+    py-pip \
+    build-base
+	 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 

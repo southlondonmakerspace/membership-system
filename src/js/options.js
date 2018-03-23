@@ -33,13 +33,11 @@ var Options = {
 			if ( opt.key == key ) return opt;
 		} );
 		if ( option ) {
-			console.log(option.value)
 			return parseInt( option.value );
 		} else {
 			return;
 		}
 	},
-	// {'key':'theKEy','value':'avalue'}
 	getBool: function( key ) {
 		var option = _options.find( function( opt ) {
 			if ( opt.key == key ) return opt;

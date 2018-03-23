@@ -4,12 +4,13 @@ RUN apk add --update \
     python-dev \
     py-pip \
     build-base
-	 
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-
-ADD ./ /usr/src/app/
+ADD package.json /usr/src/app/package.json
 RUN npm install --devDependencies
+ADD ./ /usr/src/app/
+
 
 EXPOSE 3001
 EXPOSE 3002

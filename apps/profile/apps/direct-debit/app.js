@@ -170,9 +170,9 @@ app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
 			res.redirect( app.parent.mountpath );
 			return;
 		}
-		var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : Options.getText( 'gocardless-minimum' ) );
+		var min = ( req.user.gocardless.minimum ? parseInt( req.user.gocardless.minimum ): Options.getInt( 'gocardless-minimum' ) );
 
-		if ( req.body.amount < min ) {
+		if ( parseInt( req.body.amount ) < min ) {
 			req.flash( 'danger', Options.getText( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
 			return res.redirect( app.parent.mountpath + app.mountpath );
 		}

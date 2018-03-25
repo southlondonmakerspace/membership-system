@@ -26,6 +26,7 @@
 	"flash-information-ommited": "Important information was ommited",
 
 	"flash-user-duplicate": "Unable to create account",
+	"flash-user-email": "Email required",
 	"flash-user-firstname": "First name required",
 	"flash-user-lastname": "Last name required",
 	"flash-user-address": "Address required",

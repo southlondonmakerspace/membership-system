@@ -8,8 +8,7 @@ module.exports = {
 		_id: {
 			type: ObjectId,
 			default: function() { return new mongoose.Types.ObjectId(); },
-			required: true,
-			unique: true
+			required: true
 		},
 		uuid: {
 			type: String,

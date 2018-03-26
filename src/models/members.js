@@ -8,8 +8,7 @@ module.exports = {
 		_id: {
 			type: ObjectId,
 			default: function() { return new mongoose.Types.ObjectId(); },
-			required: true,
-			unique: true
+			required: true
 		},
 		uuid: {
 			type: String,
@@ -64,6 +63,10 @@ module.exports = {
 			}
 		},
 		activated: {
+			type: Boolean,
+			default: false
+		},
+		signup_override: {
 			type: Boolean,
 			default: false
 		},

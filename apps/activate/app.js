@@ -49,6 +49,11 @@ app.post( '/', function( req, res ) {
 	} else if ( ! req.body.activation_code.match( /^\w{20}$/ ) ) {
 		req.flash( 'danger', 'activation-error' );
 		res.redirect( '/activate' );
+		req.log.debug( {
+			app: 'activate',
+			action: 'activate',
+			error: 'Incorrect activation code format.',
+		} );
 	} else {
 		Members.findOne( {
 			activation_code: req.body.activation_code,
@@ -56,6 +61,11 @@ app.post( '/', function( req, res ) {
 			if ( ! user ) {
 				req.flash( 'danger', 'activation-error' );
 				res.redirect( app.mountpath + '/' + req.body.activation_code );
+				req.log.debug( {
+					app: 'activate',
+					action: 'activate',
+					error: 'Activation code not associated with a user.',
+				} );
 				return;
 			}
 
@@ -63,6 +73,11 @@ app.post( '/', function( req, res ) {
 				if ( user.password.hash != hash ) {
 					req.flash( 'danger', 'activation-error' );
 					res.redirect( app.mountpath + '/' + req.body.activation_code );
+					req.log.debug( {
+						app: 'activate',
+						action: 'activate',
+						error: 'Incorrect password, unable to activate user.',
+					} );
 					return;
 				}
 
@@ -75,9 +90,18 @@ app.post( '/', function( req, res ) {
 						activated: true
 					}
 				}, function ( status ) {
-					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', 'activation-success' );
-					res.redirect( '/profile/setup' );
+					req.log.info( {
+						app: 'activate',
+						action: 'activate',
+						sensitive: {
+							user: user._id,
+							activation_code: req.body.activation_code
+						}
+					} );
+					req.login( user, function( err ) {
+						req.flash( 'success', 'activation-success' );
+						res.redirect( '/profile/setup' );
+					} );
 				} );
 			} );
 		} );

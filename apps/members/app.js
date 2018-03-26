@@ -730,6 +730,37 @@ app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
 	}
 } );
 
+
+
+app.get( '/:uuid/override', auth.isSuperAdmin, function( req, res ) {
+	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
+		if ( ! member ) {
+			req.flash( 'warning', 'member-404' );
+			res.redirect( app.mountpath );
+			return;
+		}
+		res.locals.breadcrumb.push( {
+			name: member.fullname,
+			url: '/members/' + member.uuid
+		} );
+		res.locals.breadcrumb.push( {
+			name: 'Signup Override',
+		} );
+		res.render( 'override', { member: member } );
+	} );
+} );
+
+app.post( '/:uuid/override', auth.isSuperAdmin, function( req, res ) {
+	var member = {
+		signup_override: ( req.body.override ? true : false )
+	};
+
+	Members.update( { uuid: req.params.uuid }, member, function( status ) {
+		req.flash( 'success', 'override-updated' );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/override' );
+	} );
+} );
+
 module.exports = function( config ) {
 	app_config = config;
 	return app;

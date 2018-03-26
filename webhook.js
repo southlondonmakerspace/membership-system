@@ -20,6 +20,9 @@ var config = require( __config ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
+// add logging capabilities
+require( __js + '/logging' )( app );
+
 var Options = require( __js + '/options' )();
 
 var Members = db.Members,
@@ -27,6 +30,10 @@ var Members = db.Members,
 	Payments = db.Payments;
 
 var Mail = require( __js + '/mail' );
+
+app.get( '/ping', function( req, res ) {
+	res.sendStatus( 200 );
+} );
 
 app.post( '/', textBodyParser, function( req, res ) {
 	if ( req.headers['webhook-signature'] && req.headers['content-type'] == 'application/json' ) {
@@ -204,10 +211,50 @@ function grantMembership( member ) {
 				} else {
 					sendNewMemberEmail( member );
 				}
+
+				checkMembershipCap();
 			});
 		}
 	} );
 }
+
+setInterval(function () {
+	Options.loadFromDb(function (){
+		if ( Options.getInt( 'signup-cap' ) > 0 ) {
+			if ( ! Options.getBool( 'signup-closed' ) )
+			{
+				Permissions.find( function( err, permissions ) {
+					var filter_permissions = [];
+					var member = permissions.filter( function( permission ) {
+						if ( permission.slug == config.permission.member ) return true;
+						return false;
+					} )[0];
+
+					var search = { permissions: {
+						$elemMatch: {
+							permission: member._id,
+							date_added: { $lte: new Date() },
+							$or: [
+								{ date_expires: null },
+								{ date_expires: { $gt: new Date() } }
+							]
+						}
+					} };
+
+					Members.count( search, function( err, total ) {
+						if ( total >= Options.getInt( 'signup-cap' ) ) {
+							console.log("Total members " + total + " is >= ", Options.getInt( 'signup-cap' ), " signup-cap, and therefore setting signup-closed to true")
+							Options.set( 'signup-closed', 'true', function () {} );
+							Options.set( 'signup-cap', '0' , function () {});
+						}
+					} );
+				} );
+			}
+		}
+	});
+},30*1000);
+
+
 
 function sendNewMemberEmail( member ) {
 	Mail.sendMail(

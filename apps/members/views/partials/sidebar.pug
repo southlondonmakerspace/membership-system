@@ -4,6 +4,7 @@ ul.nav.nav-pills.nav-stacked
 	if access( 'superadmin' )
 		li( class=( page == 'profile' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/profile' ) Profile
 		li( class=( page == 'activation' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/activation' ) Activation
+		li( class=( page == 'override' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/override' ) Signup Override
 		li( class=( page == 'tag' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/tag' ) Tag
 		if ( member.otp.activated )
 			li( class=( page == '2fa' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/2fa' ) 2FA

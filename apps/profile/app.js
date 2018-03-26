@@ -89,7 +89,8 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 					res.render( 'profile', {
 						user: req.user,
 						count: result,
-						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null ),
+						membership_amount: ( req.user.gocardless.amount !== undefined ? req.user.gocardless.amount: null )
 					} );
 				} );
 			} );
@@ -127,18 +128,45 @@ app.get( '/update', auth.isLoggedIn, function( req, res ) {
 app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.firstname ||
 		 ! req.body.lastname ) {
- 			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath + '/update' );
- 			return;
+			req.log.debug( {
+				app: 'profile',
+				action: 'update',
+				error: 'First or last name were not provided',
+				sensitive: {
+					body: req.body
+				}
+			} );
+
+			req.flash( 'danger', 'information-ommited' );
+			res.redirect( app.mountpath + '/update' );
+			return;
 	}
 
 	if ( ! req.body.address ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'Address was not provided',
+			sensitive: {
+				body: req.body
+			}
+		} );
+
 		req.flash( 'danger', 'user-address' );
 		res.redirect( app.mountpath + '/update' );
 		return;
 	}
 
 	if ( req.body.address.split( '\n' ).length <= 2 ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'Address did not have enough lines',
+			sensitive: {
+				body: req.body
+			}
+		} );
+
 		req.flash( 'danger', 'user-address' );
 		res.redirect( app.mountpath + '/update' );
 		return;
@@ -152,6 +180,15 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	}
 
 	if ( ! postcode ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'Postcode was invalid or absent',
+			sensitive: {
+				body: req.body
+			}
+		} );
+
 		req.flash( 'danger', 'user-postcode' );
 		res.redirect( app.mountpath + '/update' );
 		return;
@@ -175,12 +212,30 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 
 		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 			if ( status ) {
+				req.log.debug( {
+					app: 'profile',
+					action: 'update',
+					error: 'Validation errors',
+					validation: status.errors,
+					sensitive: {
+						body: req.body
+					}
+				} );
+
 				var keys = Object.keys( status.errors );
 				for ( var k in keys ) {
 					var key = keys[k];
 					req.flash( 'danger', status.errors[key].message );
 				}
 			} else {
+				req.log.info( {
+					app: 'profile',
+					action: 'update',
+					sensitive: {
+						profile: profile
+					}
+				} );
+
 				req.flash( 'success', 'profile-updated' );
 			}
 			res.redirect( app.mountpath );
@@ -211,12 +266,30 @@ app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
 
 	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
 		if ( status ) {
+			req.log.debug( {
+				app: 'profile',
+				action: 'emergency-contact',
+				error: 'Validation errors',
+				validation: status.errors,
+				sensitive: {
+					body: req.body
+				}
+			} );
+
 			var keys = Object.keys( status.errors );
 			for ( var k in keys ) {
 				var key = keys[k];
 				req.flash( 'danger', status.errors[key].message );
 			}
 		} else {
+			req.log.info( {
+				app: 'profile',
+				action: 'emergency-contact',
+				sensitive: {
+					profile: profile
+				}
+			} );
+
 			req.flash( 'success', 'emergency-contact-updated' );
 		}
 		res.redirect( app.mountpath );
@@ -236,14 +309,27 @@ app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
 app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.current ||
 		 ! req.body.new ||
- 		 ! req.body.verify ) {
- 			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath );
- 			return;
+		 ! req.body.verify ) {
+			req.log.debug( {
+				app: 'profile',
+				action: 'change-password',
+				error: 'Validation errors',
+				sensitive: {
+					body: req.body
+				}
+			} );
+			req.flash( 'danger', 'information-ommited' );
+			res.redirect( app.mountpath );
+			return;
 	}
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		auth.hashPassword( req.body.current, user.password.salt, user.password.iterations, function( hash ) {
 			if ( hash != user.password.hash ) {
+				req.log.debug( {
+					app: 'profile',
+					action: 'change-password',
+					error: 'Current password does not match users password',
+				} );
 				req.flash( 'danger', 'password-invalid' );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
@@ -251,12 +337,22 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 
 			var passwordRequirements = auth.passwordRequirements( req.body.new );
 			if ( passwordRequirements !== true ) {
+				req.log.debug( {
+					app: 'profile',
+					action: 'change-password',
+					error: passwordRequirements,
+				} );
 				req.flash( 'danger', passwordRequirements );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
 			}
 
 			if ( req.body.new != req.body.verify ) {
+				req.log.debug( {
+					app: 'profile',
+					action: 'change-password',
+					error: 'New password does not match verify password field',
+				} );
 				req.flash( 'danger', 'password-mismatch' );
 				res.redirect( app.mountpath + '/change-password' );
 				return;
@@ -269,6 +365,11 @@ app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
 					'password.iterations': password.iterations,
 					'password.reset_code': null,
 				} }, function( status ) {
+					req.log.info( {
+						app: 'profile',
+						action: 'change-password'
+					} );
+
 					var options = {
 						firstname: user.firstname
 					};

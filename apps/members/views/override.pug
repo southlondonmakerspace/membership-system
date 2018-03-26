@@ -1,0 +1,25 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Signup Override'
+	- page = 'override'
+
+block contents
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			+page_header( title )
+			form( method="post" ).form-horizontal
+				+csrf
+				.form-group
+					.col-md-12
+						if member.signup_override
+							input( type="hidden", name="override", value="" )
+							p Are you sure you want to prevent this member from bypassing the signup closure?
+							button.btn.btn-danger Disable Override
+						else
+							input( type="hidden", name="override", value="true" )
+							p Are you sure you want to allow this member to bypass the signup?
+							p This override will only work for one signup, if the signup fails or their subscription is cancelled they will not be able to rejoin.
+							button.btn.btn-success Enable Override

@@ -9,7 +9,11 @@
 
 	"content-email-admin": "This can only be changed by an administrator.",
 	"leaders": "directors",
-	"leader_email": "directors@example.com",
+	"leader-email": "directors@example.com",
+
+	"signup-cap": "0",
+	"signup-closed": "false",
+	"signup-redirect": "https://example.com/closed",
 
 	"flash-logged-in": "Login successful",
 	"flash-logged-out": "Logged out",
@@ -22,6 +26,7 @@
 	"flash-information-ommited": "Important information was ommited",
 
 	"flash-user-duplicate": "Unable to create account",
+	"flash-user-email": "Email required",
 	"flash-user-firstname": "First name required",
 	"flash-user-lastname": "Last name required",
 	"flash-user-address": "Address required",
@@ -30,7 +35,7 @@
 	"flash-password-changed": "Password changed",
 	"flash-password-invalid": "Incorrect current password",
 	"flash-password-reset-code-err": "Invalid password reset code",
-	"flash-password-err-mismatch": "Passwords did not match",
+	"flash-password-mismatch": "Passwords did not match",
 	"flash-password-err-length": "Password must be at least 8 characters long",
 	"flash-password-err-number": "Password must contain at least 1 number",
 	"flash-password-err-letter-up": "Password must contain at least 1 uppercase letter",
@@ -45,6 +50,8 @@
 	"flash-activation-error": "Activation code or password did not match",
 	"flash-activation-success": "You account is now active",
 	"flash-activation-updated": "Activation updated",
+
+	"flash-override-updated": "Signup override updated",
 
 	"flash-account-locked": "Maximum number of password attempts exceeded",
 	"flash-account-attempts": "There has been % attempt(s) to login to your account since you last logged in",
@@ -90,11 +97,13 @@
 	"flash-gocardless-subscription-err": "Error setting up subscription",
 	"flash-gocardless-subscription-cancelled": "Subscription cancelled",
 	"flash-gocardless-subscription-cancellation-err": "Error cancelling subscription",
+	"flash-gocardless-subscription-exists": "You already have a subscription setup",
 	"flash-gocardless-subscription-404": "Your account has no subscription",
 	"flash-gocardless-mandate-success": "Direct Debit mandate setup succesfully",
 	"flash-gocardless-mandate-err": "Error setting up Direct Debit mandate",
 	"flash-gocardless-mandate-cancelled": "Direct Debit mandate cancelled",
 	"flash-gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate",
+	"flash-gocardless-mandate-exists": "You already have a mandate setup",
 	"flash-gocardless-mandate-404": "Your account has no mandate",
 
 	"flash-event-404": "Event not found",
@@ -164,5 +173,7 @@
 	"flash-enroll-expired": "Enroll code expired",
 	"flash-enroll-success": "Tag successful enrolled",
 	"flash-enroll-dupe": "Tag already enrolled",
-	"flash-enroll-error": "Error enrolling tag"
+	"flash-enroll-error": "Error enrolling tag",
+
+	"flash-signup-closed": "Signups are currently closed"
 }

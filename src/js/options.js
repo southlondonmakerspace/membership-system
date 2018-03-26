@@ -28,6 +28,33 @@ var Options = {
 			return;
 		}
 	},
+	getInt: function( key ) {
+		var option = _options.find( function( opt ) {
+			if ( opt.key == key ) return opt;
+		} );
+		if ( option ) {
+			return parseInt( option.value );
+		} else {
+			return;
+		}
+	},
+	getBool: function( key ) {
+		var option = _options.find( function( opt ) {
+			if ( opt.key == key ) return opt;
+		} );
+		if ( option ) {
+			switch ( option.value ) {
+				case 'true':
+					return true;
+				case 'false':
+					return false;
+				default:
+					return;
+			}
+		} else {
+			return;
+		}
+	},
 	getAll: function( callback ) {
 		callback( _options );
 	},
@@ -62,22 +89,10 @@ var Options = {
 	},
 	load: function( req, res, next ) {
 		res.locals.Options = Options.getText;
-		next();
-	}
-};
-
-module.exports = function() {
-	if ( global.MS_Options == undefined ) {
-		var defaultKeys = Object.keys( defaults );
-
-		defaultKeys.forEach( function( key ) {
-			_options.push( {
-				key: key,
-				value: defaults[ key ],
-				default: true
-			} );
-		} );
-
+		Options.loadFromDb(next);
+	},
+	loadFromDb: function (callback)
+	{
 		OptionsDB.find( function( err, opts ) {
 			for ( var o in opts ) {
 				var option = opts[o];
@@ -88,8 +103,24 @@ module.exports = function() {
 					}
 				} )
 			}
+			callback();
 		} );
+	},
+	firstTime: function () {
+		var defaultKeys = Object.keys( defaults );
+		defaultKeys.forEach( function( key ) {
+			_options.push( {
+				key: key,
+				value: defaults[ key ],
+				default: true
+			} );
+		} );
+	}
+};
 
+module.exports = function() {
+	if ( global.MS_Options == undefined ) {
+		Options.firstTime();
 		global.MS_Options = Options;
 	}
 	return global.MS_Options;

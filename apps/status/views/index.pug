@@ -5,8 +5,9 @@ block prepend title
 	- heading = title
 
 block contents
-	.row
-		if items.length > 0
+	if items.length > 0
+		.row
+		
 			for item in items
 				.col-md-3
 					.panel.panel-default
@@ -22,5 +23,5 @@ block contents
 						if item.status.updated
 							.panel-footer
 								small: em Last updated #{ moment( item.status.updated ).fromNow() }.
-		else
-			+messageBlock( 'info', 'No items currently report there status to this system.' )
+	else
+		+messageBlock( 'info', 'No items currently report there status to this system.' )

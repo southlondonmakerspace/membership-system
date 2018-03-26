@@ -61,6 +61,11 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', 'user-email' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Email address not provided.'
+			} );
 			return;
 		} else {
 			req.body.email = req.body.email.toLowerCase();
@@ -70,6 +75,11 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', 'user-firstname' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'First name not provided.'
+			} );
 			return;
 		}
 
@@ -77,13 +87,23 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', 'user-lastname' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Last name not provided.'
+			} );
 			return;
 		}
 
 		if ( req.body.password != req.body.verify ) {
-			req.flash( 'danger', 'password-err-mismatch' );
+			req.flash( 'danger', 'password-mismatch' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Passwords did not match.'
+			} );
 			return;
 		}
 
@@ -92,6 +112,11 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', passwordRequirements );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Passwords did not meet password requirements: ' + passwordRequirements
+			} );
 			return;
 		}
 
@@ -99,6 +124,11 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', 'user-address' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Address not provided.'
+			} );
 			return;
 		}
 
@@ -106,6 +136,11 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', 'user-address' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Address does not have enough lines.'
+			} );
 			return;
 		}
 
@@ -120,6 +155,11 @@ app.post( '/', function( req, res ) {
 			req.flash( 'danger', 'user-postcode' );
 			req.session.joinForm = user;
 			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Address does not have a valid postcode.'
+			} );
 			return;
 		}
 
@@ -148,16 +188,40 @@ app.post( '/', function( req, res ) {
 								for ( var k in keys ) {
 									var key = keys[k];
 									req.flash( 'danger', status.errors[key].message );
+									req.log.debug( {
+										app: 'join',
+										action: 'signup',
+										error: "Mongo schema validation error: " + status.error[key].message
+									} );
 								}
 							} else if ( status.code == 11000 ) {
 								req.flash( 'danger', 'duplicate-user' );
+								req.log.debug( {
+									app: 'join',
+									action: 'signup',
+									error: 'User account already exists.'
+								} );
 							}
 							res.redirect( app.mountpath );
+							return;
 						} else {
 							var options = {
 								firstname: user.firstname,
 								activation_url: config.audience + '/activate/' + user.activation_code
 							};
+
+							req.log.info( {
+								app: 'join',
+								action: 'signup',
+								sensitive: {
+									user: {
+										firstname: user.firstname,
+										lastname: user.lastname,
+										email: user.email,
+										activation_code: user.activation_code
+									}
+								}
+							} );
 
 							Mail.sendMail(
 								req.body.email,

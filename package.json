@@ -45,7 +45,7 @@
     "start": "node app | bunyan -c 'this.sensitive == undefined'",
     "webhook": "node webhook.js",
     "production": "npm-run-all --parallel start webhook",
-    "dev": "node app | npx bunyan",
+    "dev": "nodemon app | npx bunyan",
     "first-time": "node tools/first-time/first-time",
     "new-user": "node tools/new-user/new-user",
     "import": "node tools/import/import",

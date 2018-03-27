@@ -1,13 +1,6 @@
 # Guide to Contributing
 
-If you want to contribute code, fix a bug - this is the process of how we expect this to work
-
- * Fork this repo.
- * Checkout the dev branch.
- * Make a branch from dev and make your changes.
- * Do a pull request from your branch into our dev branch, referencing the issue tag if relevent.
- * The maintainers review and approve it, as required.
- * Releases are preceded by a PR from dev into master - at this point your code will be live.
+Thanks for helping out with our development!  This guide will outline how we expect contributions to our code to work, and the best way to help our development. 
 
 ## Code of Conduct
 

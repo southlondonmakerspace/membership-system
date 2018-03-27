@@ -1,6 +1,6 @@
 # Guide to Contributing
 
-Thanks for helping out with our development!  This guide will outline how we expect contributions to our code to work, and the best way to help our development. 
+Thanks for helping out with our development!  This guide will outline how we expect contributions to our code to work, and the best way to help our development.
 
 ## Code of Conduct
 
@@ -42,14 +42,16 @@ Once you have picked an issue to work on, follow these steps:
 Once you've forked the repo (as above), setting up a development environment is quite easy so long as you have [Docker](https://docker.com/) installed.  We have a docker-compose file, so bringing up an environment should be as simple as:
 
 ```
-$ docker-compose build
-$ docker-compose up
+docker-compose build
+docker-compose up
 ```
+
+
 
 This will install the app into a container, with an accompanying MongoDB.  You'll need to create a `config/config.json` file - copy this from `config/example-config.json`, but change the following keys:
 
 ```
-	"host": "0.0.0.0",
+  "host": "0.0.0.0",
   ...
   "mongo": "mongodb://db/membership-system",
 

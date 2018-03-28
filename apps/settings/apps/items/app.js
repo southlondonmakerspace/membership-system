@@ -66,8 +66,13 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new Items( item ).save( function( err, item ) {
-		req.flash( 'success', 'item-created' );
-		res.redirect( app.parent.mountpath + app.mountpath );
+		if ( ! err ) {
+			req.flash( 'success', 'item-created' );
+			res.redirect( app.parent.mountpath + app.mountpath );
+		} else {
+			req.flash( 'danger', 'item-not-created' );
+			res.redirect( app.parent.mountpath + app.mountpath + '/create');
+		}
 	} );
 } );
 

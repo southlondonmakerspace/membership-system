@@ -66,8 +66,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new Items( item ).save( function( err, item ) {
-		if ( ! err )
-		{
+		if ( ! err ) {
 			req.flash( 'success', 'item-created' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 		} else {

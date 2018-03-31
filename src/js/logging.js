@@ -70,6 +70,8 @@ if (config.syslog == true) {
 	}
 }
 
+var logger = bunyan.createLogger( bunyanConfig );
+
 function loggingMiddleware(req, res, next) {
 	var log = req.log;
 	function logAThing( level, params )
@@ -103,10 +105,10 @@ function loggingMiddleware(req, res, next) {
 	next();
 }
 
-var requestLogger = bunyan.createLogger( bunyanConfig );
-
-
-module.exports = function (app) {
-	app.use( bunyanMiddleware( { logger: requestLogger, level: "trace" } ) );
-	app.use( loggingMiddleware );
+module.exports = {
+	installMiddleware: function (app) {
+		app.use( bunyanMiddleware( { logger: logger, level: "trace" } ) );
+		app.use( loggingMiddleware );
+	},
+	log: logger
 }

@@ -21,7 +21,7 @@ var config = require( __config ),
 	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
 // add logging capabilities
-require( __js + '/logging' )( app );
+require( __js + '/logging' ).installMiddleware( app );
 
 var Options = require( __js + '/options' )();
 

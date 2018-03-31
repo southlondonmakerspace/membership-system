@@ -28,7 +28,7 @@ app.use( Options.load );
 var app_loader = require( __js + '/app-loader' );
 
 // Add logging capabilities
-require( __js + '/logging' )( app );
+require( __js + '/logging' ).installMiddleware( app );
 
 // Use helmet
 app.use( helmet() );

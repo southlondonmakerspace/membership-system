@@ -29,6 +29,13 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isSuperAdmin, function( req, res ) {
 	States.find( function( err, states ) {
+		if ( err ) {
+			req.log.debug( {
+				app: 'settings/states',
+				action: 'index',
+				error: 'Error retrieving list of states'
+			} );
+		}
 		res.render( 'index', { states: states } );
 	} );
 } );
@@ -43,6 +50,12 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
+		req.log.debug( {
+			app: 'settings/states',
+			action: 'create',
+			error: 'Slug was not provided',
+			body: req.body
+		} );
 		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
@@ -57,6 +70,14 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 	};
 
 	new States( state ).save( function( err, action ) {
+		if ( err ) {
+			req.log.error( {
+				app: 'settings/states',
+				action: 'create',
+				error: err,
+				body: req.body
+			} );
+		}
 		req.flash( 'success', 'state-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -64,7 +85,20 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 
 app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	States.findOne( { slug: req.params.slug }, function( err, state ) {
+		if ( err ) {
+			req.log.error( {
+				app: 'settings/states',
+				action: 'edit',
+				error: "Error looking up state " + err,
+				body: req.body
+			} );
+		}
 		if ( ! state ) {
+			req.log.debug( {
+				app: 'settings/states',
+				action: 'edit',
+				error: "State to update was not found"
+			} );
 			req.flash( 'warning', 'state-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -79,12 +113,24 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.slug || req.body.slug.trim() === '' ) {
+		req.log.debug( {
+			app: 'settings/states',
+			action: 'edit',
+			error: "Slug was not provided",
+			body: req.body
+		} );
 		req.flash( 'danger', 'state-slug-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
 	if ( ! req.body.text || req.body.text.trim() === '' ) {
+		req.log.debug( {
+			app: 'settings/states',
+			action: 'edit',
+			error: "State text was not provided",
+			body: req.body
+		} );
 		req.flash( 'danger', 'state-text-required' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;

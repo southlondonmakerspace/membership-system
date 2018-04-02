@@ -194,7 +194,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	postcodes.lookup( postcode, function( err, data ) {
+	postcodes.lookup( postcode ).then( function( err, data ) {
 		var profile = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,

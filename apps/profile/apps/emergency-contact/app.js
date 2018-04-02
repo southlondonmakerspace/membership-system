@@ -6,14 +6,9 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var querystring = require("querystring");
-
 var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Members = db.Members;
-
-var Mail = require( __js + '/mail' );
 
 var config = require( __config + '/config.json' );
 

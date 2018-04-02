@@ -6,10 +6,10 @@ block prepend title
 	- title = app.title
 
 block append js
-	script( src="/js/password-requirements.js" )
+	+passwordRequirementsJS
 
 block append css
-	link( rel="stylesheet", href="/css/password-requirements.css" )
+	+passwordRequirementsCSS
 
 block contents
 	.row

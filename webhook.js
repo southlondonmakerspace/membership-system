@@ -7,8 +7,7 @@ var __views = __src + '/views';
 var log = require( __js + '/logging' ).log;
 log.info( {
 	app: 'webhook',
-	action: 'start',
-	message: 'Webhook starting'
+	action: 'start'
 } );
 
 var config = require( __config ),

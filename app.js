@@ -8,8 +8,7 @@ var __js = __src + '/js';
 var log = require( __js + '/logging' ).log;
 log.info( {
 	app: 'main',
-	action: 'start',
-	message: 'Membership system starting'
+	action: 'start'
 } );
 
 var config = require( __config );

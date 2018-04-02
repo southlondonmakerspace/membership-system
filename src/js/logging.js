@@ -83,7 +83,7 @@ function loggingMiddleware(req, res, next) {
 			params.sensitive = {};
 		}
 		if ( req.user ) {
-			params.sensitive.user = {
+			params.sensitive._user = {
 				uuid: req.user.uuid,
 				firstname: req.user.firstname,
 				lastname: req.user.lastname,

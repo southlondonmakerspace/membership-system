@@ -245,57 +245,6 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 
 } );
 
-// Emergency Contact
-////////////////////
-
-app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Emergency contact"
-	} );
-	res.render( 'emergency-contact', { user: req.user } );
-} );
-
-app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	var profile = {
-		emergency_contact: {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			telephone: req.body.telephone
-		}
-	};
-
-	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'emergency-contact',
-				error: 'Validation errors',
-				validation: status.errors,
-				sensitive: {
-					body: req.body
-				}
-			} );
-
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
-			}
-		} else {
-			req.log.info( {
-				app: 'profile',
-				action: 'emergency-contact',
-				sensitive: {
-					profile: profile
-				}
-			} );
-
-			req.flash( 'success', 'emergency-contact-updated' );
-		}
-		res.redirect( app.mountpath );
-	} );
-} );
-
 // Change Password
 //////////////////
 

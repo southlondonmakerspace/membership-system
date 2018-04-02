@@ -6,6 +6,11 @@ services:
      build: .
      depends_on:
        - db
+       - mailcatcher
      ports:
        - "3001:3001"
        - "3002:3002"
+   mailcatcher:
+     image: ministryofjustice/mailcatcher
+     ports:
+       - "1080:1080"

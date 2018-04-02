@@ -4,12 +4,12 @@ var __src = __dirname + '/src';
 var __js = __src + '/js';
 var __views = __src + '/views';
 
-console.log();
-console.log( "GoCardless Web Hook" );
-console.log( "===================" );
-console.log();
-console.log( "Starting..." );
-console.log();
+var log = require( __js + '/logging' ).log;
+log.info( {
+	app: 'webhook',
+	action: 'start',
+	message: 'Webhook starting'
+} );
 
 var config = require( __config ),
 	db = require( __dirname + '/src/js/database' ).connect( config.mongo ),
@@ -70,18 +70,16 @@ app.post( '/', textBodyParser, function( req, res ) {
 } );
 
 // Start server
-var listener = app.listen( config.gocardless.port, config.host, function () {
-	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
-	console.log();
+var listener = app.listen( config.gocardless.port ,config.host, function () {
+	log.debug( {
+		app: 'webhook',
+		action: 'start-webserver',
+		message: 'Started',
+		address: listener.address()
+	} );
 } );
 
 function handleResourceEvent( event ) {
-	if ( config.dev ) {
-		console.log();
-		console.log( event );
-		console.log();
-	}
-
 	switch( event.resource_type ) {
 		case 'payments':
 			handlePaymentResourceEvent( event );
@@ -93,8 +91,11 @@ function handleResourceEvent( event ) {
 			handleMandateResourceEvent( event );
 			break;
 		default:
-			console.log( 'Unknown event resource type: ' );
-			console.log( event );
+			log.debug( {
+				app: 'webhook',
+				action: 'unhandled-resource-event',
+				event: event
+			} );
 			break;
 	}
 }
@@ -112,14 +113,10 @@ function handlePaymentResourceEvent( event ) {
 		case 'paid_out': // Received
 			updatePayment( event );
 			break;
-		default:
-			console.log( 'Unknown payment event: ' );
-			console.log( event );
 	}
 }
 
 function createPayment( event ) {
-	console.log( 'Payment Created: (' + event.links.payment + ')' );
 	var payment = {
 		payment_id: event.links.payment,
 		created: new Date( event.created_at ),
@@ -143,25 +140,53 @@ function createPayment( event ) {
 					payment.member = member._id;
 				}
 				new Payments( payment ).save( function( err ) {
-					if ( err ) console.log( err );
+					if ( err ) {
+						log.debug( {
+							app: 'webhook',
+							action: 'payment-creation-error',
+							error: err
+						} );
+					} else {
+						log.info( {
+							app: 'webhook',
+							action: 'payment-created',
+							payment: payment,
+							member: member._id
+						} );
+					}
 				} );
 			} );
 		} else {
 			new Payments( payment ).save( function( err ) {
-				console.log( 'Unlinked payment: (' + event.links.payment + ')' );
+				log.info( {
+					app: 'webhook',
+					action: 'unlinked-payment-created',
+					payment: payment
+				} );
 			} );
 		}
 	} );
 }
 
 function updatePayment( event ) {
-	console.log( 'Payment Update: ' + event.action + ' (' + event.links.payment + ')' );
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
 		if ( ! payment ) return; // There's nothing left to do here.
 		payment.status = event.details.cause;
 		payment.updated = new Date();
 		payment.save( function( err ) {
-			if ( err ) console.log( err );
+			if ( err ) {
+				log.debug( {
+					app: 'webhook',
+					action: 'payment-update-error',
+					error: err
+				} );
+			} else {
+				log.info( {
+					app: 'webhook',
+					action: 'payment-update',
+					payment: payment
+				} );
+			}
 		} );
 	} );
 }
@@ -182,14 +207,25 @@ function extendMembership( event ) {
 						member.permissions[p].date_expires.setMinutes( 0 );
 						member.permissions[p].date_expires.setSeconds( 0 );
 						member.permissions[p].date_expires.setMilliseconds( 0 );
-						console.log( 'Extending "' + member.email + '" membership permission until: ' + member.permissions[p].date_expires );
+						log.info( {
+							app: 'webhook',
+							action: 'membership-extended',
+							until: member.permissions[p].date_expires,
+							sensitive: {
+								member: member._id
+							}
+						} );
 					}
 				}
 				if ( ! foundPermission ) grantMembership( member );
 				if ( foundPermission ) {
 					member.save( function ( err ) {
 						if ( err ) {
-							console.log( err );
+							log.debug( {
+								app: 'webhook',
+								action: 'membership-extension-error',
+								error: err
+							} );
 						}
 					} );
 				}
@@ -213,7 +249,14 @@ function grantMembership( member ) {
 			new_permission.date_expires.setSeconds( 0 );
 			new_permission.date_expires.setMilliseconds( 0 );
 
-			console.log( 'Granting "' + member.email + '" membership permission until: ' + new_permission.date_expires );
+			log.info( {
+				app: 'webhook',
+				action: 'grant-membership',
+				until: new_permission.date_expires,
+				sensitive: {
+					member: member._id
+				}
+			} );
 
 			Members.update( { _id: member._id }, {
 				$push: {
@@ -221,7 +264,11 @@ function grantMembership( member ) {
 				}
 			}, function ( err ) {
 				if ( err ) {
-					console.log( err );
+					log.debug( {
+						app: 'webhook',
+						action: 'grant-membership-error',
+						error: err
+					} );
 				} else {
 					sendNewMemberEmail( member );
 				}
@@ -257,7 +304,12 @@ setInterval(function () {
 
 					Members.count( search, function( err, total ) {
 						if ( total >= Options.getInt( 'signup-cap' ) ) {
-							console.log("Total members " + total + " is >= ", Options.getInt( 'signup-cap' ), " signup-cap, and therefore setting signup-closed to true")
+							log.info( {
+								app: 'webhook',
+								action: 'capping-membership',
+								total: total,
+								cap: Options.getInt( 'signup-cap' )
+							} );
 							Options.set( 'signup-closed', 'true', function () {} );
 							Options.set( 'signup-cap', '0' , function () {});
 						}
@@ -296,19 +348,47 @@ function handleSubscriptionResourceEvent( event ) {
 			// Remove the subscription from the database
 			cancelledSubscription( event );
 			break;
-		default:
-			console.log( 'Unknown subscription event: ' );
-			console.log( event );
 	}
 }
 
 function cancelledSubscription( event ) {
 	Members.findOne( { 'gocardless.subscription_id': event.links.subscription }, function( err, member ) {
-		if ( ! member ) return console.log( 'Subscription ID: ' + event.links.subscription + ' was not associated with a user' );
-		console.log( 'Removing subscription ID: ' + event.links.subscription + ' for user: ' + member.email );
+		if ( ! member ) {
+			log.info( {
+				app: 'webhook',
+				action: 'unlinked-subscription',
+				sensitive: {
+					subscription_id: event.links.subscription
+				}
+			} );
+			return;
+		}
+
 		member.gocardless.subscription_id = '';
 		member.gocardless.amount = '';
-		member.save( function( err ) {} );
+		member.save( function( err ) {
+			if ( err ) {
+				log.debug( {
+					app: 'webhook',
+					action: 'error-removing-subscription-id',
+					error: err,
+					sensitive: {
+						member: member._id,
+						subscription_id: event.links.subscription
+					}
+				} );
+			} else {
+				log.info( {
+					app: 'webhook',
+					action: 'removing-subscription-id',
+					sensitive: {
+						member: member._id,
+						subscription_id: event.links.subscription
+					}
+				} );
+
+			}
+		} );
 	} );
 }
 
@@ -323,8 +403,14 @@ function handleMandateResourceEvent( event ) {
 			// Do nothing, we already have the details on file.
 			break;
 		case 'reinstated':
-			console.log( 'Mandate reinstated, its likely this mandate wont be linked to a member...' )
-			console.log( event );
+			log.info( {
+				app: 'webhook',
+				action: 'mandate-reinstated',
+				message: 'Mandate reinstated, its likely this mandate wont be linked to a member...',
+				sensitive: {
+					event: event
+				}
+			} );
 			break;
 		case 'cancelled':
 		case 'failed':
@@ -332,19 +418,46 @@ function handleMandateResourceEvent( event ) {
 			// Remove the mandate from the database
 			cancelledMandate( event );
 			break;
-		default:
-			console.log( 'Unknown mandate event: ' );
-			console.log( event );
 	}
 }
 
 function cancelledMandate( event ) {
 	Members.findOne( { 'gocardless.mandate_id': event.links.mandate }, function( err, member ) {
-		if ( ! member ) return console.log( 'Mandate ID: ' + event.links.mandate + ' was not associated with a user' );
-		console.log( 'Removing mandate ID: ' + event.links.mandate + ' for user: ' + member.email );
+		if ( ! member ) {
+			log.info( {
+				app: 'webhook',
+				action: 'unlinked-mandate',
+				sensitive: {
+					mandate_id: event.links.mandate
+				}
+			} );
+			return;
+		}
 		member.gocardless.mandate_id = '';
 		member.gocardless.next_possible_charge_date = '';
-		member.save( function( err ) {} );
+		member.save( function( err ) {
+			if ( err ) {
+				log.debug( {
+					app: 'webhook',
+					action: 'error-removing-mandate-id',
+					error: err,
+					sensitive: {
+						member: member._id,
+						mandate_id: event.links.mandate
+					}
+				} );
+			} else {
+				log.info( {
+					app: 'webhook',
+					action: 'removing-mandate-id',
+					sensitive: {
+						member: member._id,
+						mandate_id: event.links.mandate
+					}
+				} );
+
+			}
+		} );
 
 	} );
 }

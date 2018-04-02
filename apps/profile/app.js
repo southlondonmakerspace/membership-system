@@ -13,8 +13,6 @@ var PostcodesIO = require( 'postcodesio-client' ),
 
 var moment = require( 'moment' );
 
-var Mail = require( __js + '/mail' );
-
 var db = require( __js + '/database' ),
 	Members = db.Members,
 	Events = db.Events,
@@ -194,7 +192,7 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	postcodes.lookup( postcode, function( err, data ) {
+	postcodes.lookup( postcode ).then( function( err, data ) {
 		var profile = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
@@ -243,151 +241,6 @@ app.post( '/update', auth.isLoggedIn, function( req, res ) {
 	} );
 
 
-} );
-
-// Emergency Contact
-////////////////////
-
-app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Emergency contact"
-	} );
-	res.render( 'emergency-contact', { user: req.user } );
-} );
-
-app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	var profile = {
-		emergency_contact: {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			telephone: req.body.telephone
-		}
-	};
-
-	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'emergency-contact',
-				error: 'Validation errors',
-				validation: status.errors,
-				sensitive: {
-					body: req.body
-				}
-			} );
-
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
-			}
-		} else {
-			req.log.info( {
-				app: 'profile',
-				action: 'emergency-contact',
-				sensitive: {
-					profile: profile
-				}
-			} );
-
-			req.flash( 'success', 'emergency-contact-updated' );
-		}
-		res.redirect( app.mountpath );
-	} );
-} );
-
-// Change Password
-//////////////////
-
-app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Change Password"
-	} );
-	res.render( 'change-password' );
-} );
-
-app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.body.current ||
-		 ! req.body.new ||
-		 ! req.body.verify ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'change-password',
-				error: 'Validation errors',
-				sensitive: {
-					body: req.body
-				}
-			} );
-			req.flash( 'danger', 'information-ommited' );
-			res.redirect( app.mountpath );
-			return;
-	}
-	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		auth.hashPassword( req.body.current, user.password.salt, user.password.iterations, function( hash ) {
-			if ( hash != user.password.hash ) {
-				req.log.debug( {
-					app: 'profile',
-					action: 'change-password',
-					error: 'Current password does not match users password',
-				} );
-				req.flash( 'danger', 'password-invalid' );
-				res.redirect( app.mountpath + '/change-password' );
-				return;
-			}
-
-			var passwordRequirements = auth.passwordRequirements( req.body.new );
-			if ( passwordRequirements !== true ) {
-				req.log.debug( {
-					app: 'profile',
-					action: 'change-password',
-					error: passwordRequirements,
-				} );
-				req.flash( 'danger', passwordRequirements );
-				res.redirect( app.mountpath + '/change-password' );
-				return;
-			}
-
-			if ( req.body.new != req.body.verify ) {
-				req.log.debug( {
-					app: 'profile',
-					action: 'change-password',
-					error: 'New password does not match verify password field',
-				} );
-				req.flash( 'danger', 'password-mismatch' );
-				res.redirect( app.mountpath + '/change-password' );
-				return;
-			}
-
-			auth.generatePassword( req.body.new, function( password ) {
-				Members.update( { _id: user._id }, { $set: {
-					'password.salt': password.salt,
-					'password.hash': password.hash,
-					'password.iterations': password.iterations,
-					'password.reset_code': null,
-				} }, function( status ) {
-					req.log.info( {
-						app: 'profile',
-						action: 'change-password'
-					} );
-
-					var options = {
-						firstname: user.firstname
-					};
-
-					Mail.sendMail(
-						user.email,
-						'Password Changed',
-						__dirname + '/email-templates/password-changed.text.pug',
-						__dirname + '/email-templates/password-changed.html.pug',
-						options,
-						function() {
-							req.flash( 'success', 'password-changed' );
-							res.redirect( app.mountpath );
-					} );
-				} );
-			} );
-		} );
-	} );
 } );
 
 module.exports = function( config ) {

@@ -21,7 +21,7 @@ var config = require( __config ),
 	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
 // add logging capabilities
-require( __js + '/logging' )( app );
+require( __js + '/logging' ).installMiddleware( app );
 
 var Options = require( __js + '/options' )();
 
@@ -32,6 +32,10 @@ var Members = db.Members,
 var Mail = require( __js + '/mail' );
 
 app.get( '/ping', function( req, res ) {
+	req.log.info( {
+		app: 'webhook',
+		action: 'ping'
+	} );
 	res.sendStatus( 200 );
 } );
 
@@ -47,10 +51,20 @@ app.post( '/', textBodyParser, function( req, res ) {
 
 				res.sendStatus( 200 );
 			} else {
+				req.log.info( {
+					app: 'webhook',
+					action: 'main',
+					error: 'invalid webhook signature'
+				} );
 				res.sendStatus( 498 );
 			}
 		} );
 	} else {
+		req.log.info( {
+			app: 'webhook',
+			action: 'main',
+			error: 'invalid webhook signature'
+		} );
 		res.sendStatus( 498 );
 	}
 } );

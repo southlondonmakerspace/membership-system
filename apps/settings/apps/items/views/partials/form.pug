@@ -8,7 +8,7 @@ form( method="post" ).form-horizontal
 		label( for="defaultState ").col-md-2.control-label Default State
 		.col-md-4
 			select( name="defaultState", required )#startingState.form-control
-				option( disabled selected ) –
+				option( disabled selected value='' ) –
 				each state, s in states
 					option(
 						selected=( item && item.defaultState != undefined && item.defaultState.toString() == state._id),

@@ -277,7 +277,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	if ( results ) {
 		postcode = results[0];
 	}
-	postcodes.lookup( postcode, function( err, data ) {
+	postcodes.lookup( postcode ).then( function( err, data ) {
 		var member = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,

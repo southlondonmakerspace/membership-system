@@ -141,6 +141,7 @@
 
 	"flash-item-404": "Item not found",
 	"flash-item-created": "Item created",
+	"flash-item-not-created": "Item was not created due to an error",
 	"flash-item-updated": "Item updated",
 	"flash-item-removed": "Item removed",
 	"flash-item-expiry-error": "Expiry date must not be the same as or before the start date",

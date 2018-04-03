@@ -170,7 +170,12 @@ module.exports = {
 				default: false
 			}
 		} ],
-		last_seen: Date
+		last_seen: Date,
+		data_consent: {
+			type: Date,
+			default: Date.now,
+			required: true
+		}
 	} )
 };
 

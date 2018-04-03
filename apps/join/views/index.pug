@@ -33,6 +33,12 @@ block contents
 				+input( 'text', 'First Name', 'firstname', { value: user.firstname, required: true, left: 3, right: 4 } )
 				+input( 'text', 'Last Name', 'lastname', { value: user.lastname,  required: true, left: 3, right: 4 } )
 				+input( 'textarea', 'Address', 'address', { value: user.address, required: true, left: 3, right: 4 } )
+				+page_header( 'Privacy Consent' )
+				p #{ Options( 'privacy-consent' ) }
+				p If you consent to us processing your data according to this policy, tick the box below
+				label( for="data_consent" )
+					input( type="checkbox", name="data_consent", checked=( false ), required=( true ) )#data_consent
+					| I consent processing my data in accordance with this policy
 				+form_button( 'Next', 'primary', { left: 3 } )
 		.col-md-4
 			+page_header( 'Existing member' )

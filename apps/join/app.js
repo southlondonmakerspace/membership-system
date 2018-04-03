@@ -57,6 +57,20 @@ app.post( '/', function( req, res ) {
 			address: req.body.address,
 		};
 
+		if ( ! req.body.data_consent ) {
+			req.flash( 'danger', 'consent-required' );
+			res.session.joinForm = user;
+			res.redirect( app.mountpath );
+			req.log.debug({
+				app: 'join',
+				action: 'signup',
+				error: 'Data consent not ticked'
+			})
+			return
+		} else {
+			user.data_consent = new Date();
+		}
+
 		if ( ! req.body.email ) {
 			req.flash( 'danger', 'user-email' );
 			req.session.joinForm = user;

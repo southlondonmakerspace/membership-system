@@ -176,5 +176,8 @@
 	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag",
 
-	"flash-signup-closed": "Signups are currently closed"
+	"flash-signup-closed": "Signups are currently closed",
+
+	"flash-consent-required": "You need to consent to us processing your data in order to become a member",
+	"privacy-consent": "We take your privacy seriously and will only use your personal information to administer your account as required by UK law. A selection of your information will be available to other paid up members (name and email address). Your contact details may be used by the organisation (or agents acting on behalf of the organisation) to contact you regarding important matters. "
 }

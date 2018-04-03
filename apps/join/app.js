@@ -163,7 +163,7 @@ app.post( '/', function( req, res ) {
 			return;
 		}
 
-		postcodes.lookup( postcode, function( err, data ) {
+		postcodes.lookup( postcode ).then( function( err, data ) {
 			if ( data ) {
 				user.postcode_coordinates = {
 					lat: data.latitude,

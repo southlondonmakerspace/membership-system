@@ -6,7 +6,11 @@ var config = require( __config ),
 	database = require( __js + '/database' ).connect( config.mongo ),
 	Discourse = require( __js + '/discourse' );
 
-console.log( "Starting..." );
+var log = require( __js + '/logging' ).log;
+log.info( {
+	app: 'discourse',
+	action: 'start'
+} );
 
 Discourse.checkGroups(); // Now and...
 setInterval( Discourse.checkGroups, 15*60*1000 ); // ...every 15 minutes

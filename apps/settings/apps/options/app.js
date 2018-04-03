@@ -35,6 +35,15 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 	Options.get( req.params.key, function( option ) {
 		if ( ! option ) {
+			req.log.debug( {
+				app: 'settings/options',
+				action: 'edit',
+				error: 'Option not found',
+				option: req.params.key,
+				sensitive: {
+					body: req.body
+				}
+			} );
 			req.flash( 'warning', 'option-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -50,6 +59,16 @@ app.get( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 	Options.set( req.params.key, req.body.value, function( status ) {
+		req.log.debug( {
+			app: 'settings/options',
+			action: 'edit',
+			error: 'Option updated',
+			option: req.params.key,
+			value: req.body.value,
+			sensitive: {
+				body: req.body
+			}
+		} );
 		req.flash( 'success', 'option-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -58,6 +77,14 @@ app.post( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 app.get( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 	Options.get( req.params.key, function( option ) {
 		if ( ! option ) {
+			req.log.debug( {
+				app: 'profile',
+				action: 'reset',
+				error: 'Option not found',
+				sensitive: {
+					body: req.body
+				}
+			} );
 			req.flash( 'warning', 'option-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
 			return;
@@ -73,6 +100,15 @@ app.get( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 	Options.reset( req.params.key, function( status ) {
+		req.log.debug( {
+			app: 'settings/options',
+			action: 'reset',
+			error: 'Option was reset',
+			option: req.params.key,
+			sensitive: {
+				body: req.body
+			}
+		} );
 		req.flash( 'success', 'option-reset' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

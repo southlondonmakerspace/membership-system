@@ -60,3 +60,9 @@ mixin page_header( title, opts )
 			#{ opts.level } #{ title }
 				if opts.small
 					small  #{ opts.small }
+
+mixin passwordRequirementsCSS
+	link( rel="stylesheet", href="/css/password-requirements.css" )
+
+mixin passwordRequirementsJS
+	script( src="/js/password-requirements.js" )

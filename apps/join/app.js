@@ -163,7 +163,7 @@ app.post( '/', function( req, res ) {
 			return;
 		}
 
-		postcodes.lookup( postcode ).then( function( err, data ) {
+		postcodes.lookup( postcode ).then( function( data ) {
 			if ( data ) {
 				user.postcode_coordinates = {
 					lat: data.latitude,
@@ -195,7 +195,7 @@ app.post( '/', function( req, res ) {
 									} );
 								}
 							} else if ( status.code == 11000 ) {
-								req.flash( 'danger', 'duplicate-user' );
+								req.flash( 'danger', 'user-duplicate' );
 								req.log.debug( {
 									app: 'join',
 									action: 'signup',
@@ -237,6 +237,15 @@ app.post( '/', function( req, res ) {
 					} );
 				} );
 			} );
+		}, function( error ) {
+			req.log.debug( {
+				app: 'join',
+				action: 'postcode-lookup-error',
+				error: error
+			} );
+			req.flash( 'danger', 'user-postcode' );
+			req.session.joinForm = user;
+			res.redirect( app.mountpath );
 		} );
 	}
 } );

@@ -1,0 +1,15 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = "Data Export"
+
+block contents
+	.row
+		.col-md-3
+			- page = 'data-export'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9
+			+page_header( 'Download Data' )
+			form( method="post" ).form-horizontal
+				+csrf
+				+form_button( 'Download Data', 'primary', { left: 3 } )

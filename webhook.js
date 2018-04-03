@@ -142,13 +142,13 @@ function createPayment( event ) {
 					if ( err ) {
 						log.debug( {
 							app: 'webhook',
-							action: 'payment-creation-error',
+							action: 'error-creating-payment',
 							error: err
 						} );
 					} else {
 						log.info( {
 							app: 'webhook',
-							action: 'payment-created',
+							action: 'create-payment',
 							payment: payment,
 							member: member._id
 						} );
@@ -159,7 +159,7 @@ function createPayment( event ) {
 			new Payments( payment ).save( function( err ) {
 				log.info( {
 					app: 'webhook',
-					action: 'unlinked-payment-created',
+					action: 'create-unlinked-payment',
 					payment: payment
 				} );
 			} );
@@ -176,13 +176,13 @@ function updatePayment( event ) {
 			if ( err ) {
 				log.debug( {
 					app: 'webhook',
-					action: 'payment-update-error',
+					action: 'error-updating-payment',
 					error: err
 				} );
 			} else {
 				log.info( {
 					app: 'webhook',
-					action: 'payment-update',
+					action: 'update-payment',
 					payment: payment
 				} );
 			}
@@ -208,7 +208,7 @@ function extendMembership( event ) {
 						member.permissions[p].date_expires.setMilliseconds( 0 );
 						log.info( {
 							app: 'webhook',
-							action: 'membership-extended',
+							action: 'extend-membership',
 							until: member.permissions[p].date_expires,
 							sensitive: {
 								member: member._id
@@ -222,7 +222,7 @@ function extendMembership( event ) {
 						if ( err ) {
 							log.debug( {
 								app: 'webhook',
-								action: 'membership-extension-error',
+								action: 'error-extending-membership',
 								error: err
 							} );
 						}
@@ -265,7 +265,7 @@ function grantMembership( member ) {
 				if ( err ) {
 					log.debug( {
 						app: 'webhook',
-						action: 'grant-membership-error',
+						action: 'error-granting-membership',
 						error: err
 					} );
 				} else {
@@ -355,7 +355,7 @@ function cancelledSubscription( event ) {
 		if ( ! member ) {
 			log.info( {
 				app: 'webhook',
-				action: 'unlinked-subscription',
+				action: 'unlink-subscription',
 				sensitive: {
 					subscription_id: event.links.subscription
 				}
@@ -404,7 +404,7 @@ function handleMandateResourceEvent( event ) {
 		case 'reinstated':
 			log.info( {
 				app: 'webhook',
-				action: 'mandate-reinstated',
+				action: 'reinstate-mandate',
 				message: 'Mandate reinstated, its likely this mandate wont be linked to a member...',
 				sensitive: {
 					event: event
@@ -425,7 +425,7 @@ function cancelledMandate( event ) {
 		if ( ! member ) {
 			log.info( {
 				app: 'webhook',
-				action: 'unlinked-mandate',
+				action: 'unlink-mandate',
 				sensitive: {
 					mandate_id: event.links.mandate
 				}

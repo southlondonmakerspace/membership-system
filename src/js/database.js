@@ -23,14 +23,14 @@ exports.connect = function( url ) {
 	db.on( 'connected', function( error ) {
 		log.debug( {
 			app: 'database',
-			action: 'connecting',
+			action: 'connect',
 			message: 'Connected to Mongo database'
 		} );
 	} );
 	db.on( 'error', function( error ) {
 		log.debug( {
 			app: 'database',
-			action: 'connecting',
+			action: 'connect',
 			message: 'Error connecting to Mongo database',
 			error: error
 		} );

@@ -305,7 +305,7 @@ setInterval(function () {
 						if ( total >= Options.getInt( 'signup-cap' ) ) {
 							log.info( {
 								app: 'webhook',
-								action: 'capping-membership',
+								action: 'cap-membership',
 								total: total,
 								cap: Options.getInt( 'signup-cap' )
 							} );
@@ -379,7 +379,7 @@ function cancelledSubscription( event ) {
 			} else {
 				log.info( {
 					app: 'webhook',
-					action: 'removing-subscription-id',
+					action: 'remove-subscription-id',
 					sensitive: {
 						member: member._id,
 						subscription_id: event.links.subscription
@@ -448,7 +448,7 @@ function cancelledMandate( event ) {
 			} else {
 				log.info( {
 					app: 'webhook',
-					action: 'removing-mandate-id',
+					action: 'remove-mandate-id',
 					sensitive: {
 						member: member._id,
 						mandate_id: event.links.mandate

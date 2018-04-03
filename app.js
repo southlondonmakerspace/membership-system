@@ -5,12 +5,11 @@ var __src = __root + '/src';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
-console.log();
-console.log( "Membership System" );
-console.log( "=================" );
-console.log();
-console.log( "Starting..." );
-console.log();
+var log = require( __js + '/logging' ).log;
+log.info( {
+	app: 'main',
+	action: 'start'
+} );
 
 var config = require( __config );
 
@@ -56,6 +55,10 @@ app_loader( app );
 
 // Start server
 var listener = app.listen( config.port ,config.host, function () {
-	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
-	console.log();
+	log.debug( {
+		app: 'main',
+		action: 'start-webserver',
+		message: 'Started',
+		address: listener.address()
+	} );
 } );

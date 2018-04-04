@@ -45,7 +45,7 @@ var Mail = {
 				status = true;
 				log.debug( {
 					app: 'mail',
-					action: 'sent-mail',
+					action: 'send-mail',
 					sensitive: {
 						message
 					}

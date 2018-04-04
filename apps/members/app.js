@@ -301,7 +301,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	}, function( error ) {
 		req.log.debug( {
 			app: 'members',
-			action: 'postcode-lookup-error',
+			action: 'error-lookingup-postcode',
 			error: error
 		} );
 

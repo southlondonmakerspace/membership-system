@@ -3,8 +3,10 @@ var __src = __root + '/src';
 var __js = __src + '/js';
 var __config = __root + '/config/config.json';
 
+var log = require( __js + '/logging' ).log;
+
 var config = require( __config );
-var Options = require( __js + '/options.js' )();
+var Options = require( __js + '/options' )();
 
 var pug = require( 'pug' );
 var nodemailer = require( 'nodemailer' );
@@ -31,11 +33,23 @@ var Mail = {
 
 			if ( err ) {
 				status = false;
-				console.log( 'Error sending email "' + subject + '" to ' + to + ": " );
-				console.log( err );
+				log.debug( {
+					app: 'mail',
+					action: 'error-sending-mail',
+					error: err,
+					sensitive: {
+						message
+					}
+				} );
 			} else {
 				status = true;
-				console.log( 'Email "' + subject + '" sent to ' + to );
+				log.debug( {
+					app: 'mail',
+					action: 'send-mail',
+					sensitive: {
+						message
+					}
+				} );
 			}
 
 			if ( typeof cb == 'function' )

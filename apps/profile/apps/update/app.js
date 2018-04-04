@@ -105,7 +105,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	postcodes.lookup( postcode ).then( function( err, data ) {
+	postcodes.lookup( postcode ).then( function( data ) {
 		var profile = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
@@ -151,6 +151,15 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 			}
 			res.redirect( app.parent.mountpath + app.mountpath );
 		} );
+	}, function( error ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: error
+		} );
+
+		req.flash( 'danger', 'user-postcode' );
+		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
 

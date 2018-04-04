@@ -277,7 +277,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	if ( results ) {
 		postcode = results[0];
 	}
-	postcodes.lookup( postcode ).then( function( err, data ) {
+	postcodes.lookup( postcode ).then( function( data ) {
 		var member = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
@@ -293,6 +293,24 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 		} else {
 			member.postcode_coordinates = null;
 		}
+
+		Members.update( { uuid: req.params.uuid }, member, function( status ) {
+			req.flash( 'success', 'profile-updated' );
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
+		} );
+	}, function( error ) {
+		req.log.debug( {
+			app: 'members',
+			action: 'error-lookingup-postcode',
+			error: error
+		} );
+
+		var member = {
+			firstname: req.body.firstname,
+			lastname: req.body.lastname,
+			email: req.body.email.toLowerCase(),
+			address: req.body.address
+		};
 
 		Members.update( { uuid: req.params.uuid }, member, function( status ) {
 			req.flash( 'success', 'profile-updated' );

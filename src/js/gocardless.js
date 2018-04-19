@@ -97,6 +97,21 @@ GoCardless.cancelMandate = function ( mandate_id, callback ) {
 	} );
 };
 
+GoCardless.listMandates = function ( limit, after, callback ) {
+	var path = '/mandates';
+	if ( limit || after ) path += '?';
+	if ( limit ) path += 'limit=' + limit;
+	if ( limit && after ) path += '&';
+	if ( after ) path += 'after=' + after;
+	GoCardless.request( 'get', path, null, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, JSON.parse( body ).mandates, JSON.parse( body ).meta );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
 // Subscription
 
 GoCardless.createSubscription = function ( mandate_id, amount, day_of_month, description, metadata, callback ) {
@@ -137,6 +152,21 @@ GoCardless.getSubscription = function ( subscription_id, callback ) {
 	GoCardless.request( 'get', '/subscriptions/' + subscription_id, null, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {
 			callback( null, JSON.parse( body ).subscriptions );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
+GoCardless.listSubscriptions = function ( limit, after, callback ) {
+	var path = '/subscriptions';
+	if ( limit || after ) path += '?';
+	if ( limit ) path += 'limit=' + limit;
+	if ( limit && after ) path += '&';
+	if ( after ) path += 'after=' + after;
+	GoCardless.request( 'get', path, null, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, JSON.parse( body ).subscriptions, JSON.parse( body ).meta );
 		} else {
 			callback( body );
 		}

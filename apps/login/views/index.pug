@@ -7,12 +7,8 @@ block navbar
 
 block contents
 	.row
-		.col-md-8
-			+page_header( app.title, { level: 'h2' } )
+		.col-md-12
+			+page_header( app.title )
 			.row
-				.col-md-6
+				.col-md-4
 					include partials/form.pug
-		.col-md-4
-			+page_header( 'Join' )
-			p If you are new around here why not join?
-			a.btn.btn-default( href="/join" ) Join

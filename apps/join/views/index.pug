@@ -6,17 +6,18 @@ block prepend title
 	- title = app.title
 
 block append js
-	script( src="/js/password-requirements.js" )
+	+passwordRequirementsJS
 
 block append css
-	link( rel="stylesheet", href="/css/password-requirements.css" )
+	+passwordRequirementsCSS
 
 block contents
 	.row
 		.col-md-8
-			+page_header( app.title, { level: 'h2' } )
+			+page_header( app.title )
+			if Options( 'signup-closed' ) == 'true'
+				+flash( 'warning', 'Unfortunately we are currently not taking new membership signups.', { text: 'Find out more', url: Options( 'signup-redirect' ), type: 'danger' } )
 			p Thanks for choosing to join #{ Options( 'organisation' ) }. Just so you know, you must be over 18 to become a member.
-			
 			form( method="post" ).form-horizontal
 				+csrf
 				+page_header( 'Login Details' )

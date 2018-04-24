@@ -7,8 +7,7 @@ module.exports = {
 		_id: {
 			type: ObjectId,
 			default: function() { return new mongoose.Types.ObjectId(); },
-			required: true,
-			unique: true
+			required: true
 		},
 		name: {
 			type: String,
@@ -30,7 +29,7 @@ module.exports = {
 				type: ObjectId,
 				ref: 'Actions',
 				required: true,
-				unique: true // no duplicates!
+				unique: true
 			}
 		],
 		states: [

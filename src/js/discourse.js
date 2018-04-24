@@ -58,7 +58,7 @@ var Discourse = {
 			filter: search
 		};
 		Discourse.get( '/admin/users/list/active.json', params, function ( error, response, body ) {
-			if ( response.statusCode == '200 ') {
+			if ( response && response.statusCode == '200' ) {
 				var output = JSON.parse( body );
 				if ( output[0] ) {
 					return callback( output );

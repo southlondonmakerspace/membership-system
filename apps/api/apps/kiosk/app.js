@@ -35,7 +35,7 @@ app.get('/validate/:tag', auth.isAPIAuthenticated, function(req, res) {
 });
 
 app.get('/identify/:tag', auth.isAPIAuthenticated, function(req, res) {
-	req.log.info("hello")
+
 	Members.findOne({
 		'tag.hashed': req.params.tag
 	}).populate( 'permissions.permission' ).exec(function(err, member) {

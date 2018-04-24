@@ -5,12 +5,11 @@ var __src = __root + '/src';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
-console.log();
-console.log( "Membership System" );
-console.log( "=================" );
-console.log();
-console.log( "Starting..." );
-console.log();
+var log = require( __js + '/logging' ).log;
+log.info( {
+	app: 'main',
+	action: 'start'
+} );
 
 var config = require( __config );
 
@@ -20,27 +19,15 @@ var express = require( 'express' ),
 	helmet = require( 'helmet' ),
 	flash = require( 'express-flash' ),
 	app = express(),
-	bunyan = require('bunyan'),
-	bunyanMiddleware = require('bunyan-middleware'),
 	http = require( 'http' ).Server( app );
 
 var Options = require( __js + '/options' )();
 app.use( Options.load );
 
-// Bunyan logging
-var requestLogger = bunyan.createLogger( {
-	name: 'Membership-System',
-	streams: [ {
-		type: "rotating-file",
-		path: config.log,
-		period: '1d', // rotates every day
-		count: 7 // keeps 7 days
-	} ]
-} );
-
-app.use( bunyanMiddleware( { logger: requestLogger } ) );
-
 var app_loader = require( __js + '/app-loader' );
+
+// Add logging capabilities
+require( __js + '/logging' ).installMiddleware( app );
 
 // Use helmet
 app.use( helmet() );
@@ -68,6 +55,10 @@ app_loader( app );
 
 // Start server
 var listener = app.listen( config.port ,config.host, function () {
-	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
-	console.log();
+	log.debug( {
+		app: 'main',
+		action: 'start-webserver',
+		message: 'Started',
+		address: listener.address()
+	} );
 } );

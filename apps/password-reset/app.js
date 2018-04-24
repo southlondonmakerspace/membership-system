@@ -100,9 +100,10 @@ app.post( '/change-password', function( req, res ) {
 					'password.tries': 0,
 					'password.iterations': password.iterations
 				} }, function( status ) {
-					req.session.passport = { user: { _id: user._id } };
-					req.flash( 'success', 'password-changed' );
-					res.redirect( '/profile' );
+					req.login( user, function( err ) {
+						req.flash( 'success', 'password-changed' );
+						res.redirect( '/' );
+					} );
 				} );
 			} );
 		} else {

@@ -4,16 +4,10 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 var __apps = __dirname + '/apps';
 
-var	fs = require( 'fs' ),
-	express = require( 'express' ),
+var	express = require( 'express' ),
 	app = express();
 
-var PostcodesIO = require( 'postcodesio-client' ),
-	postcodes = new PostcodesIO();
-
 var moment = require( 'moment' );
-
-var Mail = require( __js + '/mail' );
 
 var db = require( __js + '/database' ),
 	Members = db.Members,
@@ -89,7 +83,8 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 					res.render( 'profile', {
 						user: req.user,
 						count: result,
-						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+						membership_expires: ( member.date_expires !== undefined ? member.date_expires : null ),
+						membership_amount: ( req.user.gocardless.amount !== undefined ? req.user.gocardless.amount: null )
 					} );
 				} );
 			} );
@@ -112,181 +107,6 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	} else {
 		res.render( 'profile', { user: req.user } );
 	}
-} );
-
-// Update Profile
-/////////////////
-
-app.get( '/update', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Update"
-	} );
-	res.render( 'update', { user: req.user } );
-} );
-
-app.post( '/update', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.body.firstname ||
-		 ! req.body.lastname ) {
- 			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath + '/update' );
- 			return;
-	}
-
-	if ( ! req.body.address ) {
-		req.flash( 'danger', 'user-address' );
-		res.redirect( app.mountpath + '/update' );
-		return;
-	}
-
-	if ( req.body.address.split( '\n' ).length <= 2 ) {
-		req.flash( 'danger', 'user-address' );
-		res.redirect( app.mountpath + '/update' );
-		return;
-	}
-
-	var postcode;
-	var results = req.body.address.match( /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})/ );
-
-	if ( results ) {
-		postcode = results[0];
-	}
-
-	if ( ! postcode ) {
-		req.flash( 'danger', 'user-postcode' );
-		res.redirect( app.mountpath + '/update' );
-		return;
-	}
-
-	postcodes.lookup( postcode, function( err, data ) {
-		var profile = {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			address: req.body.address
-		};
-
-		if ( data ) {
-			profile.postcode_coordinates = {
-				lat: data.latitude,
-				lng: data.longitude,
-			};
-		} else {
-			profile.postcode_coordinates = null;
-		}
-
-		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-			if ( status ) {
-				var keys = Object.keys( status.errors );
-				for ( var k in keys ) {
-					var key = keys[k];
-					req.flash( 'danger', status.errors[key].message );
-				}
-			} else {
-				req.flash( 'success', 'profile-updated' );
-			}
-			res.redirect( app.mountpath );
-		} );
-	} );
-
-
-} );
-
-// Emergency Contact
-////////////////////
-
-app.get( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Emergency contact"
-	} );
-	res.render( 'emergency-contact', { user: req.user } );
-} );
-
-app.post( '/emergency-contact', auth.isLoggedIn, function( req, res ) {
-	var profile = {
-		emergency_contact: {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			telephone: req.body.telephone
-		}
-	};
-
-	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status ) {
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
-			}
-		} else {
-			req.flash( 'success', 'emergency-contact-updated' );
-		}
-		res.redirect( app.mountpath );
-	} );
-} );
-
-// Change Password
-//////////////////
-
-app.get( '/change-password', auth.isLoggedIn, function( req, res ) {
-	res.locals.breadcrumb.push( {
-		name: "Change Password"
-	} );
-	res.render( 'change-password' );
-} );
-
-app.post( '/change-password', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.body.current ||
-		 ! req.body.new ||
- 		 ! req.body.verify ) {
- 			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath );
- 			return;
-	}
-	Members.findOne( { _id: req.user._id }, function( err, user ) {
-		auth.hashPassword( req.body.current, user.password.salt, user.password.iterations, function( hash ) {
-			if ( hash != user.password.hash ) {
-				req.flash( 'danger', 'password-invalid' );
-				res.redirect( app.mountpath + '/change-password' );
-				return;
-			}
-
-			var passwordRequirements = auth.passwordRequirements( req.body.new );
-			if ( passwordRequirements !== true ) {
-				req.flash( 'danger', passwordRequirements );
-				res.redirect( app.mountpath + '/change-password' );
-				return;
-			}
-
-			if ( req.body.new != req.body.verify ) {
-				req.flash( 'danger', 'password-mismatch' );
-				res.redirect( app.mountpath + '/change-password' );
-				return;
-			}
-
-			auth.generatePassword( req.body.new, function( password ) {
-				Members.update( { _id: user._id }, { $set: {
-					'password.salt': password.salt,
-					'password.hash': password.hash,
-					'password.iterations': password.iterations,
-					'password.reset_code': null,
-				} }, function( status ) {
-					var options = {
-						firstname: user.firstname
-					};
-
-					Mail.sendMail(
-						user.email,
-						'Password Changed',
-						__dirname + '/email-templates/password-changed.text.pug',
-						__dirname + '/email-templates/password-changed.html.pug',
-						options,
-						function() {
-							req.flash( 'success', 'password-changed' );
-							res.redirect( app.mountpath );
-					} );
-				} );
-			} );
-		} );
-	} );
 } );
 
 module.exports = function( config ) {

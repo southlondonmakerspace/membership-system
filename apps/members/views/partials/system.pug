@@ -11,3 +11,5 @@ dl.dl-horizontal
 	dd #{ member.last_seen ? moment( member.last_seen ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
 	dt Activated
 	dd #{ member.activated ? 'Yes' : 'No' }
+	dt Signup override
+	dd #{ member.signup_override ? 'Yes' : 'No' }

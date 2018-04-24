@@ -33,6 +33,13 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
+	if ( Options.getBool( 'signup-closed' ) && ! req.user.signup_override ) {
+		res.render( 'signup-closed', {
+			show_cancel_mandate: ( req.user.gocardless.mandate_id || req.user.gocardless.subscription_id ? true : false )
+		} );
+		return;
+	}
+
 	var hasMandate = false;
 	var hasSubscription = false;
 
@@ -81,24 +88,35 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			next_possible_charge_date: next_possible_charge_date,
 			dates: dates
 		} );
-	} else if ( hasMandate && hasSubscription ) {
-		res.render( 'complete' );
+	} else {
+		res.render( 'complete', { amount: req.user.gocardless.amount } );
 	}
 } );
 
 app.get( '/setup-mandate', auth.isLoggedIn, function( req, res ) {
-	auth.generateActivationCode( function( session_token ) {
-		GoCardless.createRedirectFlow( 'Membership + Payments', session_token, config.audience + app.parent.mountpath + app.mountpath, function( error, redirect_url, body ) {
-			if ( error ) {
-				req.flash( 'danger', 'gocardless-mandate-err' );
-				res.redirect( app.parent.mountpath + app.mountpath );
-			} else {
-				Members.update( { _id: req.user._id }, { $set: { "gocardless.session_token": session_token, "gocardless.redirect_flow_id": body.redirect_flows.id } }, function ( err ) {
-					res.redirect( redirect_url );
-				} );
-			}
+	if ( Options.getBool( 'signup-closed' ) && req.user.signup_override === undefined ) {
+		req.flash( 'warning', 'signup-closed' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
+	if ( ! req.user.gocardless.mandate_id ) {
+		auth.generateActivationCode( function( session_token ) {
+			GoCardless.createRedirectFlow( 'Membership + Payments', session_token, config.audience + app.parent.mountpath + app.mountpath, function( error, redirect_url, body ) {
+				if ( error ) {
+					req.flash( 'danger', 'gocardless-mandate-err' );
+					res.redirect( app.parent.mountpath + app.mountpath );
+				} else {
+					Members.update( { _id: req.user._id }, { $set: { "gocardless.session_token": session_token, "gocardless.redirect_flow_id": body.redirect_flows.id } }, function ( err ) {
+						res.redirect( redirect_url );
+					} );
+				}
+			} );
 		} );
-	} );
+	} else {
+		req.flash( 'warning', 'gocardless-mandate-exists' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}
 } );
 
 app.get( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
@@ -113,7 +131,12 @@ app.get( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.mandate_id ) {
 		GoCardless.cancelMandate( req.user.gocardless.mandate_id, function( error, status, body ) {
-			Members.update( { _id: req.user._id }, { $set: { 'gocardless.mandate_id': '' } }, function( err ) {} );
+			Members.update( { _id: req.user._id }, { $unset: {
+				'gocardless.mandate_id': true,
+				'gocardless.next_possible_charge_date': true,
+				'gocardless.subscription_id': true,
+				'gocardless.amount': true
+			} }, function( err ) {} );
 			if ( error ) {
 				req.flash( 'danger', 'gocardless-mandate-cancellation-err' );
 				res.redirect( app.parent.mountpath + app.mountpath );
@@ -134,37 +157,53 @@ app.post( '/cancel-mandate', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.body.amount ||
-	 	 ! req.body.day_of_month ) {
-		req.flash( 'danger', 'information-ommited' );
-		res.redirect( app.parent.mountpath );
+	if ( Options.getBool( 'signup-closed' ) && req.user.signup_override === undefined ) {
+		req.flash( 'warning', 'signup-closed' );
+		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
-	var min = ( req.user.gocardless.minimum ? req.user.gocardless.minimum : Options.getText( 'gocardless-minimum' ) );
 
-	if ( req.body.amount < min ) {
-		req.flash( 'danger', Options.getText( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
-		return res.redirect( app.parent.mountpath + app.mountpath );
-	}
-
-	var day_of_month = parseInt( req.body.day_of_month );
-
-	if ( day_of_month.isNaN || day_of_month > 28 || day_of_month < -1 ) {
-		req.flash( 'danger', 'gocardless-subscription-invalid-day' );
-		return res.redirect( app.parent.mountpath + app.mountpath );
-	}
-
-	GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id, body ) {
-		if ( error ) {
-			req.flash( 'danger', 'gocardless-subscription-err' );
-			res.redirect( app.parent.mountpath + app.mountpath );
-		} else {
-			Members.update( { _id: req.user._id }, { $set: { "gocardless.subscription_id": subscription_id } }, function ( err ) {
-				req.flash( 'success', 'gocardless-subscription-success' );
-				res.redirect( app.parent.mountpath + app.mountpath );
-			} );
+	if ( ! req.user.gocardless.subscription_id ) {
+		if ( ! req.body.amount ||
+		 	 ! req.body.day_of_month ) {
+			req.flash( 'danger', 'information-ommited' );
+			res.redirect( app.parent.mountpath );
+			return;
 		}
-	} );
+		var min = ( req.user.gocardless.minimum ? parseInt( req.user.gocardless.minimum ): Options.getInt( 'gocardless-minimum' ) );
+
+		if ( parseInt( req.body.amount ) < min ) {
+			req.flash( 'danger', Options.getText( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
+			return res.redirect( app.parent.mountpath + app.mountpath );
+		}
+
+		var day_of_month = parseInt( req.body.day_of_month );
+
+		if ( day_of_month.isNaN || day_of_month > 28 || day_of_month < -1 ) {
+			req.flash( 'danger', 'gocardless-subscription-invalid-day' );
+			return res.redirect( app.parent.mountpath + app.mountpath );
+		}
+
+		GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id, body, amount ) {
+			if ( error ) {
+				req.flash( 'danger', 'gocardless-subscription-err' );
+				res.redirect( app.parent.mountpath + app.mountpath );
+			} else {
+				Members.update( { _id: req.user._id }, { $set: {
+					"gocardless.subscription_id": subscription_id,
+					'gocardless.amount': req.body.amount
+				}, $unset: {
+					'signup_override': true
+				} }, function ( err ) {
+					req.flash( 'success', 'gocardless-subscription-success' );
+					res.redirect( app.parent.mountpath + app.mountpath );
+				} );
+			}
+		} );
+	} else {
+		req.flash( 'warning', 'gocardless-subscription-exists' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}
 } );
 
 app.get( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
@@ -179,7 +218,10 @@ app.get( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.subscription_id ) {
 		GoCardless.cancelSubscription( req.user.gocardless.subscription_id, function( error, status, body ) {
-			Members.update( { _id: req.user._id }, { $set: { 'gocardless.subscription_id': '' } }, function( err ) {} );
+			Members.update( { _id: req.user._id }, { $unset: {
+				'gocardless.subscription_id': true,
+				'gocardless.amount': true
+			} }, function( err ) {} );
 			if ( error ) {
 				req.flash( 'danger', 'gocardless-subscription-cancellation-err' );
 				res.redirect( app.parent.mountpath + app.mountpath );

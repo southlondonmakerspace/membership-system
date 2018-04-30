@@ -66,3 +66,8 @@ mixin passwordRequirementsCSS
 
 mixin passwordRequirementsJS
 	script( src="/js/password-requirements.js" )
+
+mixin flash( status, text, opts )
+	.alert( class='alert-' + status)=text
+		if ( opts && opts.text && opts.url && opts.type )
+			a( href=opts.url, style="margin-top:-.3em;margin-right:-.3em", class="btn-" + opts.type ).btn.btn-sm.pull-right=opts.text

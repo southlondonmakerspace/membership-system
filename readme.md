@@ -53,3 +53,6 @@ Stub out your app structure within `app/`, this will include:
 
 
 Check out these files to get an idea of how each of these should be structure.
+
+## Reverse proxy
+If running behind a reverse proxy, you should configure your proxy to add the `X-Forwarded-*` headers (see [nginx documentation](https://www.nginx.com/resources/wiki/start/topics/examples/forwarded/)), and also set reverseProxyTrust variable in `config/config.json`

@@ -68,9 +68,9 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 				if ( req.body.user ) {
 					var index = parseInt( req.body.user );
 					if ( index > 0 || index < users.length ) {
-						Members.findOne( { "discourse.id": user.id }, function( err, member ) {
+						Members.findOne( { "discourse.username": user.username }, function( err, member ) {
 							if ( member ) {
-								req.flash( 'warning', 'discouse-id-duplicate' );
+								req.flash( 'warning', 'discouse-username-duplicate' );
 								res.redirect( app.parent.mountpath + app.mountpath );
 							} else {
 								auth.generateActivationCode( function( code ) {

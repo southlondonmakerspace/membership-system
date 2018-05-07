@@ -39,5 +39,6 @@
 	"dev": true,
 	"log": "/var/log/membership.log",
 	"logStdout": false,
+	"syslog": false,
 	"reverseProxyTrust":"loopback"
 }

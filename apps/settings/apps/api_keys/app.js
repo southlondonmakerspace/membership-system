@@ -52,7 +52,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		return;
 	}
 
-	if ( req.body.capabilities !== Array ) req.body.capabilities = [];
+	if ( req.body.capabilities == undefined ) req.body.capabilities = [];
 
 	var invalidCapabilities = req.body.capabilities.filter( function( c ) {
 		if ( capabilities[c] == undefined ) return c;
@@ -105,7 +105,7 @@ app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 		return;
 	}
 
-	if ( req.body.capabilities !== Array ) req.body.capabilities = [];
+	if ( req.body.capabilities == undefined ) req.body.capabilities = [];
 
 	var invalidCapabilities = req.body.capabilities.filter( function( c ) {
 		if ( capabilities[c] == undefined ) return c;

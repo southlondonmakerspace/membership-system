@@ -50,6 +50,10 @@ app.set( 'views', __views );
 app.set( 'view engine', 'pug' );
 app.set( 'view cache', false );
 
+// Set reverse proxy trust (see http://expressjs.com/en/guide/behind-proxies.html)
+// default to false
+app.set( 'trust proxy', config.reverseProxyTrust || false )
+
 // Load apps
 app_loader( app );
 

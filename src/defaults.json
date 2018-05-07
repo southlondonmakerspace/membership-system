@@ -86,7 +86,7 @@
 	"flash-discourse-activation-dupe": "Activation code has already been sent",
 	"flash-discourse-linked": "Discourse user linked",
 	"flash-discourse-activation-code-err": "You must enter a valid activation code",
-	"flash-discouse-id-duplicate": "Discourse ID already associated with another member",
+	"flash-discouse-username-duplicate": "Discourse username already associated with another member",
 	"flash-discourse-invalid-user": "Selected user is invalid",
 	"flash-discourse-cancelled": "Activation cancelled",
 

@@ -18,7 +18,7 @@ var database = require(__js + '/database'),
 
 var app_config = {};
 
-app.get('/validate/:tag', auth.isAPIAuthenticated, function(req, res) {
+app.get('/validate/:tag', auth.apiCan( 'api-validate-tag' ), function(req, res) {
 	Members.findOne({
 		'tag.hashed': req.params.tag
 	}, function(err, member) {
@@ -34,7 +34,7 @@ app.get('/validate/:tag', auth.isAPIAuthenticated, function(req, res) {
 	});
 });
 
-app.get('/identify/:tag', auth.isAPIAuthenticated, function(req, res) {
+app.get('/identify/:tag', auth.apiCan( 'api-identify-tag' ), function(req, res) {
 
 	Members.findOne({
 		'tag.hashed': req.params.tag
@@ -64,7 +64,7 @@ app.get('/identify/:tag', auth.isAPIAuthenticated, function(req, res) {
 	});
 });
 
-app.get('/enroll', auth.isAPIAuthenticated, function(req, res) {
+app.get('/enroll', auth.apiCan( 'api-enroll-tag' ), function(req, res) {
 
 	if (!req.query.tag || !req.query.email) {
 		return res.json({

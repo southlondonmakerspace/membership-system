@@ -19,7 +19,7 @@ var database = require( __js + '/database' ),
 
 var app_config = {};
 
-app.get( '/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
+app.get( '/:slug/:tag', auth.apiCan( 'api-member-permission-check' ), function( req, res ) {
 	Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		var grantAccess = false;
 		if ( member ) {

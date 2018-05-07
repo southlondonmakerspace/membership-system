@@ -19,7 +19,7 @@ var database = require( __js + '/database' ),
 
 var app_config = {};
 
-app.get( '/:slug', auth.isAPIAuthenticated, function( req, res ) {
+app.get( '/:slug', auth.apiCan( 'api-read-item-state' ), function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
 	if ( ! req.params.slug ) {
 		res.sendStatus( 404 );
@@ -67,7 +67,7 @@ app.get( '/:slug', auth.isAPIAuthenticated, function( req, res ) {
 	} );
 });
 
-app.get( '/:slug/:state', auth.isAPIAuthenticated, function( req, res ) {
+app.get( '/:slug/:state', auth.apiCan( 'api-write-item-state' ), function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
 
 	if ( ! req.params.slug ) {
@@ -78,7 +78,7 @@ app.get( '/:slug/:state', auth.isAPIAuthenticated, function( req, res ) {
 	// find the item
 	Items.findOne( { 'slug': req.params.slug } )
 		.exec( function( err, item ) {
-			
+
 		if ( err ) {
 			res.sendStatus( 404 );
 			return

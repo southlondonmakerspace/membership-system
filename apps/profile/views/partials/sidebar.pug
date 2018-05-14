@@ -5,9 +5,6 @@ ul.nav.nav-pills.nav-stacked
 	li( class=( page == 'profile' ? 'active' : '' ) ): a( href="/profile/update" ) Edit Profile
 	li( class=( page == 'change-password' ? 'active' : '' ) ): a( href="/profile/change-password" ) Change Password
 	li( class=( page == '2fa' ? 'active' : '' ) ): a( href="/profile/2fa" ) Two Factor Authentication
-	li( class=( page == 'emergency-contact' ? 'active' : '' ) ): a( href="/profile/emergency-contact" ) Emergency Contact
-	li( class=( page == 'tag' ? 'active' : '' ) ): a( href="/profile/tag" ) Tag
-	li( class=( page == 'discourse' ? 'active' : '' ) ): a( href="/profile/discourse" ) Discourse
 	li( class=( page == 'direct-debit' ? 'active' : '' ) ): a( href="/profile/direct-debit" ) Direct Debit
 	if access( 'member' )
 		li( class=( page == 'statement' ? 'active' : '' ) ): a( href="/profile/statement" ) Statement

@@ -24,9 +24,8 @@ body.dev:before {
   display: inline-block;
   width: 5em;
   height: 5em;
-  background-color: red;
   background-image: url(/svg/logo.svg);
-  background-size: 3em;
+  background-size: 5em;
   background-repeat: no-repeat;
   background-position: center;
 }

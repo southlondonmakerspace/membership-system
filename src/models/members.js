@@ -193,13 +193,9 @@ module.exports.schema.virtual( 'can_admin' ).get( function() {
 } );
 
 module.exports.schema.virtual( 'setupComplete' ).get( function() {
-	if (	! this.emergency_contact.telephone ||
-			! this.gocardless.mandate_id ||
-			! this.gocardless.subscription_id ||
-			! this.discourse.activated ||
-			! this.discourse.username ||
-			! this.tag.id
-	)
+	if ( ! this.gocardless.mandate_id ||
+			! this.gocardless.subscription_id
+		)
 		return false;
 	return true;
 } );

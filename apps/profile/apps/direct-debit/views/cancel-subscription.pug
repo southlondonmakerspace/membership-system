@@ -9,11 +9,18 @@ block contents
 			- page = 'direct-debit'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			+page_header( 'Cancel Subscription' )
-			p Are you sure you want to cancel your subscription?
-				form( method="post" )
-					+csrf
-					p
-						button( role="button").btn.btn-danger Yes, Cancel Subscription
-						| 
-						a( href="/profile/direct-debit" ).btn.btn-default No
+			+page_header( 'Cancel Membership' )
+			p We're really sad that you're cancelling your membership. Maybe we can work it out?
+			form( method="post" )
+				+csrf
+				.form-group
+					label(for='reason') Why are you cancelling?
+					select( name='reason', required ).form-control
+						option( value='', selected, disabled) Select a reason
+						option I no longer live in Bristol
+						option I don't want to say
+						option Other
+				p
+					button( role="button").btn.btn-danger Cancel Membership
+					| 
+					a( href="/profile/direct-debit" ).btn.btn-default Back

@@ -217,6 +217,8 @@ app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 			Members.update( { _id: req.user._id }, { $unset: {
 				'gocardless.subscription_id': true,
 				'gocardless.amount': true
+			}, $set: {
+				'cancellation_reason': req.body.reason
 			} }, function() {} );
 			if ( error ) {
 				req.flash( 'danger', 'gocardless-subscription-cancellation-err' );

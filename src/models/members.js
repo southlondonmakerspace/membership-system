@@ -183,7 +183,8 @@ module.exports = {
 				default: false
 			}
 		} ],
-		last_seen: Date
+		last_seen: Date,
+		cancellation_reason: String
 	} )
 };
 

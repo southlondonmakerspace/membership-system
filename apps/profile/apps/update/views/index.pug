@@ -12,18 +12,13 @@ block contents
 			+page_header( 'Edit Profile' )
 			form( method="post" ).form-horizontal
 				+csrf
-				.form-group
-					label.col-md-3.control-label Avatar
-					.col-md-5
-						img( style="border-radius: 100%", src=user.gravatar + "?s=50&d=mm&r=g" )
-						span.help-block Your avatar is managed at
-							| 
-							a( href="https://gravatar.com", target="_blank" ) Gravatar.com
-							|  using your email address #{ user.email }
-				hr
-				+input( 'email', 'Email', 'email', { value: user.email, readonly: true, left: 3, right: 4, helpblock: Options( 'content-email-admin' ) } )
-				hr
+				+input( 'email', 'Email', 'email', { value: user.email, left: 3, right: 4 } )
 				+input( 'text', 'First name', 'firstname', { value: user.firstname, left: 3, right: 4 } )
 				+input( 'text', 'Last name', 'lastname', { value: user.lastname, left: 3, right: 4 } )
-				+input( 'textarea', 'Address', 'address', { value: user.address, left: 3, right: 4 } )
+				hr
+				+input( 'checkbox', 'Receive paper', 'delivery_optin', { value: user.delivery_optin, options: { yes: 'Yes' }, left: 3, right: 4 } )
+				+input( 'text', 'Address line 1', 'delivery_line1', { value: user.delivery_address.line1, left: 3, right: 4 } )
+				+input( 'text', 'Address line 2', 'delivery_line2', { value: user.delivery_address.line2, left: 3, right: 4 } )
+				+input( 'text', 'City/town', 'delivery_city', { value: user.delivery_address.city, left: 3, right: 4 } )
+				+input( 'text', 'Postcode', 'delivery_postcode', { value: user.delivery_address.postcode, left: 3, right: 4 } )
 				+form_button( 'Update', 'primary', { left: 3 } )

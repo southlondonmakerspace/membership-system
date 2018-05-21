@@ -46,7 +46,8 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	if ( ! req.body.address ) {
+	if ( req.body.delivery_optin == 'yes' &&
+		( ! req.body.delivery_line1 || ! req.body.delivery_city || ! req.body.delivery_postcode ) ) {
 		req.log.debug( {
 			app: 'profile',
 			action: 'update',
@@ -61,48 +62,17 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	if ( req.body.address.split( '\n' ).length <= 2 ) {
-		req.log.debug( {
-			app: 'profile',
-			action: 'update',
-			error: 'Address did not have enough lines',
-			sensitive: {
-				body: req.body
-			}
-		} );
-
-		req.flash( 'danger', 'user-address' );
-		res.redirect( app.parent.mountpath + app.mountpath );
-		return;
-	}
-
-	var postcode;
-	var results = req.body.address.match( /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})/ );
-
-	if ( results ) {
-		postcode = results[0];
-	}
-
-	if ( ! postcode ) {
-		req.log.debug( {
-			app: 'profile',
-			action: 'update',
-			error: 'Postcode was invalid or absent',
-			sensitive: {
-				body: req.body
-			}
-		} );
-
-		req.flash( 'danger', 'user-postcode' );
-		res.redirect( app.parent.mountpath + app.mountpath );
-		return;
-	}
-
-	postcodes.lookup( postcode ).then( function( data ) {
+	postcodes.lookup( req.body.delivery_postcode ).then( function( data ) {
 		var profile = {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
-			address: req.body.address
+			delivery_optin: req.body.delivery_optin == 'yes',
+			delivery_address: {
+				line1: req.body.delivery_line1,
+				line2: req.body.delivery_line2,
+				city: req.body.delivery_city,
+				postcode: req.body.delivery_postcode
+			}
 		};
 
 		if ( data ) {

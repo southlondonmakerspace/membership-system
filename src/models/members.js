@@ -81,9 +81,22 @@ module.exports = {
 			type: String,
 			required: true
 		},
-		address: {
-			type: String,
-			required: true
+		delivery_optin: {
+			type: Boolean
+		},
+		delivery_address: {
+			line1: {
+				type: String
+			},
+			line2: {
+				type: String,
+			},
+			city: {
+				type: String,
+			},
+			postcode: {
+				type: String
+			}
 		},
 		postcode_coordinates: {
 			lat: Number,

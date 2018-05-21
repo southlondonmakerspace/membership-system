@@ -123,6 +123,22 @@ GoCardless.createSubscription = function ( mandate_id, amount, day_of_month, des
 	} );
 };
 
+GoCardless.updateSubscription = function ( subscription_id, amount, callback ) {
+	var data = {
+		subscriptions: {
+			amount: amount * 100 // Convert from £ to p
+		}
+	};
+
+	GoCardless.request( 'put', '/subscriptions/' + subscription_id, data, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, body );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
 GoCardless.cancelSubscription = function ( subscription_id, callback ) {
 	GoCardless.request( 'post', '/subscriptions/' +  subscription_id + '/actions/cancel', {}, function ( error, response, body ) {
 		if ( response.statusCode == 200 ) {

@@ -157,6 +157,14 @@ module.exports = {
 			},
 			amount: {
 				type: Number
+			},
+			pending_update: {
+				amount: {
+					type: Number
+				},
+				date: {
+					type: Date
+				}
 			}
 		},
 		permissions: [ {

@@ -86,7 +86,10 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 			dates: dates
 		} );
 	} else {
-		res.render( 'complete', { amount: req.user.gocardless.amount } );
+		res.render( 'complete', {
+			amount: req.user.gocardless.amount,
+			pending_update: req.user.gocardless.pending_update
+		} );
 	}
 } );
 
@@ -213,28 +216,56 @@ app.get( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 
 app.post( '/cancel-subscription', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.gocardless.subscription_id ) {
-		GoCardless.cancelSubscription( req.user.gocardless.subscription_id, function( error, status ) {
-			Members.update( { _id: req.user._id }, { $unset: {
-				'gocardless.subscription_id': true,
-				'gocardless.amount': true
-			}, $set: {
-				'cancellation_reason': req.body.reason
-			} }, function() {} );
+		GoCardless.cancelSubscription( req.user.gocardless.subscription_id, function( error ) {
 			if ( error ) {
 				req.flash( 'danger', 'gocardless-subscription-cancellation-err' );
 				res.redirect( app.parent.mountpath + app.mountpath );
 			} else {
-				if ( status ) {
-					req.flash( 'success', 'gocardless-subscription-cancelled' );
-					res.redirect( app.parent.mountpath + app.mountpath );
-				} else {
-					req.flash( 'danger', 'gocardless-subscription-cancellation-err' );
-					res.redirect( app.parent.mountpath + app.mountpath );
-				}
+				Members.update( { _id: req.user._id }, { $unset: {
+					'gocardless.subscription_id': true,
+					'gocardless.amount': true
+				}, $set: {
+					'cancellation_reason': req.body.reason
+				} }, function( err ) {} );
+				req.flash( 'success', 'gocardless-subscription-cancelled' );
+				res.redirect( app.parent.mountpath + app.mountpath );
 			}
 		} );
 	} else {
-		req.flash( 'danger', 'gocardless-subscription-cancellation-err' );
+		req.flash( 'danger', 'gocardless-subscription-doesnt-exist' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+	}
+} );
+
+app.get( '/update-subscription', auth.isLoggedIn, function( req, res ) {
+	res.redirect( app.parent.mountpath + app.mountpath );
+} );
+
+app.post( '/update-subscription', auth.isLoggedIn, function( req, res ) {
+	if ( req.user.gocardless.subscription_id ) {
+		var min = ( req.user.gocardless.minimum ? parseInt( req.user.gocardless.minimum ): Options.getInt( 'gocardless-minimum' ) );
+
+		if ( parseInt( req.body.amount ) < min ) {
+			req.flash( 'danger', Options.getText( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
+			return res.redirect( app.parent.mountpath + app.mountpath );
+		}
+
+		GoCardless.updateSubscription( req.user.gocardless.subscription_id, req.body.amount, function( error, body ) {
+			if ( error ) {
+				req.flash( 'danger', 'gocardless-subscription-updating-err' );
+			} else {
+				Members.update( { _id: req.user._id }, { $set: {
+					'gocardless.pending_update': {
+						'amount': req.body.amount,
+						'date': new Date(body.subscriptions.upcoming_payments[0])
+					}
+				} }, function( err ) {});
+				req.flash( 'success', 'gocardless-subscription-updated' );
+			}
+			res.redirect( app.parent.mountpath + app.mountpath );
+		} );
+	} else {
+		req.flash( 'danger', 'gocardless-subscription-doesnt-exist' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	}
 } );

@@ -1,7 +1,7 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = 'Direct Debit'
+	- title = 'Your Contribution'
 
 block contents
 	.row
@@ -9,12 +9,31 @@ block contents
 			- page = 'direct-debit'
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9
-			+page_header( 'Direct Debit' )
+			+page_header( 'Your Contribution' )
+			if pending_update.amount
+				.alert.alert-info
+					| You have updated your contribution and will be charged
+					| £#{ pending_update.amount } from
+					| #{ moment( pending_update.date ).format('DD/MM/YYYY') }
 			.row
 				.col-md-8
-					p Your Direct Debit mandate and subscription are set up
-						if amount
-							| , you currently pay £#{ amount } per month
-						| .
-					p If you wish to make changes to the subscription, you must cancel it and set it up again.
-					a( href="/profile/direct-debit/cancel-subscription" ).btn.btn-danger.outline Cancel Subscription
+					if amount
+						p You currently pay £#{ amount } per month.
+					h4 Update your contribution
+					p You can change your contribution here
+					form( method='post', action='/profile/direct-debit/update-subscription').form-horizontal
+						+csrf
+
+						.form-group
+							label( for='amount' ).col-md-3.control-label Amount
+							.input-group.col-md-4
+								span.input-group-addon £
+								input( type='text', name='amount', value=pending_update.amount || amount ).form-control
+								span.input-group-addon .00
+
+						+form_button( 'Update contribution', 'primary', { left: 3, right: 4 } )
+			.row
+				.col-md-8
+					h4 Cancel your membership
+					p If you wish to cancel your membership
+					a( href="/profile/direct-debit/cancel-subscription" ).btn.btn-danger.outline Cancel Membership

@@ -28,7 +28,7 @@ block contents
 							label( for='amount' ).col-md-3.control-label Amount
 							.input-group.col-md-4
 								span.input-group-addon £
-								input( type='text', name='amount', value=pending_update.amount || amount ).form-control
+								input( type='number', name='amount', value=pending_update.amount || amount, required, min=1, step=1 ).form-control
 								span.input-group-addon .00
 
 						+form_button( 'Update contribution', 'primary', { left: 3, right: 4 } )

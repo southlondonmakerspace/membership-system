@@ -51,17 +51,7 @@ db.mongoose.connection.on( 'connected', function() {
 		}
 	} );
 
-	// Address
-	questions.push( {
-		type: 'input',
-		name: 'address',
-		message: 'Address (Comma seperated lines)',
-		validate: function( s ) {
-			return ( s.trim() === '' ? "You must enter a address" : true );
-		}
-	} );
-
-	// Address
+	// Email address
 	questions.push( {
 		type: 'input',
 		name: 'email',
@@ -119,7 +109,6 @@ function processAnswers( answers ) {
 	var user = {
 		firstname: answers.firstname,
 		lastname: answers.lastname,
-		address: answers.address.split( ',' ).map( function( s ) { return s.trim(); } ).join( "\n" ),
 		email: answers.email,
 		permissions: []
 	};

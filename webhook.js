@@ -4,6 +4,8 @@ var __src = __dirname + '/src';
 var __js = __src + '/js';
 var __views = __src + '/views';
 
+var moment = require('moment');
+
 var log = require( __js + '/logging' ).log;
 log.info( {
 	app: 'webhook',
@@ -105,7 +107,7 @@ function handlePaymentResourceEvent( event ) {
 			createPayment( event );
 			break;
 		case 'confirmed': // Collected
-			extendMembership( event );
+			confirmPayment( event );
 		case 'submitted': // Processing
 		case 'cancelled': // Cancelled
 		case 'failed': // Failed
@@ -170,6 +172,7 @@ function createPayment( event ) {
 function updatePayment( event ) {
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
 		if ( ! payment ) return; // There's nothing left to do here.
+
 		payment.status = event.details.cause;
 		payment.updated = new Date();
 		payment.save( function( err ) {
@@ -190,63 +193,77 @@ function updatePayment( event ) {
 	} );
 }
 
-function extendMembership( event ) {
+function confirmPayment( event ) {
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
 		if ( ! payment ) return; // There's nothing left to do here.
+
 		if ( payment.member ) {
-			Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-				var foundPermission = false;
-				for ( var p = 0; p < member.permissions.length; p++ ) {
-					if ( member.permissions[p].permission.slug == config.permission.member ) {
-						foundPermission = true;
-						// Create new expiry date 36 days + 12:00:00 ahead
-						member.permissions[p].date_expires = new Date();
-						member.permissions[p].date_expires.setDate( member.permissions[p].date_expires.getDate() + 37 );
-						member.permissions[p].date_expires.setHours( 12 );
-						member.permissions[p].date_expires.setMinutes( 0 );
-						member.permissions[p].date_expires.setSeconds( 0 );
-						member.permissions[p].date_expires.setMilliseconds( 0 );
-						log.info( {
-							app: 'webhook',
-							action: 'extend-membership',
-							until: member.permissions[p].date_expires,
-							sensitive: {
-								member: member._id
-							}
-						} );
-					}
-				}
-				if ( ! foundPermission ) grantMembership( member );
-				if ( foundPermission ) {
-					member.save( function ( err ) {
-						if ( err ) {
-							log.debug( {
-								app: 'webhook',
-								action: 'error-extending-membership',
-								error: err
-							} );
-						}
-					} );
-				}
+			getPaymentExpiryDate( payment, function ( date ) {
+				Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
+					extendMembership( member, date );
+				} );
 			} );
 		}
 	} );
 }
 
-function grantMembership( member ) {
+function getPaymentExpiryDate( payment, callback ) {
+	GoCardless.getSubscription( payment.subscription_id, function( subscription ) {
+		var unit = subscription.interval_unit === 'weekly' ? 'weeks' :
+			subscription.interval_unit === 'monthly' ? 'months' : 'years'
+
+		var date = moment( payment.charge_date )
+			.add( { [unit]: subscription.interval } )
+			.add( config.gracePeriod );
+
+		callback( date.toDate() );
+	});
+}
+
+function extendMembership( member, date ) {
+	for ( var p = 0; p < member.permissions.length; p++ ) {
+		if ( member.permissions[p].permission.slug == config.permission.member ) {
+
+			member.permissions[p].date_expires = date;
+
+			if (member.gocardless.pending_update) {
+				delete member.gocardless.pending_update;
+			}
+
+			log.info( {
+				app: 'webhook',
+				action: 'extend-membership',
+				until: member.permissions[p].date_expires,
+				sensitive: {
+					member: member._id
+				}
+			} );
+
+			member.save( function ( err ) {
+				if ( err ) {
+					log.debug( {
+						app: 'webhook',
+						action: 'error-extending-membership',
+						error: err
+					} );
+				}
+			} );
+
+			return;
+		}
+	}
+
+	grantMembership( member, date );
+}
+
+function grantMembership( member, date ) {
 	Permissions.findOne( { slug: config.permission.member }, function( err, permission ) {
 		if ( permission ) {
 			var new_permission = {
 				permission: permission.id,
 				date_added: new Date(),
-				date_expires: new Date()
+				date_expires: date
 			};
-			// Create new expiry date 36 days + 12:00:00 ahead
-			new_permission.date_expires.setDate( new_permission.date_expires.getDate() + 37 );
-			new_permission.date_expires.setHours( 12 );
-			new_permission.date_expires.setMinutes( 0 );
-			new_permission.date_expires.setSeconds( 0 );
-			new_permission.date_expires.setMilliseconds( 0 );
 
 			log.info( {
 				app: 'webhook',
@@ -260,6 +277,9 @@ function grantMembership( member ) {
 			Members.update( { _id: member._id }, {
 				$push: {
 					permissions: new_permission
+				},
+				$unset: {
+					'gocardless.pending_update': true
 				}
 			}, function ( err ) {
 				if ( err ) {
@@ -271,8 +291,6 @@ function grantMembership( member ) {
 				} else {
 					sendNewMemberEmail( member );
 				}
-
-				checkMembershipCap();
 			});
 		}
 	} );

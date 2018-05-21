@@ -178,11 +178,6 @@ module.exports = {
 				default: Date.now,
 				required: true
 			},
-			date_updated: {
-				type: Date,
-				default: Date.now,
-				required: true
-			},
 			date_expires: {
 				type: Date
 			},

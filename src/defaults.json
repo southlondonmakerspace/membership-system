@@ -15,6 +15,8 @@
 	"signup-closed": "false",
 	"signup-redirect": "https://example.com/closed",
 
+	"membership-support-email": "membership@example.com",
+
 	"flash-logged-in": "Login successful",
 	"flash-logged-out": "Logged out",
 	"flash-login-failed": "Login unsuccessful",

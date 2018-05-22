@@ -158,6 +158,10 @@ module.exports = {
 			amount: {
 				type: Number
 			},
+			period: {
+				type: String,
+				enum: ['monthly', 'annually']
+			},
 			pending_update: {
 				amount: {
 					type: Number

@@ -88,6 +88,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	} else {
 		res.render( 'complete', {
 			amount: req.user.gocardless.amount,
+			period: req.user.gocardless.period,
 			pending_update: req.user.gocardless.pending_update
 		} );
 	}

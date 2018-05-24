@@ -1,0 +1,37 @@
+extends /src/views/base.pug
+
+block navbar
+
+block prepend title
+	- title = app.title
+
+block append js
+	+passwordRequirementsJS
+
+block append css
+	+passwordRequirementsCSS
+
+
+block contents
+	.row
+		.col-md-12
+			+page_header( app.title )
+
+		.col-md-8.col-md-offset-2
+			form( method="post" ).form-horizontal
+				+csrf
+
+				h4 Your contribution
+
+				p We rely on members to survive and thrive.
+
+				.form-group
+					label( for='amount' ).col-md-3.control-label Amount
+					.input-group.col-md-4
+						span.input-group-addon £
+						input( type='number', name='amount', id='amount', value=5, min=1, step=1).form-control
+						span.input-group-addon .00
+
+				p You will now be redirected to our payment provider
+
+				+form_button('Join', 'primary', { left: 3, right: 4 } )

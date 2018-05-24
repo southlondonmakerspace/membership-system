@@ -1,0 +1,42 @@
+extends /src/views/base.pug
+
+block navbar
+
+block prepend title
+	- title = app.title
+
+block append js
+	+passwordRequirementsJS
+
+block append css
+	+passwordRequirementsCSS
+
+block contents
+	.row
+		.col-md-12
+			+page_header( app.title )
+
+		.col-md-8.col-md-offset-2
+			form( method="post" ).form-horizontal
+				+csrf
+
+				h4 Account details
+
+				p Your password will enable you to control your membership
+				
+				+input( 'password', 'Password', 'password', { required: true, id: 'password', class: 'pw-req', left: 3, right: 4 } )
+				+input( 'password', 'Confirm password', 'verify', { required: true, id: 'verify', class: 'pw-mat', left: 3, right: 4 } )
+				
+				h4 Delivery details
+
+				p We'd love to send you a copy of the #[b quarterly print edition]
+
+				+input( 'checkbox', 'Send me stuff', 'delivery_allow', { left: 3, right: 4, options: ['Yes'] } )
+				+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 3, right: 4 } )
+				+input( 'text', 'Address line 2', 'address_line2', { required: true, left: 3, right: 4 } )
+				+input( 'text', 'City/town', 'address_city', { required: true, left: 3, right: 4 } )
+				+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 3, right: 4 } )
+
+				hr
+
+				+form_button('Create account', 'primary', { left: 3, right: 4 } )

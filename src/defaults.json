@@ -33,6 +33,7 @@
 	"flash-user-lastname": "Last name required",
 	"flash-user-address": "Address required",
 	"flash-user-postcode": "Address must include a valid UK postcode",
+	"flash-user-amount": "Invalid contribution amount",
 
 	"flash-password-changed": "Password changed",
 	"flash-password-invalid": "Incorrect current password",

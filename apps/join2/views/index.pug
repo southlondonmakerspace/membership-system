@@ -5,13 +5,6 @@ block navbar
 block prepend title
 	- title = app.title
 
-block append js
-	+passwordRequirementsJS
-
-block append css
-	+passwordRequirementsCSS
-
-
 block contents
 	.row
 		.col-md-12
@@ -31,7 +24,5 @@ block contents
 						span.input-group-addon £
 						input( type='number', name='amount', id='amount', value=5, min=1, step=1).form-control
 						span.input-group-addon .00
-
-				p You will now be redirected to our payment provider
 
 				+form_button('Join', 'primary', { left: 3, right: 4 } )

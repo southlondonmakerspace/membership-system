@@ -34,11 +34,9 @@ module.exports = {
 		password: {
 			hash: {
 				type: String,
-				required: true
 			},
 			salt: {
 				type: String,
-				required: true
 			},
 			iterations: {
 				type: Number,
@@ -215,7 +213,8 @@ module.exports.schema.virtual( 'can_admin' ).get( function() {
 
 module.exports.schema.virtual( 'setupComplete' ).get( function() {
 	if ( ! this.gocardless.mandate_id ||
-			! this.gocardless.subscription_id
+			! this.gocardless.subscription_id ||
+			! this.password.hash
 		)
 		return false;
 	return true;

@@ -75,6 +75,18 @@ GoCardless.completeRedirectFlow = function ( redirect_flow_id, session_token, ca
 	} );
 };
 
+// Customer
+
+GoCardless.getCustomer = function ( customer_id, callback ) {
+	GoCardless.request( 'get', '/customers/' + customer_id, null, function ( error, response, body ) {
+		if ( response.statusCode == 200 ) {
+			callback( null, JSON.parse( body ).customers );
+		} else {
+			callback( body );
+		}
+	} );
+};
+
 // Mandate
 
 GoCardless.getMandate = function ( mandate_id, callback ) {
@@ -99,13 +111,12 @@ GoCardless.cancelMandate = function ( mandate_id, callback ) {
 
 // Subscription
 
-GoCardless.createSubscription = function ( mandate_id, amount, day_of_month, description, metadata, callback ) {
+GoCardless.createSubscription = function ( mandate_id, amount, interval_unit, description, metadata, callback ) {
 	var data = {
 		subscriptions: {
 			amount: amount * 100, // Convert from £ to p
 			currency: 'GBP',
-			day_of_month: day_of_month,
-			interval_unit: 'monthly',
+			interval_unit: interval_unit,
 			name: description,
 			links: {
 				mandate: mandate_id
@@ -191,5 +202,26 @@ GoCardless.getPayment = function ( payment_id, callback ) {
 		}
 	} );
 };
+
+
+// Promisify
+
+Object.keys(GoCardless).forEach(method => {
+	GoCardless[method + 'Promise'] = function (...methodArgs) {
+		return new Promise((resolve, reject) => {
+			GoCardless[method](...methodArgs, function (error, ...responseArgs) {
+				if (error) {
+					reject(error);
+				} else {
+					if (responseArgs.length <= 1) {
+						resolve(responseArgs[0]);
+					} else {
+						resolve(responseArgs);
+					}
+				}
+			});
+		});
+	};
+});
 
 module.exports = GoCardless;

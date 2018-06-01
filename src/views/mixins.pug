@@ -30,7 +30,7 @@ mixin input( type, label, name, opts )
 							- i++
 							div( class=type )
 								label( for=name + "_" + i )
-									input( name=name, type=type, value=value, checked=( opts.value === true || value == opts.value ), id=name + "_" + i )
+									input( name=name, type=type, value=value, required=opts.required, checked=( opts.value === true || value == opts.value ), id=name + "_" + i )
 									|  #{ text }
 						- break
 				if opts.after

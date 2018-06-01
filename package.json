@@ -52,12 +52,11 @@
     "first-time": "node tools/first-time/first-time",
     "new-user": "node tools/new-user/new-user",
     "import": "node tools/import/import",
-    "watch-css": "catw -c 'lessc -' 'static/less/*.less' -o static/css/style.css -v",
+    "watch-css": "node-sass --source-map true -rw static/scss -o static/css",
     "watch": "npm run watch-css"
   },
   "devDependencies": {
-    "catw": "^1.0.1",
-    "less": "^2.5.3",
+    "node-sass": "^4.9.0",
     "nodemon": "^1.14.12",
     "npm-run-all": "^4.1.2",
     "watchify": "^3.10.0"

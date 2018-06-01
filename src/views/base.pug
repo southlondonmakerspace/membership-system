@@ -22,11 +22,10 @@ html
 			block css
 				link( rel="stylesheet", href="/css/theme.min.css" )
 				link( rel="stylesheet", href="/css/style.css" )
-			block js
-				script( src="/js/jquery.js" )
-				script( src="/js/bootstrap.js" )
-				script( src="/js/script.js" )
 	body( class=( dev ? 'dev' : '' ) )
+		script.
+			document.body.className += ' has-js';
+
 		block body
 			.container
 				a( href="/" ).logo
@@ -48,3 +47,7 @@ html
 								a( href="https://github.com/southlondonmakerspace/membership-system", target="_blank" ) Contribute on GitHub
 							small.text-muted.pull-right
 								| #{ git }
+		block js
+			script( src="/js/jquery.js" )
+			script( src="/js/bootstrap.js" )
+			script( src="/js/script.js" )

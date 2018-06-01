@@ -27,7 +27,22 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/', auth.isLoggedIn, function( req, res ) {
-	res.redirect( '/profile' );
+	// check password == verify etc.
+	
+	auth.generatePassword( req.body.password, function( password ) {
+		req.user.update( { $set: {
+			password,
+			delivery_optin: req.body.delivery_optin === '0', // Yes is 0!
+			delivery_address: {
+				line1: req.body.address_line1,
+				line2: req.body.address_line2,
+				city: req.body.address_city,
+				postcode: req.body.address_postcode,
+			}
+		} }, function () {
+			res.redirect( '/profile' );
+		} );
+	} );
 } );
 
 module.exports = function( config ) {

@@ -114,6 +114,8 @@ app.get( '/complete', async function( req, res ) {
 
 			await member.save();
 
+			// TODO: handle case of duplicate email address
+
 			const [ subscription_id ] =
 				await GoCardless.createSubscriptionPromise( mandate_id, amount, period, `Membership: £${amount} ${period}`, {} );
 

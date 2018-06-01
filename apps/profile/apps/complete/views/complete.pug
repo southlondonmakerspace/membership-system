@@ -1,6 +1,7 @@
 extends /src/views/base.pug
 
 block navbar
+block breadcrumb
 
 block prepend title
 	- title = app.title
@@ -13,16 +14,19 @@ block append css
 
 block contents
 	.row
-		.col-md-12
-			+page_header( app.title )
-
 		.col-md-8.col-md-offset-2
 			form( method="post" ).form-horizontal
 				+csrf
 
+				h2 Welcome #{user.firstname}
+
+				p You're now a part of independent media
+
 				h4 Account details
 
 				p Your password will enable you to control your membership
+
+				+input( 'text', 'Email address', '', { left: 3, right: 4, readonly: true, value: user.email } )
 				
 				+input( 'password', 'Password', 'password', { required: true, id: 'password', class: 'pw-req', left: 3, right: 4 } )
 				+input( 'password', 'Confirm password', 'verify', { required: true, id: 'verify', class: 'pw-mat', left: 3, right: 4 } )
@@ -31,12 +35,12 @@ block contents
 
 				p We'd love to send you a copy of the #[b quarterly print edition]
 
-				+input( 'checkbox', 'Send me stuff', 'delivery_allow', { left: 3, right: 4, options: ['Yes'] } )
-				+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 3, right: 4 } )
-				+input( 'text', 'Address line 2', 'address_line2', { required: true, left: 3, right: 4 } )
-				+input( 'text', 'City/town', 'address_city', { required: true, left: 3, right: 4 } )
-				+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 3, right: 4 } )
+				+input( 'radio', 'Send me stuff', 'delivery_optin', { required: true, left: 3, right: 4, options: ['Yes', 'No'], value: 0 } )
 
-				hr
+				p If you want your post to go somewhere other than your billing address please change the details below
+				+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 3, right: 4, value: user.delivery_address.line1 } )
+				+input( 'text', 'Address line 2', 'address_line2', { left: 3, right: 4, value: user.delivery_address.line2 } )
+				+input( 'text', 'City/town', 'address_city', { required: true, left: 3, right: 4, value: user.delivery_address.city } )
+				+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 3, right: 4, value: user.delivery_address.postcode } )
 
-				+form_button('Create account', 'primary', { left: 3, right: 4 } )
+				+form_button('Complete account', 'primary', { left: -1 } )

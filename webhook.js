@@ -194,21 +194,21 @@ function updatePayment( event ) {
 }
 
 async function confirmPayment( event ) {
-	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
-		if ( ! payment ) return; // There's nothing left to do here.
+	const payment = await Payments.findOne( { payment_id: event.links.payment });
+	if ( ! payment ) return; // There's nothing left to do here.
 
-		if ( payment.member ) {
-			const date = await getPaymentExpiryDate( payment );
-			const member = await Members.findOne( { _id: payment.member } )
-				.populate( 'permissions.permission' ).exec();
+	if ( payment.member ) {
+		const date = await getPaymentExpiryDate( payment );
+		const member = await Members.findOne( { _id: payment.member } )
+			.populate( 'permissions.permission' ).exec();
 
-			extendMembership( member, date );
-		}
-	} );
+		extendMembership( member, date );
+	}
 }
 
 async function getPaymentExpiryDate( payment ) {
 	const subscription = await GoCardless.getSubscriptionPromise(payment.subscription_id);
+
 	const unit = subscription.interval_unit === 'weekly' ? 'weeks' :
 		subscription.interval_unit === 'monthly' ? 'months' : 'years'
 
@@ -216,8 +216,7 @@ async function getPaymentExpiryDate( payment ) {
 		.add( { [unit]: subscription.interval } )
 		.add( config.gracePeriod );
 
-		callback( date.toDate() );
-	});
+	return date.toDate();
 }
 
 function extendMembership( member, date ) {

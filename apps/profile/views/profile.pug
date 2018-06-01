@@ -13,9 +13,6 @@ block contents
 			dl
 				dt Joined
 				dd( style="margin-bottom: 1em;" ) #{ moment( user.joined ).fromNow() }
-				if membership_expires != undefined
-					dt Membership Expiry
-					dd( style="margin-bottom: 1em;" ) Renews #{ moment( membership_expires ).fromNow() }
 				if membership_amount != undefined
 					dt Membership Amount
 					dd( style="margin-bottom: 1em;" ) You pay £#{ membership_amount } per month

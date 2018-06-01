@@ -38,7 +38,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
+app.get( '/', auth.isAdmin, function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		var filter_permissions = [];
 
@@ -206,7 +206,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:uuid', auth.isMember, function( req, res ) {
+app.get( '/:uuid', auth.isAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( ! member ) {
 			req.flash( 'warning', 'member-404' );

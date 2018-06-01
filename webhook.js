@@ -193,28 +193,28 @@ function updatePayment( event ) {
 	} );
 }
 
-function confirmPayment( event ) {
+async function confirmPayment( event ) {
 	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
 		if ( ! payment ) return; // There's nothing left to do here.
 
 		if ( payment.member ) {
-			getPaymentExpiryDate( payment, function ( date ) {
-				Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-					extendMembership( member, date );
-				} );
-			} );
+			const date = await getPaymentExpiryDate( payment );
+			const member = await Members.findOne( { _id: payment.member } )
+				.populate( 'permissions.permission' ).exec();
+
+			extendMembership( member, date );
 		}
 	} );
 }
 
-function getPaymentExpiryDate( payment, callback ) {
-	GoCardless.getSubscription( payment.subscription_id, function( subscription ) {
-		var unit = subscription.interval_unit === 'weekly' ? 'weeks' :
-			subscription.interval_unit === 'monthly' ? 'months' : 'years'
+async function getPaymentExpiryDate( payment ) {
+	const subscription = await GoCardless.getSubscriptionPromise(payment.subscription_id);
+	const unit = subscription.interval_unit === 'weekly' ? 'weeks' :
+		subscription.interval_unit === 'monthly' ? 'months' : 'years'
 
-		var date = moment( payment.charge_date )
-			.add( { [unit]: subscription.interval } )
-			.add( config.gracePeriod );
+	const date = moment( payment.charge_date )
+		.add( { [unit]: subscription.interval } )
+		.add( config.gracePeriod );
 
 		callback( date.toDate() );
 	});
@@ -253,6 +253,7 @@ function extendMembership( member, date ) {
 		}
 	}
 
+	// If permission not found
 	grantMembership( member, date );
 }
 

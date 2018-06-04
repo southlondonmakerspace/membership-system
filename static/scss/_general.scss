@@ -237,3 +237,19 @@ h4.list-group-item-heading .label {
 	position: relative;
 	top: -3px;
 }
+
+input.form-control {
+	&[type=text],
+	&[type=password],
+	&[type=email] {
+		font-size: inherit;
+		color: inherit;
+	}
+}
+
+.form-group {
+	margin-bottom: 30px;
+	& + & {
+		margin-top: -15px;
+	}
+}

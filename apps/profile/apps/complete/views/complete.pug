@@ -1,46 +1,68 @@
 extends /src/views/base.pug
 
-block navbar
-block breadcrumb
-
 block prepend title
 	- title = app.title
 
 block append js
 	+passwordRequirementsJS
+	script(src='/js/profile-complete.js')
 
 block append css
 	+passwordRequirementsCSS
 
-block contents
-	.row
-		.col-md-8.col-md-offset-2
-			form( method="post" ).form-horizontal
-				+csrf
+block body
+	header.join-header
+		.join-header__bg
 
-				h2 Welcome #{user.firstname}
+		.join-form
+			.join-title
+				div
+					img(src='/svg/logo.svg').join-title-logo
+				h1 Welcome#[br]#{user.firstname}
 
-				p You're now a part of independent media
+	.container
+		.row
+			.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
+				.alert.alert-info Finish setting up your account
 
-				h4 Account details
+				include /src/views/partials/flash
 
-				p Your password will enable you to control your membership
+				form( method="post" ).form-horizontal
+					+csrf
 
-				+input( 'text', 'Email address', '', { left: 3, right: 4, readonly: true, value: user.email } )
-				
-				+input( 'password', 'Password', 'password', { required: true, id: 'password', class: 'pw-req', left: 3, right: 4 } )
-				+input( 'password', 'Confirm password', 'verify', { required: true, id: 'verify', class: 'pw-mat', left: 3, right: 4 } )
-				
-				h4 Delivery details
+					h3 Your account
 
-				p We'd love to send you a copy of the #[b quarterly print edition]
+					p.
+						You’ll be able to manage your membership using your email
+						address and password. We’re also excited to be rolling
+						out some new features over the next couple of months.
 
-				+input( 'radio', 'Send me stuff', 'delivery_optin', { required: true, left: 3, right: 4, options: ['Yes', 'No'], value: 0 } )
+					+input( 'text', 'Email address', '', { required: true, left: 4, right: 6, value: user.email } )
+					+input( 'password', 'Password', 'password', { required: true, id: 'password', class: 'pw-req', left: 4, right: 6 } )
+					+input( 'password', 'Confirm password', 'verify', { required: true, id: 'verify', class: 'pw-mat', left: 4, right: 6 } )
 
-				p If you want your post to go somewhere other than your billing address please change the details below
-				+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 3, right: 4, value: user.delivery_address.line1 } )
-				+input( 'text', 'Address line 2', 'address_line2', { left: 3, right: 4, value: user.delivery_address.line2 } )
-				+input( 'text', 'City/town', 'address_city', { required: true, left: 3, right: 4, value: user.delivery_address.city } )
-				+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 3, right: 4, value: user.delivery_address.postcode } )
+					h3 Delivery details
 
-				+form_button('Complete account', 'primary', { left: -1 } )
+					p We'd love to send you a copy of the #[b quarterly print edition]
+
+					ul.join-options
+						li.join-options__opt
+							input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='yes', required, checked)
+							label(for='delivery_optin_yes').btn Yes
+						li.join-options__opt
+							input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='no', required)
+							label(for='delivery_optin_no').btn No
+						li.join-options__opt
+
+					p.
+						We've assumed your delivery address is the same as your
+						billing address, update it below if this is not the
+						case.
+					+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
+					+input( 'text', 'Address line 2', 'address_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
+					+input( 'text', 'City/town', 'address_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
+					+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
+
+					button.btn.join-btn Save
+
+		include /src/views/partials/footer

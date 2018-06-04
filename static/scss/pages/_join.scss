@@ -32,6 +32,10 @@
 	position: relative;
 	max-width: 550px;
 	margin: 0 auto;
+
+	.alert.alert-danger {
+		background-color: transparentize(#B51724, 0.2);
+	}
 }
 
 .join-title {
@@ -140,7 +144,7 @@
 
 .join-btn {
 	background-color: $c-green;
-	width: 200px;
+	min-width: 200px;
 
 	&:hover {
 		background-color: darken($c-green, 5%);

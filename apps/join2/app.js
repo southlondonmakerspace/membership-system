@@ -48,10 +48,25 @@ app.post( '/', function( req, res ) {
 		req.flash( 'warning', 'already-logged-in' );
 		res.redirect( '/profile' );
 	} else {
-		const amount = parseInt( req.body.amount );
-		const period = 'monthly';
+		const period = req.body.period;
 
-		if ( isNaN( amount ) || amount < 1 ) {
+		if ( period !== 'monthly' && period !== 'annually' ) {
+			req.flash( 'danger', 'user-period' );
+			res.redirect( app.mountpath );
+			req.log.debug( {
+				app: 'join',
+				action: 'signup',
+				error: 'Invalid period'
+			} );
+			return;
+		}
+
+		const amount = req.body.amount;
+		const amountNo =
+			(amount === 'other' ? parseInt(req.body.amount_other) : parseInt(amount)) *
+			(period === 'annually' ? 12 : 1);
+
+		if ( isNaN( amountNo ) || amountNo < 1 ) {
 			req.flash( 'danger', 'user-amount' );
 			res.redirect( app.mountpath );
 			req.log.debug( {
@@ -59,23 +74,25 @@ app.post( '/', function( req, res ) {
 				action: 'signup',
 				error: 'Invalid contribution amount.'
 			} );
-		} else {
-			auth.generateActivationCode( function( session_token ) {
-				GoCardless.createRedirectFlow( `Membership: £${amount} ${period}`, session_token, config.audience + app.mountpath + '/complete', function( error, redirect_url, body ) {
-					if ( error ) {
-						req.flash( 'danger', 'gocardless-mandate-err' );
-						res.redirect( app.mountpath );
-					} else {
-						new JoinFlows({
-							redirect_flow_id: body.redirect_flows.id,
-							session_token, amount, period
-						}).save( function ( error ) {
-							res.redirect( redirect_url );
-						} );
-					}
-				} );
-			} );
+			return;
 		}
+
+		auth.generateActivationCode( function( session_token ) {
+			GoCardless.createRedirectFlow( `Membership: £${amountNo} ${period}`, session_token, config.audience + app.mountpath + '/complete', function( error, redirect_url, body ) {
+				if ( error ) {
+					req.flash( 'danger', 'gocardless-mandate-err' );
+					res.redirect( app.mountpath );
+				} else {
+					new JoinFlows({
+						redirect_flow_id: body.redirect_flows.id,
+						session_token, amount: amountNo, period
+					}).save( function ( error ) {
+						console.log( error );
+						res.redirect( redirect_url );
+					} );
+				}
+			} );
+		} );
 	}
 } );
 

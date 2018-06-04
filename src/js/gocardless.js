@@ -116,7 +116,7 @@ GoCardless.createSubscription = function ( mandate_id, amount, interval_unit, de
 		subscriptions: {
 			amount: amount * 100, // Convert from £ to p
 			currency: 'GBP',
-			interval_unit: interval_unit,
+			interval_unit: interval_unit === 'annually' ? 'yearly' : interval_unit,
 			name: description,
 			links: {
 				mandate: mandate_id

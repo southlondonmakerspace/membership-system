@@ -1,30 +1,43 @@
 (function () {
-	$('.js-join-other-amount').prop('checked', false);
+	var $form = $('.js-join-form');
+	var $formMore = $form.find('.js-join-form-more');
+	var $sustain = $form.find('.js-join-sustain');
+	var $amount = $form.find('.js-join-amount');
+	var $otherAmount = $form.find('.js-join-other-amount');
+	var $otherAmountBox = $form.find('.js-join-other-amount-box');
+	var $period = $form.find('.js-join-period');
+	var $charge = $form.find('.js-join-charge');
 
-	$('.js-join-form').on('change input', function () {
-		var amount = $('.js-join-amount:checked', this).val();
-		var period = $('.js-join-period:checked', this).val();
+	$form.on('change input', function () {
+		var amount = $amount.filter(':checked').val();
+		var period = $period.filter(':checked').val();
+
+		$otherAmountBox.prop('required', amount === undefined);
 
 		if (!amount) {
-			amount = $('.js-join-other-amount-box').val();
+			amount = $otherAmountBox.val();
 		}
 
 		if (amount) {
-			$('.js-join-form-more').removeClass('hidden-js');
-			$('.js-join-sustain').toggleClass('hidden', amount >= 3);
-			$('.js-join-charge').text('£' + (amount * (period === 'annually' ? 12 : 1)));
+			$formMore.removeClass('hidden-js');
+			$sustain.toggleClass('hidden', amount >= 3);
+			$charge.text('£' + (amount * (period === 'annually' ? 12 : 1)));
 		} else {
-			$('.js-join-charge').text('£?');
+			$charge.text('£?');
 		}
 	});
 
-	$('.js-join-other-amount-box').on('focus', function () {
-		$('.js-join-amount').prop('checked', false);
-		$('.js-join-other-amount').prop('checked', true);
+	$otherAmountBox.on('focus', function () {
+		$amount.prop('checked', false);
+		$otherAmount.prop('checked', true);
+		$form.trigger('change');
 	});
 
-	$('.js-join-amount').on('change', function () {
-		$('.js-join-other-amount-box').val('');
+	$amount.on('change', function () {
+		$otherAmountBox.val('');
 	});
+
+	$otherAmount.prop('checked', false);
+	$form.trigger('change');
 
 })();

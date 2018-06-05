@@ -92,7 +92,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 				} );
 			} );
 		} else {
-			var member = {};
+			var membership_expires;
 			var permissions = req.user.permissions.filter( function( p ) {
 				if ( p.permission && p.permission.slug ) {
 					if ( p.permission.slug == config.permission.member ) {
@@ -101,10 +101,19 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 				}
 				return false;
 			} );
-			if ( permissions.length > 0 ) member = permissions[0];
+			if ( permissions.length > 0 ) {
+				const expires = moment( permissions[0].date_expires );
+
+				// If we're in the grace period assume payment has gone through
+				if ( expires.subtract( config.gracePeriod ).isBefore() ) {
+					membership_expires = expires.add({'years': 2}); // TODO: calculate next payment date
+				} else {
+					membership_expires = expires;
+				}
+			}
 			res.render( 'profile', {
 				user: req.user,
-				membership_expires: ( member.date_expires !== undefined ? member.date_expires : null )
+				membership_expires
 			} );
 		}
 	} else {

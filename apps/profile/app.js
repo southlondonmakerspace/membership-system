@@ -28,7 +28,7 @@ app.use( function( req, res, next ) {
 	} );
 	res.locals.activeApp = app_config.uid;
 
-	if (!req.user.setupComplete && req.originalUrl !== '/profile/complete') {
+	if ( req.user && !req.user.setupComplete && req.originalUrl !== '/profile/complete') {
 		res.redirect('/profile/complete');
 	} else {
 		next();

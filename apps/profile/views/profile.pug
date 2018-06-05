@@ -3,28 +3,26 @@ extends /src/views/base.pug
 block contents
 	p=baseurl
 	.row
+		h2.col-md-9.col-md-offset-3 Hello #{ user.firstname }
+	.row
 		.col-md-3
 			- page = 'home'
 			include partials/sidebar.pug
-		.col-md-2
-			img( style="border-radius: 100%", src=user.gravatar + "?s=150&d=mm&r=g" )
-		.col-md-7
-			+page_header( 'Hello ' + user.firstname + '!' )
+		.col-md-9
+			.page-header
+
+			unless membership_expires
+				.alert.alert-danger.
+					Your membership has expired, this could be due to a failed
+					payment. Please contact
+					#[a(href='mailto:membership@thebristolcable.org') membership@thebristolcable.org]
+					to restart your membership.
+
 			dl
 				dt Joined
-				dd( style="margin-bottom: 1em;" ) #{ moment( user.joined ).fromNow() }
-				if membership_amount != undefined
-					dt Membership Amount
-					dd( style="margin-bottom: 1em;" ) You pay £#{ membership_amount } per month
-				if count != undefined && count[0] != undefined && count[0].count != undefined
-					- count = count[0].count
-					dt Visits
-					dd( style="margin-bottom: 1em;" ) You've visited #{ ( count > 2 ? count + ' times' : ( count > 1 ? 'twice' : 'once' ) ) } this month
-					
-					if membership_amount != undefined && count > 3
-						- visit_amount = Math.round( ( membership_amount / count ) * 100 ) / 100
-						dt Cost of making
-						if visit_amount <= 3.50
-							dd( style="margin-bottom: 1em;" ) Thats only £#{ visit_amount } per visit, have you thought about contributing a bit more?
-						else
-							dd( style="margin-bottom: 1em;" ) Thats only £#{ visit_amount } per visit
+				dd #{ moment( user.joined ).format('Do MMMM YYYY') }
+				if membership_expires
+					dt Contribution
+					dd.
+						£#{ user.gocardless.amount }/#{ user.gocardless.period },
+						renews #{ membership_expires.format('Do MMMM YYYY') }

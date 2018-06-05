@@ -30,23 +30,26 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
-app.post( '/', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.body.firstname || ! req.body.lastname ) {
-		req.log.debug( {
-			app: 'profile',
-			action: 'update',
-			error: 'First or last name were not provided',
-			sensitive: {
-				body: req.body
-			}
-		} );
+app.post( '/', auth.isLoggedIn, async function( req, res ) {
+	if ( ! req.body.firstname ||
+		 ! req.body.lastname ) {
+			req.log.debug( {
+				app: 'profile',
+				action: 'update',
+				error: 'First or last name were not provided',
+				sensitive: {
+					body: req.body
+				}
+			} );
 
 		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 		return;
 	}
 
-	if ( req.body.delivery_optin == 'yes' &&
+	const delivery_optin = req.body.delivery_optin === 'yes';
+
+	if ( delivery_optin == 'yes' &&
 		( ! req.body.delivery_line1 || ! req.body.delivery_city || ! req.body.delivery_postcode ) ) {
 		req.log.debug( {
 			app: 'profile',
@@ -62,66 +65,49 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	postcodes.lookup( req.body.delivery_postcode ).then( function( data ) {
-		var profile = {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			delivery_optin: req.body.delivery_optin == 'yes',
-			delivery_address: {
-				line1: req.body.delivery_line1,
-				line2: req.body.delivery_line2,
-				city: req.body.delivery_city,
-				postcode: req.body.delivery_postcode
-			}
-		};
+	// TODO: update GoCardless
 
-		if ( data ) {
-			profile.postcode_coordinates = {
-				lat: data.latitude,
-				lng: data.longitude,
-			};
-		} else {
-			profile.postcode_coordinates = null;
-		}
+	var profile = {
+		email: req.body.email,
+		firstname: req.body.firstname,
+		lastname: req.body.lastname,
+		delivery_optin,
+		delivery_address: delivery_optin ? {
+			line1: req.body.delivery_line1,
+			line2: req.body.delivery_line2,
+			city: req.body.delivery_city,
+			postcode: req.body.delivery_postcode
+		} : {}
+	};
 
-		Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-			if ( status ) {
-				req.log.debug( {
-					app: 'profile',
-					action: 'update',
-					error: 'Validation errors',
-					validation: status.errors,
-					sensitive: {
-						body: req.body
-					}
-				} );
-
-				var keys = Object.keys( status.errors );
-				for ( var k in keys ) {
-					var key = keys[k];
-					req.flash( 'danger', status.errors[key].message );
+	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
+		if ( status ) {
+			req.log.debug( {
+				app: 'profile',
+				action: 'update',
+				error: 'Validation errors',
+				validation: status.errors,
+				sensitive: {
+					body: req.body
 				}
-			} else {
-				req.log.info( {
-					app: 'profile',
-					action: 'update',
-					sensitive: {
-						profile: profile
-					}
-				} );
+			} );
 
-				req.flash( 'success', 'profile-updated' );
+			var keys = Object.keys( status.errors );
+			for ( var k in keys ) {
+				var key = keys[k];
+				req.flash( 'danger', status.errors[key].message );
 			}
-			res.redirect( app.parent.mountpath + app.mountpath );
-		} );
-	}, function( error ) {
-		req.log.debug( {
-			app: 'profile',
-			action: 'update',
-			error: error
-		} );
+		} else {
+			req.log.info( {
+				app: 'profile',
+				action: 'update',
+				sensitive: {
+					profile: profile
+				}
+			} );
 
-		req.flash( 'danger', 'user-postcode' );
+			req.flash( 'success', 'profile-updated' );
+		}
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );

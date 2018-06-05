@@ -5,7 +5,7 @@ block prepend title
 
 block append js
 	+passwordRequirementsJS
-	script(src='/js/profile-complete.js')
+	script(src='/js/delivery-address.js')
 
 block append css
 	+passwordRequirementsCSS
@@ -47,21 +47,21 @@ block body
 
 					ul.join-options
 						li.join-options__opt
-							input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='yes', required, checked)
+							input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='yes', required, checked).js-delivery-opt
 							label(for='delivery_optin_yes').btn Yes
 						li.join-options__opt
-							input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='no', required)
+							input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='no', required).js-delivery-opt
 							label(for='delivery_optin_no').btn No
 						li.join-options__opt
 
-					p.
-						We've assumed your delivery address is the same as your
-						billing address, update it below if this is not the
-						case.
-					+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
-					+input( 'text', 'Address line 2', 'address_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
-					+input( 'text', 'City/town', 'address_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
-					+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
+					.hidden-js.js-delivery-details
+						p.
+							We've assumed your delivery address is the same as your
+							billing address, update it below if needed.
+						+input( 'text', 'Address line 1', 'address_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
+						+input( 'text', 'Address line 2', 'address_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
+						+input( 'text', 'City/town', 'address_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
+						+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
 
 					button.btn.join-btn Save
 

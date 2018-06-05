@@ -1,7 +1,7 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = "Change Password"
+	- title = "Change password"
 
 block append js
 	+passwordRequirementsJS
@@ -14,11 +14,12 @@ block contents
 		.col-md-3
 			- page = 'change-password'
 			include ../../../views/partials/sidebar.pug
-		.col-md-9
-			+page_header( 'Change Password' )
+		.col-md-9.col-lg-7
+			+page_header( 'Change password' )
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'password', 'Current password', 'current', { required: true, left: 3, right: 4 } )
-				+input( 'password', 'New password', 'new', { required: true, class: 'pw-req', left: 3, right: 4 } )
-				+input( 'password', 'Verify password', 'verify', { required: true, class: 'pw-mat', left: 3, right: 4 } )
-				+form_button( 'Update Password', 'primary', { left: 3 } )
+				+input( 'password', 'Current password', 'current', { required: true, left: 3, right: 5 } )
+				+input( 'password', 'New password', 'new', { required: true, class: 'pw-req', left: 3, right: 5 } )
+				+input( 'password', 'Confirm password', 'verify', { required: true, class: 'pw-mat', left: 3, right: 5 } )
+
+				button.btn.join-btn Save

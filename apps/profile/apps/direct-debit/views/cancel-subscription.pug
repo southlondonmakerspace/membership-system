@@ -1,15 +1,15 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = 'Direct Debit'
+	- title = 'Cancel contribution'
 
 block contents
 	.row
 		.col-md-3
 			- page = 'direct-debit'
 			include /apps/profile/views/partials/sidebar.pug
-		.col-md-9
-			+page_header( 'Cancel Membership' )
+		.col-md-9.col-lg-7
+			+page_header( 'Cancel contribution' )
 			p We're really sad that you're cancelling your membership. Maybe we can work it out?
 			form( method="post" )
 				+csrf
@@ -21,6 +21,4 @@ block contents
 						option I don't want to say
 						option Other
 				p
-					button( role="button").btn.btn-danger Cancel Membership
-					| 
-					a( href="/profile/direct-debit" ).btn.btn-default Back
+					button( role="button").btn.btn-danger.outline Cancel contribution

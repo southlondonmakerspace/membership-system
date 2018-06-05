@@ -45,6 +45,10 @@ h3 {
 	font-size: 26px;
 }
 
+a {
+	color: $c-blue;
+}
+
 body.has-js .hidden-js {
 	display: none;
 }
@@ -54,7 +58,7 @@ body:not(.has-js) .hidden-nojs {
 }
 
 .logo {
-	margin-bottom: 20px;
+	margin: 20px 0;
 	display: inline-block;
 	width: 5em;
 	height: 5em;
@@ -180,6 +184,10 @@ ul.nav.nav-tabs {
 
 .alert {
 	font-weight: 600;
+	a {
+		color: inherit;
+		text-decoration: underline;
+	}
 }
 
 .btn:after {
@@ -241,6 +249,7 @@ h4.list-group-item-heading .label {
 input.form-control {
 	&[type=text],
 	&[type=password],
+	&[type=number],
 	&[type=email] {
 		font-size: inherit;
 		color: inherit;
@@ -252,4 +261,15 @@ input.form-control {
 	& + & {
 		margin-top: -15px;
 	}
+}
+
+dd {
+	margin-bottom: 1rem;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+	background-color: $c-blue;
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
 }

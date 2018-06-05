@@ -13,13 +13,17 @@ var app_config = {};
 app.set( 'views', __dirname + '/views' );
 
 app.use( function( req, res, next ) {
-	res.locals.app = app_config;
-	res.locals.breadcrumb.push( {
-		name: app_config.title,
-		url: app.parent.mountpath + app.mountpath
-	} );
-	res.locals.activeApp = app_config.uid;
-	next();
+	if ( req.user.setupComplete ) {
+		res.redirect( '/profile' );
+	} else {
+		res.locals.app = app_config;
+		res.locals.breadcrumb.push( {
+			name: app_config.title,
+			url: app.parent.mountpath + app.mountpath
+		} );
+		res.locals.activeApp = app_config.uid;
+		next();
+	}
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
@@ -32,7 +36,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 	auth.generatePassword( req.body.password, function( password ) {
 		req.user.update( { $set: {
 			password,
-			delivery_optin: req.body.delivery_optin === '0', // Yes is 0!
+			delivery_optin: req.body.delivery_optin === 'yes',
 			delivery_address: {
 				line1: req.body.address_line1,
 				line2: req.body.address_line2,

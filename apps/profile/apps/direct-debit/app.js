@@ -87,7 +87,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 		} );
 	} else {
 		res.render( 'complete', {
-			amount: req.user.gocardless.amount,
+			amount: req.user.gocardless.actualAmount,
 			period: req.user.gocardless.period,
 			pending_update: req.user.gocardless.pending_update
 		} );
@@ -263,6 +263,7 @@ app.post( '/update-subscription', auth.isLoggedIn, function( req, res ) {
 				} }, function( err ) {});
 				req.flash( 'success', 'gocardless-subscription-updated' );
 			}
+
 			res.redirect( app.parent.mountpath + app.mountpath );
 		} );
 	} else {

@@ -62,9 +62,7 @@ app.post( '/', function( req, res ) {
 		}
 
 		const amount = req.body.amount;
-		const amountNo =
-			(amount === 'other' ? parseInt(req.body.amount_other) : parseInt(amount)) *
-			(period === 'annually' ? 12 : 1);
+		const amountNo = amount === 'other' ? parseInt(req.body.amount_other) : parseInt(amount);
 
 		if ( isNaN( amountNo ) || amountNo < 1 ) {
 			req.flash( 'danger', 'user-amount' );
@@ -78,7 +76,9 @@ app.post( '/', function( req, res ) {
 		}
 
 		auth.generateActivationCode( function( session_token ) {
-			GoCardless.createRedirectFlow( `Membership: £${amountNo} ${period}`, session_token, config.audience + app.mountpath + '/complete', function( error, redirect_url, body ) {
+			const description =  `Membership: £${amountNo * (period === 'annually' ? 12 : 1)} ${period}`;
+
+			GoCardless.createRedirectFlow(description, session_token, config.audience + app.mountpath + '/complete', function( error, redirect_url, body ) {
 				if ( error ) {
 					req.flash( 'danger', 'gocardless-mandate-err' );
 					res.redirect( app.mountpath );
@@ -102,7 +102,7 @@ app.get( '/complete', async function( req, res ) {
 	if ( redirect_flow_id ) {
 
 		try {
-			const { session_token, amount, period } = await JoinFlows.findOne({ redirect_flow_id });
+			const { session_token, amount, period, actualAmount } = await JoinFlows.findOne({ redirect_flow_id });
 
 			const permission = await Permissions.findOne( { slug: config.permission.member });
 
@@ -117,6 +117,7 @@ app.get( '/complete', async function( req, res ) {
 				firstname: customer.given_name,
 				lastname: customer.family_name,
 				email: customer.email,
+				delivery_optin: false,
 				delivery_address: {
 					line1: customer.address_line1,
 					line2: customer.address_line2,
@@ -134,7 +135,7 @@ app.get( '/complete', async function( req, res ) {
 			// TODO: handle case of duplicate email address
 
 			const [ subscription_id ] =
-				await GoCardless.createSubscriptionPromise( mandate_id, amount, period, `Membership: £${amount} ${period}`, {} );
+				await GoCardless.createSubscriptionPromise( mandate_id, actualAmount, period, `Membership: £${actualAmount} ${period}`, {} );
 
 			await member.update({$set: {
 				'gocardless.subscription_id': subscription_id,

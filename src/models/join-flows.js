@@ -22,4 +22,8 @@ module.exports = {
 	} )
 };
 
+module.exports.schema.virtual( 'actualAmount' ).get( function () {
+	return this.amount * ( this.period === 'annually'  ? 12 : 1 );
+} );
+
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

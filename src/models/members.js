@@ -202,6 +202,10 @@ module.exports.schema.virtual( 'gravatar' ).get( function() {
 	return '//www.gravatar.com/avatar/' + md5;
 } );
 
+module.exports.schema.virtual( 'gocardless.actualAmount' ).get( function () {
+	return this.gocardless.amount * ( this.gocardless.period === 'annually'  ? 12 : 1 );
+} );
+
 module.exports.schema.virtual( 'can_admin' ).get( function() {
 	var can_admin = [];
 	this.permissions.forEach( function( permission ) {

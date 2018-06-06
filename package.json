@@ -14,6 +14,7 @@
   },
   "homepage": "https://github.com/southlondonmakerspace/membership-system#readme",
   "dependencies": {
+    "ajv": "^6.5.0",
     "body-parser": "^1.14.1",
     "bunyan": "^1.8.12",
     "bunyan-middleware": "^0.8.0",

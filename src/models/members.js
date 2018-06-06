@@ -216,10 +216,7 @@ module.exports.schema.virtual( 'can_admin' ).get( function() {
 } );
 
 module.exports.schema.virtual( 'setupComplete' ).get( function() {
-	if ( ! this.gocardless.mandate_id ||
-			! this.gocardless.subscription_id ||
-			! this.password.hash
-		)
+	if ( ! this.password.hash )
 		return false;
 	return true;
 } );

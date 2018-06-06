@@ -182,5 +182,10 @@
 	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag",
 
-	"flash-signup-closed": "Signups are currently closed"
+	"flash-signup-closed": "Signups are currently closed",
+
+	"flash-validation-error-generic": "There was an error with your request",
+
+	"flash-validation-error.amount-minimum": "The minimum contribution is £1",
+	"flash-validation-error.amountOther-minimum": "The minimum contribution is £1"
 }

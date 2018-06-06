@@ -11,10 +11,9 @@ block contents
 		.col-md-9.col-lg-7
 			+page_header( 'Update contribution' )
 			if pending_update.amount
-				.alert.alert-info
-					| You have updated your contribution and will be charged
-					| £#{ pending_update.amount } from
-					| #{ moment( pending_update.date ).format('DD/MM/YYYY') }
+				.alert.alert-info.
+					Your new contribution of £#{ pending_update.amount } will start on
+					#{ moment( pending_update.date ).format('DD/MM/YYYY') }
 			if amount
 				p You currently contribute £#{ amount }/#{ period }.
 			p

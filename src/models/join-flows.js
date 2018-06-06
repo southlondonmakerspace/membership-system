@@ -7,7 +7,7 @@ module.exports = {
 			type: String,
 			required: true
 		},
-		session_token: {
+		sessionToken: {
 			type: String,
 			required: true,
 		},

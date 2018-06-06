@@ -313,6 +313,18 @@ var Authentication = {
 		}
 	},
 
+	isNotLoggedIn: function( req, res, next ) {
+		var status = Authentication.loggedIn( req );
+		switch ( status ) {
+			case Authentication.NOT_LOGGED_IN:
+				return next();
+			default:
+				req.flash( 'warning', 'already-logged-in' )
+				res.redirect( '/profile' );
+				return;
+		}
+	},
+
 	// Express middleware to redirect unauthenticated API calls
 	isAPIAuthenticated: function( req, res, next ) {
 		if ( ! req.query.api_key ) return res.sendStatus( 403 );

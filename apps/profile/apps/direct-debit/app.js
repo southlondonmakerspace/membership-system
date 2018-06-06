@@ -166,7 +166,8 @@ app.post( '/update-subscription', [
 	const { body:  { amount }, user } = req;
 
 	try {
-		const { subscriptions } = await GoCardless.updateSubscriptionPromise( user.gocardless.subscription_id, amount );
+		const { subscriptions } =
+			await GoCardless.updateSubscriptionPromise( user.gocardless.subscription_id, amount, user.gocardless.period );
 
 		const payment = subscriptions.upcoming_payments.find( p => p.amount === amount * 100 );
 

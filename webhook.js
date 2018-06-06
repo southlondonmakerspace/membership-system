@@ -382,7 +382,6 @@ function cancelledSubscription( event ) {
 		}
 
 		member.gocardless.subscription_id = '';
-		member.gocardless.amount = '';
 		member.save( function( err ) {
 			if ( err ) {
 				log.debug( {
@@ -451,7 +450,6 @@ function cancelledMandate( event ) {
 			return;
 		}
 		member.gocardless.mandate_id = '';
-		member.gocardless.next_possible_charge_date = '';
 		member.save( function( err ) {
 			if ( err ) {
 				log.debug( {

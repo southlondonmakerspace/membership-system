@@ -177,6 +177,10 @@ var Authentication = {
 		} );
 	},
 
+	generateCode: function () {
+		return crypto.randomBytes( 10 ).toString( 'hex' );
+	},
+
 	// Used to create a long salt for each individual user
 	// returns a 256 byte / 512 character hex string
 	generateSalt: function( callback ) {

@@ -9,10 +9,7 @@ var	express = require( 'express' ),
 var passport = require( 'passport' );
 var moment = require( 'moment' );
 
-var PostcodesIO = require( 'postcodesio-client' ),
-	postcodes = new PostcodesIO();
-
-var Mail = require( __js + '/mail' );
+//var Mail = require( __js + '/mail' );
 
 var JoinFlows = require( __js + '/database' ).JoinFlows;
 var Members = require( __js + '/database' ).Members;
@@ -29,13 +26,14 @@ var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
+app.use( auth.isNotLoggedIn );
 app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.activeApp = app_config.uid;
 	next();
 } );
 
-app.get( '/' , auth.isNotLoggedIn, function( req, res ) {
+app.get( '/' , function( req, res ) {
 	res.render( 'index' );
 } );
 
@@ -66,31 +64,30 @@ const joinSchema = {
 	}
 };
 
-app.post( '/', [
-	auth.isNotLoggedIn,
-	hasSchema(joinSchema).orFlash
-], function( req, res ) {
+app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
 	const { body: { period, amount, amountOther } } = req;
 
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
 
-	auth.generateActivationCode( function( sessionToken ) {
-		const description =  `Membership: £${amountNo * (period === 'annually' ? 12 : 1)} ${period}`;
+	const sessionToken = auth.generateCode();
+	const name = GoCardless.getSubscriptionName(amountNo * (period === 'annually' ? 12 : 1), period);
+	const completeUrl = config.audience + app.mountpath + '/complete';
 
-		GoCardless.createRedirectFlow(description, sessionToken, config.audience + app.mountpath + '/complete', function( error, redirect_url, body ) {
-			if ( error ) {
-				req.flash( 'danger', 'gocardless-mandate-err' );
-				res.redirect( app.mountpath );
-			} else {
-				new JoinFlows({
-					redirect_flow_id: body.redirect_flows.id,
-					sessionToken, amount: amountNo, period
-				}).save( function ( error ) {
-					res.redirect( redirect_url );
-				} );
-			}
-		} );
-	} );
+	try {
+		const [ redirectUrl, body ] =
+			await GoCardless.createRedirectFlowPromise( name, sessionToken, completeUrl );
+
+		await new JoinFlows({
+			redirect_flow_id: body.redirect_flows.id,
+			amount: amountNo,
+			sessionToken, period
+		}).save();
+
+		res.redirect( redirectUrl );
+	} catch ( error ) {
+			req.flash( 'danger', 'gocardless-mandate-err' );
+			res.redirect( app.mountpath );
+	}
 } );
 
 const completeSchema = {
@@ -105,10 +102,7 @@ const completeSchema = {
 	}
 }
 
-app.get( '/complete', [
-	auth.isNotLoggedIn,
-	hasSchema(completeSchema).or400
-], async function( req, res ) {
+app.get( '/complete', hasSchema(completeSchema).or400, async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
 	try {
@@ -146,8 +140,7 @@ app.get( '/complete', [
 		// TODO: handle case of duplicate email address
 
 		const [ subscription_id ] =
-			await GoCardless.createSubscriptionPromise( mandate_id, actualAmount, period,
-				`Membership: £${actualAmount} ${period}`, {} );
+			await GoCardless.createSubscriptionPromise( mandate_id, actualAmount, period );
 
 		await member.update({$set: {
 			'gocardless.subscription_id': subscription_id,

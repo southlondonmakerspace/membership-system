@@ -184,8 +184,10 @@
 
 	"flash-signup-closed": "Signups are currently closed",
 
-	"flash-validation-error-generic": "There was an error with your request",
+	"flash-validation-error-generic": "An error occured, please contact membership@thebristolcable.org.",
 
 	"flash-validation-error.amount-minimum": "The minimum contribution is £1",
+	"flash-validation-error.amount-required": "Contribution amount is required",
+	"flash-validation-error.period-required": "Contribution period is required",
 	"flash-validation-error.amountOther-minimum": "The minimum contribution is £1"
 }

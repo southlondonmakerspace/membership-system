@@ -39,6 +39,10 @@ GoCardless.validateWebhook = function( webhook_signature, body, callback ) {
 	callback( false );
 };
 
+GoCardless.getSubscriptionName = function ( amount, period ) {
+	return `Membership: £${amount} ${period}`;
+}
+
 // Redirect Flow
 
 GoCardless.createRedirectFlow = function ( description, session_token, redirect_url, callback ) {
@@ -111,17 +115,16 @@ GoCardless.cancelMandate = function ( mandate_id, callback ) {
 
 // Subscription
 
-GoCardless.createSubscription = function ( mandate_id, amount, interval_unit, description, metadata, callback ) {
+GoCardless.createSubscription = function ( mandate_id, amount, interval_unit, callback ) {
 	var data = {
 		subscriptions: {
 			amount: amount * 100, // Convert from £ to p
 			currency: 'GBP',
 			interval_unit: interval_unit === 'annually' ? 'yearly' : interval_unit,
-			name: description,
+			name: GoCardless.getSubscriptionName( amount, interval_unit ),
 			links: {
 				mandate: mandate_id
-			},
-			metadata: metadata
+			}
 		}
 	};
 
@@ -134,10 +137,11 @@ GoCardless.createSubscription = function ( mandate_id, amount, interval_unit, de
 	} );
 };
 
-GoCardless.updateSubscription = function ( subscription_id, amount, callback ) {
+GoCardless.updateSubscription = function ( subscription_id, amount, interval_unit, callback ) {
 	var data = {
 		subscriptions: {
-			amount: amount * 100 // Convert from £ to p
+			amount: amount * 100, // Convert from £ to p
+			name: GoCardless.getSubscriptionName( amount, interval_unit )
 		}
 	};
 

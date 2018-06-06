@@ -135,23 +135,11 @@ module.exports = {
 
 		},
 		gocardless: {
-			redirect_flow_id: {
-				type: String
-			},
 			mandate_id: {
 				type: String
 			},
 			subscription_id: {
 				type: String
-			},
-			session_token: {
-				type: String
-			},
-			minimum: {
-				type: Number
-			},
-			next_possible_charge_date: {
-				type: Date
 			},
 			amount: {
 				type: Number

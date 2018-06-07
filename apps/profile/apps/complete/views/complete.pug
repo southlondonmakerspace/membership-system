@@ -63,6 +63,22 @@ block body
 						+input( 'text', 'City/town', 'address_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
 						+input( 'text', 'Postcode', 'address_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
 
+					h3 Why did you join?
+
+					p.
+						Would you mind telling us where you heard about the Cable?
+						You don't have to but it would really helpful for us to know
+						how the message is getting out.
+
+					.form-group
+						div.col-md-12
+							select(name='reason').form-control
+								option(disabled, selected, value='') Select an option
+								option I found a copy of your print magazine
+								option I was recommended to you by a friend
+								option I'd rather not say
+								option Other
+
 					button.btn.join-btn Save
 
 		include /src/views/partials/footer

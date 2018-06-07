@@ -21,6 +21,8 @@ var config = require( __config ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } ),
 	GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
+var utils = require('./webhook-utils');
+
 // add logging capabilities
 require( __js + '/logging' ).installMiddleware( app );
 
@@ -30,8 +32,6 @@ var Members = db.Members,
 	Permissions = db.Permissions,
 	Payments = db.Payments;
 
-var Mail = require( __js + '/mail' );
-
 app.get( '/ping', function( req, res ) {
 	req.log.info( {
 		app: 'webhook',
@@ -40,26 +40,27 @@ app.get( '/ping', function( req, res ) {
 	res.sendStatus( 200 );
 } );
 
-app.post( '/', textBodyParser, function( req, res ) {
-	if ( req.headers['webhook-signature'] && req.headers['content-type'] == 'application/json' ) {
-		GoCardless.validateWebhook( req.headers['webhook-signature'], req.body, function( valid ) {
-			if ( valid ) {
-				var events = JSON.parse( req.body ).events;
+app.post( '/', textBodyParser, async function( req, res ) {
+	const valid = GoCardless.validateWebhook( req );
 
-				for ( var e in events ) {
-					handleResourceEvent( events[e] );
-				}
+	if ( valid ) {
+		var events = JSON.parse( req.body ).events;
 
-				res.sendStatus( 200 );
-			} else {
-				req.log.info( {
-					app: 'webhook',
-					action: 'main',
-					error: 'invalid webhook signature'
-				} );
-				res.sendStatus( 498 );
+		try {
+			for ( var e in events ) {
+				await handleResourceEvent( events[e] );
 			}
-		} );
+
+			res.sendStatus( 200 );
+		} catch ( error ) {
+			console.log( error );
+			req.log.error( {
+				app: 'webhook',
+				action: 'main',
+				error
+			} );
+			res.status( 500 ).send( error );
+		}
 	} else {
 		req.log.info( {
 			app: 'webhook',
@@ -71,7 +72,7 @@ app.post( '/', textBodyParser, function( req, res ) {
 } );
 
 // Start server
-var listener = app.listen( config.gocardless.port ,config.host, function () {
+var listener = app.listen( config.gocardless.port, config.host, function () {
 	log.debug( {
 		app: 'webhook',
 		action: 'start-webserver',
@@ -80,17 +81,14 @@ var listener = app.listen( config.gocardless.port ,config.host, function () {
 	} );
 } );
 
-function handleResourceEvent( event ) {
+async function handleResourceEvent( event ) {
 	switch( event.resource_type ) {
 		case 'payments':
-			handlePaymentResourceEvent( event );
-			break;
+			return await handlePaymentResourceEvent( event );
 		case 'subscriptions':
-			handleSubscriptionResourceEvent( event );
-			break;
+			return await handleSubscriptionResourceEvent( event );
 		case 'mandates':
-			handleMandateResourceEvent( event );
-			break;
+			return await handleMandateResourceEvent( event );
 		default:
 			log.debug( {
 				app: 'webhook',
@@ -101,257 +99,107 @@ function handleResourceEvent( event ) {
 	}
 }
 
-function handlePaymentResourceEvent( event ) {
+async function handlePaymentResourceEvent( event ) {
+	const gcPayment = await GoCardless.getPaymentPromise( event.links.payment );
+	const payment =
+		await Payments.findOne( { payment_id: gcPayment.id } ) ||
+		await createPayment( gcPayment );
+
 	switch( event.action ) {
-		case 'created': // Pending
-			createPayment( event );
-			break;
 		case 'confirmed': // Collected
-			confirmPayment( event );
+			await confirmPayment( gcPayment, payment );
+		case 'created': // Pending
 		case 'submitted': // Processing
 		case 'cancelled': // Cancelled
 		case 'failed': // Failed
 		case 'paid_out': // Received
-			updatePayment( event );
+			await updatePayment( gcPayment, payment );
 			break;
 	}
 }
 
-function createPayment( event ) {
-	var payment = {
-		payment_id: event.links.payment,
-		created: new Date( event.created_at ),
-		updated: new Date(),
-		status: event.details.cause
-	};
+async function createPayment( gcPayment ) {
+	const member = await Members.findOne( { 'gocardless.mandate_id': gcPayment.links.mandate } );
+	const payment = utils.createPayment( gcPayment );
 
-	// Fetch amount
-	GoCardless.getPayment( event.links.payment, function( error, response ) {
-		if ( ! error ) {
-			payment.charge_date = new Date( response.charge_date );
-			var amount = parseInt( response.amount );
-			payment.amount = amount / 100;
-		}
-		if ( event.links.subscription ) {
-			payment.subscription_id = event.links.subscription;
-			payment.description = 'Membership';
+	if ( member ) {
+		log.info( {
+			app: 'webhook',
+			action: 'create-payment',
+			payment: payment,
+			member: member._id
+		} );
 
-			Members.findOne( { 'gocardless.subscription_id': payment.subscription_id }, function( err, member ) {
-				if ( member ) {
-					payment.member = member._id;
-				}
-				new Payments( payment ).save( function( err ) {
-					if ( err ) {
-						log.debug( {
-							app: 'webhook',
-							action: 'error-creating-payment',
-							error: err
-						} );
-					} else {
-						log.info( {
-							app: 'webhook',
-							action: 'create-payment',
-							payment: payment,
-							member: member._id
-						} );
+		return await new Payments( { ...payment, member: member._id } ).save();
+	} else {
+		log.info( {
+			app: 'webhook',
+			action: 'create-unlinked-payment',
+			payment: payment
+		} );
+
+		return await new Payments( payment ).save();
+	}
+}
+
+async function updatePayment( gcPayment, payment ) {
+	await payment.update( { $set: {
+		status: gcPayment.status,
+		updated: new Date()
+	} } );
+
+	log.info( {
+		app: 'webhook',
+		action: 'update-payment',
+		payment: payment
+	} );
+}
+
+async function confirmPayment( gcPayment, payment ) {
+	if ( payment.member ) {
+		const subscription = await GoCardless.getSubscriptionPromise(payment.subscription_id);
+		const date = utils.getSubscriptionExpiry( payment, subscription );
+
+		const member = await Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec();
+
+		for ( var p = 0; p < member.permissions.length; p++ ) {
+			if ( member.permissions[p].permission.slug == config.permission.member ) {
+				// Remove any pending updates
+				// TODO: check this is the correct update
+				delete member.gocardless.pending_update;
+
+				member.permissions[p].date_expires = date;
+				await member.save();
+
+				log.info( {
+					app: 'webhook',
+					action: 'extend-membership',
+					until: member.permissions[p].date_expires,
+					sensitive: {
+						member: member._id
 					}
 				} );
-			} );
-		} else {
-			new Payments( payment ).save( function( err ) {
-				log.info( {
-					app: 'webhook',
-					action: 'create-unlinked-payment',
-					payment: payment
-				} );
-			} );
+
+				return;
+			}
 		}
-	} );
-}
 
-function updatePayment( event ) {
-	Payments.findOne( { payment_id: event.links.payment }, function( err, payment ) {
-		if ( ! payment ) return; // There's nothing left to do here.
-
-		payment.status = event.details.cause;
-		payment.updated = new Date();
-		payment.save( function( err ) {
-			if ( err ) {
-				log.debug( {
-					app: 'webhook',
-					action: 'error-updating-payment',
-					error: err
-				} );
-			} else {
-				log.info( {
-					app: 'webhook',
-					action: 'update-payment',
-					payment: payment
-				} );
+		// If permission not found
+		log.error( {
+			app: 'webhook',
+			action: 'extend-membership',
+			date: date,
+			error: 'Membership not found',
+			sensitive: {
+				member: member._id
 			}
 		} );
-	} );
-}
-
-async function confirmPayment( event ) {
-	const payment = await Payments.findOne( { payment_id: event.links.payment });
-	if ( ! payment ) return; // There's nothing left to do here.
-
-	if ( payment.member ) {
-		const date = await getPaymentExpiryDate( payment );
-		const member = await Members.findOne( { _id: payment.member } )
-			.populate( 'permissions.permission' ).exec();
-
-		extendMembership( member, date );
 	}
 }
 
-async function getPaymentExpiryDate( payment ) {
-	const subscription = await GoCardless.getSubscriptionPromise(payment.subscription_id);
+// Subscription events
 
-	const unit = subscription.interval_unit === 'weekly' ? 'weeks' :
-		subscription.interval_unit === 'monthly' ? 'months' : 'years'
-
-	const date = moment( payment.charge_date )
-		.add( { [unit]: subscription.interval } )
-		.add( config.gracePeriod );
-
-	return date.toDate();
-}
-
-function extendMembership( member, date ) {
-	for ( var p = 0; p < member.permissions.length; p++ ) {
-		if ( member.permissions[p].permission.slug == config.permission.member ) {
-
-			member.permissions[p].date_expires = date;
-
-			if (member.gocardless.pending_update) {
-				delete member.gocardless.pending_update;
-			}
-
-			log.info( {
-				app: 'webhook',
-				action: 'extend-membership',
-				until: member.permissions[p].date_expires,
-				sensitive: {
-					member: member._id
-				}
-			} );
-
-			member.save( function ( err ) {
-				if ( err ) {
-					log.debug( {
-						app: 'webhook',
-						action: 'error-extending-membership',
-						error: err
-					} );
-				}
-			} );
-
-			return;
-		}
-	}
-
-	// If permission not found
-	grantMembership( member, date );
-}
-
-function grantMembership( member, date ) {
-	Permissions.findOne( { slug: config.permission.member }, function( err, permission ) {
-		if ( permission ) {
-			var new_permission = {
-				permission: permission.id,
-				date_added: new Date(),
-				date_expires: date
-			};
-
-			log.info( {
-				app: 'webhook',
-				action: 'grant-membership',
-				until: new_permission.date_expires,
-				sensitive: {
-					member: member._id
-				}
-			} );
-
-			Members.update( { _id: member._id }, {
-				$push: {
-					permissions: new_permission
-				},
-				$unset: {
-					'gocardless.pending_update': true
-				}
-			}, function ( err ) {
-				if ( err ) {
-					log.debug( {
-						app: 'webhook',
-						action: 'error-granting-membership',
-						error: err
-					} );
-				} else {
-					sendNewMemberEmail( member );
-				}
-			});
-		}
-	} );
-}
-
-setInterval(function () {
-	Options.loadFromDb(function (){
-		if ( Options.getInt( 'signup-cap' ) > 0 ) {
-			if ( ! Options.getBool( 'signup-closed' ) )
-			{
-				Permissions.find( function( err, permissions ) {
-					var filter_permissions = [];
-					var member = permissions.filter( function( permission ) {
-						if ( permission.slug == config.permission.member ) return true;
-						return false;
-					} )[0];
-
-					var search = { permissions: {
-						$elemMatch: {
-							permission: member._id,
-							date_added: { $lte: new Date() },
-							$or: [
-								{ date_expires: null },
-								{ date_expires: { $gt: new Date() } }
-							]
-						}
-					} };
-
-					Members.count( search, function( err, total ) {
-						if ( total >= Options.getInt( 'signup-cap' ) ) {
-							log.info( {
-								app: 'webhook',
-								action: 'cap-membership',
-								total: total,
-								cap: Options.getInt( 'signup-cap' )
-							} );
-							Options.set( 'signup-closed', 'true', function () {} );
-							Options.set( 'signup-cap', '0' , function () {});
-						}
-					} );
-				} );
-			}
-		}
-	});
-},30*1000);
-
-
-
-function sendNewMemberEmail( member ) {
-	Mail.sendMail(
-		member.email,
-		'Welcome to ' + Options.getText( 'organisation' ),
-		__views + '/email-templates/new-member.text.pug',
-		__views + '/email-templates/new-member.html.pug',
-		{
-			firstname: member.firstname
-		}
-	);
-}
-
-function handleSubscriptionResourceEvent( event ) {
+async function handleSubscriptionResourceEvent( event ) {
 	switch( event.action ) {
 		case 'created':
 		case 'customer_approval_granted':
@@ -363,52 +211,39 @@ function handleSubscriptionResourceEvent( event ) {
 		case 'cancelled':
 		case 'finished':
 			// Remove the subscription from the database
-			cancelledSubscription( event );
+			await cancelledSubscription( event );
 			break;
 	}
 }
 
-function cancelledSubscription( event ) {
-	Members.findOne( { 'gocardless.subscription_id': event.links.subscription }, function( err, member ) {
-		if ( ! member ) {
-			log.info( {
-				app: 'webhook',
-				action: 'unlink-subscription',
-				sensitive: {
-					subscription_id: event.links.subscription
-				}
-			} );
-			return;
-		}
+async function cancelledSubscription( event ) {
+	const member = await Members.findOne( { 'gocardless.subscription_id': event.links.subscription } );
 
-		member.gocardless.subscription_id = '';
-		member.save( function( err ) {
-			if ( err ) {
-				log.debug( {
-					app: 'webhook',
-					action: 'error-removing-subscription-id',
-					error: err,
-					sensitive: {
-						member: member._id,
-						subscription_id: event.links.subscription
-					}
-				} );
-			} else {
-				log.info( {
-					app: 'webhook',
-					action: 'remove-subscription-id',
-					sensitive: {
-						member: member._id,
-						subscription_id: event.links.subscription
-					}
-				} );
+	if ( member ) {
+		await member.update( { $unset: {
+			'gocardless.subscription_id': true
+		} } );
 
+		log.info( {
+			app: 'webhook',
+			action: 'remove-subscription-id',
+			sensitive: {
+				member: member._id,
+				subscription_id: event.links.subscription
 			}
 		} );
-	} );
+	} else {
+		log.info( {
+			app: 'webhook',
+			action: 'unlink-subscription',
+			sensitive: {
+				subscription_id: event.links.subscription
+			}
+		} );
+	}
 }
 
-function handleMandateResourceEvent( event ) {
+async function handleMandateResourceEvent( event ) {
 	switch( event.action ) {
 		case 'created':
 		case 'customer_approval_granted':
@@ -432,47 +267,34 @@ function handleMandateResourceEvent( event ) {
 		case 'failed':
 		case 'expired':
 			// Remove the mandate from the database
-			cancelledMandate( event );
+			await cancelledMandate( event );
 			break;
 	}
 }
 
-function cancelledMandate( event ) {
-	Members.findOne( { 'gocardless.mandate_id': event.links.mandate }, function( err, member ) {
-		if ( ! member ) {
-			log.info( {
-				app: 'webhook',
-				action: 'unlink-mandate',
-				sensitive: {
-					mandate_id: event.links.mandate
-				}
-			} );
-			return;
-		}
-		member.gocardless.mandate_id = '';
-		member.save( function( err ) {
-			if ( err ) {
-				log.debug( {
-					app: 'webhook',
-					action: 'error-removing-mandate-id',
-					error: err,
-					sensitive: {
-						member: member._id,
-						mandate_id: event.links.mandate
-					}
-				} );
-			} else {
-				log.info( {
-					app: 'webhook',
-					action: 'remove-mandate-id',
-					sensitive: {
-						member: member._id,
-						mandate_id: event.links.mandate
-					}
-				} );
+async function cancelledMandate( event ) {
+	const member = await Members.findOne( { 'gocardless.mandate_id': event.links.mandate } );
 
+	if ( member ) {
+		await member.update( { $unset: {
+			'gocardless.mandate_id': true
+		} } );
+
+		log.info( {
+			app: 'webhook',
+			action: 'remove-mandate-id',
+			sensitive: {
+				member: member._id,
+				mandate_id: event.links.mandate
 			}
 		} );
-
-	} );
+	} else {
+		log.info( {
+			app: 'webhook',
+			action: 'unlink-mandate',
+			sensitive: {
+				mandate_id: event.links.mandate
+			}
+		} );
+	}
 }

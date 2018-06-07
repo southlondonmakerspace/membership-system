@@ -54,12 +54,19 @@
     "new-user": "node tools/new-user/new-user",
     "import": "node tools/import/import",
     "watch-css": "node-sass --source-map true -rw static/scss -o static/css",
-    "watch": "npm run watch-css"
+    "watch": "npm run watch-css",
+    "test": "ava"
   },
   "devDependencies": {
+    "ava": "^0.25.0",
     "node-sass": "^4.9.0",
     "nodemon": "^1.14.12",
     "npm-run-all": "^4.1.2",
     "watchify": "^3.10.0"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ]
   }
 }

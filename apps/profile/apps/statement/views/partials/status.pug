@@ -1,19 +1,18 @@
 case payment.status
-	when 'payment_created'
+	when 'pending_submission'
 		span.label.label-default( title=payment.status ) Scheduled
-	when 'payment_submitted'
+	when 'submitted'
 		span.label.label-info( title=payment.status ) Processing
-	when 'payment_confirmed'
+	when 'confirmed'
+	when 'paid_out'
 		span.label.label-primary( title=payment.status ) Collected
-	when 'payment_paid_out'
-		span.label.label-success( title=payment.status ) Paid
-	when 'mandate_cancelled'
+	when 'cancelled'
 		span.label.label-danger( title=payment.status ) Cancelled
-	when 'bank_account_closed'
-		span.label.label-danger( title=payment.status ) Account Closed
-	when 'refer_to_payer'
-		span.label.label-danger( title=payment.status ) Refer to Payer
-	when 'direct_debit_not_enabled'
-		span.label.label-danger( title=payment.status ) Direct Debit Not Enabled
+	when 'customer_approval_denied'
+		span.label.label-danger( title=payment.status ) Approval denied
+	when 'failed'
+		span.label.label-danger( title=payment.status ) Failed
+	when 'charged_back'
+		span.label.label-danger( title=payment.status ) Charged back
 	default
 		span.label.label-default( title=payment.status ) #{ payment.status }

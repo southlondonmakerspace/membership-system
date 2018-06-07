@@ -28,15 +28,12 @@ GoCardless.request = function ( method, path, json, callback ) {
 	request( options, callback );
 };
 
-GoCardless.validateWebhook = function( webhook_signature, body, callback ) {
-	var rehashed_webhook_signature = crypto.createHmac( 'sha256', GoCardless.config.secret ).update( body ).digest( 'hex' );
+GoCardless.validateWebhook = function ( req ) {
+	var rehashed_webhook_signature =
+		crypto.createHmac( 'sha256', GoCardless.config.secret ).update( req.body ).digest( 'hex' );
 
-	if ( webhook_signature == rehashed_webhook_signature ) {
-		callback( true );
-		return;
-	}
-
-	callback( false );
+	return req.headers['content-type'] === 'application/json' &&
+		req.headers['webhook-signature'] === rehashed_webhook_signature;
 };
 
 GoCardless.getSubscriptionName = function ( amount, period ) {

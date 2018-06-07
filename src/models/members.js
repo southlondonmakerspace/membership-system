@@ -177,6 +177,7 @@ module.exports = {
 			}
 		} ],
 		last_seen: Date,
+		join_reason: String,
 		cancellation_reason: String
 	} )
 };

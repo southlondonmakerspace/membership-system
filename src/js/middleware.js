@@ -1,5 +1,6 @@
 const Ajv = require('ajv');
 
+var auth = require( './authentication' );
 var Options = require( './options' )();
 
 const ajv = new Ajv({
@@ -7,6 +8,10 @@ const ajv = new Ajv({
 	removeAdditional: true,
 	coerceTypes: true
 });
+
+ajv.addFormat( 'password', function ( password ) {
+	return auth.passwordRequirements( password ) === true;
+} );
 
 function flashErrors( errors, req, res, next ) {
 	errors

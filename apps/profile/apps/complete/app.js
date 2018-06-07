@@ -30,19 +30,79 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'complete', { user: req.user } );
 } );
 
+const completeSchema = {
+	body: {
+		type: 'object',
+		required: ['password', 'verify', 'delivery_optin'],
+		properties: {
+			email: {
+				type: 'string',
+				format: 'email'
+			},
+			password: {
+				type: 'string',
+				format: 'password'
+			},
+			verify: {
+				const: { '$data': '1/password' }
+			},
+			delivery_optin: {
+				type: 'boolean'
+			},
+			reason: {
+				type: 'string'
+			}
+		},
+		oneOf: [
+			{
+				required: ['delivery_line1', 'delivery_city', 'delivery_postcode'],
+				properties: {
+					delivery_optin: {
+						const: true
+					},
+					delivery_line1: {
+						type: 'string'
+					},
+					delivery_line2: {
+						type: 'string'
+					},
+					delivery_city: {
+						type: 'string'
+					},
+					delivery_postcode: {
+						type: 'string'
+					}
+				}
+			},
+			{
+				properties: {
+					delivery_optin: {
+						const: false
+					}
+				}
+			}
+		]
+	}
+};
+
 app.post( '/', auth.isLoggedIn, function( req, res ) {
-	// check password == verify etc.
+	const { body : { email, password, delivery_optin, delivery_line1, delivery_line2, delivery_city,
+		delivery_postcode, reason } } = req;
+
+	if ( email != req.user.email ) {
+		// TODO: Update email
+	}
 	
 	auth.generatePassword( req.body.password, function( password ) {
 		req.user.update( { $set: {
-			password,
-			delivery_optin: req.body.delivery_optin === 'yes',
-			delivery_address: {
-				line1: req.body.address_line1,
-				line2: req.body.address_line2,
-				city: req.body.address_city,
-				postcode: req.body.address_postcode,
-			}
+			email, password, delivery_optin,
+			delivery_address: delivery_optin ? {
+				line1: delivery_line1,
+				line2: delivery_line2,
+				city: delivery_city,
+				postcode: delivery_postcode
+			} : {},
+			join_reason: reason
 		} }, function () {
 			res.redirect( '/profile' );
 		} );

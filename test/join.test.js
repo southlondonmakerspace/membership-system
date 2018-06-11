@@ -17,7 +17,12 @@ function isJoinInvalid(t, data) {
 	t.false(joinValidator(data));
 }
 
-test('/join valid monthly', t => {
+test('/join schema', t => {
+	isJoinInvalid(t, {
+		period: 'blah',
+		amount: '3'
+	});
+
 	isJoinInvalid(t, {
 		period: 'monthly',
 		amount: 'abc'
@@ -29,7 +34,7 @@ test('/join valid monthly', t => {
 	});
 });
 
-test('/join monthly other', t => {
+test('/join other schema', t => {
 	isJoinInvalid(t, {
 		period: 'monthly',
 		amount: 'other'

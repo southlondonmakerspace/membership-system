@@ -105,7 +105,7 @@
 	"flash-gocardless-subscription-updated": "Contribution updated",
 	"flash-gocardless-subscription-updating-err": "Error updating contribution",
 	"flash-gocardless-subscription-exists": "You already have an active contribution",
-	"flash-gocardless-subscription-doesnt-exists": "You don't have an active contribution",
+	"flash-gocardless-subscription-doesnt-exist": "You don't have an active contribution",
 	"flash-gocardless-subscription-404": "Your account has no contribution",
 	"flash-gocardless-mandate-success": "Direct Debit mandate setup succesfully",
 	"flash-gocardless-mandate-err": "Error setting up Direct Debit mandate",

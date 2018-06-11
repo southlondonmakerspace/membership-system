@@ -6,6 +6,9 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
+const { completeSchema } = require( './schemas.json' );
+const { hasSchema } = require( __js + '/middleware' );
+
 var auth = require( __js + '/authentication' );
 
 var app_config = {};
@@ -30,62 +33,10 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'complete', { user: req.user } );
 } );
 
-const completeSchema = {
-	body: {
-		type: 'object',
-		required: ['password', 'verify', 'delivery_optin'],
-		properties: {
-			email: {
-				type: 'string',
-				format: 'email'
-			},
-			password: {
-				type: 'string',
-				format: 'password'
-			},
-			verify: {
-				const: { '$data': '1/password' }
-			},
-			delivery_optin: {
-				type: 'boolean'
-			},
-			reason: {
-				type: 'string'
-			}
-		},
-		oneOf: [
-			{
-				required: ['delivery_line1', 'delivery_city', 'delivery_postcode'],
-				properties: {
-					delivery_optin: {
-						const: true
-					},
-					delivery_line1: {
-						type: 'string'
-					},
-					delivery_line2: {
-						type: 'string'
-					},
-					delivery_city: {
-						type: 'string'
-					},
-					delivery_postcode: {
-						type: 'string'
-					}
-				}
-			},
-			{
-				properties: {
-					delivery_optin: {
-						const: false
-					}
-				}
-			}
-		]
-	}
-};
-
-app.post( '/', auth.isLoggedIn, function( req, res ) {
+app.post( '/', [
+	auth.isLoggedIn,
+	hasSchema(completeSchema).orFlash
+], function( req, res ) {
 	const { body : { email, password, delivery_optin, delivery_line1, delivery_line2, delivery_city,
 		delivery_postcode, reason } } = req;
 

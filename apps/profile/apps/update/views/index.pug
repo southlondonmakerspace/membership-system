@@ -27,10 +27,10 @@ block contents
 
 				ul.join-options
 					li.join-options__opt
-						input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='yes', required, checked=user.delivery_optin).js-delivery-opt
+						input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='true', required, checked=user.delivery_optin).js-delivery-opt
 						label(for='delivery_optin_yes').btn Yes
 					li.join-options__opt
-						input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='no', required, checked=!user.delivery_optin).js-delivery-opt
+						input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='false', required, checked=!user.delivery_optin).js-delivery-opt
 						label(for='delivery_optin_no').btn No
 					li.join-options__opt
 

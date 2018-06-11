@@ -27,7 +27,7 @@ block body
 
 				include /src/views/partials/flash
 
-				form( method="post" ).form-horizontal
+				form( method="post", novalidate ).form-horizontal
 					+csrf
 
 					h3 Your account
@@ -54,7 +54,7 @@ block body
 							label(for='delivery_optin_no').btn No
 						li.join-options__opt
 
-					.hidden-js.js-delivery-details
+					.js-delivery-details
 						p.
 							We've assumed your delivery address is the same as your
 							billing address, update it below if needed.

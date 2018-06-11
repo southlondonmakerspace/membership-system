@@ -1,17 +1,7 @@
-const Ajv = require('ajv');
+const ajv = require('./ajv');
 
-var auth = require( './authentication' );
-var Options = require( './options' )();
-
-const ajv = new Ajv({
-	allErrors: true,
-	removeAdditional: true,
-	coerceTypes: true
-});
-
-ajv.addFormat( 'password', function ( password ) {
-	return auth.passwordRequirements( password ) === true;
-} );
+const Options = require( './options' )();
+const config = require( '../../config/config.json' );
 
 function flashErrors( errors, req, res, next ) {
 	errors
@@ -24,7 +14,8 @@ function flashErrors( errors, req, res, next ) {
 			}
 		} )
 		.map( key => {
-			return Options.getText( key ) || Options.getText('flash-validation-error-generic');
+			return Options.getText( key ) ||
+				config.dev ? key : Options.getText('flash-validation-error-generic');
 		} )
 		.filter( ( value, index, arr ) => arr.indexOf( value ) === index )
 		.forEach( message => req.flash( 'danger', message ) );

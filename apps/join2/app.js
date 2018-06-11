@@ -22,6 +22,8 @@ var config = require( __config + '/config.json' );
 
 var GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
+const { joinSchema, completeSchema } = require( './schemas.json' );
+
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -36,33 +38,6 @@ app.use( function( req, res, next ) {
 app.get( '/' , function( req, res ) {
 	res.render( 'index' );
 } );
-
-const joinSchema = {
-	body: {
-		type: 'object',
-		required: ['period', 'amount'],
-		properties: {
-			period: {
-				type: 'string',
-				enum: ['monthly', 'annually']
-			},
-		},
-		oneOf: [
-			{
-				properties: {
-					amount: { type: 'integer', minimum: 1 }
-				}
-			},
-			{
-				properties: {
-					amount: { const: 'other' },
-					amountOther: { type: 'integer', minimum: 1 }
-				},
-				required: ['amountOther']
-			}
-		]
-	}
-};
 
 app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
 	const { body: { period, amount, amountOther } } = req;
@@ -89,18 +64,6 @@ app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
 			res.redirect( app.mountpath );
 	}
 } );
-
-const completeSchema = {
-	query: {
-		type: 'object',
-		required: ['redirect_flow_id'],
-		properties: {
-			redirect_flow_id: {
-				type: 'string'
-			}
-		}
-	}
-}
 
 app.get( '/complete', hasSchema(completeSchema).or400, async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;

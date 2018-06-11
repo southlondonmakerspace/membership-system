@@ -30,86 +30,100 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
-app.post( '/', auth.isLoggedIn, async function( req, res ) {
-	if ( ! req.body.firstname ||
-		 ! req.body.lastname ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'update',
-				error: 'First or last name were not provided',
-				sensitive: {
-					body: req.body
+const updateSchema = {
+	body: {
+		type: 'object',
+		required: ['email', 'firstname', 'lastname', 'delivery_optin'],
+		properties: {
+			email: {
+				type: 'string'
+			},
+			firstname: {
+				type: 'string'
+			},
+			lastname: {
+				type: 'string'
+			}
+		},
+		oneOf: [
+			{
+				required: ['delivery_line1', 'delivery_city', 'delivery_postcode'],
+				properties: {
+					delivery_optin: {
+						const: true
+					},
+					delivery_line1: {
+						type: 'string'
+					},
+					delivery_line2: {
+						type: 'string'
+					},
+					delivery_city: {
+						type: 'string'
+					},
+					delivery_postcode: {
+						type: 'string'
+					}
 				}
-			} );
+			},
+			{
+				properties: {
+					delivery_optin: {
+						const: false
+					}
+				}
+			}
+		]
+	}
+}
 
-		req.flash( 'danger', 'information-ommited' );
-		res.redirect( app.parent.mountpath + app.mountpath );
-		return;
+app.post( '/', auth.isLoggedIn, async function( req, res ) {
+	const { body: { email, firstname, lastname, delivery_optin, delivery_line1,
+		delivery_line2, delivery_city, delivery_postcode }, user } = req;
+
+	if ( email !== user.email ) {
+		// TODO: update GoCardless email?
 	}
 
-	const delivery_optin = req.body.delivery_optin === 'yes';
+	try {
+		await user.update( { $set: {
+			email, firstname, lastname, delivery_optin,
+			delivery_address: delivery_optin ? {
+				line1: delivery_line1,
+				line2: delivery_line2,
+				city: delivery_city,
+				postcode: delivery_postcode
+			} : {}
+		} }, { runValidators: true } );
 
-	if ( delivery_optin == 'yes' &&
-		( ! req.body.delivery_line1 || ! req.body.delivery_city || ! req.body.delivery_postcode ) ) {
+		req.log.info( {
+			app: 'profile',
+			action: 'update',
+			sensitive: {
+				profile: profile
+			}
+		} );
+
+		req.flash( 'success', 'profile-updated' );
+	} catch ( status ) {
 		req.log.debug( {
 			app: 'profile',
 			action: 'update',
-			error: 'Address was not provided',
+			error: 'Validation errors',
+			validation: status.errors,
 			sensitive: {
 				body: req.body
 			}
 		} );
 
-		req.flash( 'danger', 'user-address' );
-		res.redirect( app.parent.mountpath + app.mountpath );
-		return;
+		var keys = Object.keys( status.errors );
+		for ( var k in keys ) {
+			var key = keys[k];
+			req.flash( 'danger', status.errors[key].message );
+		}
 	}
 
-	// TODO: update GoCardless
-
-	var profile = {
-		email: req.body.email,
-		firstname: req.body.firstname,
-		lastname: req.body.lastname,
-		delivery_optin,
-		delivery_address: delivery_optin ? {
-			line1: req.body.delivery_line1,
-			line2: req.body.delivery_line2,
-			city: req.body.delivery_city,
-			postcode: req.body.delivery_postcode
-		} : {}
-	};
-
-	Members.update( { _id: req.user._id }, { $set: profile }, { runValidators: true }, function( status ) {
-		if ( status ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'update',
-				error: 'Validation errors',
-				validation: status.errors,
-				sensitive: {
-					body: req.body
-				}
-			} );
-
-			var keys = Object.keys( status.errors );
-			for ( var k in keys ) {
-				var key = keys[k];
-				req.flash( 'danger', status.errors[key].message );
-			}
-		} else {
-			req.log.info( {
-				app: 'profile',
-				action: 'update',
-				sensitive: {
-					profile: profile
-				}
-			} );
-
-			req.flash( 'success', 'profile-updated' );
-		}
-		res.redirect( app.parent.mountpath + app.mountpath );
-	} );
+	res.redirect( app.parent.mountpath + app.mountpath );
 } );
 
 module.exports = function( config ) {

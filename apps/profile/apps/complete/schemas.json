@@ -1,0 +1,56 @@
+{
+	"completeSchema": {
+		"body": {
+			"type": "object",
+			"required": ["email", "password", "verify", "delivery_optin"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"format": "email"
+				},
+				"password": {
+					"type": "string",
+					"format": "password"
+				},
+				"verify": {
+					"const": { "$data": "1/password" }
+				},
+				"reason": {
+					"type": "string"
+				},
+				"delivery_optin": {
+					"type": "boolean"
+				}
+			},
+			"oneOf": [
+				{
+					"required": ["delivery_line1", "delivery_city", "delivery_postcode"],
+					"properties": {
+						"delivery_optin": {
+							"const": true
+						},
+						"delivery_line1": {
+							"type": "string"
+						},
+						"delivery_line2": {
+							"type": "string"
+						},
+						"delivery_city": {
+							"type": "string"
+						},
+						"delivery_postcode": {
+							"type": "string"
+						}
+					}
+				},
+				{
+					"properties": {
+						"delivery_optin": {
+							"const": false
+						}
+					}
+				}
+			]
+		}
+	}
+}

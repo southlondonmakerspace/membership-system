@@ -15,6 +15,8 @@ var auth = require( __js + '/authentication' ),
 	db = require( __js + '/database' ),
 	Members = db.Members;
 
+const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
+
 var GoCardless = require( __js + '/gocardless' )( config.gocardless );
 
 var app_config = {};
@@ -103,16 +105,6 @@ app.get( '/cancel-subscription', isLoggedInWithSubscription, ( req, res ) => {
 	res.render( 'cancel-subscription' );
 } );
 
-const cancelSubscriptionSchema = {
-	body: {
-		type: 'object',
-		required: ['reason'],
-		properties: {
-			reason: { type: 'string' }
-		}
-	}
-};
-
 app.post( '/cancel-subscription', [
 	isLoggedInWithSubscription,
 	hasSchema(cancelSubscriptionSchema).orFlash
@@ -145,19 +137,6 @@ app.post( '/cancel-subscription', [
 app.get( '/update-subscription', isLoggedInWithSubscription, function( req, res ) {
 	res.redirect( app.parent.mountpath + app.mountpath );
 } );
-
-const updateSubscriptionSchema = {
-	body: {
-		type: 'object',
-		required: ['amount'],
-		properties: {
-			amount: {
-				type: 'integer',
-				minimum: 1
-			}
-		}
-	}
-};
 
 app.post( '/update-subscription', [
 	isLoggedInWithSubscription,

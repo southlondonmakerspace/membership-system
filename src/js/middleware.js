@@ -6,16 +6,19 @@ const config = require( '../../config/config.json' );
 function flashErrors( errors, req, res, next ) {
 	errors
 		.map( error => {
+			console.log( error );
 			switch ( error.keyword ) {
 				case 'required':
 					return `flash-validation-error${error.dataPath}.${error.params.missingProperty}-required`;
+				case 'format':
+					return `flash-validation-error.${error.params.format}-format`;
 				default:
 					return `flash-validation-error${error.dataPath}-${error.keyword}`;
 			}
 		} )
 		.map( key => {
 			return Options.getText( key ) ||
-				config.dev ? key : Options.getText('flash-validation-error-generic');
+				(config.dev ? key : Options.getText('flash-validation-error-generic'));
 		} )
 	// Don't show duplicate errors twice
 		.filter( ( value, index, arr ) => arr.indexOf( value ) === index )

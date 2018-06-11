@@ -184,17 +184,19 @@
 	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag",
 
-	"flash-validation-error-generic": "An error occured, please contact membership@thebristolcable.org.",
+	"flash-validation-error-generic": "The data you provided was invalid",
 
 	"flash-validation-error.amount-minimum": "The minimum contribution is £1",
 	"flash-validation-error.amount-required": "Contribution amount is required",
 	"flash-validation-error.period-required": "Contribution period is required",
 	"flash-validation-error.amountOther-minimum": "The minimum contribution is £1",
 
-	"flash-validation-error.firstname-minLength": "First name is required",
+	"flash-validation-error.delivery_line1-minLength": "Delivery address line 1 is required",
+	"flash-validation-error.delivery_city-minLength": "Delivery town/city is required",
+
 	"flash-validation-error.verify-const": "Passwords did not match",
 
-	"flash-validation-error.email-format": "Invalid email format",
-	"flash-validation-error.postcode-format": "Invalid postcode",
+	"flash-validation-error.email-format": "Email was invalid",
+	"flash-validation-error.postcode-format": "Postcode was invalid",
 	"flash-validation-error.password-format": "Password must be at least 8 characters and with at least one number, lower and upper case letter"
 }

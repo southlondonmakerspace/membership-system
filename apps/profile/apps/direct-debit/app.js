@@ -37,7 +37,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	const { user } = req;
 
 	if ( user.gocardless.subscription_id ) {
-		res.render( 'complete', {
+		res.render( 'active', {
 			amount: user.gocardless.actualAmount,
 			period: user.gocardless.period,
 			pending_update: user.gocardless.pending_update

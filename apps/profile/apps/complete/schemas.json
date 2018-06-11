@@ -13,10 +13,13 @@
 					"format": "password"
 				},
 				"verify": {
-					"const": { "$data": "1/password" }
+					"const": {
+						"$data": "1/password"
+					}
 				},
 				"reason": {
-					"type": "string"
+					"type": "string",
+					"minLength": 1
 				},
 				"delivery_optin": {
 					"type": "boolean"
@@ -30,16 +33,20 @@
 							"const": true
 						},
 						"delivery_line1": {
-							"type": "string"
+							"type": "string",
+							"minLength": 1
 						},
 						"delivery_line2": {
-							"type": "string"
+							"type": "string",
+							"minLength": 1
 						},
 						"delivery_city": {
-							"type": "string"
+							"type": "string",
+							"minLength": 1
 						},
 						"delivery_postcode": {
-							"type": "string"
+							"type": "string",
+							"format": "postcode"
 						}
 					}
 				},

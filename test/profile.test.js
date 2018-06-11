@@ -42,7 +42,7 @@ test('/complete valid with address', t => {
 		'delivery_optin': 'true',
 		'delivery_line1': 'asdad',
 		'delivery_city': 'Bristol',
-		'delivery_postcode': 'BS1...' // TODO: test postcode format?
+		'delivery_postcode': 'BS1 1AA'
 	});
 });
 

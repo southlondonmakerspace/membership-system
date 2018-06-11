@@ -37,8 +37,7 @@
 							"minLength": 1
 						},
 						"delivery_line2": {
-							"type": "string",
-							"minLength": 1
+							"type": "string"
 						},
 						"delivery_city": {
 							"type": "string",

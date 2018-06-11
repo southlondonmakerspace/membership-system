@@ -47,6 +47,8 @@
 	"flash-password-reset": "If there is an account associated with the email address you will receive an email shortly",
 	"flash-password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled",
 
+	"flash-email-duplicate": "Email address already in use",
+
 	"flash-account-created": "Account created, please check your email for a registration link",
 	"flash-member-created": "Member successful created",
 
@@ -189,5 +191,7 @@
 	"flash-validation-error.amount-minimum": "The minimum contribution is £1",
 	"flash-validation-error.amount-required": "Contribution amount is required",
 	"flash-validation-error.period-required": "Contribution period is required",
-	"flash-validation-error.amountOther-minimum": "The minimum contribution is £1"
+	"flash-validation-error.amountOther-minimum": "The minimum contribution is £1",
+
+	"flash-validation-error.firstname-minLength": "First name is required"
 }

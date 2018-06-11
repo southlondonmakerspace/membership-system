@@ -12,6 +12,9 @@ var auth = require( __js + '/authentication' ),
 	db = require( __js + '/database' ),
 	Members = db.Members;
 
+const { hasSchema } = require( __js + '/middleware' );
+const { updateSchema } = require( './schemas.json' );
+
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -30,54 +33,10 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
-const updateSchema = {
-	body: {
-		type: 'object',
-		required: ['email', 'firstname', 'lastname', 'delivery_optin'],
-		properties: {
-			email: {
-				type: 'string'
-			},
-			firstname: {
-				type: 'string'
-			},
-			lastname: {
-				type: 'string'
-			}
-		},
-		oneOf: [
-			{
-				required: ['delivery_line1', 'delivery_city', 'delivery_postcode'],
-				properties: {
-					delivery_optin: {
-						const: true
-					},
-					delivery_line1: {
-						type: 'string'
-					},
-					delivery_line2: {
-						type: 'string'
-					},
-					delivery_city: {
-						type: 'string'
-					},
-					delivery_postcode: {
-						type: 'string'
-					}
-				}
-			},
-			{
-				properties: {
-					delivery_optin: {
-						const: false
-					}
-				}
-			}
-		]
-	}
-}
-
-app.post( '/', auth.isLoggedIn, async function( req, res ) {
+app.post( '/', [
+	auth.isLoggedIn,
+	hasSchema(updateSchema).orFlash
+], async function( req, res ) {
 	const { body: { email, firstname, lastname, delivery_optin, delivery_line1,
 		delivery_line2, delivery_city, delivery_postcode }, user } = req;
 
@@ -85,16 +44,18 @@ app.post( '/', auth.isLoggedIn, async function( req, res ) {
 		// TODO: update GoCardless email?
 	}
 
+	const profile = {
+		email, firstname, lastname, delivery_optin,
+		delivery_address: delivery_optin ? {
+			line1: delivery_line1,
+			line2: delivery_line2,
+			city: delivery_city,
+			postcode: delivery_postcode
+		} : {}
+	};
+
 	try {
-		await user.update( { $set: {
-			email, firstname, lastname, delivery_optin,
-			delivery_address: delivery_optin ? {
-				line1: delivery_line1,
-				line2: delivery_line2,
-				city: delivery_city,
-				postcode: delivery_postcode
-			} : {}
-		} }, { runValidators: true } );
+		await user.update( { $set: profile }, { runValidators: true } );
 
 		req.log.info( {
 			app: 'profile',
@@ -105,21 +66,12 @@ app.post( '/', auth.isLoggedIn, async function( req, res ) {
 		} );
 
 		req.flash( 'success', 'profile-updated' );
-	} catch ( status ) {
-		req.log.debug( {
-			app: 'profile',
-			action: 'update',
-			error: 'Validation errors',
-			validation: status.errors,
-			sensitive: {
-				body: req.body
-			}
-		} );
-
-		var keys = Object.keys( status.errors );
-		for ( var k in keys ) {
-			var key = keys[k];
-			req.flash( 'danger', status.errors[key].message );
+	} catch ( error ) {
+		// Duplicate key error (on email)
+		if ( error.code === 11000 ) {
+			req.flash( 'danger', 'email-duplicate' );
+		} else {
+			req.flash( 'danger', 'validation-error-generic' );
 		}
 	}
 

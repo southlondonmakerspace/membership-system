@@ -17,6 +17,7 @@ function flashErrors( errors, req, res, next ) {
 			return Options.getText( key ) ||
 				config.dev ? key : Options.getText('flash-validation-error-generic');
 		} )
+	// Don't show duplicate errors twice
 		.filter( ( value, index, arr ) => arr.indexOf( value ) === index )
 		.forEach( message => req.flash( 'danger', message ) );
 

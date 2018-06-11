@@ -67,7 +67,7 @@ app.post( '/', [
 
 		req.flash( 'success', 'profile-updated' );
 	} catch ( error ) {
-		// Duplicate key error (on email)
+		// Duplicate key (on email)
 		if ( error.code === 11000 ) {
 			req.flash( 'danger', 'email-duplicate' );
 		} else {

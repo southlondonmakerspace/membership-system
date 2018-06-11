@@ -98,9 +98,17 @@ app.get( '/complete', hasSchema(completeSchema).or400, async function( req, res 
 			activated: true,
 		} );
 
-		await member.save();
-
-		// TODO: handle case of duplicate email address
+		try {
+			await member.save();
+		} catch ( saveError ) {
+			// Duplicate key (on email)
+			if ( saveError.code === 11000 ) {
+				// TODO: handle case of duplicate email address
+				throw saveError
+			} else {
+				throw saveError
+			}
+		}
 
 		const [ subscription_id ] =
 			await GoCardless.createSubscriptionPromise( mandate_id, actualAmount, period );

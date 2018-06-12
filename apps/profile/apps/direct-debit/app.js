@@ -13,7 +13,7 @@ var auth = require( __js + '/authentication' ),
 const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
 
 const utils = require( __js + '/utils' );
-const gocardless = require( __js + '/gocardless2' );
+const gocardless = require( __js + '/gocardless' );
 
 var app_config = {};
 

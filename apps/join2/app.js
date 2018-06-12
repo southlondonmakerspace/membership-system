@@ -15,7 +15,7 @@ const { hasSchema } = require( __js + '/middleware' );
 
 const config = require( __config + '/config.json' );
 
-const gocardless = require( __js + '/gocardless2' );
+const gocardless = require( __js + '/gocardless' );
 
 const { getSubscriptionName } = require( __js + '/utils' );
 const { customerToMember, joinFlowToSubscription } = require( './utils' );

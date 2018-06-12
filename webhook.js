@@ -15,7 +15,7 @@ var config = require( __config ),
 	bodyParser = require( 'body-parser' ),
 	textBodyParser = bodyParser.text( { type: 'application/json' } );
 
-const gocardless = require( __js + '/gocardless2' );
+const gocardless = require( __js + '/gocardless' );
 
 var utils = require('./webhook-utils');
 

@@ -17,7 +17,7 @@ function createPayment( gcPayment, now=new Date() ) {
 
 function getSubscriptionExpiry( payment, subscription ) {
 	const unit = subscription.interval_unit === 'weekly' ? 'weeks' :
-		subscription.interval_unit === 'monthly' ? 'months' : 'years'
+		subscription.interval_unit === 'monthly' ? 'months' : 'years';
 
 	const date = moment( payment.charge_date )
 		.add( { [unit]: subscription.interval } )
@@ -27,6 +27,6 @@ function getSubscriptionExpiry( payment, subscription ) {
 }
 
 module.exports = {
-  createPayment,
-  getSubscriptionExpiry
+	createPayment,
+	getSubscriptionExpiry
 };

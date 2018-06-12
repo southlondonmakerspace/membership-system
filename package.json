@@ -49,7 +49,7 @@
   "scripts": {
     "start": "node app | bunyan -c 'this.sensitive == undefined'",
     "production": "npm-run-all --parallel start webhook",
-    "lint": "eslint apps/ src/",
+    "lint": "eslint apps/ src/ webhook.js",
     "dev": "nodemon app --exec \"npm run lint && node app\" | npx bunyan",
     "webhook": "node webhook",
     "webhook-dev": "nodemon webhook | npx bunyan",

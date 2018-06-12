@@ -1,4 +1,5 @@
 const axios = require('axios');
+const crypto = require('crypto');
 const uuid = require('uuid/v4');
 
 const config = require('../../config/config.json');
@@ -79,5 +80,14 @@ module.exports = {
 	payoutItems: createMethods('payout_items', ['list', 'all']),
 	redirectFlows: createMethods('redirect_flows', ['create', 'get'], ['complete']),
 	refunds: createMethods('refunds', STANDARD_METHODS),
-	subscriptions: createMethods('subscriptions', STANDARD_METHODS, ['cancel'])
+	subscriptions: createMethods('subscriptions', STANDARD_METHODS, ['cancel']),
+	webhooks: {
+		validate(req) {
+			const rehashed_webhook_signature =
+				crypto.createHmac( 'sha256', config.gocardless.secret ).update( req.body ).digest( 'hex' );
+
+			return req.headers['content-type'] === 'application/json' &&
+				req.headers['webhook-signature'] === rehashed_webhook_signature;
+		}
+	}
 };

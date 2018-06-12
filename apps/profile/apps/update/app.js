@@ -5,12 +5,8 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var PostcodesIO = require( 'postcodesio-client' ),
-	postcodes = new PostcodesIO();
-
-var auth = require( __js + '/authentication' ),
-	db = require( __js + '/database' ),
-	Members = db.Members;
+var auth = require( __js + '/authentication' );
+const { wrapAsync } = require( __js + '/utils' );
 
 const { hasSchema } = require( __js + '/middleware' );
 const { updateSchema } = require( './schemas.json' );
@@ -36,7 +32,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 app.post( '/', [
 	auth.isLoggedIn,
 	hasSchema(updateSchema).orFlash
-], async function( req, res ) {
+], wrapAsync( async function( req, res ) {
 	const { body: { email, firstname, lastname, delivery_optin, delivery_line1,
 		delivery_line2, delivery_city, delivery_postcode }, user } = req;
 
@@ -71,12 +67,12 @@ app.post( '/', [
 		if ( error.code === 11000 ) {
 			req.flash( 'danger', 'email-duplicate' );
 		} else {
-			req.flash( 'danger', 'validation-error-generic' );
+			throw error;
 		}
 	}
 
 	res.redirect( app.parent.mountpath + app.mountpath );
-} );
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

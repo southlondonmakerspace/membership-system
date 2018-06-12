@@ -210,6 +210,18 @@ var Authentication = {
 		} );
 	},
 
+	hashPasswordPromise: function( password, salt, iterations ) {
+		return new Promise(resolve => {
+			Authentication.hashPassword( password, salt, iterations, resolve);
+		});
+	},
+
+	generatePasswordPromise: function( password ) {
+		return new Promise(resolve => {
+			Authentication.generatePassword( password, resolve );
+		});
+	},
+
 	LOGGED_IN: true,
 	NOT_LOGGED_IN: false,
 	NOT_ACTIVATED: -1,

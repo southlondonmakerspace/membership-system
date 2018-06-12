@@ -7,6 +7,8 @@ var	express = require( 'express' ),
 
 var auth = require( __js + '/authentication' );
 
+const { wrapAsync } = require( __js + '/utils' );
+
 const { hasSchema } = require( __js + '/middleware' );
 const { changePasswordSchema } = require( './schemas.json' );
 
@@ -31,39 +33,39 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 app.post( '/', [
 	auth.isLoggedIn,
 	hasSchema( changePasswordSchema ).orFlash
-], function( req, res ) {
+], wrapAsync( async function( req, res ) {
 	const { body, user } = req;
 
-	auth.hashPassword( body.current, user.password.salt, user.password.iterations, function( hash ) {
-		if ( hash != user.password.hash ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'change-password',
-				error: 'Current password does not match users password',
-			} );
-			req.flash( 'danger', 'password-invalid' );
-			res.redirect( app.parent.mountpath + app.mountpath );
-			return;
-		}
+	const hash = await auth.hashPasswordPromise( body.current, user.password.salt, user.password.iterations );
 
-		auth.generatePassword( body.new, async function( password ) {
-			await user.update( { $set: {
-				'password.salt': password.salt,
-				'password.hash': password.hash,
-				'password.iterations': password.iterations,
-				'password.reset_code': null,
-			} } );
-
-			req.log.info( {
-				app: 'profile',
-				action: 'change-password'
-			} );
-
-			req.flash( 'success', 'password-changed' );
-			res.redirect( app.parent.mountpath + app.mountpath );
+	if ( hash != user.password.hash ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'change-password',
+			error: 'Current password does not match users password',
 		} );
+		req.flash( 'danger', 'password-invalid' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
+	}
+
+	const password = await auth.generatePasswordPromise( body.new );
+
+	await user.update( { $set: {
+		'password.salt': password.salt,
+		'password.hash': password.hash,
+		'password.iterations': password.iterations,
+		'password.reset_code': null,
+	} } );
+
+	req.log.info( {
+		app: 'profile',
+		action: 'change-password'
 	} );
-} );
+
+	req.flash( 'success', 'password-changed' );
+	res.redirect( app.parent.mountpath + app.mountpath );
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

@@ -17,7 +17,7 @@ const config = require( __config + '/config.json' );
 
 const gocardless = require( __js + '/gocardless' );
 
-const { getSubscriptionName } = require( __js + '/utils' );
+const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 const { customerToMember, joinFlowToSubscription } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
@@ -37,7 +37,7 @@ app.get( '/' , function( req, res ) {
 	res.render( 'index' );
 } );
 
-app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
+app.post( '/', hasSchema(joinSchema).orFlash, wrapAsync(async function( req, res ) {
 	const { body: { period, amount, amountOther } } = req;
 
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
@@ -64,9 +64,11 @@ app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
 		req.flash( 'danger', 'gocardless-mandate-err' );
 		res.redirect( app.mountpath );
 	}
-} );
+}));
 
-app.get( '/complete', hasSchema(completeSchema).orRedirect( '/join' ), async function( req, res ) {
+app.get( '/complete', [
+	hasSchema(completeSchema).orRedirect( '/join' )
+], wrapAsync(async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
 	const permission = await Permissions.findOne( { slug: config.permission.member });
@@ -76,6 +78,7 @@ app.get( '/complete', hasSchema(completeSchema).orRedirect( '/join' ), async fun
 	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
 		session_token: joinFlow.sessionToken
 	});
+
 	await JoinFlows.deleteOne({ redirect_flow_id });
 
 	const customer = await gocardless.customers.get(redirectFlow.links.customer);
@@ -117,7 +120,7 @@ app.get( '/complete', hasSchema(completeSchema).orRedirect( '/join' ), async fun
 		}
 		res.redirect('/profile/complete');
 	});
-});
+}));
 
 module.exports = function( config ) {
 	app_config = config;

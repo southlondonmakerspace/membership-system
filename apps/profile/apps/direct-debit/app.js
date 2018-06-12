@@ -12,7 +12,7 @@ var auth = require( __js + '/authentication' ),
 
 const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
 
-const utils = require( __js + '/utils' );
+const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 const gocardless = require( __js + '/gocardless' );
 
 var app_config = {};
@@ -61,7 +61,7 @@ app.get( '/cancel-subscription', isLoggedInWithSubscription, ( req, res ) => {
 app.post( '/cancel-subscription', [
 	isLoggedInWithSubscription,
 	hasSchema(cancelSubscriptionSchema).orFlash
-], async ( req, res ) => {
+], wrapAsync( async ( req, res ) => {
 	const { user, body: { reason } } = req;
 
 	try {
@@ -85,7 +85,7 @@ app.post( '/cancel-subscription', [
 	}
 
 	res.redirect( app.parent.mountpath + app.mountpath );
-} );
+} ) );
 
 app.get( '/update-subscription', isLoggedInWithSubscription, function( req, res ) {
 	res.redirect( app.parent.mountpath + app.mountpath );
@@ -94,14 +94,14 @@ app.get( '/update-subscription', isLoggedInWithSubscription, function( req, res 
 app.post( '/update-subscription', [
 	isLoggedInWithSubscription,
 	hasSchema(updateSubscriptionSchema).orFlash
-], async ( req, res ) => {
+], wrapAsync( async ( req, res ) => {
 	const { body:  { amount }, user } = req;
 	const gcAmount = amount * 100;
 
 	try {
 		const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
 			amount: gcAmount,
-			name: utils.getSubscriptionName( amount, user.gocardless.period )
+			name: getSubscriptionName( amount, user.gocardless.period )
 		} );
 
 		const payment = subscription.upcoming_payments.find( p => p.amount === gcAmount );
@@ -125,7 +125,7 @@ app.post( '/update-subscription', [
 	}
 
 	res.redirect( app.parent.mountpath + app.mountpath );
-} );
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

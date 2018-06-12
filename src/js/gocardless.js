@@ -2,6 +2,8 @@ const axios = require('axios');
 const crypto = require('crypto');
 const uuid = require('uuid/v4');
 
+const { log } = require('./logging');
+
 const config = require('../../config/config.json');
 
 const gocardless = axios.create({
@@ -15,10 +17,28 @@ const gocardless = axios.create({
 });
 
 gocardless.interceptors.request.use(config => {
+	log.debug({
+		app: 'gocardless',
+		url: config.url,
+		method: config.method,
+		sensitive: {
+			data: config.data
+		}
+	});
+
 	if (config.method === 'post') {
 		config.headers['Idempotency-Key'] = uuid();
 	}
 	return config;
+});
+
+gocardless.interceptors.response.use(r => r, error => {
+	log.error({
+		app: 'gocardless',
+		status: error.response.status,
+		data: error.response.data
+	});
+	return Promise.reject(error);
 });
 
 const STANDARD_METHODS = ['create', 'get', 'update', 'list', 'all'];

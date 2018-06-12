@@ -22,6 +22,7 @@ gocardless.interceptors.request.use(config => {
 		url: config.url,
 		method: config.method,
 		sensitive: {
+			params: config.params,
 			data: config.data
 		}
 	});

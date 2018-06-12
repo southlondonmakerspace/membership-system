@@ -49,21 +49,21 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 					{
 						$group: {
 							_id: {
-								member: "$member",
-								day: { $dayOfMonth: "$happened" }
+								member: '$member',
+								day: { $dayOfMonth: '$happened' }
 							}
 						}
 					},
 					{
 						$group: {
-							_id: "$_id.member",
-							days: { $push: "$_id.day" }
+							_id: '$_id.member',
+							days: { $push: '$_id.day' }
 						}
 					},
 					{
 						$project: {
 							_id: 0,
-							count: { $size: "$days" }
+							count: { $size: '$days' }
 						}
 					},
 					{

@@ -54,7 +54,7 @@ app.post( '/', function( req, res ) {
 					function() {
 						req.flash( 'success', 'password-reset' );
 						res.redirect( app.mountpath );
-				} );
+					} );
 			} );
 		} else {
 			req.flash( 'success', 'password-reset' );

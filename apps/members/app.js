@@ -146,7 +146,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				var item = {
 					number: p,
 					path: '?page=' + p + ( append_path ? '&' + append_path : '' )
-				}
+				};
 				pages.push( item );
 			}
 			var next = ( page + 1 ) <= pages.length ? pages[ page ] : null;
@@ -174,7 +174,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				limits[l] = {
 					number: limit,
 					path: '?limit=' + limit + ( append_path ? '&' + append_path : '' )
-				}
+				};
 			} );
 
 			// Inactive members
@@ -194,7 +194,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				discourse: req.query.discourse,
 				show_inactive_members: req.query.show_inactive_members,
 				permission: req.query.permission
-			}
+			};
 
 			Members.find( search ).limit( limit ).skip( limit * ( page - 1 ) ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
 				res.render( 'index', {
@@ -740,7 +740,7 @@ app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
 				function() {
 					req.flash( 'success', '2fa-disabled' );
 					res.redirect( app.mountpath + '/' + req.params.uuid );
-			} );
+				} );
 		} );
 	} else {
 		req.flash( 'success', '2fa-no-change' );

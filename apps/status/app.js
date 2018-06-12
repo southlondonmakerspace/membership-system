@@ -37,7 +37,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	Items.find().populate( 'defaultState' ).sort( { name: 1 } ).exec( function( err, results ) {
 		var itemQueries = [];
 		for ( var i in results ) {
-			itemQueries.push( Events.findOne( { 'item': results[i]._id } ).populate( 'state' ).sort( { "happened": -1 } ) );
+			itemQueries.push( Events.findOne( { 'item': results[i]._id } ).populate( 'state' ).sort( { 'happened': -1 } ) );
 		}
 		Promise.all( itemQueries ).then( function( queryResults ) {
 			for ( var r in results ) {

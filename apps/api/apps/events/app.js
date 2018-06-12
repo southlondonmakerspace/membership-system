@@ -41,43 +41,43 @@ app.get( '/', auth.isAPIAuthenticated, function( req, res ) {
 			$gt: date.toDate()
 		}
 	} )
-	.limit( limit )
-	.skip( ( page - 1 ) * limit )
-	.sort( { happened: 'asc' } )
-	.populate( 'member' )
-	.populate( 'permission' )
-	.populate( 'state' )
-	.exec( function( err, events ) {
-		var output = {
-			now: new Date(),
-			since: date.toDate(),
-			limit: limit,
-			page: page,
-			results: events.length,
-			events: []
-		};
-		for ( var e in events ) {
-			var event = events[e];
-			var output_event = {
-				date: event.happened
+		.limit( limit )
+		.skip( ( page - 1 ) * limit )
+		.sort( { happened: 'asc' } )
+		.populate( 'member' )
+		.populate( 'permission' )
+		.populate( 'state' )
+		.exec( function( err, events ) {
+			var output = {
+				now: new Date(),
+				since: date.toDate(),
+				limit: limit,
+				page: page,
+				results: events.length,
+				events: []
 			};
-			if ( event.member )
-				output_event.user = {
-					fullname: event.member.fullname,
-					firstname: event.member.firstname,
-					lastname: event.member.lastname,
-					gravatar: event.member.gravatar
+			for ( var e in events ) {
+				var event = events[e];
+				var output_event = {
+					date: event.happened
 				};
+				if ( event.member )
+					output_event.user = {
+						fullname: event.member.fullname,
+						firstname: event.member.firstname,
+						lastname: event.member.lastname,
+						gravatar: event.member.gravatar
+					};
 
-			if ( event.permission )
-				output_event.permission = {
-					name: event.permission.name,
-				}
+				if ( event.permission )
+					output_event.permission = {
+						name: event.permission.name,
+					};
 
-			output.events.push( output_event );
-		}
-		res.send( JSON.stringify( output ) );
-	} );
+				output.events.push( output_event );
+			}
+			res.send( JSON.stringify( output ) );
+		} );
 } );
 
 module.exports = function( config ) {

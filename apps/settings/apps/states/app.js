@@ -7,7 +7,7 @@ var	express = require( 'express' ),
 	app = express();
 
 var db = require( __js + '/database' ),
-	States = db.States
+	States = db.States;
 
 var auth = require( __js + '/authentication' );
 
@@ -89,7 +89,7 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 			req.log.error( {
 				app: 'settings/states',
 				action: 'edit',
-				error: "Error looking up state " + err,
+				error: 'Error looking up state ' + err,
 				body: req.body
 			} );
 		}
@@ -97,7 +97,7 @@ app.get( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 			req.log.debug( {
 				app: 'settings/states',
 				action: 'edit',
-				error: "State to update was not found"
+				error: 'State to update was not found'
 			} );
 			req.flash( 'warning', 'state-404' );
 			res.redirect( app.parent.mountpath + app.mountpath );
@@ -116,7 +116,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		req.log.debug( {
 			app: 'settings/states',
 			action: 'edit',
-			error: "Slug was not provided",
+			error: 'Slug was not provided',
 			body: req.body
 		} );
 		req.flash( 'danger', 'state-slug-required' );
@@ -128,7 +128,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		req.log.debug( {
 			app: 'settings/states',
 			action: 'edit',
-			error: "State text was not provided",
+			error: 'State text was not provided',
 			body: req.body
 		} );
 		req.flash( 'danger', 'state-text-required' );

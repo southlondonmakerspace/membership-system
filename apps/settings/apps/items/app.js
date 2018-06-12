@@ -8,7 +8,7 @@ var	express = require( 'express' ),
 
 var db = require( __js + '/database' ),
 	Items = db.Items,
-	States = db.States
+	States = db.States;
 
 var auth = require( __js + '/authentication' );
 
@@ -46,17 +46,17 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
-		States.find( function (err, states) {
-			if ( err ) {
-				req.log.error( {
-					app: 'settings/items',
-					action: 'create',
-					error: 'Error finding items ' + err,
-					body: req.body
-				} );
-			}
-			res.render( 'create', { states: states } );
-		});
+	States.find( function (err, states) {
+		if ( err ) {
+			req.log.error( {
+				app: 'settings/items',
+				action: 'create',
+				error: 'Error finding items ' + err,
+				body: req.body
+			} );
+		}
+		res.render( 'create', { states: states } );
+	});
 
 } );
 

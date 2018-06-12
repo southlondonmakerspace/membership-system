@@ -48,9 +48,9 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 		res.render( 'replace', { code: req.body.enrollment_code } );
 	} else {
 		if ( ! req.body.enrollment_code ) {
-				req.flash( 'danger', 'information-ommited' );
-				res.redirect( app.parent.mountpath + app.mountpath );
-				return;
+			req.flash( 'danger', 'information-ommited' );
+			res.redirect( app.parent.mountpath + app.mountpath );
+			return;
 		}
 
 		Enroll.findOne( {

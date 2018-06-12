@@ -47,7 +47,7 @@ app.get('/identify/:tag', auth.isAPIAuthenticated, function(req, res) {
 				{
 					activeMember = true;
 				}
-			})
+			});
 			res.json({
 				valid: true,
 				firstname: member.firstname,

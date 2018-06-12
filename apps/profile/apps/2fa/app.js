@@ -6,7 +6,7 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var querystring = require("querystring");
+var querystring = require('querystring');
 
 var auth = require( __js + '/authentication' ),
 	discourse = require( __js + '/discourse' ),
@@ -54,7 +54,7 @@ app.get( '/setup', auth.isLoggedIn, function( req, res ) {
 					 secret: secret
 			 } );
 			 var otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
-			var otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions
+			var otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions;
 			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent( otpauth );
 			res.render( 'setup', {
 				qr: url,
@@ -88,7 +88,7 @@ app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 				function() {
 					req.flash( 'success', '2fa-enabled' );
 					res.redirect( '/profile/2fa' );
-			} );
+				} );
 		} );
 	} else {
 		req.flash( 'danger', '2fa-setup-failed' );
@@ -129,7 +129,7 @@ app.post( '/disable', auth.isLoggedIn, function( req, res ) {
 						function() {
 							req.flash( 'success', '2fa-disabled' );
 							res.redirect( '/profile/2fa' );
-					} );
+						} );
 				} );
 			} else {
 				req.flash( 'warning', '2fa-unable-to-disable' );

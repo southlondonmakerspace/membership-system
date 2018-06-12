@@ -8,12 +8,12 @@ function flashErrors( errors, req, res, next ) { // eslint-disable-line no-unuse
 		.map( error => {
 			console.log( error );
 			switch ( error.keyword ) {
-				case 'required':
-					return `flash-validation-error${error.dataPath}.${error.params.missingProperty}-required`;
-				case 'format':
-					return `flash-validation-error.${error.params.format}-format`;
-				default:
-					return `flash-validation-error${error.dataPath}-${error.keyword}`;
+			case 'required':
+				return `flash-validation-error${error.dataPath}.${error.params.missingProperty}-required`;
+			case 'format':
+				return `flash-validation-error.${error.params.format}-format`;
+			default:
+				return `flash-validation-error${error.dataPath}-${error.keyword}`;
 			}
 		} )
 		.map( key => {
@@ -56,7 +56,7 @@ function hasSchema( schema ) {
 		or400: onRequest( validators, send400 ),
 		orFlash: onRequest( validators, flashErrors )
 	};
-};
+}
 
 module.exports = {
 	hasSchema

@@ -43,11 +43,11 @@ function createMethods(key, allowedMethods, allowedActions=[]) {
 			return [...resources, ...moreResources];
 		},
 		async get(id, params) {
-			const {data} = await gocardless.get(`${endpoint}/${id}`, {params});
+			const response = await gocardless.get(`${endpoint}/${id}`, {params});
 			return response.data[key];
 		},
 		async update(id, data) {
-			const {data} = await gocardless.put(`${endpoint$}/${id}`, {[key]: data});
+			const response = await gocardless.put(`${endpoint}/${id}`, {[key]: data});
 			return response.data[key];
 		}
 	};

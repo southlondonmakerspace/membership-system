@@ -1,20 +1,13 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	request = require( 'request' );
-
-var config = require( __config + '/config.json' ),
-	Options = require( __js + '/options.js' )();
+	app = express();
 
 var auth = require( __js + '/authentication' ),
 	{ hasSchema } = require( __js + '/middleware' ),
-	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
-	Permissions = db.Permissions,
 	Members = db.Members;
 
 const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
@@ -72,7 +65,7 @@ app.post( '/cancel-subscription', [
 	const { user, body: { reason } } = req;
 
 	try {
-    await gocardless.subscriptions.cancel( user.gocardless.subscription_id );
+		await gocardless.subscriptions.cancel( user.gocardless.subscription_id );
 
 		await Members.update( { _id: user._id }, { $unset: {
 			'gocardless.subscription_id': true

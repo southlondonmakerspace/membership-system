@@ -320,12 +320,12 @@ var Authentication = {
 	isNotLoggedIn: function( req, res, next ) {
 		var status = Authentication.loggedIn( req );
 		switch ( status ) {
-			case Authentication.NOT_LOGGED_IN:
-				return next();
-			default:
-				req.flash( 'warning', 'already-logged-in' )
-				res.redirect( '/profile' );
-				return;
+		case Authentication.NOT_LOGGED_IN:
+			return next();
+		default:
+			req.flash( 'warning', 'already-logged-in' );
+			res.redirect( '/profile' );
+			return;
 		}
 	},
 

@@ -3,7 +3,7 @@ const ajv = require('./ajv');
 const Options = require( './options' )();
 const config = require( '../../config/config.json' );
 
-function flashErrors( errors, req, res, next ) { // eslint-disable-line no-unused-vars
+function flashErrors( errors, req, res ) {
 	errors
 		.map( error => {
 			console.log( error );
@@ -27,8 +27,14 @@ function flashErrors( errors, req, res, next ) { // eslint-disable-line no-unuse
 	res.redirect( req.originalUrl );
 }
 
-function send400( errors, req, res, next ) { // eslint-disable-line no-unused-vars
+function send400( errors, req, res ) {
 	res.status(400).send( errors );
+}
+
+function redirectTo( url ) {
+	return ( errors, req, res ) => {
+		res.redirect( url );
+	};
 }
 
 function onRequest( validators, onErrors ) {
@@ -54,7 +60,10 @@ function hasSchema( schema ) {
 
 	return {
 		or400: onRequest( validators, send400 ),
-		orFlash: onRequest( validators, flashErrors )
+		orFlash: onRequest( validators, flashErrors ),
+		orRedirect( url ) {
+			return onRequest( validators, redirectTo( url ) );
+		}
 	};
 }
 

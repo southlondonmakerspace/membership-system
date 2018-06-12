@@ -66,7 +66,7 @@ app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
 	}
 } );
 
-app.get( '/complete', hasSchema(completeSchema).or400, async function( req, res ) {
+app.get( '/complete', hasSchema(completeSchema).orRedirect( '/join' ), async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
 	const permission = await Permissions.findOne( { slug: config.permission.member });

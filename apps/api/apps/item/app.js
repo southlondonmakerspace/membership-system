@@ -1,23 +1,16 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
 
-var config = require( __config + '/config.json' );
-
-var auth = require( __js + '/authentication' ),
-	Mail = require( __js + '/mail' ),
-	Options = require( __js + '/options' )();
+var auth = require( __js + '/authentication' );
 
 var database = require( __js + '/database' ),
 	Items = database.Items,
 	States = database.States,
 	Events = database.Events;
-
-var app_config = {};
 
 app.get( '/:slug', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
@@ -103,7 +96,6 @@ app.get( '/:slug/:state', auth.isAPIAuthenticated, function( req, res ) {
 		} );
 } );
 
-module.exports = function( config ) {
-	app_config = config;
+module.exports = function() {
 	return app;
 };

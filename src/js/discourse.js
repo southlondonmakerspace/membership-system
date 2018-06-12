@@ -7,8 +7,7 @@ var config = require( __config );
 
 var Database = require( __js + '/database' ),
 	Permissions = Database.Permissions,
-	Members = Database.Members,
-	ObjectId = Database.ObjectId;
+	Members = Database.Members;
 
 var request = require( 'request' ),
 	queryString = require( 'query-string' );

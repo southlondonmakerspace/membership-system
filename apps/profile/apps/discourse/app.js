@@ -4,8 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	request= require( 'request' );
+	app = express();
 
 var config = require( __config + '/config.json' );
 
@@ -79,7 +78,7 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 									Members.update( { '_id': req.user._id }, { $set: {
 										'discourse.username': user.username,
 										'discourse.activation_code': code
-									} }, function ( error ) {} );
+									} }, function () {} );
 
 									discourse.sendActivationMessage( user.username, code );
 
@@ -110,7 +109,7 @@ app.get( '/cancel', auth.isLoggedIn, function( req, res ) {
 		username: '',
 		activated: false
 	};
-	req.user.save( function( err ) {
+	req.user.save( function () {
 		req.flash( 'warning', 'discourse-cancelled' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -122,7 +121,7 @@ app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 			Members.update( { '_id': req.user._id }, { $set: {
 				'discourse.activated': true,
 				'discourse.activation_code': null
-			} }, function ( error ) {} );
+			} }, function () {} );
 			req.flash( 'info', 'discourse-linked' );
 			return res.redirect( app.parent.mountpath + app.mountpath );
 		}
@@ -143,7 +142,7 @@ app.post( '/unlink', auth.isLoggedIn, function( req, res ) {
 		username: '',
 		activated: false
 	};
-	req.user.save( function( err ) {
+	req.user.save( function () {
 		req.flash( 'danger', 'discourse-unlinked' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

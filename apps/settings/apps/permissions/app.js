@@ -1,18 +1,13 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
 
-var db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members;
+var { Permissions } = require( __js + '/database' );
 
 var auth = require( __js + '/authentication' );
-
-var config = require( __config + '/config.json' );
 
 var app_config = {};
 
@@ -67,7 +62,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		}
 	};
 
-	new Permissions( permission ).save( function( err, permission ) {
+	new Permissions( permission ).save( function () {
 		req.flash( 'success', 'permission-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -114,7 +109,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		}
 	};
 
-	Permissions.update( { slug: req.params.slug }, permission, function( status ) {
+	Permissions.update( { slug: req.params.slug }, permission, function () {
 		req.flash( 'success', 'permission-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

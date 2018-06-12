@@ -1,7 +1,6 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -11,8 +10,6 @@ var db = require( __js + '/database' ),
 	States = db.States;
 
 var auth = require( __js + '/authentication' );
-
-var config = require( __config + '/config.json' );
 
 var app_config = {};
 
@@ -93,7 +90,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		defaultState: req.body.defaultState
 	};
 
-	new Items( item ).save( function( err, item ) {
+	new Items( item ).save( function( err ) {
 		if ( ! err ) {
 			req.log.debug( {
 				app: 'settings/items',
@@ -188,7 +185,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		defaultState: req.body.defaultState
 	};
 
-	Items.update( { slug: req.params.slug }, item, function( status ) {
+	Items.update( { slug: req.params.slug }, item, function () {
 		req.log.debug( {
 			app: 'settings/items',
 			action: 'edit',

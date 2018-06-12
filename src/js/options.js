@@ -1,9 +1,6 @@
 var __home = __dirname + '/../..';
-var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
-
-var config = require( __config );
 
 var db = require( __js + '/database' ),
 	OptionsDB = db.Options;
@@ -82,10 +79,10 @@ var Options = {
 		callback();
 	},
 	_save: function( key ) {
-		OptionsDB.update( { key: key }, { value: Options.getText( key ) }, { upsert: true }, function( err, status ) {} );
+		OptionsDB.update( { key: key }, { value: Options.getText( key ) }, { upsert: true }, function() {} );
 	},
 	_unset: function( key ) {
-		OptionsDB.remove( { key: key }, function( err, status ) {} );
+		OptionsDB.remove( { key: key }, function () {} );
 	},
 	load: function( req, res, next ) {
 		res.locals.Options = Options.getText;

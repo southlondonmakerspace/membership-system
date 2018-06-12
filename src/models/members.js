@@ -185,7 +185,7 @@ module.exports.schema.virtual( 'gravatar' ).get( function() {
 
 module.exports.schema.virtual( 'can_admin' ).get( function() {
 	var can_admin = [];
-	this.permissions.forEach( function( permission, p ) {
+	this.permissions.forEach( function( permission ) {
 		if ( permission.admin )
 			can_admin.push( permission.permission.slug );
 	} );

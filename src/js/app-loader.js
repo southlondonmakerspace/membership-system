@@ -9,7 +9,7 @@ var config = require( __config );
 var log = require( __js + '/logging' ).log;
 
 var fs = require( 'fs' );
-helmet = require( 'helmet' );
+var helmet = require( 'helmet' );
 
 module.exports = function( app ) {
 	// Loop through main app directory contents
@@ -22,13 +22,13 @@ module.exports = function( app ) {
 	routeApps(app, apps);
 
 	// Error 404
-	app.use( function ( req, res, next ) {
+	app.use( function ( req, res, next ) { // eslint-disable-line no-unused-vars
 		res.status( 404 );
 		res.render( '404' );
 	} );
 
 	// Error 500
-	app.use( function ( err, req, res, next ) {
+	app.use( function ( err, req, res, next ) { // eslint-disable-line no-unused-vars
 		res.status( 500 );
 		res.render( '500', { error: ( config.dev ? err.stack : undefined ) } );
 	} );

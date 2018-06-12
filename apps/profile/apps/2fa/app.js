@@ -9,10 +9,6 @@ var	express = require( 'express' ),
 var querystring = require('querystring');
 
 var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
-	db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members,
 	Options = require( __js + '/options' )();
 
 var TOTP = require( 'notp' ).totp;
@@ -48,12 +44,12 @@ app.get( '/setup', auth.isLoggedIn, function( req, res ) {
 	}
 	auth.generateOTPSecret( function( secret ) {
 		req.user.otp.key = secret;
-		req.user.save( function( err ) {
+		req.user.save( function( ) {
 			var otpoptions = querystring.stringify( {
-					 issuer: ( ( config.dev ) ? ' [DEV] ' : '' ) + Options.getText( 'organisation' ),
-					 secret: secret
-			 } );
-			 var otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
+				issuer: ( ( config.dev ) ? ' [DEV] ' : '' ) + Options.getText( 'organisation' ),
+				secret: secret
+			} );
+			var otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
 			var otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions;
 			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent( otpauth );
 			res.render( 'setup', {
@@ -74,7 +70,7 @@ app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 	if ( test && Math.abs( test.delta ) < 2 ) {
 		req.user.otp.activated = true;
 		req.session.method = 'totp';
-		req.user.save( function( err ) {
+		req.user.save( function() {
 			var options = {
 				firstname: req.user.firstname
 			};
@@ -115,7 +111,7 @@ app.post( '/disable', auth.isLoggedIn, function( req, res ) {
 			if ( hash == req.user.password.hash ) {
 				req.user.otp.activated = false;
 				req.user.otp.key = '';
-				req.user.save( function( err ) {
+				req.user.save( function() {
 					var options = {
 						firstname: req.user.firstname
 					};

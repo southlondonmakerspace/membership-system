@@ -1,6 +1,3 @@
-var __root = '../..';
-var __src = __root + '/src';
-
 var	express = require( 'express' ),
 	app = express();
 

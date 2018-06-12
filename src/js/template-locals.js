@@ -38,7 +38,7 @@ function templateLocals( req, res, next ) {
 		if ( app.menu != 'none' ) {
 			if ( app.permissions && app.permissions != [] ) {
 				if ( req.user ) {
-					for ( var p in app.permissions ) {
+					for ( let p in app.permissions ) {
 						if ( auth.checkPermission( req, app.permissions[p] ) ) {
 							res.locals.apps[ app.menu ].push( app );
 							break;
@@ -51,12 +51,12 @@ function templateLocals( req, res, next ) {
 				res.locals.subapps[ app.uid ] = [];
 			}
 			if ( app.subapps.length > 0 ) {
-				for ( var s in app.subapps ) {
+				for ( let s in app.subapps ) {
 					var subapp = app.subapps[s];
 					if ( subapp.hidden !== true ) {
 						if ( subapp.permissions && subapp.permissions != [] ) {
 							if ( req.user ) {
-								for ( var p in subapp.permissions ) {
+								for ( let p in subapp.permissions ) {
 									if ( auth.checkPermission( req, subapp.permissions[p] ) ) {
 										res.locals.subapps[ app.uid ].push( subapp );
 										break;

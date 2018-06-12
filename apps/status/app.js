@@ -1,17 +1,10 @@
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
-var __apps = __dirname + '/apps';
-
-var	fs = require( 'fs' ),
-	express = require( 'express' ),
+var	express = require( 'express' ),
 	app = express();
 
-var config = require( __config + '/config.json' );
-
-var apps = [];
 var app_config = {};
 
 var auth = require( __js + '/authentication' );

@@ -1,9 +1,5 @@
 var __root = '../..';
 var __config = __root + '/config/config.json';
-var __static = __root + '/static';
-var __src = __root + '/src';
-var __views = __src + '/views';
-var __js = __src + '/js';
 
 var config = require( __config );
 

@@ -1,7 +1,6 @@
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -9,12 +8,9 @@ var	express = require( 'express' ),
 var moment = require( 'moment' );
 
 var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Events = db.Events,
 	Permissions = db.Permissions;
-
-var config = require( __config + '/config.json' );
 
 var app_config = {};
 

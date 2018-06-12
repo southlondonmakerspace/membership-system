@@ -7,7 +7,6 @@ var	express = require( 'express' ),
 	app = express();
 
 var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
 	Members = db.Members;
@@ -32,7 +31,7 @@ app.get( '/', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.get( '/data.json', auth.isSuperAdmin, function( req, res ) {
-	Permissions.findOne( { slug: config.permission.member }, function( err, membership_permission ) {
+	Permissions.findOne( { slug: config.permission.member }, function () {
 		Members.find( function( err, members ) {
 			var locations = [];
 			for ( var m in members ) {

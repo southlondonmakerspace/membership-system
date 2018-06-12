@@ -26,7 +26,7 @@ var Mail = {
 		message.to = to;
 		message.subject = subject + ' – ' + Options.getText( 'organisation' );
 
-		transporter.sendMail( message, function( err, info ) {
+		transporter.sendMail( message, function( err ) {
 			var status;
 
 			if ( err ) {

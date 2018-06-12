@@ -1,7 +1,6 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -55,7 +54,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		key: req.body.key
 	};
 
-	new APIKeys( key ).save( function( err ) {
+	new APIKeys( key ).save( function () {
 		req.flash( 'success', 'apikey-created' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -94,14 +93,14 @@ app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 		key: req.body.key
 	};
 
-	APIKeys.update( { _id: req.params.id }, apikey, function( status ) {
+	APIKeys.update( { _id: req.params.id }, apikey, function () {
 		req.flash( 'success', 'apikey-update' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
 } );
 
 app.post( '/:id/delete', auth.isSuperAdmin, function( req, res ) {
-	APIKeys.remove( { _id: req.params.id }, function( err ) {
+	APIKeys.remove( { _id: req.params.id }, function () {
 		req.flash( 'success', 'apikey-delete' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

@@ -6,10 +6,7 @@ var __js = __src + '/js';
 var config = require( __config ),
 	Options = require( __js + '/options.js' )();
 
-var db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members,
-	APIKeys = db.APIKeys;
+var { Members, APIKeys } = require( __js + '/database' );
 
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy,
@@ -51,7 +48,7 @@ var Authentication = {
 							// Clear any pending password resets and notify
 							if ( user.password.reset_code ) {
 								user.password.reset_code = null;
-								user.save( function ( err ) {} );
+								user.save( function () {} );
 								return done( null, { _id: user._id }, { message: 'password-reset-attempt' } );
 							}
 
@@ -59,7 +56,7 @@ var Authentication = {
 							if ( user.password.tries > 0 ) {
 								var attempts = user.password.tries;
 								user.password.tries = 0;
-								user.save( function ( err ) {} );
+								user.save( function () {} );
 								return done( null, { _id: user._id }, { message: Options.getText( 'flash-account-attempts' ).replace( '%', attempts ) } );
 							}
 
@@ -71,7 +68,7 @@ var Authentication = {
 										salt: password.salt,
 										iterations: password.iterations
 									};
-									user.save( function ( err ) {} );
+									user.save( function () {} );
 								} );
 							}
 
@@ -80,7 +77,7 @@ var Authentication = {
 						} else {
 							// If password doesn't match, increment tries and save
 							user.password.tries++;
-							user.save( function ( err ) {} );
+							user.save( function () {} );
 							// Delay by 1 second to slow down password guessing
 							return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
 						}
@@ -125,7 +122,7 @@ var Authentication = {
 
 					// Update last seen
 					user.last_seen = new Date();
-					user.save( function( err ) {} );
+					user.save( function() {} );
 
 					// Loop through permissions check they are active right now and add those to the array
 					for ( var p = 0; p < user.permissions.length; p++ ) {
@@ -141,11 +138,11 @@ var Authentication = {
 					// Determin if user is still mid-setup
 					user.setup = false;
 					if ( user.emergency_contact.telephone ||
-						 user.gocardless.mandate_id === '' ||
-						 user.gocardless.subscription_id === '' ||
-						 ! user.discourse.activated ||
-						 user.discourse.username === '' ||
-						 user.tag.id === '' )
+							user.gocardless.mandate_id === '' ||
+							user.gocardless.subscription_id === '' ||
+							! user.discourse.activated ||
+							user.discourse.username === '' ||
+							user.tag.id === '' )
 						user.setup = true;
 
 					// Return user data

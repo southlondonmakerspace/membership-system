@@ -1,7 +1,6 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -10,8 +9,6 @@ var db = require( __js + '/database' ),
 	States = db.States;
 
 var auth = require( __js + '/authentication' );
-
-var config = require( __config + '/config.json' );
 
 var app_config = {};
 
@@ -69,7 +66,7 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		presentTense: req.body.presentTense
 	};
 
-	new States( state ).save( function( err, action ) {
+	new States( state ).save( function( err ) {
 		if ( err ) {
 			req.log.error( {
 				app: 'settings/states',
@@ -144,7 +141,7 @@ app.post( '/:slug/edit', auth.isSuperAdmin, function( req, res ) {
 		presentTense: req.body.presentTense
 	};
 
-	States.update( { slug: req.params.slug }, state, function( status ) {
+	States.update( { slug: req.params.slug }, state, function () {
 		req.flash( 'success', 'state-updated' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

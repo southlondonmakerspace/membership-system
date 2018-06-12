@@ -38,7 +38,7 @@ app.post( '/', function( req, res ) {
 			auth.generateActivationCode( function( code ) {
 				var password_reset_code = code;
 				user.password.reset_code = password_reset_code;
-				user.save( function( err ) {} );
+				user.save( function() {} );
 
 				var options = {
 					firstname: user.firstname,
@@ -99,8 +99,8 @@ app.post( '/change-password', function( req, res ) {
 					'password.reset_code': null,
 					'password.tries': 0,
 					'password.iterations': password.iterations
-				} }, function( status ) {
-					req.login( user, function( err ) {
+				} }, function() {
+					req.login( user, function( ) {
 						req.flash( 'success', 'password-changed' );
 						res.redirect( '/' );
 					} );

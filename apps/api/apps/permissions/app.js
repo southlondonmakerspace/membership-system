@@ -8,20 +8,15 @@ var	express = require( 'express' ),
 
 var config = require( __config + '/config.json' );
 
-var auth = require( __js + '/authentication' ),
-	Mail = require( __js + '/mail' ),
-	Options = require( __js + '/options' )();
+var auth = require( __js + '/authentication' );
 
 var database = require( __js + '/database' ),
 	Members = database.Members,
 	Permissions = database.Permissions,
 	Events = database.Events;
 
-var app_config = {};
-
 app.get( '/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 	Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
-		var grantAccess = false;
 		if ( member ) {
 			var hasMembership = false;
 			var hasPermission = false;
@@ -40,7 +35,7 @@ app.get( '/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 						member: member._id,
 						permission: permission._id,
 						successful: true
-					} ).save( function( status ) {} );
+					} ).save( function() {} );
 				} );
 				res.send( JSON.stringify( {
 					name: member.fullname
@@ -53,7 +48,7 @@ app.get( '/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 							member: member._id,
 							permission: permission._id,
 							successful: false
-						} ).save( function( status ) {} );
+						} ).save( function() {} );
 				} );
 			}
 		} else {
@@ -62,7 +57,6 @@ app.get( '/:slug/:tag', auth.isAPIAuthenticated, function( req, res ) {
 	} );
 } );
 
-module.exports = function( config ) {
-	app_config = config;
+module.exports = function() {
 	return app;
 };

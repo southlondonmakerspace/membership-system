@@ -6,8 +6,7 @@ var __root = __dirname + '/../..',
 var fs = require( 'fs' ),
 	path = require( 'path' ),
 	mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId,
-	crypto = require( 'crypto' );
+	ObjectId = mongoose.Schema.ObjectId;
 
 var log = require( __js + '/logging' ).log;
 
@@ -20,7 +19,7 @@ exports.connect = function( url ) {
 		useMongoClient: true
 	} );
 	var db = mongoose.connection;
-	db.on( 'connected', function( error ) {
+	db.on( 'connected', function() {
 		log.debug( {
 			app: 'database',
 			action: 'connect',

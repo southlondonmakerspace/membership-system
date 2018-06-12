@@ -1,7 +1,6 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -9,8 +8,6 @@ var	express = require( 'express' ),
 var Options = require( __js + '/options' )();
 
 var auth = require( __js + '/authentication' );
-
-var config = require( __config + '/config.json' );
 
 var app_config = {};
 
@@ -58,7 +55,7 @@ app.get( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:key/edit', auth.isSuperAdmin, function( req, res ) {
-	Options.set( req.params.key, req.body.value, function( status ) {
+	Options.set( req.params.key, req.body.value, function () {
 		req.log.debug( {
 			app: 'settings/options',
 			action: 'edit',
@@ -99,7 +96,7 @@ app.get( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
 } );
 
 app.post( '/:key/reset', auth.isSuperAdmin, function( req, res ) {
-	Options.reset( req.params.key, function( status ) {
+	Options.reset( req.params.key, function () {
 		req.log.debug( {
 			app: 'settings/options',
 			action: 'reset',

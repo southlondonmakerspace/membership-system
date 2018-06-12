@@ -79,7 +79,7 @@ app.get( '/complete', hasSchema(completeSchema).orRedirect( '/join' ), async fun
 	await JoinFlows.deleteOne({ redirect_flow_id });
 
 	const customer = await gocardless.customers.get(redirectFlow.links.customer);
-	const mandateId = redirectFlow.links.mandate_id;
+	const mandateId = redirectFlow.links.mandate;
 
 	const member = new Members( customerToMember( customer, mandateId ) );
 

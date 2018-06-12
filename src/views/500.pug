@@ -5,7 +5,11 @@ block prepend title
 	- heading = "500: Server Error"
 
 block contents
-	p The server suffered an error.
+	p.
+		The server suffered an error, a notification has been sent to our
+		team. Please contact #[+email('membership@thebristolcable.org')] if
+		this error persists.
+
 	if error
 		+page_header( 'Error' )
 		pre #{ error }

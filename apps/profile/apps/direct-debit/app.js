@@ -4,7 +4,8 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express();
+	app = express(),
+	request = require( 'request' );
 
 var config = require( __config + '/config.json' ),
 	Options = require( __js + '/options.js' )();
@@ -13,11 +14,13 @@ var auth = require( __js + '/authentication' ),
 	{ hasSchema } = require( __js + '/middleware' ),
 	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
+	Permissions = db.Permissions,
 	Members = db.Members;
 
 const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
 
-var GoCardless = require( __js + '/gocardless' )( config.gocardless );
+const utils = require( __js + '/utils' );
+const gocardless = require( __js + '/gocardless2' );
 
 var app_config = {};
 
@@ -47,49 +50,6 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	}
 } );
 
-/*app.post( '/create-subscription', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.user.gocardless.subscription_id ) {
-		if ( ! req.body.amount || ! req.body.day_of_month ) {
-			req.flash( 'danger', 'information-ommited' );
-			res.redirect( app.parent.mountpath );
-			return;
-		}
-		var min = ( req.user.gocardless.minimum ? parseInt( req.user.gocardless.minimum ): Options.getInt( 'gocardless-minimum' ) );
-
-		if ( parseInt( req.body.amount ) < min ) {
-			req.flash( 'danger', Options.getText( 'flash-gocardless-subscription-min' ).replace( '%', min ) );
-			return res.redirect( app.parent.mountpath + app.mountpath );
-		}
-
-		var day_of_month = parseInt( req.body.day_of_month );
-
-		if ( day_of_month.isNaN || day_of_month > 28 || day_of_month < -1 ) {
-			req.flash( 'danger', 'gocardless-subscription-invalid-day' );
-			return res.redirect( app.parent.mountpath + app.mountpath );
-		}
-
-		GoCardless.createSubscription( req.user.gocardless.mandate_id, req.body.amount, req.body.day_of_month, 'Membership', {}, function( error, subscription_id ) {
-			if ( error ) {
-				req.flash( 'danger', 'gocardless-subscription-err' );
-				res.redirect( app.parent.mountpath + app.mountpath );
-			} else {
-				Members.update( { _id: req.user._id }, { $set: {
-					'gocardless.subscription_id': subscription_id,
-					'gocardless.amount': req.body.amount
-				}, $unset: {
-					'signup_override': true
-				} }, function ( ) {
-					req.flash( 'success', 'gocardless-subscription-success' );
-					res.redirect( app.parent.mountpath + app.mountpath );
-				} );
-			}
-		} );
-	} else {
-		req.flash( 'warning', 'gocardless-subscription-exists' );
-		res.redirect( app.parent.mountpath + app.mountpath );
-	}
-} );*/
-
 function isLoggedInWithSubscription( req, res, next ) {
 	auth.isLoggedIn(req, res, () => {
 		if ( req.user.gocardless.subscription_id ) {
@@ -112,7 +72,7 @@ app.post( '/cancel-subscription', [
 	const { user, body: { reason } } = req;
 
 	try {
-		await GoCardless.cancelSubscriptionPromise( user.gocardless.subscription_id );
+    await gocardless.subscriptions.cancel( user.gocardless.subscription_id );
 
 		await Members.update( { _id: user._id }, { $unset: {
 			'gocardless.subscription_id': true
@@ -143,18 +103,21 @@ app.post( '/update-subscription', [
 	hasSchema(updateSubscriptionSchema).orFlash
 ], async ( req, res ) => {
 	const { body:  { amount }, user } = req;
+	const gcAmount = amount * 100;
 
 	try {
-		const { subscriptions } =
-			await GoCardless.updateSubscriptionPromise( user.gocardless.subscription_id, amount, user.gocardless.period );
+		const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
+			amount: gcAmount,
+			name: utils.getSubscriptionName( amount, user.gocardless.period )
+		} );
 
-		const payment = subscriptions.upcoming_payments.find( p => p.amount === amount * 100 );
+		const payment = subscription.upcoming_payments.find( p => p.amount === gcAmount );
 
 		await user.update( { $set: {
-			'gocardless.pending_update': payment ? {
+			'gocardless.pending_update': {
 				amount,
-				date: new Date( payment.charge_date )
-			} : { amount }
+				...payment && { date: new Date( payment.charge_date ) }
+			}
 		} } );
 
 		req.flash( 'success', 'gocardless-subscription-updated' );

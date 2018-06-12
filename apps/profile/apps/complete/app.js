@@ -1,7 +1,6 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -37,15 +36,15 @@ app.post( '/', [
 	auth.isLoggedIn,
 	hasSchema(completeSchema).orFlash
 ], function( req, res ) {
-	const { body : { email, password, delivery_optin, delivery_line1, delivery_line2, delivery_city,
-		delivery_postcode, reason } } = req;
+	const { body : { email, password, delivery_optin, delivery_line1, delivery_line2,
+		delivery_city, delivery_postcode, reason }, user } = req;
 
-	if ( email != req.user.email ) {
+	if ( email != user.email ) {
 		// TODO: Update email
 	}
 	
-	auth.generatePassword( req.body.password, function( password ) {
-		req.user.update( { $set: {
+	auth.generatePassword( password, function( password ) {
+		user.update( { $set: {
 			email, password, delivery_optin,
 			delivery_address: delivery_optin ? {
 				line1: delivery_line1,

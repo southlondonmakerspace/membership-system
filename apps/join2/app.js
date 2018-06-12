@@ -6,7 +6,6 @@ var __config = __root + '/config';
 var	express = require( 'express' ),
 	app = express();
 
-var passport = require( 'passport' );
 var moment = require( 'moment' );
 
 const { JoinFlows, Members, Permissions } = require( __js + '/database' );
@@ -62,8 +61,8 @@ app.post( '/', hasSchema(joinSchema).orFlash, async function( req, res ) {
 
 		res.redirect( redirectFlow.redirect_url );
 	} catch ( error ) {
-			req.flash( 'danger', 'gocardless-mandate-err' );
-			res.redirect( app.mountpath );
+		req.flash( 'danger', 'gocardless-mandate-err' );
+		res.redirect( app.mountpath );
 	}
 } );
 
@@ -93,7 +92,7 @@ app.get( '/complete', hasSchema(completeSchema).or400, async function( req, res 
 			res.send({'blah': 'duplicate email'});
 			return;
 		} else {
-			throw saveError
+			throw saveError;
 		}
 	}
 

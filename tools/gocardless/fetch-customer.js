@@ -2,12 +2,9 @@ const crypto = require('crypto');
 const moment = require('moment');
 const gocardless = require('../../src/js/gocardless');
 
-// Adjust all dates by a fixed amount
-const WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
-const dateAdjust = moment.duration(Math.round(Math.random() * 2 * WEEK_IN_SECONDS - WEEK_IN_SECONDS), 'seconds');
-
 async function fetchCustomers(customerIds) {
-	let customers = [], mandates = [], subscriptions = [], payments = [];
+	let customers = [], mandates = [], subscriptions = [], payments = [],
+		subscriptionCancelledEvents = [];
 
 	for (let customerId of customerIds) {
 		const customer = await gocardless.customers.get(customerId);
@@ -19,10 +16,20 @@ async function fetchCustomers(customerIds) {
 			customer: customer.id
 		}));
 
-		subscriptions.push(...await gocardless.subscriptions.all({
+		const customerSubscriptions = await gocardless.subscriptions.all({
 			limit: 500,
 			customer: customer.id
-		}));
+		});
+
+		subscriptions.push(...customerSubscriptions);
+
+		for (let subscription of subscriptions) {
+			subscriptionCancelledEvents.push(...await gocardless.events.all({
+				limit: 500,
+				subscription: subscription.id,
+				action: 'cancelled',
+			}));
+		}
 
 		payments.push(...await gocardless.payments.all({
 			limit: 500,
@@ -30,7 +37,13 @@ async function fetchCustomers(customerIds) {
 		}));
 	}
 
-	return {customers, mandates, subscriptions, payments};
+	console.error(`Got ${customers.length} customers`);
+	console.error(`Got ${mandates.length} mandates`);
+	console.error(`Got ${subscriptions.length} subscriptions`);
+	console.error(`Got ${payments.length} payments`);
+	console.error(`Got ${subscriptionCancelledEvents.length} subscription cancelled events`);
+
+	return {customers, mandates, subscriptions, payments, subscriptionCancelledEvents};
 }
 
 function anonymiseData(data) {
@@ -38,11 +51,13 @@ function anonymiseData(data) {
 	const mandates = data.mandates.map(anonymiseMandate);
 	const subscriptions = data.subscriptions.map(anonymiseSubscription);
 	const payments = data.payments.map(anonymisePayment);
+	const subscriptionCancelledEvents = data.subscriptionCancelledEvents.map(anonymiseSubscriptionCancelledEvent);
 
-	return {customers, mandates, subscriptions, payments};
+	return {customers, mandates, subscriptions, payments, subscriptionCancelledEvents};
 }
 
-const idMap = {};
+// Anonymise IDs, but use same replacement to keep links
+let idMap = {};
 function anonymiseId(id, prefix='') {
 	if (!id) {
 		throw new Error('id is null');
@@ -54,6 +69,9 @@ function anonymiseId(id, prefix='') {
 	return idMap[id];
 }
 
+// Anonymise dates but preserve order by moving them all by the same fixed amount
+const WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+const dateAdjust = moment.duration(Math.round(Math.random() * 2 * WEEK_IN_SECONDS - WEEK_IN_SECONDS), 'seconds');
 function anonymiseDate(date) {
 	const newDate = moment(date).add(dateAdjust);
 	return {
@@ -131,6 +149,18 @@ function anonymisePayment(payment) {
 		links: {
 			mandate: anonymiseId(payment.links.mandate, 'MD'),
 			subscription: payment.links.subscription && anonymiseId(payment.links.subscription, 'SB')
+		}
+	};
+}
+
+function anonymiseSubscriptionCancelledEvent(event) {
+	return {
+		...event,
+		id: anonymiseId(event.id, 'EV'),
+		created_at: anonymiseDate(event.created_at).iso,
+		metadata: {},
+		links: {
+			subscription: anonymiseId(event.links.subscription, 'SB')
 		}
 	};
 }

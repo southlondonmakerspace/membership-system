@@ -70,6 +70,6 @@ test('/complete invalid password', t => {
 	t.is(completeValidator.errors.length, 1);
 
 	const error = completeValidator.errors[0];
-	t.is(error.keyword, 'format')
+	t.is(error.keyword, 'format');
 	t.is(error.params.format, 'password');
 });

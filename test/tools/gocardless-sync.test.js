@@ -14,6 +14,7 @@ const successfulAndPendingPayment = require(__fixtures + '/successfulAndPendingP
 const successfulAndFailedPayment = require(__fixtures + '/successfulAndFailedPayment.json');
 const annualSubscription = require(__fixtures + '/annualSubscription.json');
 const pendingPaymentWithAmountUpdate = require(__fixtures + '/pendingPaymentWithAmountUpdate.json');
+const successfulPaymentWithAmountUpdate = require(__fixtures + '/successfulPaymentWithAmountUpdate.json');
 
 // A not particularly thorough test that the data is merged into the right place
 test('Merge data on one subscription', t => {
@@ -123,6 +124,13 @@ test('Membership info', t => {
 		actualAmount: 500,
 		period: 'monthly',
 		expires: moment('2018-06-12T18:55:47.172Z')
+	});
+
+	testMembershipInfo(successfulPaymentWithAmountUpdate, {
+		amount: 9,
+		actualAmount: 10800,
+		period: 'annually',
+		expires: moment('2018-11-22')
 	});
 
 	// TODO: just changed subscription

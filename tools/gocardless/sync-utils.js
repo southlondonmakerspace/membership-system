@@ -100,11 +100,16 @@ function filterCustomers(customers) {
 			console.error('Multiple active subscriptions for customer', customer.id);
 			return false;
 		}
+		if (customer.subscriptions.length === 0) {
+			console.error('No subscriptions for customer', customer.id);
+			return false;
+		}
+		if (customer.payments.every(p => !p.subscription)) {
+			console.error('No payments are linked to a subscription for customer', customer.id);
+			return false;
+		}
 
-		// Filter out customers who never had subscriptions, they probably
-		// just gave a fixed donation
-		// TODO: fix the weird annual ones?
-		return customer.subscriptions.length > 0;
+		return true;
 	});
 
 	// Try to merge customers with the same email address

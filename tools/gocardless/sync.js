@@ -1,4 +1,5 @@
 const fs = require('fs');
+const moment = require('moment');
 
 const __root = __dirname + '/../..';
 const __config = __root + '/config/config.json';
@@ -58,17 +59,49 @@ async function syncCustomers(validCustomers) {
 
 	console.log(`Loaded ${members.length} members`);
 
-	const membersByEmail = utils.keyBy(members, m => m.email);
-	const validCustomersWithMember = validCustomers.map(customer => {
-		return {...customer, member: membersByEmail[customer.email]};
-	});
+	const membersByCustomerId = utils.keyBy(members, m => m.gocardless.customer_id);
 
-	const {updates, inserts} = utils.groupBy(validCustomersWithMember, customer => {
-		return customer.member ? 'updates': 'inserts';
-	});
+	for (let customer of validCustomers) {
+		try {
+			const member = membersByCustomerId[customer.id];
+			const membershipInfo = utils.getMembershipInfo(customer);
 
-	console.log(`Got ${updates.length} updates`);
-	console.log(`Got ${inserts.length} inserts`);
+			const gocardless = {
+				amount: membershipInfo.amount,
+				period: membershipInfo.period,
+				pending_update: membershipInfo.pendingUpdate,
+				customer_id: customer.id,
+				...customer.latestActiveMandate && {mandate_id: customer.latestActiveMandate.id},
+				...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id}
+			};
+
+			const added = moment(customer.created_at).toDate();
+			const expires = membershipInfo.expires.add(config.gracePeriod).toDate();
+
+			if (member) {
+				const memberPermission = member.permissions.find(p => permission.equals(p.permission));
+				member.gocardless = gocardless;
+				memberPermission.date_expires = expires;
+				await member.save();
+			} else {
+				await db.Members.create({
+					firstname: customer.given_name,
+					lastname: customer.family_name,
+					email: customer.email,
+					joined: added,
+					activated: true,
+					gocardless,
+					permissions: [{
+						permission,
+						date_added: added,
+						date_expires: expires
+					}]
+				});
+			}
+		} catch (error) {
+			console.log(customer.id, error.message);
+		}
+	}
 
 	// TODO: sync payments
 

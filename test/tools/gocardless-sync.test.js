@@ -17,6 +17,7 @@ const pendingPaymentWithAmountUpdate = require(__fixtures + '/pendingPaymentWith
 const successfulPaymentWithAmountUpdate = require(__fixtures + '/successfulPaymentWithAmountUpdate.json');
 const amountUpdateByNewSubscription = require(__fixtures + '/amountUpdateByNewSubscription.json');
 const multipleInactiveSubscriptionsWithSameEmail = require(__fixtures + '/multipleInactiveSubscriptionsWithSameEmail.json');
+const paymentWithNoSubscription = require(__fixtures + '/paymentWithNoSubscription.json');
 
 // A not particularly thorough test that the data is merged into the right place
 test('Merge data on one subscription', t => {
@@ -51,16 +52,17 @@ test('Merge data on one subscription', t => {
 });
 
 test('Valid customers filter', t => {
-	function testFilterValidCustomers(data, ids) {
+	function testFilterCustomers(data, ids) {
 		const customers = utils.filterCustomers(utils.mergeData(data));
 		t.deepEqual(customers.map(c => c.id), ids);
 	}
 
-	testFilterValidCustomers(oneSubscription, ['CU38D9969CA774']);
-	testFilterValidCustomers(oneActiveSubscriptionWithSameEmail, ['CU3C875BFEB5FA']);
-	testFilterValidCustomers(noSubscriptions, []);
-	testFilterValidCustomers(multipleActiveSubscriptionsWithSameEmail, []);
-	testFilterValidCustomers(multipleInactiveSubscriptionsWithSameEmail, ['CU2B69A2C121AE']);
+	testFilterCustomers(oneSubscription, ['CU38D9969CA774']);
+	testFilterCustomers(oneActiveSubscriptionWithSameEmail, ['CU3C875BFEB5FA']);
+	testFilterCustomers(noSubscriptions, []);
+	testFilterCustomers(multipleActiveSubscriptionsWithSameEmail, []);
+	testFilterCustomers(multipleInactiveSubscriptionsWithSameEmail, ['CU2B69A2C121AE']);
+	testFilterCustomers(paymentWithNoSubscription, []);
 });
 
 test('Membership info', t => {

@@ -39,38 +39,6 @@ function isSuccessfulPayment(payment) {
 	return ['confirmed', 'paid_out'].indexOf(payment.status) > -1;
 }
 
-function getPendingUpdate(subscription) {
-	const payment = subscription.upcoming_payments.find(p => p.amount === subscription.amount);
-	return {
-		amount: subscription.amount / 100,
-		...payment && {date: moment(payment.charge_date).toDate()}
-	};
-}
-
-function getMembershipInfo(customer) {
-	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
-
-	const payment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
-	const {interval, interval_unit} = payment.subscription;
-
-	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
-
-	const expires = isSuccessfulPayment(payment) ?
-		moment(payment.charge_date).add(getSubscriptionDuration(payment.subscription)) :
-		moment(customer.created_at);
-
-	const activeSubscription = customer.latestActiveSubscription;
-	const pendingUpdate = activeSubscription && payment.amount !== activeSubscription.amount ?
-		getPendingUpdate(activeSubscription) : {};
-
-	return {
-		period,
-		amount: payment.amount / (period === 'annually' ? 12 : 1) / 100,
-		expires,
-		pendingUpdate
-	};
-}
-
 // Heavy lifting methods
 
 function mergeData(data) {
@@ -166,42 +134,42 @@ function filterCustomers(customers) {
 	return validCustomers;
 }
 
-function customerToMember(customer, permission, gracePeriod) {
-	const membershipInfo = getMembershipInfo(customer);
+function getMembershipInfo(customer) {
+	function getPendingUpdate(subscription) {
+		const payment = subscription.upcoming_payments.find(p => p.amount === subscription.amount);
+		return {
+			amount: subscription.amount / 100,
+			...payment && {date: moment(payment.charge_date).toDate()}
+		};
+	}
+
+	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
+
+	const payment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
+	const {interval, interval_unit} = payment.subscription;
+
+	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
+
+	const expires = isSuccessfulPayment(payment) ?
+		moment(payment.charge_date).add(getSubscriptionDuration(payment.subscription)) :
+		moment(customer.created_at);
+
+	const activeSubscription = customer.latestActiveSubscription;
+	const pendingUpdate = activeSubscription && payment.amount !== activeSubscription.amount ?
+		getPendingUpdate(activeSubscription) : {};
 
 	return {
-		firstname: customer.given_name,
-		lastname: customer.family_name,
-		email: customer.email,
-		// TODO: fetch from WP/metadata
-		delivery_optin: false,
-		delivery_address: {
-			line1: customer.address_line1,
-			line2: customer.address_line2,
-			city: customer.city,
-			postcode: customer.postal_code
-		},
-		gocardless: {
-			amount: membershipInfo.amount,
-			period: membershipInfo.period,
-			pending_update: membershipInfo.pendingUpdate,
-			...customer.latestActiveMandate && {mandate_id: customer.latestActiveMandate.id},
-			...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id}
-		},
-		activated: true,
-		permissions: [{
-			permission,
-			date_added: moment(customer.created_at).toDate(),
-			date_expires: membershipInfo.expires.add(gracePeriod).toDate()
-		}]
+		period,
+		amount: payment.amount / (period === 'annually' ? 12 : 1) / 100,
+		expires,
+		pendingUpdate
 	};
 }
 
 module.exports = {
 	groupBy,
 	keyBy,
-	getMembershipInfo,
 	mergeData,
 	filterCustomers,
-	customerToMember
+	getMembershipInfo
 };

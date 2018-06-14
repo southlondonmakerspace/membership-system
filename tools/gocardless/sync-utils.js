@@ -139,8 +139,7 @@ function filterCustomers(customers) {
 		return customer.subscriptions.length > 0;
 	});
 
-	// A few customers have the same email address, for those ones only
-	// take the active customer
+	// Try to merge customers with the same email address
 	const potentialCustomersByEmail = groupBy(potentialCustomers, c => c.email);
 	const validCustomers = Object.entries(potentialCustomersByEmail)
 		.map(([email, customersWithSameEmail]) => {
@@ -150,8 +149,12 @@ function filterCustomers(customers) {
 				const activeCustomersWithSameEmail = customersWithSameEmail.filter(customer => (
 					customer.activeSubscriptions.length > 0
 				));
+				// Take the active one if there's only one
 				if (activeCustomersWithSameEmail.length === 1) {
 					return activeCustomersWithSameEmail;
+				// Take the most recent one if all are inactive
+				} else if (activeCustomersWithSameEmail.length === 0) {
+					return [getLatestRecord(customersWithSameEmail)];
 				} else {
 					console.error('Multiple active subscriptions for email', email);
 					return [];

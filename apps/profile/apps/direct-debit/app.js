@@ -96,15 +96,14 @@ app.post( '/update-subscription', [
 	hasSchema(updateSubscriptionSchema).orFlash
 ], wrapAsync( async ( req, res ) => {
 	const { body:  { amount }, user } = req;
-	const gcAmount = amount * 100;
 
 	try {
 		const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
-			amount: gcAmount,
+			amount: amount * 100,
 			name: getSubscriptionName( amount, user.gocardless.period )
 		} );
 
-		const payment = subscription.upcoming_payments.find( p => p.amount === gcAmount );
+		const payment = subscription.upcoming_payments.find( p => p.amount === subscription.amount );
 
 		await user.update( { $set: {
 			'gocardless.pending_update': {

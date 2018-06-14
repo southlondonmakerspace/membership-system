@@ -43,6 +43,14 @@ function isSuccessfulPayment(payment) {
 	return ['confirmed', 'paid_out'].indexOf(payment.status) > -1;
 }
 
+function getPendingUpdate(subscription) {
+	const payment = subscription.upcoming_payments.find(p => p.amount === subscription.amount);
+	return {
+		amount: subscription.amount / 100,
+		...payment && {date: moment(payment.charge_date).toDate()}
+	};
+}
+
 function getMembershipInfo(customer) {
 	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
 
@@ -55,10 +63,15 @@ function getMembershipInfo(customer) {
 		moment(payment.charge_date).add(getSubscriptionDuration(payment.subscription)) :
 		moment(customer.created_at);
 
+	const activeSubscription = customer.latestActiveSubscription;
+	const pendingUpdate = activeSubscription && payment.amount !== activeSubscription.amount ?
+		getPendingUpdate(activeSubscription) : {};
+
 	return {
 		period,
 		amount: payment.amount / (period === 'annually' ? 12 : 1) / 100,
-		expires
+		expires,
+		pendingUpdate
 	};
 }
 
@@ -105,7 +118,9 @@ function mergeData(data) {
 			return {
 				...customer,
 				activeMandates,
-				activeSubscriptions
+				activeSubscriptions,
+				latestActiveMandate: getMostRecent(activeMandates),
+				latestActiveSubscription: getMostRecent(activeSubscriptions)
 			};
 		});
 }
@@ -153,12 +168,7 @@ function filterValidCustomers(customers) {
 }
 
 function customerToMember(customer, permission, gracePeriod) {
-	const activeMandate = customer.activeMandates[0];
-	const activeSubscription = customer.activeSubscriptions[0];
-
-	const membership = getMembershipInfo(customer);
-
-	// TODO: Calculate if subscription is changing
+	const membershipInfo = getMembershipInfo(customer);
 
 	return {
 		firstname: customer.given_name,
@@ -173,16 +183,17 @@ function customerToMember(customer, permission, gracePeriod) {
 			postcode: customer.postal_code
 		},
 		gocardless: {
-			amount: membership.amount,
-			period: membership.period,
-			...activeMandate && {mandate_id: activeMandate.id},
-			...activeSubscription && {subscription_id: activeSubscription.id}
+			amount: membershipInfo.amount,
+			period: membershipInfo.period,
+			pending_update: membershipInfo.pendingUpdate,
+			...customer.latestActiveMandate && {mandate_id: customer.latestActiveMandate.id},
+			...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id}
 		},
 		activated: true,
 		permissions: [{
 			permission,
 			date_added: moment(customer.created_at).toDate(),
-			date_expires: membership.expires.add(gracePeriod).toDate()
+			date_expires: membershipInfo.expires.add(gracePeriod).toDate()
 		}]
 	};
 }

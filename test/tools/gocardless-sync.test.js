@@ -41,7 +41,9 @@ test('Merge data on one subscription', t => {
 				subscription: subscriptions[0]
 			})),
 			activeMandates: [mandate],
-			activeSubscriptions: [subscription]
+			activeSubscriptions: [subscription],
+			latestActiveMandate: mandate,
+			latestActiveSubscription: subscription
 		}
 	]);
 });
@@ -72,65 +74,71 @@ test('Membership info', t => {
 		const [customer] = utils.mergeData(data);
 		const info = utils.getMembershipInfo(customer);
 		t.is(info.amount, expected.amount);
-		t.is(info.actualAmount, expected.actualAmount);
 		t.is(info.period, expected.period);
 		t.is(info.expires.toISOString(), expected.expires.toISOString());
+		t.deepEqual(info.pendingUpdate, expected.pendingUpdate);
 	}
 
 	testMembershipInfo(onlyPendingPayment, {
 		amount: 1,
-		actualAmount: 100,
 		period: 'monthly',
-		expires: moment('2018-06-09T06:38:44.172Z')
+		expires: moment('2018-06-09T06:38:44.172Z'),
+		pendingUpdate: {}
 	});
 
 	testMembershipInfo(onlyFailedPayment, {
 		amount: 2,
-		actualAmount: 200,
 		period: 'monthly',
-		expires: moment('2015-07-16T18:19:11.541Z')
+		expires: moment('2015-07-16T18:19:11.541Z'),
+		pendingUpdate: {}
 	});
 
 	testMembershipInfo(oneSubscription, {
 		amount: 3,
-		actualAmount: 300,
 		period: 'monthly',
-		expires: moment('2018-06-24')
+		expires: moment('2018-06-24'),
+		pendingUpdate: {}
 	});
 
 	testMembershipInfo(successfulAndPendingPayment, {
 		amount: 3,
-		actualAmount: 300,
 		period: 'monthly',
-		expires: moment('2018-06-19')
+		expires: moment('2018-06-19'),
+		pendingUpdate: {}
 	});
 
 	testMembershipInfo(successfulAndFailedPayment, {
 		amount: 1,
-		actualAmount: 100,
 		period: 'monthly',
-		expires: moment('2018-06-11')
+		expires: moment('2018-06-11'),
+		pendingUpdate: {}
 	});
 
 	testMembershipInfo(annualSubscription, {
 		amount: 1,
-		actualAmount: 1200,
 		period: 'annually',
-		expires: moment('2019-03-04')
+		expires: moment('2019-03-04'),
+		pendingUpdate: {}
 	});
 
 	testMembershipInfo(pendingPaymentWithAmountUpdate, {
 		amount: 5,
-		actualAmount: 500,
 		period: 'monthly',
-		expires: moment('2018-06-12T18:55:47.172Z')
+		expires: moment('2018-06-12T18:55:47.172Z'),
+		pendingUpdate: {
+			amount: 12,
+			date:  moment('2018-07-18').toDate()
+		}
 	});
 
 	testMembershipInfo(successfulPaymentWithAmountUpdate, {
 		amount: 9,
-		actualAmount: 10800,
 		period: 'annually',
-		expires: moment('2018-11-22')
+		expires: moment('2018-11-22'),
+		pendingUpdate: {
+			amount: 20,
+			date:  moment('2018-11-22').toDate()
+		}
 	});
 
 	// TODO: just changed subscription

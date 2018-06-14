@@ -22,12 +22,8 @@ function keyBy(arr, keyFn) {
 	return ret;
 }
 
-function sortByCreatedAt(a, b) {
-	return a.created_at > b.created_at ? -1 : 1;
-}
-
-function getMostRecent(records) {
-	return records.slice().sort(sortByCreatedAt)[0];
+function getLatestRecord(records) {
+	return records.slice().sort((a, b) => a.created_at > b.created_at ? -1 : 1)[0];
 }
 
 function isActiveMandate(mandate) {
@@ -54,7 +50,7 @@ function getPendingUpdate(subscription) {
 function getMembershipInfo(customer) {
 	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
 
-	const payment = getMostRecent(successfulPayments.length > 0 ? successfulPayments : customer.payments);
+	const payment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
 	const {interval, interval_unit} = payment.subscription;
 
 	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
@@ -119,13 +115,13 @@ function mergeData(data) {
 				...customer,
 				activeMandates,
 				activeSubscriptions,
-				latestActiveMandate: getMostRecent(activeMandates),
-				latestActiveSubscription: getMostRecent(activeSubscriptions)
+				latestActiveMandate: getLatestRecord(activeMandates),
+				latestActiveSubscription: getLatestRecord(activeSubscriptions)
 			};
 		});
 }
 
-function filterValidCustomers(customers) {
+function filterCustomers(customers) {
 	const potentialCustomers = customers.filter(customer => {
 		// These errors need to be fixed in GoCardless
 		if (customer.activeMandates.length > 1) {
@@ -201,11 +197,8 @@ function customerToMember(customer, permission, gracePeriod) {
 module.exports = {
 	groupBy,
 	keyBy,
-	getMostRecent,
-	isActiveMandate,
-	isActiveSubscription,
 	getMembershipInfo,
 	mergeData,
-	filterValidCustomers,
+	filterCustomers,
 	customerToMember
 };

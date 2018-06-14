@@ -45,7 +45,7 @@ async function loadData(file=null) {
 
 function processCustomers(customers) {
 	console.log('# Checking which records should be synced...');
-	const validCustomers = utils.filterValidCustomers(customers);
+	const validCustomers = utils.filterCustomers(customers);
 	console.log(`Got ${validCustomers.length} valid customers`);
 	return validCustomers;
 }

@@ -135,6 +135,9 @@ module.exports = {
 
 		},
 		gocardless: {
+			customer_id: {
+				type: String
+			},
 			mandate_id: {
 				type: String
 			},

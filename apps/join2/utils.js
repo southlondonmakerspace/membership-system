@@ -14,6 +14,7 @@ module.exports = {
 				postcode: customer.postal_code
 			},
 			gocardless: {
+				customer_id: customer.id,
 				mandate_id: mandateId
 			},
 			activated: true

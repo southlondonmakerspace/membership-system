@@ -1,7 +1,5 @@
 const moment = require('moment');
 
-const config = require('./config/config.json');
-
 function createPayment( gcPayment, now=new Date() ) {
 	return {
 		payment_id: gcPayment.id,
@@ -15,18 +13,13 @@ function createPayment( gcPayment, now=new Date() ) {
 	};
 }
 
-function getSubscriptionExpiry( payment, subscription ) {
-	const unit = subscription.interval_unit === 'weekly' ? 'weeks' :
-		subscription.interval_unit === 'monthly' ? 'months' : 'years';
-
-	const date = moment( payment.charge_date )
-		.add( { [unit]: subscription.interval } )
-		.add( config.gracePeriod );
-
-	return date.toDate();
+function getSubscriptionDuration({interval, interval_unit}) {
+	const unit = interval_unit === 'weekly' ? 'weeks' :
+		interval_unit === 'monthly' ? 'months' : 'years';
+	return moment.duration({[unit]: interval});
 }
 
 module.exports = {
 	createPayment,
-	getSubscriptionExpiry
+	getSubscriptionDuration
 };

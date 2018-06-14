@@ -1,5 +1,9 @@
 const moment = require('moment');
 
+const { getSubscriptionDuration } = require('../../webhook-utils');
+
+// Helpers
+
 function groupBy(arr, keyFn) {
 	let ret = {};
 	arr.forEach(el => {
@@ -26,14 +30,6 @@ function getMostRecent(records) {
 	return records.slice().sort(sortByCreatedAt)[0];
 }
 
-function getSubscriptionInfo({amount, interval, interval_unit}) {
-	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
-	return {
-		period,
-		amount: amount / (period === 'annually' ? 12 : 1)
-	};
-}
-
 function isActiveMandate(mandate) {
 	return ['pending_submission', 'submitted', 'active'].indexOf(mandate.status) > -1 &&
 		mandate.subscriptions.length > 0;
@@ -43,11 +39,37 @@ function isActiveSubscription(subscription) {
 	return subscription.status === 'active';
 }
 
+function isSuccessfulPayment(payment) {
+	return ['confirmed', 'paid_out'].indexOf(payment.status) > -1;
+}
+
+function getMembershipInfo(customer) {
+	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
+
+	const payment = getMostRecent(successfulPayments.length > 0 ? successfulPayments : customer.payments);
+	const {interval, interval_unit} = payment.subscription;
+
+	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
+
+	const expires = isSuccessfulPayment(payment) ?
+		moment(payment.charge_date).add(getSubscriptionDuration(payment.subscription)) :
+		moment(customer.created_at);
+
+	return {
+		period,
+		amount: payment.amount / (period === 'annually' ? 12 : 1) / 100,
+		expires
+	};
+}
+
+// Heavy lifting methods
+
 function mergeData(data) {
 	const mandatesByCustomer = groupBy(data.mandates, m => m.links.customer);
 	const subscriptionsByMandate = groupBy(data.subscriptions, s => s.links.mandate);
 	const paymentsBySubscription = groupBy(data.payments, p => p.links.subscription);
 	const subscriptionCancelledEventsById = groupBy(data.subscriptionCancelledEvents, e => e.links.subscription);
+	const subscriptionById = keyBy(data.subscriptions, s => s.id);
 
 	return data.customers
 		.map(customer => {
@@ -70,7 +92,10 @@ function mergeData(data) {
 					payments: paymentsBySubscription[subscription.id] || [],
 					cancelledEvents: subscriptionCancelledEventsById[subscription.id] || []
 				})),
-				payments: customerPayments
+				payments: customerPayments.map(payment => ({
+					...payment,
+					subscription: subscriptionById[payment.links.subscription]
+				}))
 			};
 		})
 		.map(customer => {
@@ -128,11 +153,12 @@ function filterValidCustomers(customers) {
 }
 
 function customerToMember(customer, permission, gracePeriod) {
-	const activeMandate = getMostRecent(customer.activeMandates);
-	const activeSubscription = getMostRecent(customer.activeSubscriptions);
+	const activeMandate = customer.activeMandates[0];
+	const activeSubscription = customer.activeSubscriptions[0];
 
-	const subscriptionInfo = {};
-	const subscriptionExpires = moment(customer.created_at).add(gracePeriod).toDate();
+	const membership = getMembershipInfo(customer);
+
+	// TODO: Calculate if subscription is changing
 
 	return {
 		firstname: customer.given_name,
@@ -147,15 +173,16 @@ function customerToMember(customer, permission, gracePeriod) {
 			postcode: customer.postal_code
 		},
 		gocardless: {
+			amount: membership.amount,
+			period: membership.period,
 			...activeMandate && {mandate_id: activeMandate.id},
-			...activeSubscription && {subscription_id: activeSubscription.id},
-			...subscriptionInfo
+			...activeSubscription && {subscription_id: activeSubscription.id}
 		},
 		activated: true,
 		permissions: [{
 			permission,
 			date_added: moment(customer.created_at).toDate(),
-			date_expires: subscriptionExpires
+			date_expires: membership.expires.add(gracePeriod).toDate()
 		}]
 	};
 }
@@ -164,9 +191,9 @@ module.exports = {
 	groupBy,
 	keyBy,
 	getMostRecent,
-	getSubscriptionInfo,
 	isActiveMandate,
 	isActiveSubscription,
+	getMembershipInfo,
 	mergeData,
 	filterValidCustomers,
 	customerToMember

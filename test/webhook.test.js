@@ -1,7 +1,6 @@
 const test = require('ava');
 const moment = require('moment');
 
-const config = require('../config/config.json');
 const utils = require('../webhook-utils');
 
 const __fixtures = './fixtures/gocardless';
@@ -47,25 +46,19 @@ test('payment without subscription', t => {
 	);
 });
 
-test('subscription expiry with 1 year', t => {
+test('subscription duration', t => {
 	t.deepEqual(
-		utils.getSubscriptionExpiry( paymentWithSubscription, subscriptionOneYear ),
-		moment('2019-06-12').add(config.gracePeriod).toDate()
+		utils.getSubscriptionDuration( subscriptionOneYear ),
+		moment.duration(1, 'year')
 	);
-});
 
-
-test('subscription expiry with 1 month', t => {
 	t.deepEqual(
-		utils.getSubscriptionExpiry( paymentWithSubscription, subscriptionOneMonth ),
-		moment('2018-07-12').add(config.gracePeriod).toDate()
+		utils.getSubscriptionDuration( subscriptionOneMonth ),
+		moment.duration(1, 'month')
 	);
-});
 
-
-test('subscription expiry with 12 months', t => {
 	t.deepEqual(
-		utils.getSubscriptionExpiry( paymentWithSubscription, subscriptionTwelveMonths ),
-		moment('2019-06-12').add(config.gracePeriod).toDate()
+		utils.getSubscriptionDuration( subscriptionTwelveMonths ),
+		moment.duration(1, 'year')
 	);
 });

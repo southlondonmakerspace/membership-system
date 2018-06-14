@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 var __config = __dirname + '/config/config.json';
 var __src = __dirname + '/src';
 var __js = __src + '/js';
@@ -151,7 +153,9 @@ async function updatePayment( gcPayment, payment ) {
 async function confirmPayment( gcPayment, payment ) {
 	if ( payment.member ) {
 		const subscription = await gocardless.subscriptions.get(payment.subscription_id);
-		const date = utils.getSubscriptionExpiry( payment, subscription );
+		const date = moment(payment.charge_date)
+			.add(utils.getSubscriptionDuration(subscription))
+			.add(config.gracePeriod);
 
 		const member = await Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec();
 
@@ -161,7 +165,7 @@ async function confirmPayment( gcPayment, payment ) {
 				// TODO: check this is the correct update
 				delete member.gocardless.pending_update;
 
-				member.permissions[p].date_expires = date;
+				member.permissions[p].date_expires = date.toDate();
 				await member.save();
 
 				log.info( {

@@ -15,6 +15,7 @@ const successfulAndFailedPayment = require(__fixtures + '/successfulAndFailedPay
 const annualSubscription = require(__fixtures + '/annualSubscription.json');
 const pendingPaymentWithAmountUpdate = require(__fixtures + '/pendingPaymentWithAmountUpdate.json');
 const successfulPaymentWithAmountUpdate = require(__fixtures + '/successfulPaymentWithAmountUpdate.json');
+const amountUpdateByNewSubscription = require(__fixtures + '/amountUpdateByNewSubscription.json');
 
 // A not particularly thorough test that the data is merged into the right place
 test('Merge data on one subscription', t => {
@@ -76,50 +77,55 @@ test('Membership info', t => {
 		t.is(info.amount, expected.amount);
 		t.is(info.period, expected.period);
 		t.is(info.expires.toISOString(), expected.expires.toISOString());
-		t.deepEqual(info.pendingUpdate, expected.pendingUpdate);
+		t.deepEqual(info.pendingUpdate, {});
 	}
 
 	testMembershipInfo(onlyPendingPayment, {
 		amount: 1,
 		period: 'monthly',
-		expires: moment('2018-06-09T06:38:44.172Z'),
-		pendingUpdate: {}
+		expires: moment('2018-06-09T06:38:44.172Z')
 	});
 
 	testMembershipInfo(onlyFailedPayment, {
 		amount: 2,
 		period: 'monthly',
-		expires: moment('2015-07-16T18:19:11.541Z'),
-		pendingUpdate: {}
+		expires: moment('2015-07-16T18:19:11.541Z')
 	});
 
 	testMembershipInfo(oneSubscription, {
 		amount: 3,
 		period: 'monthly',
-		expires: moment('2018-06-24'),
-		pendingUpdate: {}
+		expires: moment('2018-06-24')
 	});
 
 	testMembershipInfo(successfulAndPendingPayment, {
 		amount: 3,
 		period: 'monthly',
-		expires: moment('2018-06-19'),
-		pendingUpdate: {}
+		expires: moment('2018-06-19')
 	});
 
 	testMembershipInfo(successfulAndFailedPayment, {
 		amount: 1,
 		period: 'monthly',
-		expires: moment('2018-06-11'),
-		pendingUpdate: {}
+		expires: moment('2018-06-11')
 	});
 
 	testMembershipInfo(annualSubscription, {
 		amount: 1,
 		period: 'annually',
-		expires: moment('2019-03-04'),
-		pendingUpdate: {}
+		expires: moment('2019-03-04')
 	});
+});
+
+test('Membership info with pending updates', t => {
+	function testMembershipInfo(data, expected) {
+		const [customer] = utils.mergeData(data);
+		const info = utils.getMembershipInfo(customer);
+		t.is(info.amount, expected.amount);
+		t.is(info.period, expected.period);
+		t.is(info.expires.toISOString(), expected.expires.toISOString());
+		t.deepEqual(info.pendingUpdate, expected.pendingUpdate);
+	}
 
 	testMembershipInfo(pendingPaymentWithAmountUpdate, {
 		amount: 5,
@@ -140,6 +146,14 @@ test('Membership info', t => {
 			date:  moment('2018-11-22').toDate()
 		}
 	});
-
-	// TODO: just changed subscription
+	
+	testMembershipInfo(amountUpdateByNewSubscription, {
+		amount: 5,
+		period: 'monthly',
+		expires: moment('2018-06-24'),
+		pendingUpdate: {
+			amount: 4,
+			date: moment('2018-06-23').toDate()
+		}
+	});
 });

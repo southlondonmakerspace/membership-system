@@ -1,26 +1,9 @@
 const moment = require('moment');
 
 const { getSubscriptionDuration } = require('../../webhook-utils');
+const { groupBy, keyBy } = require('../utils');
 
 // Helpers
-
-function groupBy(arr, keyFn) {
-	let ret = {};
-	arr.forEach(el => {
-		const key = keyFn(el);
-		if (!ret[key]) ret[key] = [];
-		ret[key].push(el);
-	});
-	return ret;
-}
-
-function keyBy(arr, keyFn) {
-	let ret = {};
-	arr.forEach(el => {
-		ret[keyFn(el)] = el;
-	});
-	return ret;
-}
 
 function getLatestRecord(records) {
 	return records.slice().sort((a, b) => a.created_at > b.created_at ? -1 : 1)[0];
@@ -172,8 +155,6 @@ function getMembershipInfo(customer) {
 }
 
 module.exports = {
-	groupBy,
-	keyBy,
 	mergeData,
 	filterCustomers,
 	getMembershipInfo

@@ -11,6 +11,7 @@ const db = require(__js + '/database').connect(config.mongo);
 const gocardless = require(__js + '/gocardless');
 
 const utils = require('./sync-utils.js');
+const { keyBy } = require('../utils');
 
 async function loadData(file=null) {
 	let data;
@@ -59,7 +60,7 @@ async function syncCustomers(validCustomers) {
 
 	console.log(`Loaded ${members.length} members`);
 
-	const membersByCustomerId = utils.keyBy(members, m => m.gocardless.customer_id);
+	const membersByCustomerId = keyBy(members, m => m.gocardless.customer_id);
 
 	for (let customer of validCustomers) {
 		try {

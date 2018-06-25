@@ -2,6 +2,3 @@
 dl.dl-horizontal
 	dt Email
 	dd  #{ member.email }
-	if access( 'superadmin' )
-		dt Address
-		dd #{ member.address.replace( /\r?\n/g, ", " ) }

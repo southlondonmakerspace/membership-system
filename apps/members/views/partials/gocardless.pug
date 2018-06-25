@@ -1,5 +1,8 @@
 +page_header( 'GoCardless' )
 dl.dl-horizontal
+	dt Customer ID
+	if member.gocardless.customer_id
+		dd: a( href="https://manage.gocardless.com/customers/" + member.gocardless.customer_id ) #{ member.gocardless.customer_id }
 	dt Mandate ID
 	if member.gocardless.mandate_id
 		dd: a( href="https://manage.gocardless.com/mandates/" + member.gocardless.mandate_id ) #{ member.gocardless.mandate_id }
@@ -10,10 +13,10 @@ dl.dl-horizontal
 		dd: a( href="https://manage.gocardless.com/subscriptions/" + member.gocardless.subscription_id ) #{ member.gocardless.subscription_id }
 	else
 		dd –
-	dt Minimum
-	dd #{ member.gocardless.minimum ? '£' + member.gocardless.minimum : '–' }
 	dt Amount
 	dd #{ member.gocardless.amount ? '£' + member.gocardless.amount : '–' }
+	dt Period
+	dd #{ member.gocardless.period ? member.gocardless.period : '–' }
 	if member.gocardless.next_possible_charge_date
 		dt Earliest charge date
 		dd #{ moment( member.gocardless.next_possible_charge_date ).format( 'DD/MM/YYYY' ) }

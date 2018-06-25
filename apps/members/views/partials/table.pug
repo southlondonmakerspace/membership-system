@@ -32,8 +32,6 @@
 							td
 								.btn-group.admin-btns
 									if access( 'superadmin' )
-										a.btn.btn-sm( title="Edit Activation", href="/members/" + member.uuid + "/activation", class=( member.activated ? 'btn-success' : 'btn-default' ) )
-											span.glyphicon.glyphicon-ok
 										a.btn.btn-sm.btn-default( title="Edit Profile", href="/members/" + member.uuid + "/profile" )
 											span.glyphicon.glyphicon-pencil
 										a.btn.btn-sm( title="Edit Discourse" href="/members/" + member.uuid + "/discourse", class=( member.discourse.activated ? 'btn-success' : 'btn-default' ) )

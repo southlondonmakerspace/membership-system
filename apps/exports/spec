@@ -1,0 +1,22 @@
+eligible users -> export address list -> cover letter -> PDFs
+
+step 1:
+mark as exported
+mark as sent
+
+member structure:
+"exports": [{
+    "id": "edition-15",
+    "status": "exported|sent"
+}]
+
+# bulk update exports
+e.g. all edition-15 exported to sent
+
+# sort by local/non-local
+
+1. CSV export
+2. Tracking export status
+3. Automatically generate PDFs
+
+4. Manually updating export status

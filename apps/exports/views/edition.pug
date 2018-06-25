@@ -1,0 +1,72 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Edition export'
+	- activeapp = 'exports'
+
+
+block contents
+	.row
+		.col-md-12
+			+page_header('Edition export - ' + exportDetails.description)
+	.row
+		.col-md-8.col-md-offset-2
+			h3 New members
+			p Found #{newMembersCount} members not previously in the export
+			form(method='POST')
+				+csrf
+				input(type='hidden', name='action', value='add')
+				button.btn Add
+
+			h3 Export
+			form(method='POST', target='_blank').form-horizontal
+				+csrf
+				input(type='hidden', name='action', value='export')
+
+				.form-group
+					label(for='status').form-label.col-md-3 Status
+					.col-md-4
+						select(id='status', name='status').form-control
+							option(value='') All
+							option(value='added') Added
+							option(value='sent') Sent
+
+				button.btn Export
+
+			h3 Existing members
+			p Found #{exportMembers.length} members in export
+			form(method='POST').form-horizontal
+				+csrf
+				input(type='hidden', name='action', value='update')
+
+				.form-group
+					label(for='old_status').form-label.col-md-3 Old status
+					.col-md-4
+						select(id='old_status', name='old_status').form-control
+							option(value='') All
+							option(value='added') Added
+							option(value='sent') Sent
+
+				.form-group
+					label(for='new_status').form-label.col-md-3 New status
+					.col-md-4
+						select(id='new_status', name='status').form-control
+							option(value='added') Added
+							option(value='sent') Sent
+
+				button.btn Update
+
+			h4 Member list
+
+
+
+			table.table.table-striped.table-condensed
+				thead
+					tr
+						th Name
+						th Status
+				tbody
+					each member in exportMembers
+						tr
+							td= member.fullname
+							td= member.editionExport.status

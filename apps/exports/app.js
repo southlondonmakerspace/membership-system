@@ -125,20 +125,25 @@ async function postEditionExport(exportDetails, data, res) {
 			}}
 		});
 
-		const membersCsv = members.map(member => {
-			return {
-				firstname: member.firstname,
-				lastname: member.lastname,
-				delivery_address1: member.delivery_address.line1,
-				delivery_address2: member.delivery_address.line2,
-				city: member.delivery_address.city,
-				postcode: member.delivery_address.postcode
-			};
-		});
+		const exportData = members
+			.map(member => {
+				const postcode = member.delivery_address.postcode.trim().toUpperCase();
+				return {
+					FirstName: member.firstname,
+					LastName: member.lastname,
+					Address1: member.delivery_address.line1,
+					Address2: member.delivery_address.line2,
+					City: member.delivery_address.city,
+					Postcode: postcode,
+					IsLocal: /^BS[3-9]\D/.test(postcode.slice(0, -3))
+				};
+			})
+			.sort((a, b) => (
+				(b.IsLocal - a.IsLocal) ||
+					(b.LastName.toLowerCase() > a.LastName.toLowerCase() ? -1 : 1)
+			));
 
-		const blah = Papa.unparse(membersCsv);
-
-		res.attachment('export.csv').send(blah);
+		res.attachment('export.csv').send(Papa.unparse(exportData));
 	} else if (data.action === 'add') {
 		// TODO: generate PDFs
 		await Members.updateMany({

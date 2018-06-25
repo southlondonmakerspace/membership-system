@@ -12,6 +12,7 @@ const gocardless = require(__js + '/gocardless');
 
 const utils = require('./sync-utils.js');
 const { keyBy } = require('../utils');
+const { createPayment } = require('../../webhook-utils.js');
 
 async function loadData(file=null) {
 	let data;
@@ -33,7 +34,7 @@ async function loadData(file=null) {
 		});
 
 		data = { customers, mandates, subscriptions, payments, subscriptionCancelledEvents };
-		fs.writeFileSync( 'data.json', JSON.stringify(data));
+		fs.writeFileSync( 'gc-data.json', JSON.stringify(data));
 	}
 
 	console.log(`Got ${data.customers.length} customers`);
@@ -62,9 +63,11 @@ async function syncCustomers(validCustomers) {
 
 	const membersByCustomerId = keyBy(members, m => m.gocardless.customer_id);
 
+	await db.Payments.deleteMany({});
+
 	for (let customer of validCustomers) {
 		try {
-			const member = membersByCustomerId[customer.id];
+			let member = membersByCustomerId[customer.id];
 			const membershipInfo = utils.getMembershipInfo(customer);
 
 			const gocardless = {
@@ -85,7 +88,7 @@ async function syncCustomers(validCustomers) {
 				memberPermission.date_expires = expires;
 				await member.save();
 			} else {
-				await db.Members.create({
+				member = await db.Members.create({
 					firstname: customer.given_name,
 					lastname: customer.family_name,
 					email: customer.email,
@@ -99,14 +102,23 @@ async function syncCustomers(validCustomers) {
 					}]
 				});
 			}
+
+			await syncPayments(member, customer);
 		} catch (error) {
 			console.log(customer.id, error.message);
 		}
 	}
 
-	// TODO: sync payments
-
 	// TODO: remove unwanted?
+}
+
+async function syncPayments(member, customer) {
+	const payments = customer.payments.map(payment => ({
+		...createPayment(payment),
+		member: member._id
+	}));
+
+	await db.Payments.insertMany(payments);
 }
 
 console.log( 'Starting...' );

@@ -65,6 +65,8 @@ async function syncCustomers(validCustomers) {
 
 	await db.Payments.deleteMany({});
 
+	let created = 0, updated = 0;
+
 	for (let customer of validCustomers) {
 		try {
 			let member = membersByCustomerId[customer.id];
@@ -87,6 +89,7 @@ async function syncCustomers(validCustomers) {
 				member.gocardless = gocardless;
 				memberPermission.date_expires = expires;
 				await member.save();
+				updated++;
 			} else {
 				member = await db.Members.create({
 					firstname: customer.given_name,
@@ -101,6 +104,7 @@ async function syncCustomers(validCustomers) {
 						date_expires: expires
 					}]
 				});
+				created++;
 			}
 
 			await syncPayments(member, customer);
@@ -108,6 +112,9 @@ async function syncCustomers(validCustomers) {
 			console.log(customer.id, error.message);
 		}
 	}
+
+	console.log('Created', created);
+	console.log('Updated', updated);
 
 	// TODO: remove unwanted?
 }

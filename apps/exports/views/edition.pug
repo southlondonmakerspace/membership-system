@@ -12,11 +12,23 @@ block contents
 	.row
 		.col-md-8.col-md-offset-2
 			h3 New members
-			p Found #{newMembersCount} members not previously in the export
+			p Found #{newMembers.length} members not previously in the export
 			form(method='POST')
 				+csrf
 				input(type='hidden', name='action', value='add')
 				button.btn Add
+
+			h4 Member list
+			table.table.table-striped.table-condensed
+				thead
+					tr
+						th Name
+						th Email
+				tbody
+					each member in newMembers
+						tr
+							td= member.fullname
+							td= member.email
 
 			h3 Export
 			form(method='POST', target='_blank').form-horizontal
@@ -57,16 +69,15 @@ block contents
 				button.btn Update
 
 			h4 Member list
-
-
-
 			table.table.table-striped.table-condensed
 				thead
 					tr
 						th Name
+						th Email
 						th Status
 				tbody
 					each member in exportMembers
 						tr
 							td= member.fullname
+							td= member.email
 							td= member.editionExport.status

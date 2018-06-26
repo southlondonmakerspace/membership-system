@@ -97,7 +97,7 @@ async function getEligibilityCriteria() {
 }
 
 async function getEditionExport(exportDetails) {
-	const newMembersCount = await Members.count({
+	const newMembers = await Members.find({
 		...await getEligibilityCriteria(),
 		exports: {$not: {$elemMatch: {
 			export_id: exportDetails
@@ -114,7 +114,7 @@ async function getEditionExport(exportDetails) {
 		member.editionExport = member.exports.find(e => e.export_id.equals(exportDetails._id));
 	});
 
-	return {newMembersCount, exportMembers, exportDetails};
+	return {newMembers, exportMembers, exportDetails};
 }
 
 async function postEditionExport(exportDetails, req, res) {

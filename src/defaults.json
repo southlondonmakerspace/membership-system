@@ -166,6 +166,10 @@
 	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag",
 
+	"flash-exports-created": "Export created",
+	"flash-exports-added": "Added members to export",
+	"flash-exports-updated": "Updated export status",
+
 	"flash-validation-error-generic": "The data you provided was invalid",
 
 	"flash-validation-error.amount-minimum": "The minimum contribution is £1",

@@ -62,6 +62,7 @@ app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, 
 	const { body: {type, description} } = req;
 
 	const exportDetails = await Exports.create({type, description});
+	req.flash('success', 'exports-created');
 	res.redirect('/exports/' + exportDetails._id);
 } ) );
 
@@ -73,7 +74,7 @@ app.get( '/:uuid', wrapAsync( async function( req, res ) {
 
 app.post( '/:uuid', wrapAsync( async function( req, res ) {
 	const exportDetails = await Exports.findOne({_id: req.params.uuid});
-	await exportHandlers[exportDetails.type].post(exportDetails, req.body, res);
+	await exportHandlers[exportDetails.type].post(exportDetails, req, res);
 } ) );
 
 const exportHandlers = {
@@ -116,7 +117,9 @@ async function getEditionExport(exportDetails) {
 	return {newMembersCount, exportMembers, exportDetails};
 }
 
-async function postEditionExport(exportDetails, data, res) {
+async function postEditionExport(exportDetails, req, res) {
+	const data = req.body;
+
 	if (data.action === 'export') {
 		const members = await Members.find({
 			exports: {$elemMatch: {
@@ -135,7 +138,7 @@ async function postEditionExport(exportDetails, data, res) {
 					Address2: member.delivery_address.line2,
 					City: member.delivery_address.city,
 					Postcode: postcode,
-					IsLocal: /^BS[3-9]\D/.test(postcode.slice(0, -3))
+					IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3))
 				};
 			})
 			.sort((a, b) => (
@@ -143,7 +146,7 @@ async function postEditionExport(exportDetails, data, res) {
 					(b.LastName.toLowerCase() > a.LastName.toLowerCase() ? -1 : 1)
 			));
 
-		res.attachment('export.csv').send(Papa.unparse(exportData));
+		res.attachment(`export-${exportDetails.description}_${new Date().toISOString()}.csv`).send(Papa.unparse(exportData));
 	} else if (data.action === 'add') {
 		// TODO: generate PDFs
 		await Members.updateMany({
@@ -160,6 +163,7 @@ async function postEditionExport(exportDetails, data, res) {
 			}
 		});
 
+		req.flash('success', 'exports-added');
 		res.redirect('/exports/' + exportDetails._id);
 	} else if (data.action === 'update') {
 		await Members.updateMany({
@@ -173,6 +177,7 @@ async function postEditionExport(exportDetails, data, res) {
 				'exports.$.status': data.status
 			}
 		});
+		req.flash('success', 'exports-updated');
 		res.redirect('/exports/' + exportDetails._id);
 	}
 }

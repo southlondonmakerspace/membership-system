@@ -8,6 +8,8 @@ case payment.status
 		span.label.label-primary( title=payment.status ) Collected
 	when 'cancelled'
 		span.label.label-danger( title=payment.status ) Cancelled
+	when 'pending_customer_approval'
+		span.label.label-danger( title=payment.stastus ) Approval needed
 	when 'customer_approval_denied'
 		span.label.label-danger( title=payment.status ) Approval denied
 	when 'failed'

@@ -220,11 +220,12 @@ app.get( '/:uuid', function( req, res ) {
 				name: member.fullname
 			} );
 			discourse.getUsername( member.discourse.username, function( discourse ) {
-				var total = 0;
+				const confirmedPayments = payments
+					.filter(p => ['paid_out', 'confirmed'].indexOf(p.status) > -1)
+					.map(p => Number(p.amount))
+					.filter(amount => !isNaN(amount));
 
-				for ( let p in payments ) {
-					total += payments[p].amount;
-				}
+				const total = confirmedPayments.reduce((a, b) => a + b, 0);
 
 				res.render( 'member', {
 					member: member,

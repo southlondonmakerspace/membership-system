@@ -12,25 +12,29 @@ block contents
 	.row
 		.col-md-8.col-md-offset-2
 			h3 New members
-			p Found #{newMembers.length} members not previously in the export
-			form(method='POST')
-				+csrf
-				input(type='hidden', name='action', value='add')
-				button.btn Add
+			if newMembers.length > 0
+				p Found #{newMembers.length} members not previously in the export
+				form(method='POST')
+					+csrf
+					input(type='hidden', name='action', value='add')
+					button.btn Add
 
-			h4 Member list
-			table.table.table-striped.table-condensed
-				thead
-					tr
-						th Name
-						th Email
-				tbody
-					each member in newMembers
+				h4 Member list
+				table.table.table-striped.table-condensed
+					thead
 						tr
-							td= member.fullname
-							td= member.email
+							th Name
+							th Email
+					tbody
+						each member in newMembers
+							tr
+								td #[a(href='/members/' + member.uuid) #{member.fullname}]
+								td= member.email
+			else
+				p All eligible members are in export
 
-			h3 Export
+			h3 Run export
+			p Export a CSV of all members with a given status
 			form(method='POST', target='_blank').form-horizontal
 				+csrf
 				input(type='hidden', name='action', value='export')
@@ -45,8 +49,8 @@ block contents
 
 				button.btn Export
 
-			h3 Existing members
-			p Found #{exportMembers.length} members in export
+			h3 Update export members
+			p There are #{exportMembers.length} members in export
 			form(method='POST').form-horizontal
 				+csrf
 				input(type='hidden', name='action', value='update')
@@ -78,6 +82,6 @@ block contents
 				tbody
 					each member in exportMembers
 						tr
-							td= member.fullname
+							td #[a(href='/members/' + member.uuid) #{member.fullname}]
 							td= member.email
 							td= member.editionExport.status

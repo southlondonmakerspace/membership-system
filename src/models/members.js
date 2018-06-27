@@ -135,30 +135,19 @@ module.exports = {
 
 		},
 		gocardless: {
-			customer_id: {
-				type: String
-			},
-			mandate_id: {
-				type: String
-			},
-			subscription_id: {
-				type: String
-			},
-			amount: {
-				type: Number
-			},
+			customer_id: String,
+			mandate_id: String,
+			subscription_id: String,
+			amount: Number,
 			period: {
 				type: String,
 				enum: ['monthly', 'annually']
 			},
 			pending_update: {
-				amount: {
-					type: Number
-				},
-				date: {
-					type: Date
-				}
-			}
+				amount: Number,
+				date: Date
+			},
+			cancelled_at: Date
 		},
 		permissions: [ {
 			permission: {

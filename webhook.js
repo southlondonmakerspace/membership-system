@@ -153,7 +153,7 @@ async function updatePayment( gcPayment, payment ) {
 async function confirmPayment( gcPayment, payment ) {
 	if ( payment.member ) {
 		const subscription = await gocardless.subscriptions.get(payment.subscription_id);
-		const date = moment(payment.charge_date)
+		const expiryDate = moment(payment.charge_date)
 			.add(utils.getSubscriptionDuration(subscription))
 			.add(config.gracePeriod);
 
@@ -167,7 +167,7 @@ async function confirmPayment( gcPayment, payment ) {
 					delete member.gocardless.pending_update;
 				}
 
-				member.permissions[p].date_expires = date.toDate();
+				member.permissions[p].date_expires = expiryDate.toDate();
 				await member.save();
 
 				log.info( {
@@ -187,7 +187,7 @@ async function confirmPayment( gcPayment, payment ) {
 		log.error( {
 			app: 'webhook',
 			action: 'extend-membership',
-			date: date,
+			date: expiryDate,
 			error: 'Membership not found',
 			sensitive: {
 				member: member._id

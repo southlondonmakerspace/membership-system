@@ -161,9 +161,11 @@ async function confirmPayment( gcPayment, payment ) {
 
 		for ( var p = 0; p < member.permissions.length; p++ ) {
 			if ( member.permissions[p].permission.slug == config.permission.member ) {
-				// Remove any pending updates
-				// TODO: check this is the correct update
-				delete member.gocardless.pending_update;
+
+				const pendingUpdate = member.gocardless.pending_update;
+				if (pendingUpdate && payment.charge_date >= pendingUpdate.date) {
+					delete member.gocardless.pending_update;
+				}
 
 				member.permissions[p].date_expires = date.toDate();
 				await member.save();

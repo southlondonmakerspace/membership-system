@@ -79,7 +79,7 @@ async function syncCustomers(validCustomers) {
 				customer_id: customer.id,
 				...customer.latestActiveMandate && {mandate_id: customer.latestActiveMandate.id},
 				...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id},
-				...membershipInfo && {cancelled_at: membershipInfo.cancelledAt.toDate()}
+				...membershipInfo.cancelledAt && {cancelled_at: membershipInfo.cancelledAt.toDate()}
 			};
 
 			const added = moment(customer.created_at).toDate();
@@ -87,6 +87,7 @@ async function syncCustomers(validCustomers) {
 
 			if (member) {
 				const memberPermission = member.permissions.find(p => permission.equals(p.permission));
+				// TODO: check if it needs updating
 				member.gocardless = gocardless;
 				memberPermission.date_expires = expires;
 				await member.save();

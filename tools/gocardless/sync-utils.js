@@ -28,7 +28,7 @@ function mergeData(data) {
 	const mandatesByCustomer = groupBy(data.mandates, m => m.links.customer);
 	const subscriptionsByMandate = groupBy(data.subscriptions, s => s.links.mandate);
 	const paymentsBySubscription = groupBy(data.payments, p => p.links.subscription);
-	const subscriptionCancelledEventsById = groupBy(data.subscriptionCancelledEvents, e => e.links.subscription);
+	const subscriptionCancelledEventById = keyBy(data.subscriptionCancelledEvents, e => e.links.subscription);
 	const subscriptionById = keyBy(data.subscriptions, s => s.id);
 
 	return data.customers
@@ -50,7 +50,7 @@ function mergeData(data) {
 				subscriptions: customerSubscriptions.map(subscription => ({
 					...subscription,
 					payments: paymentsBySubscription[subscription.id] || [],
-					cancelledEvents: subscriptionCancelledEventsById[subscription.id] || []
+					cancelledEvent: subscriptionCancelledEventById[subscription.id]
 				})),
 				payments: customerPayments.map(payment => ({
 					...payment,
@@ -131,26 +131,33 @@ function getMembershipInfo(customer) {
 		};
 	}
 
+	function getCancelledAt() {
+		const latestSubscription = getLatestRecord(customer.subscriptions);
+		return latestSubscription.cancelledEvent &&
+			moment(latestSubscription.cancelledEvent.created_at);
+	}
+
 	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
 
-	const payment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
-	const {interval, interval_unit} = payment.subscription;
+	const latestPayment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
+	const {interval, interval_unit} = latestPayment.subscription;
 
 	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
 
-	const expires = isSuccessfulPayment(payment) ?
-		moment(payment.charge_date).add(getSubscriptionDuration(payment.subscription)) :
+	const expires = isSuccessfulPayment(latestPayment) ?
+		moment(latestPayment.charge_date).add(getSubscriptionDuration(latestPayment.subscription)) :
 		moment(customer.created_at);
 
 	const activeSubscription = customer.latestActiveSubscription;
-	const pendingUpdate = activeSubscription && payment.amount !== activeSubscription.amount ?
+	const pendingUpdate = activeSubscription && latestPayment.amount !== activeSubscription.amount ?
 		getPendingUpdate(activeSubscription) : {};
 
 	return {
 		period,
-		amount: payment.amount / (period === 'annually' ? 12 : 1) / 100,
+		amount: latestPayment.amount / (period === 'annually' ? 12 : 1) / 100,
 		expires,
-		pendingUpdate
+		pendingUpdate,
+		cancelledAt: getCancelledAt()
 	};
 }
 

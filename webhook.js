@@ -218,7 +218,8 @@ async function cancelledSubscription( event ) {
 
 	if ( member ) {
 		await member.update( { $unset: {
-			'gocardless.subscription_id': true
+			'gocardless.subscription_id': true,
+			'gocardless.cancelled_at': new Date()
 		} } );
 
 		log.info( {

@@ -78,7 +78,8 @@ async function syncCustomers(validCustomers) {
 				pending_update: membershipInfo.pendingUpdate,
 				customer_id: customer.id,
 				...customer.latestActiveMandate && {mandate_id: customer.latestActiveMandate.id},
-				...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id}
+				...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id},
+				...membershipInfo && {cancelled_at: membershipInfo.cancelledAt.toDate()}
 			};
 
 			const added = moment(customer.created_at).toDate();

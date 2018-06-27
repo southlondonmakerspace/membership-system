@@ -18,6 +18,7 @@ const successfulPaymentWithAmountUpdate = require(__fixtures + '/successfulPayme
 const amountUpdateByNewSubscription = require(__fixtures + '/amountUpdateByNewSubscription.json');
 const multipleInactiveSubscriptionsWithSameEmail = require(__fixtures + '/multipleInactiveSubscriptionsWithSameEmail.json');
 const paymentWithNoSubscription = require(__fixtures + '/paymentWithNoSubscription.json');
+const cancelledSubscription = require(__fixtures + '/cancelledSubscription.json');
 
 // A not particularly thorough test that the data is merged into the right place
 test('Merge data on one subscription', t => {
@@ -31,7 +32,7 @@ test('Merge data on one subscription', t => {
 	const subscription = {
 		...subscriptions[0],
 		payments,
-		cancelledEvents: subscriptionCancelledEvents
+		cancelledEvent: subscriptionCancelledEvents[0]
 	};
 
 	t.deepEqual(utils.mergeData(oneSubscription), [
@@ -73,6 +74,11 @@ test('Membership info', t => {
 		t.is(info.period, expected.period);
 		t.is(info.expires.toISOString(), expected.expires.toISOString());
 		t.deepEqual(info.pendingUpdate, {});
+		if (info.cancelledAt) {
+			t.is(info.cancelledAt.toISOString(), expected.cancelledAt.toISOString());
+		} else {
+			t.falsy(expected.cancelledAt);
+		}
 	}
 
 	testMembershipInfo(onlyPendingPayment, {
@@ -110,6 +116,13 @@ test('Membership info', t => {
 		period: 'annually',
 		expires: moment('2019-03-04')
 	});
+
+	testMembershipInfo(cancelledSubscription, {
+		amount: 5,
+		period: 'monthly',
+		expires: moment('2018-07-05'),
+		cancelledAt: moment('2018-06-21T11:12:54.828Z')
+	});
 });
 
 test('Membership info with pending updates', t => {
@@ -119,6 +132,7 @@ test('Membership info with pending updates', t => {
 		t.is(info.amount, expected.amount);
 		t.is(info.period, expected.period);
 		t.is(info.expires.toISOString(), expected.expires.toISOString());
+		t.falsy(info.createdAt);
 		t.deepEqual(info.pendingUpdate, expected.pendingUpdate);
 	}
 

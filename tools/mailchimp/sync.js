@@ -20,14 +20,17 @@ function emailToHash(email) {
 }
 
 function memberToOperation(listId, member) {
-	const isActive = !true;
 	const path = 'lists/' + listId + '/members/' + emailToHash(member.email);
 
-	return isActive ? {
+	return member.isActiveMember ? {
 		path,
 		method: 'PUT',
 		body: JSON.stringify({
 			email_address: member.email,
+			merge_fields: {
+				FNAME: member.firstname,
+				LNAME: member.lastname
+			},
 			status_if_new: 'subscribed'
 		})
 	} : {
@@ -49,8 +52,7 @@ async function syncLists(startDate, endDate) {
 	console.log('# Fetching members');
 
 	const permission = await db.Permissions.findOne({slug: 'member'});
-	let members = await db.Members.find({
-		firstname: 'Will',
+	const members = await db.Members.find({
 		permissions: {$elemMatch: {
 			permission,
 			$or: [
@@ -58,6 +60,13 @@ async function syncLists(startDate, endDate) {
 				{date_expires: dateFilter}
 			]
 		}}
+	});
+
+	// Hack to store membership active status somewhere
+	members.forEach(member => {
+		const memberPermission = member.permissions.find(p => permission.equals(p.permission));
+		member.isActiveMember = memberPermission.date_added < moment() &&
+			(!memberPermission.date_expires || memberPermission.date_expires > moment());
 	});
 
 	console.log(`Got ${members.length} members`);

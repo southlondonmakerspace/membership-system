@@ -40,7 +40,7 @@ function memberToOperation(listId, member) {
 	};
 }
 
-async function syncLists(startDate, endDate) {
+async function fetchMembers(startDate, endDate) {
 	const dateFilter = {
 		...startDate && {$gte: moment(startDate).toDate()},
 		$lte: endDate ? moment(endDate).toDate() : new Date()
@@ -71,6 +71,10 @@ async function syncLists(startDate, endDate) {
 			(!memberPermission.date_expires || memberPermission.date_expires > moment());
 	});
 
+	return members;
+}
+
+async function createBatch(members) {
 	console.log('# Starting batch job');
 
 	const operations = config.mailchimp.lists
@@ -142,8 +146,20 @@ async function checkErrors(batch) {
 	}
 }
 
-syncLists(process.argv[2], process.argv[3])
-	.then(waitForSync)
-	.then(checkErrors)
-	.catch(err => console.log(err))
-	.then(() => db.mongoose.disconnect());
+if (process.argv[2] === '-n') {
+	fetchMembers(process.argv[3], process.argv[4])
+		.then(members => {
+			members.forEach(member => {
+				console.log(member.isActiveMember ? 'U' : 'D', member.email);
+			});
+		})
+		.catch(err => console.log(err))
+		.then(() => db.mongoose.disconnect());
+} else {
+	fetchMembers(process.argv[2], process.argv[3])
+		.then(createBatch)
+		.then(waitForSync)
+		.then(checkErrors)
+		.catch(err => console.log(err))
+		.then(() => db.mongoose.disconnect());
+}

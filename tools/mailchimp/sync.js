@@ -62,6 +62,8 @@ async function syncLists(startDate, endDate) {
 		}}
 	});
 
+	console.log(`Got ${members.length} members`);
+
 	// Hack to store membership active status somewhere
 	members.forEach(member => {
 		const memberPermission = member.permissions.find(p => permission.equals(p.permission));
@@ -69,15 +71,16 @@ async function syncLists(startDate, endDate) {
 			(!memberPermission.date_expires || memberPermission.date_expires > moment());
 	});
 
-	console.log(`Got ${members.length} members`);
-
 	console.log('# Starting batch job');
 
 	const operations = config.mailchimp.lists
 		.map(listId => members.map(memberToOperation.bind(null, listId)))
 		.reduce((a, b) => [...a, ...b], []);
 
-	console.log(`Created ${operations.length} operations`);
+	const updates = operations.filter(o => o.method === 'PUT').length;
+	const deletes = operations.filter(o => o.method === 'DELETE').length;
+
+	console.log(`Created ${operations.length} operations, ${updates} updates and ${deletes} deletes`);
 
 	return await mailchimp.batches.create(operations);
 }

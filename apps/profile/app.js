@@ -34,27 +34,20 @@ app.use( function( req, res, next ) {
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	const { user } = req;
 
-	if ( auth.activeMember( req ) ) {
-		let membership_expires;
+	let membership_expires;
 
-		if ( user.memberPermission ) {
-			const expires = moment( user.memberPermission.date_expires );
+	if ( auth.activeMember( req ) && user.memberPermission ) {
+		const expires = moment( user.memberPermission.date_expires );
 
-			// If we're in the grace period assume payment has gone through
-			if ( expires.subtract( config.gracePeriod ).isBefore() ) {
-				membership_expires = expires; // TODO: calculate next payment date
-			} else {
-				membership_expires = expires;
-			}
+		// If we're in the grace period assume payment has gone through
+		if ( expires.subtract( config.gracePeriod ).isBefore() ) {
+			membership_expires = expires; // TODO: calculate next payment date
+		} else {
+			membership_expires = expires;
 		}
-
-		res.render( 'profile', {
-			user: req.user,
-			membership_expires
-		} );
-	} else {
-		res.render( 'profile', { user: req.user } );
 	}
+
+	res.render( 'profile', { user, membership_expires } );
 } );
 
 module.exports = function( config ) {

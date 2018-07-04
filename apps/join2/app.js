@@ -110,7 +110,7 @@ app.get( '/complete', [
 		permissions: {
 			permission: permission.id,
 			date_added: new Date(),
-			date_expires: moment.utc().add(config.gracePeriod).toDate()
+			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		}
 	}});
 

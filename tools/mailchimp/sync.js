@@ -74,9 +74,7 @@ async function fetchMembers(startDate, endDate) {
 	return members;
 }
 
-async function createBatch(members) {
-	console.log('# Starting batch job');
-
+async function processMembers(members) {
 	const operations = config.mailchimp.lists
 		.map(listId => members.map(memberToOperation.bind(null, listId)))
 		.reduce((a, b) => [...a, ...b], []);
@@ -86,10 +84,21 @@ async function createBatch(members) {
 
 	console.log(`Created ${operations.length} operations, ${updates} updates and ${deletes} deletes`);
 
+	if (operations.length > 10) {
+		return await createBatch(operations)
+			.then(waitForBatch)
+			.then(checkBatchErrors);
+	} else {
+		return await dispatchOperations(operations);
+	}
+}
+
+async function createBatch(operations) {
+	console.log('# Starting batch job');
 	return await mailchimp.batches.create(operations);
 }
 
-async function waitForSync(batch) {
+async function waitForBatch(batch) {
 	console.log('# Got update for batch', batch.id);
 	console.log('Status:', batch.status);
 	console.log(`Operations: ${batch.finished_operations}/${batch.total_operations}`);
@@ -99,14 +108,14 @@ async function waitForSync(batch) {
 		return batch;
 	} else {
 		await new Promise(resolve => setTimeout(resolve, 5000));
-		return await waitForSync(await mailchimp.batches.get(batch.id));
+		return await waitForBatch(await mailchimp.batches.get(batch.id));
 	}
 }
 
-async function checkErrors(batch) {
-	if (batch.errored_operations > 0) {
-		console.log('# Checking errors');
+async function checkBatchErrors(batch) {
+	console.log('# Checking errors');
 
+	if (batch.errored_operations > 0) {
 		console.log('Fetching response log file');
 
 		const response = await axios({
@@ -143,6 +152,24 @@ async function checkErrors(batch) {
 				.on('error', reject)
 				.on('finish', resolve);
 		});
+	} else {
+		console.log('No errors');
+	}
+}
+
+async function dispatchOperations(operations) {
+	for (const operation of operations) {
+		try {
+			await mailchimp.instance({
+				method: operation.method,
+				url: operation.path,
+				...operation.body && {data: JSON.parse(operation.body)}
+			});
+		} catch (error) {
+			if (operation.operation_id !== 'delete' || error.response.status !== 404) {
+				console.log(error);
+			}
+		}
 	}
 }
 
@@ -157,9 +184,7 @@ if (process.argv[2] === '-n') {
 		.then(() => db.mongoose.disconnect());
 } else {
 	fetchMembers(process.argv[2], process.argv[3])
-		.then(createBatch)
-		.then(waitForSync)
-		.then(checkErrors)
+		.then(processMembers)
 		.catch(err => console.log(err))
 		.then(() => db.mongoose.disconnect());
 }

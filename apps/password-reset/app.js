@@ -11,6 +11,8 @@ const { wrapAsync } = require( __js + '/utils' );
 const { hasSchema } = require( __js + '/middleware' );
 const mandrill = require( __js + '/mandrill' );
 
+const { getResetCodeSchema, resetPasswordSchema } = require( './schemas.json');
+
 var auth = require( __js + '/authentication' );
 
 var app_config = {};
@@ -28,19 +30,6 @@ app.get( '/' , function( req, res ) {
 	res.render( 'index' );
 } );
 
-const getResetCodeSchema = {
-	body: {
-		type: 'object',
-		required: ['email'],
-		properties: {
-			email: {
-				type: 'string',
-				format: 'email'
-			}
-		}
-	}
-};
-
 app.post( '/', hasSchema(getResetCodeSchema).orFlash, wrapAsync( async function( req, res ) {
 	if ( ! req.body.email ) {
 		req.flash( 'danger', 'information-ommited' );
@@ -49,11 +38,16 @@ app.post( '/', hasSchema(getResetCodeSchema).orFlash, wrapAsync( async function(
 	}
 	const member = await Members.findOne( { email: req.body.email } );
 
-	const code = auth.generateCode();
-	member.password.reset_code = code;
-	await member.save();
+	if (member) {
+		const code = auth.generateCode();
+		member.password.reset_code = code;
+		await member.save();
 
-	await mandrill.send('reset-password', member);
+		await mandrill.send('reset-password', member);
+	}
+
+	req.flash( 'success', 'password-reset' );
+	res.redirect( app.mountpath );
 } ) );
 
 app.get( '/code', function( req, res ) {
@@ -63,27 +57,6 @@ app.get( '/code', function( req, res ) {
 app.get( '/code/:password_reset_code', function( req, res ) {
 	res.render( 'change-password', { password_reset_code: req.params.password_reset_code } );
 } );
-
-const resetPasswordSchema = {
-	body: {
-		type: 'object',
-		required: ['password_reset_code', 'password', 'verify'],
-		properties: {
-			password_reset_code: {
-				type: 'string'
-			},
-			password: {
-				type: 'string',
-				format: 'password'
-			},
-			verify: {
-				const: {
-					'$data': '1/password'
-				}
-			}
-		}
-	}
-};
 
 app.post( '/change-password', hasSchema(resetPasswordSchema).orFlash, wrapAsync( async function( req, res ) {
 	const member = await Members.findOne( { 'password.reset_code': req.body.password_reset_code } );

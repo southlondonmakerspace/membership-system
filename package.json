@@ -33,6 +33,7 @@
     "gunzip-maybe": "^1.4.1",
     "helmet": "^3.10.0",
     "inquirer": "^3.0.6",
+    "mandrill-api": "^1.0.45",
     "moment": "^2.15.1",
     "mongoose": "^4.13.10",
     "nodemailer": "^2.3.2",

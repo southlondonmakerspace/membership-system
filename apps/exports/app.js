@@ -20,6 +20,8 @@ var auth = require( __js + '/authentication' );
 const { wrapAsync } = require( __js + '/utils' );
 const { hasSchema } = require( __js + '/middleware' );
 
+const { createSchema } = require('./schemas.json');
+
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -41,22 +43,6 @@ app.get( '/', wrapAsync( async function( req, res ) {
 	const exports = await Exports.find();
 	res.render('index', {exports});
 } ) );
-
-const createSchema = {
-	body: {
-		type: 'object',
-		required: ['description', 'type'],
-		properties: {
-			description: {
-				type: 'string'
-			},
-			type: {
-				type: 'string',
-				enum: ['edition']
-			}
-		}
-	}
-};
 
 app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, res ) {
 	const { body: {type, description} } = req;

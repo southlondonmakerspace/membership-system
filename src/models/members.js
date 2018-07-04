@@ -1,6 +1,9 @@
-var mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId,
-	crypto = require( 'crypto' );
+const { permission: { memberId } } = require( '../../config/config.json' );
+
+const mongoose = require( 'mongoose' );
+const crypto = require( 'crypto' );
+
+const ObjectId = mongoose.Schema.ObjectId;
 
 module.exports = {
 	name: 'Members',
@@ -94,11 +97,11 @@ module.exports = {
 			},
 			postcode: {
 				type: String
+			},
+			postcode_coordinates: {
+				lat: Number,
+				lng: Number
 			}
-		},
-		postcode_coordinates: {
-			lat: Number,
-			lng: Number
 		},
 		tag: {
 			id: {
@@ -194,6 +197,10 @@ module.exports.schema.virtual( 'can_admin' ).get( function() {
 			can_admin.push( permission.permission.slug );
 	} );
 	return can_admin;
+} );
+
+module.exports.schema.virtual( 'memberPermission' ).get( function () {
+	return this.permissions.find(p => p.permission.equals(memberId));
 } );
 
 module.exports.schema.virtual( 'setupComplete' ).get( function() {

@@ -199,9 +199,14 @@ module.exports.schema.virtual( 'can_admin' ).get( function() {
 	return can_admin;
 } );
 
-module.exports.schema.virtual( 'memberPermission' ).get( function () {
-	return this.permissions.find(p => p.permission.equals(memberId));
-} );
+module.exports.schema.virtual( 'memberPermission' )
+	.get( function () {
+		return this.permissions.find(p => p.permission.equals(memberId));
+	} )
+	.set( function (value) {
+		const i = this.permissions.findIndex(p => p.permission.equals(memberId));
+		this.permissions[i] = value;
+	} );
 
 module.exports.schema.virtual( 'setupComplete' ).get( function() {
 	if ( ! this.password.hash )

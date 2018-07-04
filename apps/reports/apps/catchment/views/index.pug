@@ -5,37 +5,20 @@ block prepend title
 	- heading = title
 	- activeapp = 'reports'
 
+block append css
+	link( rel="stylesheet", href="/static/css/leaflet.css" )
+
+block append js
+	script( src="/static/js/leaflet.js" )
+	script( src="/static/js/leaflet-heat.js" )
+	script.
+		var map = L.map('map').setView([51.462393, -2.591030], 12);
+
+		var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+		var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+		new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib}).addTo(map);
+
 block contents
 	.panel.panel-default
 		.panel-body This map shows all accounts ever created. It gives an idea of the catchment area of the space.
 	#map.col-m-12( style="height: 40em;" )
-	script( type="text/javascript" ).
-		var map;
-		var markers = [];
-		var heatmapData = [];
-		function initMap() {
-			map = new google.maps.Map( document.getElementById( 'map' ), {
-				center: { lat: 51.4511044, lng: -0.1018774 },
-				zoom: 12
-			});
-			jQuery.getJSON('/reports/catchment/data.json', function( data ) {
-				for( var d in data ) {
-					var pos = new google.maps.LatLng( data[d].lat, data[d].lng );
-					heatmapData.push( pos );
-					/*addMarker( pos );*/
-				}
-				var heatmap = new google.maps.visualization.HeatmapLayer( {
-					data: heatmapData,
-					radius: 50
-				} );
-				heatmap.setMap(map);
-			} )
-		}
-		function addMarker( pos ) {
-			var marker = new google.maps.Marker( {
-				map: map,
-				position: pos
-			} );
-			markers.push( marker );
-		}
-	script( src="https://maps.googleapis.com/maps/api/js?key=" + Options( 'google-maps-key' ) + "&callback=initMap&libraries=visualization" async defer )

@@ -84,44 +84,44 @@ test('Membership info', t => {
 	testMembershipInfo(onlyPendingPayment, {
 		amount: 1,
 		period: 'monthly',
-		expires: moment('2018-06-15')
+		expires: moment.utc('2018-06-15')
 	});
 
 	testMembershipInfo(onlyFailedPayment, {
 		amount: 2,
 		period: 'monthly',
-		expires: moment('2015-07-21')
+		expires: moment.utc('2015-07-21')
 	});
 
 	testMembershipInfo(oneSubscription, {
 		amount: 3,
 		period: 'monthly',
-		expires: moment('2018-06-24')
+		expires: moment.utc('2018-06-24')
 	});
 
 	testMembershipInfo(successfulAndPendingPayment, {
 		amount: 3,
 		period: 'monthly',
-		expires: moment('2018-06-19')
+		expires: moment.utc('2018-06-19')
 	});
 
 	testMembershipInfo(successfulAndFailedPayment, {
 		amount: 1,
 		period: 'monthly',
-		expires: moment('2018-06-11')
+		expires: moment.utc('2018-06-11')
 	});
 
 	testMembershipInfo(annualSubscription, {
 		amount: 1,
 		period: 'annually',
-		expires: moment('2019-03-04')
+		expires: moment.utc('2019-03-04')
 	});
 
 	testMembershipInfo(cancelledSubscription, {
 		amount: 5,
 		period: 'monthly',
-		expires: moment('2018-07-05'),
-		cancelledAt: moment('2018-06-21T11:12:54.828Z')
+		expires: moment.utc('2018-07-05'),
+		cancelledAt: moment.utc('2018-06-21T11:12:54.828Z')
 	});
 });
 
@@ -139,30 +139,30 @@ test('Membership info with pending updates', t => {
 	testMembershipInfo(pendingPaymentWithAmountUpdate, {
 		amount: 5,
 		period: 'monthly',
-		expires: moment('2018-06-18'),
+		expires: moment.utc('2018-06-18'),
 		pendingUpdate: {
 			amount: 12,
-			date:  moment('2018-07-18').toDate()
+			date:  moment.utc('2018-07-18').toDate()
 		}
 	});
 
 	testMembershipInfo(successfulPaymentWithAmountUpdate, {
 		amount: 9,
 		period: 'annually',
-		expires: moment('2018-11-22'),
+		expires: moment.utc('2018-11-22'),
 		pendingUpdate: {
 			amount: 20,
-			date:  moment('2018-11-22').toDate()
+			date:  moment.utc('2018-11-22').toDate()
 		}
 	});
 	
 	testMembershipInfo(amountUpdateByNewSubscription, {
 		amount: 5,
 		period: 'monthly',
-		expires: moment('2018-06-24'),
+		expires: moment.utc('2018-06-24'),
 		pendingUpdate: {
 			amount: 4,
-			date: moment('2018-06-23').toDate()
+			date: moment.utc('2018-06-23').toDate()
 		}
 	});
 });

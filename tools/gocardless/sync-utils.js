@@ -124,7 +124,8 @@ function filterCustomers(customers) {
 
 function getMembershipInfo(customer) {
 	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
-	const latestPayment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
+	const latestPayment =
+		getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
 	const latestSubscription = getLatestRecord(customer.subscriptions);
 
 	function getPeriodAndAmount() {
@@ -138,8 +139,8 @@ function getMembershipInfo(customer) {
 
 	function getExpiryDate() {
 		return isSuccessfulPayment(latestPayment) ?
-			moment(latestPayment.charge_date).add(getSubscriptionDuration(latestPayment.subscription)) :
-			moment(latestSubscription.start_date);
+			moment.utc(latestPayment.charge_date).add(getSubscriptionDuration(latestPayment.subscription)) :
+			moment.utc(latestSubscription.start_date);
 	}
 
 	function getPendingUpdate() {
@@ -150,7 +151,7 @@ function getMembershipInfo(customer) {
 				activeSubscription.upcoming_payments.find(p => p.amount === activeSubscription.amount);
 			return {
 				amount: activeSubscription.amount / 100,
-				...payment && {date: moment(payment.charge_date).toDate()}
+				...payment && {date: moment.utc(payment.charge_date).toDate()}
 			};
 		} else {
 			return {};
@@ -159,7 +160,7 @@ function getMembershipInfo(customer) {
 
 	function getCancelledAt() {
 		return latestSubscription.cancelledEvent &&
-			moment(latestSubscription.cancelledEvent.created_at);
+			moment.utc(latestSubscription.cancelledEvent.created_at);
 	}
 
 	return {

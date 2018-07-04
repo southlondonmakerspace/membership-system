@@ -153,7 +153,7 @@ async function updatePayment( gcPayment, payment ) {
 async function confirmPayment( gcPayment, payment ) {
 	if ( payment.member ) {
 		const subscription = await gocardless.subscriptions.get(payment.subscription_id);
-		const expiryDate = moment(payment.charge_date)
+		const expiryDate = moment.utc(payment.charge_date)
 			.add(utils.getSubscriptionDuration(subscription))
 			.add(config.gracePeriod);
 

@@ -20,6 +20,11 @@ block body
 					img(src='/static/svg/logo.svg').join-title-logo
 				h1 Hello#[br]#{user.firstname}
 
+			h3 Thank you!
+			p.
+				You are now an owner of independent media. With more people like you
+				we can sustain and grow the Cable.
+
 	.container
 		.row
 			.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
@@ -43,7 +48,12 @@ block body
 
 					h3 Delivery details
 
-					p We'd love to send you a copy of the #[b quarterly print edition]
+					if user.gocardless.amount < 3
+						p.
+							Would you like to receive a #[b free copy of our quartley magazine]?
+					else
+						p.
+							Would you like to receive very occasional post from us?
 
 					ul.join-options
 						li.join-options__opt

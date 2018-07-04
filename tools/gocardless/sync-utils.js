@@ -123,40 +123,49 @@ function filterCustomers(customers) {
 }
 
 function getMembershipInfo(customer) {
-	function getPendingUpdate(subscription) {
-		const payment = subscription.upcoming_payments.find(p => p.amount === subscription.amount);
+	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
+	const latestPayment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
+	const latestSubscription = getLatestRecord(customer.subscriptions);
+
+	function getPeriodAndAmount() {
+		const {interval, interval_unit} = latestPayment.subscription;
+		const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
 		return {
-			amount: subscription.amount / 100,
-			...payment && {date: moment(payment.charge_date).toDate()}
+			period,
+			amount: latestPayment.amount / (period === 'annually' ? 12 : 1) / 100,
 		};
 	}
 
+	function getExpiryDate() {
+		return isSuccessfulPayment(latestPayment) ?
+			moment(latestPayment.charge_date).add(getSubscriptionDuration(latestPayment.subscription)) :
+			moment(latestSubscription.start_date);
+	}
+
+	function getPendingUpdate() {
+		const activeSubscription = customer.latestActiveSubscription;
+
+		if (activeSubscription && latestPayment.amount !== activeSubscription.amount) {
+			const payment =
+				activeSubscription.upcoming_payments.find(p => p.amount === activeSubscription.amount);
+			return {
+				amount: activeSubscription.amount / 100,
+				...payment && {date: moment(payment.charge_date).toDate()}
+			};
+		} else {
+			return {};
+		}
+	}
+
 	function getCancelledAt() {
-		const latestSubscription = getLatestRecord(customer.subscriptions);
 		return latestSubscription.cancelledEvent &&
 			moment(latestSubscription.cancelledEvent.created_at);
 	}
 
-	const successfulPayments = customer.payments.filter(isSuccessfulPayment);
-
-	const latestPayment = getLatestRecord(successfulPayments.length > 0 ? successfulPayments : customer.payments);
-	const {interval, interval_unit} = latestPayment.subscription;
-
-	const period = interval_unit === 'yearly' || interval === 12 ? 'annually' : 'monthly';
-
-	const expires = isSuccessfulPayment(latestPayment) ?
-		moment(latestPayment.charge_date).add(getSubscriptionDuration(latestPayment.subscription)) :
-		moment(customer.created_at);
-
-	const activeSubscription = customer.latestActiveSubscription;
-	const pendingUpdate = activeSubscription && latestPayment.amount !== activeSubscription.amount ?
-		getPendingUpdate(activeSubscription) : {};
-
 	return {
-		period,
-		amount: latestPayment.amount / (period === 'annually' ? 12 : 1) / 100,
-		expires,
-		pendingUpdate,
+		...getPeriodAndAmount(),
+		expires: getExpiryDate(),
+		pendingUpdate: getPendingUpdate(),
 		cancelledAt: getCancelledAt()
 	};
 }

@@ -84,13 +84,13 @@ test('Membership info', t => {
 	testMembershipInfo(onlyPendingPayment, {
 		amount: 1,
 		period: 'monthly',
-		expires: moment('2018-06-09T06:38:44.172Z')
+		expires: moment('2018-06-15')
 	});
 
 	testMembershipInfo(onlyFailedPayment, {
 		amount: 2,
 		period: 'monthly',
-		expires: moment('2015-07-16T18:19:11.541Z')
+		expires: moment('2015-07-21')
 	});
 
 	testMembershipInfo(oneSubscription, {
@@ -139,7 +139,7 @@ test('Membership info with pending updates', t => {
 	testMembershipInfo(pendingPaymentWithAmountUpdate, {
 		amount: 5,
 		period: 'monthly',
-		expires: moment('2018-06-12T18:55:47.172Z'),
+		expires: moment('2018-06-18'),
 		pendingUpdate: {
 			amount: 12,
 			date:  moment('2018-07-18').toDate()

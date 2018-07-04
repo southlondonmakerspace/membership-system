@@ -20,8 +20,8 @@ html
 				title #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
 		block head
 			block css
-				link( rel="stylesheet", href="/css/theme.min.css" )
-				link( rel="stylesheet", href="/css/style.css" )
+				link( rel="stylesheet", href="/static/css/theme.min.css" )
+				link( rel="stylesheet", href="/static/css/style.css" )
 	body( class=( dev ? 'dev' : '' ) )
 		script.
 			document.body.className += ' has-js';
@@ -40,6 +40,6 @@ html
 					include partials/footer.pug
 
 		block js
-			script( src="/js/jquery.js" )
-			script( src="/js/bootstrap.js" )
-			script( src="/js/script.js" )
+			script( src="/static/js/jquery.js" )
+			script( src="/static/js/bootstrap.js" )
+			script( src="/static/js/script.js" )

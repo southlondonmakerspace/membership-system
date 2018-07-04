@@ -1,6 +1,6 @@
 .join-header {
 	position: relative;
-	background: url(/imgs/join/header.jpg) no-repeat top center, $c-black;
+	background: url(/static/imgs/join/header.jpg) no-repeat top center, $c-black;
 	background-size: 100%;
 	color: white;
 	padding: 4rem;
@@ -14,7 +14,7 @@
 	top: 0;
 	width: 100%;
 	padding-bottom: (952 / 1440) * 100%;
-	background: url(/imgs/join/header.jpg) no-repeat top center;
+	background: url(/static/imgs/join/header.jpg) no-repeat top center;
 	background-size: 100%;
 
 	&::after {

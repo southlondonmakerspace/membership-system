@@ -4,7 +4,7 @@ block prepend title
 	- title = app.title
 
 block append js
-	script(src='/js/join.js')
+	script(src='/static/js/join.js')
 
 block body
 	header.join-header
@@ -15,7 +15,7 @@ block body
 
 			.join-title
 				div
-					img(src='/svg/logo.svg').join-title-logo
+					img(src='/static/svg/logo.svg').join-title-logo
 				h1 Own your#[br]media
 
 			include /src/views/partials/flash.pug
@@ -84,4 +84,4 @@ block body
 						one else is talking about.
 
 	footer.join-footer
-		img(src='/svg/logo.svg').join-title-logo
+		img(src='/static/svg/logo.svg').join-title-logo

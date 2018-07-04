@@ -5,7 +5,7 @@ block prepend title
 
 block append js
 	+passwordRequirementsJS
-	script(src='/js/delivery-address.js')
+	script(src='/static/js/delivery-address.js')
 
 block append css
 	+passwordRequirementsCSS
@@ -17,7 +17,7 @@ block body
 		.join-form
 			.join-title
 				div
-					img(src='/svg/logo.svg').join-title-logo
+					img(src='/static/svg/logo.svg').join-title-logo
 				h1 Hello#[br]#{user.firstname}
 
 	.container

@@ -62,10 +62,10 @@ mixin page_header( title, opts )
 					small  #{ opts.small }
 
 mixin passwordRequirementsCSS
-	link( rel="stylesheet", href="/css/password-requirements.css" )
+	link( rel="stylesheet", href="/static/css/password-requirements.css" )
 
 mixin passwordRequirementsJS
-	script( src="/js/password-requirements.js" )
+	script( src="/static/js/password-requirements.js" )
 
 mixin flash( status, text, opts )
 	.alert( class='alert-' + status)=text

@@ -1,4 +1,5 @@
 const mandrill = require('mandrill-api/mandrill');
+const moment = require('moment');
 const config = require('../../config/config.json');
 
 const client = new mandrill.Mandrill(config.mandrill.api_key);
@@ -8,7 +9,13 @@ const templates = {
 	'reset-password': member => [{
 		name: 'RPLINK',
 		content: config.audience + '/password-reset/code/' + member.password.reset_code
-	}]
+	}],
+	'cancelled-contribution': member => {
+		return [{
+			name: 'EXPIRES',
+			content: moment(member.memberPermission.date_expires).format('dddd Do MMMM')
+		}];
+	}
 };
 
 function memberToTemplate(templateId, member) {

@@ -13,6 +13,14 @@ log.info( {
 
 var config = require( __config );
 
+if ( !config.gocardless.sandbox && config.dev ){
+	log.error({
+		app: 'main',
+		error: 'Dev mode enabled but GoCardless is not in sandbox, refusing to start'
+	});
+	process.exit(1);
+}
+
 var database = require( __js + '/database' ).connect( config.mongo );
 
 var express = require( 'express' ),

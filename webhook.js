@@ -1,31 +1,25 @@
+const __config = __dirname + '/config/config.json';
+const __src = __dirname + '/src';
+const __js = __src + '/js';
+
+const config = require( __config );
+
 const moment = require('moment');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-var __config = __dirname + '/config/config.json';
-var __src = __dirname + '/src';
-var __js = __src + '/js';
-
-var log = require( __js + '/logging' ).log;
-log.info( {
-	app: 'webhook',
-	action: 'start'
-} );
-
-var config = require( __config ),
-	db = require( __dirname + '/src/js/database' ).connect( config.mongo ),
-	express = require( 'express' ),
-	app = express(),
-	bodyParser = require( 'body-parser' ),
-	textBodyParser = bodyParser.text( { type: 'application/json' } );
-
+const log = require( __js + '/logging' ).log;
+const { Members, Payments } = require( __js + '/database' ).connect( config.mongo );
 const gocardless = require( __js + '/gocardless' );
+const mandrill = require( __js + '/mandrill' );
 
-var utils = require('./webhook-utils');
+const utils = require('./webhook-utils');
 
-// add logging capabilities
+const app = express();
+const textBodyParser = bodyParser.text( { type: 'application/json' } );
+
+// Add logging capabilities
 require( __js + '/logging' ).installMiddleware( app );
-
-var Members = db.Members,
-	Payments = db.Payments;
 
 app.get( '/ping', function( req, res ) {
 	req.log.info( {
@@ -67,7 +61,12 @@ app.post( '/', textBodyParser, async function( req, res ) {
 } );
 
 // Start server
-var listener = app.listen( config.gocardless.port, config.host, function () {
+log.info( {
+	app: 'webhook',
+	action: 'start'
+} );
+
+const listener = app.listen( config.gocardless.port, config.host, function () {
 	log.debug( {
 		app: 'webhook',
 		action: 'start-webserver',
@@ -157,42 +156,35 @@ async function confirmPayment( gcPayment, payment ) {
 			.add(utils.getSubscriptionDuration(subscription))
 			.add(config.gracePeriod);
 
-		const member = await Members.findOne( { _id: payment.member } ).populate( 'permissions.permission' ).exec();
+		const member = await Members.findOne( { _id: payment.member } );
+		if (member.memberPermission) {
+			const pendingUpdate = member.gocardless.pending_update;
+			if (pendingUpdate && payment.charge_date >= pendingUpdate.date) {
+				delete member.gocardless.pending_update;
+			}
 
-		for ( var p = 0; p < member.permissions.length; p++ ) {
-			if ( member.permissions[p].permission.slug == config.permission.member ) {
+			member.memberPermission.date_expires = expiryDate.toDate();
+			await member.save();
 
-				const pendingUpdate = member.gocardless.pending_update;
-				if (pendingUpdate && payment.charge_date >= pendingUpdate.date) {
-					delete member.gocardless.pending_update;
+			log.info( {
+				app: 'webhook',
+				action: 'extend-membership',
+				until: member.memberPermission.date_expires,
+				sensitive: {
+					member: member._id
 				}
-
-				member.permissions[p].date_expires = expiryDate.toDate();
-				await member.save();
-
-				log.info( {
-					app: 'webhook',
-					action: 'extend-membership',
-					until: member.permissions[p].date_expires,
-					sensitive: {
-						member: member._id
-					}
-				} );
-
-				return;
-			}
+			} );
+		} else {
+			log.error( {
+				app: 'webhook',
+				action: 'extend-membership',
+				date: expiryDate,
+				error: 'Membership not found',
+				sensitive: {
+					member: member._id
+				}
+			} );
 		}
-
-		// If permission not found
-		log.error( {
-			app: 'webhook',
-			action: 'extend-membership',
-			date: expiryDate,
-			error: 'Membership not found',
-			sensitive: {
-				member: member._id
-			}
-		} );
 	}
 }
 
@@ -223,6 +215,8 @@ async function cancelledSubscription( event ) {
 			'gocardless.subscription_id': true,
 			'gocardless.cancelled_at': new Date()
 		} } );
+
+		await mandrill.send('cancelled-contribution', member);
 
 		log.info( {
 			app: 'webhook',

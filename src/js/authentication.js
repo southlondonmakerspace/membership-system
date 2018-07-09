@@ -1,4 +1,4 @@
-var __home = __dirname + "/../..";
+var __home = __dirname + '/../..';
 var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
@@ -26,83 +26,83 @@ var Authentication = {
 			usernameField: 'email'
 		}, function( email, password, done ) {
 
-				if ( email ) email = email.toLowerCase();
+			if ( email ) email = email.toLowerCase();
 
-				// Search for member by email address
-				Members.findOne( { email: email }, function( err, user ) {
-					// If a user is found validate password
-					if ( user ) {
+			// Search for member by email address
+			Members.findOne( { email: email }, function( err, user ) {
+				// If a user is found validate password
+				if ( user ) {
 
-						// Has account exceeded it's password tries?
-						if ( user.password.tries >= config['password-tries'] ) {
-							return done( null, false, { message: 'account-locked' } );
-						}
-
-						// Hash the entered password with the members salt
-						Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
-							// Check the hashes match
-							if ( hash == user.password.hash ) {
-
-								// Check the user account is activated
-								if ( ! ( user.activated ) ) {
-									return done( null, false, { message: 'inactive-account' } );
-								}
-
-								// Clear any pending password resets and notify
-								if ( user.password.reset_code ) {
-									user.password.reset_code = null;
-									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: 'password-reset-attempt' } );
-								}
-
-								// Clear password tries and notify
-								if ( user.password.tries > 0 ) {
-									var attempts = user.password.tries;
-									user.password.tries = 0;
-									user.save( function ( err ) {} );
-									return done( null, { _id: user._id }, { message: Options.getText( 'flash-account-attempts' ).replace( '%', attempts ) } );
-								}
-
-								if ( user.password.iterations < config.iterations ) {
-									Authentication.generatePassword( password, function( password ) {
-										console.log( 'Password security upgraded for ' + user.email );
-										user.password = {
-											hash: password.hash,
-											salt: password.salt,
-											iterations: password.iterations
-										};
-										user.save( function ( err ) {} );
-									} );
-								}
-
-								// Successful login
-								return done( null, { _id: user._id }, { message: 'logged-in' } );
-							} else {
-								// If password doesn't match, increment tries and save
-								user.password.tries++;
-								user.save( function ( err ) {} );
-								// Delay by 1 second to slow down password guessing
-								return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
-							}
-						} );
-					} else {
-						// If email address doesn't match
-						// Delay by 1 second to slow down password guessing
-						return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
+					// Has account exceeded it's password tries?
+					if ( user.password.tries >= config['password-tries'] ) {
+						return done( null, false, { message: 'account-locked' } );
 					}
-				} );
-			}
+
+					// Hash the entered password with the members salt
+					Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
+						// Check the hashes match
+						if ( hash == user.password.hash ) {
+
+							// Check the user account is activated
+							if ( ! ( user.activated ) ) {
+								return done( null, false, { message: 'inactive-account' } );
+							}
+
+							// Clear any pending password resets and notify
+							if ( user.password.reset_code ) {
+								user.password.reset_code = null;
+								user.save( function ( err ) {} );
+								return done( null, { _id: user._id }, { message: 'password-reset-attempt' } );
+							}
+
+							// Clear password tries and notify
+							if ( user.password.tries > 0 ) {
+								var attempts = user.password.tries;
+								user.password.tries = 0;
+								user.save( function ( err ) {} );
+								return done( null, { _id: user._id }, { message: Options.getText( 'flash-account-attempts' ).replace( '%', attempts ) } );
+							}
+
+							if ( user.password.iterations < config.iterations ) {
+								Authentication.generatePassword( password, function( password ) {
+									console.log( 'Password security upgraded for ' + user.email );
+									user.password = {
+										hash: password.hash,
+										salt: password.salt,
+										iterations: password.iterations
+									};
+									user.save( function ( err ) {} );
+								} );
+							}
+
+							// Successful login
+							return done( null, { _id: user._id }, { message: 'logged-in' } );
+						} else {
+							// If password doesn't match, increment tries and save
+							user.password.tries++;
+							user.save( function ( err ) {} );
+							// Delay by 1 second to slow down password guessing
+							return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
+						}
+					} );
+				} else {
+					// If email address doesn't match
+					// Delay by 1 second to slow down password guessing
+					return setTimeout( function() { return done( null, false, { message: 'login-failed' } ); }, 1000 );
+				}
+			} );
+		}
 		) );
 
 		// Add support for TOTP authentication in Passport.js
 		passport.use( new TotpStrategy( {
 			window: 1,
 		}, function( user, done ) {
-				if ( user.otp.key ) {
-					return done( null, base32.decode( user.otp.key ), 30 );
-				}
-				return done( null, false );
-			})
+			if ( user.otp.key ) {
+				return done( null, base32.decode( user.otp.key ), 30 );
+			}
+			return done( null, false );
+		})
 		);
 
 
@@ -297,22 +297,22 @@ var Authentication = {
 	isLoggedIn: function( req, res, next ) {
 		var status = Authentication.loggedIn( req );
 		switch ( status ) {
-			case Authentication.LOGGED_IN:
-				return next();
-			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', 'inactive-account' );
-				res.redirect( '/' );
-				return;
-			case Authentication.REQUIRES_2FA:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				res.redirect( '/otp' );
-				return;
-			default:
-			case Authentication.NOT_LOGGED_IN:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'login-required' );
-				res.redirect( '/login' );
-				return;
+		case Authentication.LOGGED_IN:
+			return next();
+		case Authentication.NOT_ACTIVATED:
+			req.flash( 'warning', 'inactive-account' );
+			res.redirect( '/' );
+			return;
+		case Authentication.REQUIRES_2FA:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			res.redirect( '/otp' );
+			return;
+		default:
+		case Authentication.NOT_LOGGED_IN:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'error', 'login-required' );
+			res.redirect( '/login' );
+			return;
 		}
 	},
 
@@ -329,27 +329,27 @@ var Authentication = {
 	isMember: function( req, res, next ) {
 		var status = Authentication.activeMember( req );
 		switch ( status ) {
-			case Authentication.LOGGED_IN:
-				return next();
-			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', 'inactive-account' );
-				res.redirect( '/' );
-				return;
-			case Authentication.NOT_MEMBER:
-				req.flash( 'warning', 'inactive-membership' );
-				res.redirect( '/profile' );
-				return;
-			case Authentication.REQUIRES_2FA:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'warning', '2fa-required' );
-				res.redirect( '/otp' );
-				return;
-			default:
-			case Authentication.NOT_LOGGED_IN:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'login-required' );
-				res.redirect( '/login' );
-				return;
+		case Authentication.LOGGED_IN:
+			return next();
+		case Authentication.NOT_ACTIVATED:
+			req.flash( 'warning', 'inactive-account' );
+			res.redirect( '/' );
+			return;
+		case Authentication.NOT_MEMBER:
+			req.flash( 'warning', 'inactive-membership' );
+			res.redirect( '/profile' );
+			return;
+		case Authentication.REQUIRES_2FA:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'warning', '2fa-required' );
+			res.redirect( '/otp' );
+			return;
+		default:
+		case Authentication.NOT_LOGGED_IN:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'error', 'login-required' );
+			res.redirect( '/login' );
+			return;
 		}
 	},
 
@@ -357,31 +357,31 @@ var Authentication = {
 	isAdmin: function( req, res, next ) {
 		var status = Authentication.canAdmin( req );
 		switch ( status ) {
-			case Authentication.LOGGED_IN:
-				return next();
-			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', 'inactive-account' );
-				res.redirect( '/' );
-				return;
-			case Authentication.NOT_MEMBER:
-				req.flash( 'warning', 'inactive-membership' );
-				res.redirect( '/profile' );
-				return;
-			case Authentication.NOT_ADMIN:
-				req.flash( 'warning', '403' );
-				res.redirect( '/profile' );
-				return;
-			case Authentication.REQUIRES_2FA:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'warning', '2fa-required' );
-				res.redirect( '/otp' );
-				return;
-			default:
-			case Authentication.NOT_LOGGED_IN:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'login-required' );
-				res.redirect( '/login' );
-				return;
+		case Authentication.LOGGED_IN:
+			return next();
+		case Authentication.NOT_ACTIVATED:
+			req.flash( 'warning', 'inactive-account' );
+			res.redirect( '/' );
+			return;
+		case Authentication.NOT_MEMBER:
+			req.flash( 'warning', 'inactive-membership' );
+			res.redirect( '/profile' );
+			return;
+		case Authentication.NOT_ADMIN:
+			req.flash( 'warning', '403' );
+			res.redirect( '/profile' );
+			return;
+		case Authentication.REQUIRES_2FA:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'warning', '2fa-required' );
+			res.redirect( '/otp' );
+			return;
+		default:
+		case Authentication.NOT_LOGGED_IN:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'error', 'login-required' );
+			res.redirect( '/login' );
+			return;
 		}
 	},
 
@@ -389,31 +389,31 @@ var Authentication = {
 	isSuperAdmin: function( req, res, next ) {
 		var status = Authentication.canSuperAdmin( req );
 		switch ( status ) {
-			case Authentication.LOGGED_IN:
-				return next();
-			case Authentication.NOT_ACTIVATED:
-				req.flash( 'warning', 'inactive-account' );
-				res.redirect( '/' );
-				return;
-			case Authentication.NOT_MEMBER:
-				req.flash( 'warning', 'inactive-membership' );
-				res.redirect( '/profile' );
-				return;
-			case Authentication.NOT_ADMIN:
-				req.flash( 'warning', '403' );
-				res.redirect( '/profile' );
-				return;
-			case Authentication.REQUIRES_2FA:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'warning', '2fa-required' );
-				res.redirect( '/otp' );
-				return;
-			default:
-			case Authentication.NOT_LOGGED_IN:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', 'login-required' );
-				res.redirect( '/login' );
-				return;
+		case Authentication.LOGGED_IN:
+			return next();
+		case Authentication.NOT_ACTIVATED:
+			req.flash( 'warning', 'inactive-account' );
+			res.redirect( '/' );
+			return;
+		case Authentication.NOT_MEMBER:
+			req.flash( 'warning', 'inactive-membership' );
+			res.redirect( '/profile' );
+			return;
+		case Authentication.NOT_ADMIN:
+			req.flash( 'warning', '403' );
+			res.redirect( '/profile' );
+			return;
+		case Authentication.REQUIRES_2FA:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'warning', '2fa-required' );
+			res.redirect( '/otp' );
+			return;
+		default:
+		case Authentication.NOT_LOGGED_IN:
+			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
+			req.flash( 'error', 'login-required' );
+			res.redirect( '/login' );
+			return;
 		}
 	},
 
@@ -426,7 +426,7 @@ var Authentication = {
 	},
 
 	validateTag: function( tag ) {
-		if ( tag.match( /^[0-9a-f]{8}$/i ) === null ) return 'tag-invalid-malformed'
+		if ( tag.match( /^[0-9a-f]{8}$/i ) === null ) return 'tag-invalid-malformed';
 		if ( tag == '21222324' ) return 'tag-invalid-visa';
 		if ( tag == '01020304' ) return 'tag-invalid-android';
 		if ( tag.match( /^0+$/ ) !== null ) return 'tag-invalid-amex';

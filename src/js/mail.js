@@ -31,7 +31,7 @@ var Mail = {
 
 			if ( err ) {
 				status = false;
-				console.log( 'Error sending email "' + subject + '" to ' + to + ": " );
+				console.log( 'Error sending email "' + subject + '" to ' + to + ': ' );
 				console.log( err );
 			} else {
 				status = true;

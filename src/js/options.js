@@ -1,4 +1,4 @@
-var __home = __dirname + "/../..";
+var __home = __dirname + '/../..';
 var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
@@ -44,12 +44,12 @@ var Options = {
 		} );
 		if ( option ) {
 			switch ( option.value ) {
-				case 'true':
-					return true;
-				case 'false':
-					return false;
-				default:
-					return;
+			case 'true':
+				return true;
+			case 'false':
+				return false;
+			default:
+				return;
 			}
 		} else {
 			return;
@@ -101,7 +101,7 @@ var Options = {
 						opt.default = false;
 						opt.value = option.value;
 					}
-				} )
+				} );
 			}
 			callback();
 		} );

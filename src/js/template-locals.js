@@ -35,7 +35,7 @@ function templateLocals( req, res, next ) {
 
 	for ( var a in apps ) {
 		var app = apps[a];
-		if ( app.menu != "none" ) {
+		if ( app.menu != 'none' ) {
 			if ( app.permissions && app.permissions != [] ) {
 				if ( req.user ) {
 					for ( var p in app.permissions ) {
@@ -45,7 +45,7 @@ function templateLocals( req, res, next ) {
 						}
 					}
 				} else {
-					if ( app.permissions.indexOf( "loggedOut" ) != -1 )
+					if ( app.permissions.indexOf( 'loggedOut' ) != -1 )
 						res.locals.apps[ app.menu ].push( app );
 				}
 				res.locals.subapps[ app.uid ] = [];

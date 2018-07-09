@@ -80,17 +80,17 @@ var Discourse = {
 		var params = {
 			raw: message,
 			title: subject,
-			category: "",
-			is_warning: "false",
-			archetype: "private_message",
+			category: '',
+			is_warning: 'false',
+			archetype: 'private_message',
 			target_usernames: username,
-			nested_post: "true"
+			nested_post: 'true'
 		};
 		Discourse.post( '/posts', params );
 	},
 	sendActivationMessage: function ( username, code ) {
-		var message = "Your activation code: **" + code + "**\n\n[Click here to activate](" + config.audience + '/profile/discourse?code=' + code + ")";
-		Discourse.sendPrivateMessage( username, "Activation Code", message );
+		var message = 'Your activation code: **' + code + '**\n\n[Click here to activate](' + config.audience + '/profile/discourse?code=' + code + ')';
+		Discourse.sendPrivateMessage( username, 'Activation Code', message );
 	},
 	checkGroups: function() {
 		api_tasks.push( function() {

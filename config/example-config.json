@@ -38,5 +38,7 @@
 	"iterations": 50000,
 	"dev": true,
 	"log": "/var/log/membership.log",
-	"logStdout": false
+	"logStdout": false,
+	"appOverrides": {
+	}
 }

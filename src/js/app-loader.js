@@ -11,21 +11,15 @@ var log = require( __js + '/logging' ).log;
 var fs = require( 'fs' );
 	helmet = require( 'helmet' );
 
-var app;
-var apps = [];
-
-module.exports = function( a ) {
-	// Grab the express app reference locally
-	app = a;
-
-	// Loop through main app director contents
-	loadApps();
+module.exports = function( app ) {
+	// Loop through main app directory contents
+	var apps = loadApps( __apps, config.appOverrides );
 
 	// Load template locals;
 	app.use( require( __js + '/template-locals' )( apps ) );
 
 	// Route apps
-	routeApps();
+	routeApps(app, apps);
 
 	// Error 404
 	app.use( function ( req, res, next ) {
@@ -40,69 +34,39 @@ module.exports = function( a ) {
 	} );
 };
 
-function loadApps() {
-	var files = fs.readdirSync( __apps );
-
-	for ( var f in files ) {
-
-		// Only read directories
-		var file = __apps + '/' + files[f];
-		if ( fs.statSync( file ).isDirectory() ) {
-
-			// Check for a config.json file
-			var config_file = file + '/config.json';
-			if ( fs.existsSync( config_file ) ) {
-
-				// Parse the config into apps array
-				var output = JSON.parse( fs.readFileSync( config_file ) );
-				output.uid = files[f];
-				if ( ! output.priority ) output.priority = 100;
-				output.app = file + '/app.js';
-
-				// Check for sub apps directory
-				output.subapps = [];
-				var subapp_path = file + '/apps';
-				if ( fs.existsSync( subapp_path ) ) {
-
-					// Fetch the contents of the subapp directory
-					var subapps = fs.readdirSync( subapp_path );
-					for ( var a in subapps ) {
-
-						// Only read directories
-						var subapp = subapp_path + '/' + subapps[a];
-						if ( fs.statSync( subapp ).isDirectory() ) {
-
-							// Check for a config.json file
-							var sub_config_file = subapp + '/config.json';
-							if ( fs.existsSync( sub_config_file ) ) {
-
-								// Parse the config into apps array
-								var subapp_output = JSON.parse( fs.readFileSync ( sub_config_file ) );
-								subapp_output.uid = subapps[a];
-								if ( ! subapp_output.priority ) subapp_output.priority = 100;
-								subapp_output.app = subapp + '/app.js';
-
-								output.subapps.push( subapp_output );
-							}
-						}
-					}
-				}
-
-				output.subapps.sort( sortPriority );
-
-				apps.push( output );
-			}
-		}
-	}
-
-	apps.sort( sortPriority );
+function loadApps( basePath, overrides ) {
+	return fs.readdirSync( basePath )
+		.filter( function ( file ) {
+			var path = basePath + '/' + file;
+			return fs.statSync( path ).isDirectory() && fs.existsSync( path + '/config.json' );
+		} )
+		.map( function ( file ) {
+			return loadApp( file, basePath + '/' + file, overrides[file] )
+		} )
+		.filter( function ( app ) {
+			return ! app.disabled;
+		} )
+		.sort( function ( a, b ) {
+			return b.priority - a.priority;
+		} );
 }
 
-function sortPriority( a, b ) {
-	return b.priority - a.priority;
+function loadApp( uid, path, overrides ) {
+	var appConfig = require( path + '/config.json' );
+	overrides = overrides || { config: {}, subapps: {} };
+
+	var subapps = fs.existsSync( path + '/apps' ) ?
+		loadApps( path + '/apps', overrides.subapps ) : [];
+
+	return Object.assign( {
+		uid: uid,
+		app: path + '/app.js',
+		priority: 100,
+		subapps: subapps
+	}, appConfig, overrides.config );
 }
 
-function routeApps() {
+function routeApps(mainApp, apps) {
 	for ( var a in apps ) {
 		var _app = apps[a];
 		log.debug( {
@@ -113,7 +77,7 @@ function routeApps() {
 		var new_app = require( _app.app )( _app );
 		new_app.locals.basedir = __root;
 		new_app.use( helmet() );
-		app.use( '/' + _app.path, new_app );
+		mainApp.use( '/' + _app.path, new_app );
 
 		if ( _app.subapps.length > 0 ) {
 			for ( var s in _app.subapps ) {

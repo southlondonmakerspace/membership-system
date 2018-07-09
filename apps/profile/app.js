@@ -2,7 +2,6 @@ var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
 var __config = __root + '/config';
-var __apps = __dirname + '/apps';
 
 var	express = require( 'express' ),
 	app = express();
@@ -10,7 +9,6 @@ var	express = require( 'express' ),
 var moment = require( 'moment' );
 
 var db = require( __js + '/database' ),
-	Members = db.Members,
 	Events = db.Events,
 	Permissions = db.Permissions;
 
@@ -18,7 +16,6 @@ var config = require( __config + '/config.json' );
 
 var auth = require( __js + '/authentication' );
 
-var apps = [];
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -49,21 +46,21 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 					{
 						$group: {
 							_id: {
-								member: "$member",
-								day: { $dayOfMonth: "$happened" }
+								member: '$member',
+								day: { $dayOfMonth: '$happened' }
 							}
 						}
 					},
 					{
 						$group: {
-							_id: "$_id.member",
-							days: { $push: "$_id.day" }
+							_id: '$_id.member',
+							days: { $push: '$_id.day' }
 						}
 					},
 					{
 						$project: {
 							_id: 0,
-							count: { $size: "$days" }
+							count: { $size: '$days' }
 						}
 					},
 					{

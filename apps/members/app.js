@@ -7,8 +7,6 @@ var	express = require( 'express' ),
 	app = express(),
 	discourse = require( __js + '/discourse' );
 
-var Options = require( __js + '/options.js' )();
-
 var PostcodesIO = require( 'postcodesio-client' ),
 	postcodes = new PostcodesIO();
 
@@ -18,8 +16,7 @@ var moment = require( 'moment' );
 var	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
 	Members = db.Members,
-	Payments = db.Payments,
-	Events = db.Events;
+	Payments = db.Payments;
 
 var Mail = require( __js + '/mail' );
 
@@ -139,14 +136,13 @@ app.get( '/', auth.isMember, function( req, res ) {
 				if ( key != 'page' ) append_path.push( path[key] );
 			} );
 			append_path = append_path.join( '&' );
-			form_path = append_path;
 
 			var pages = [];
 			for ( var p = 1; p <= Math.ceil( total / limit ); p++ ) {
 				var item = {
 					number: p,
 					path: '?page=' + p + ( append_path ? '&' + append_path : '' )
-				}
+				};
 				pages.push( item );
 			}
 			var next = ( page + 1 ) <= pages.length ? pages[ page ] : null;
@@ -174,7 +170,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				limits[l] = {
 					number: limit,
 					path: '?limit=' + limit + ( append_path ? '&' + append_path : '' )
-				}
+				};
 			} );
 
 			// Inactive members
@@ -184,7 +180,6 @@ app.get( '/', auth.isMember, function( req, res ) {
 				if ( key == 'page' ) return;
 				append_path.push( path[key] );
 			} );
-			inactive_members_path = append_path.join( '&' );
 
 			// Search data
 			var search_data = {
@@ -194,7 +189,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 				discourse: req.query.discourse,
 				show_inactive_members: req.query.show_inactive_members,
 				permission: req.query.permission
-			}
+			};
 
 			Members.find( search ).limit( limit ).skip( limit * ( page - 1 ) ).sort( [ [ 'lastname', 1 ], [ 'firstname', 1 ] ] ).exec( function( err, members ) {
 				res.render( 'index', {
@@ -225,7 +220,7 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 			discourse.getUsername( member.discourse.username, function( discourse ) {
 				var total = 0;
 
-				for ( p in payments ) {
+				for ( let p in payments ) {
 					total += payments[p].amount;
 				}
 
@@ -263,12 +258,12 @@ app.get( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 
 app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.firstname ||
-		 ! req.body.lastname ||
-		 ! req.body.email ||
-		 ! req.body.address ) {
- 			req.flash( 'danger', 'information-ommited' );
- 			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
- 			return;
+			! req.body.lastname ||
+			! req.body.email ||
+			! req.body.address ) {
+		req.flash( 'danger', 'information-ommited' );
+		res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
+		return;
 	}
 
 	var postcode = '';
@@ -294,7 +289,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 			member.postcode_coordinates = null;
 		}
 
-		Members.update( { uuid: req.params.uuid }, member, function( status ) {
+		Members.update( { uuid: req.params.uuid }, member, function() {
 			req.flash( 'success', 'profile-updated' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
 		} );
@@ -312,7 +307,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 			address: req.body.address
 		};
 
-		Members.update( { uuid: req.params.uuid }, member, function( status ) {
+		Members.update( { uuid: req.params.uuid }, member, function() {
 			req.flash( 'success', 'profile-updated' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
 		} );
@@ -346,7 +341,7 @@ app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 		member.activation_code = null;
 	}
 
-	Members.update( { uuid: req.params.uuid }, member, function( status ) {
+	Members.update( { uuid: req.params.uuid }, member, function() {
 		req.flash( 'success', 'activation-updated' );
 		res.redirect( app.mountpath + '/' + req.params.uuid + '/activation' );
 	} );
@@ -447,7 +442,7 @@ app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 
 	if ( req.body.activated ) member['discourse.activation_code'] = null;
 
-	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
+	Members.update( { uuid: req.params.uuid }, { $set: member }, function() {
 		req.flash( 'success', 'discourse-updated' );
 		res.redirect( app.mountpath + '/' + req.params.uuid + '/discourse' );
 	} );
@@ -479,7 +474,7 @@ app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 		'gocardless.minimum': req.body.minimum
 	};
 
-	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
+	Members.update( { uuid: req.params.uuid }, { $set: member }, function() {
 		req.flash( 'success', 'gocardless-updated' );
 		res.redirect( app.mountpath + '/' + req.params.uuid + '/gocardless' );
 	} );
@@ -511,8 +506,8 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 
 app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	if ( ! req.body.permission ||
-		 ! req.body.start_time ||
- 		 ! req.body.start_date ) {
+			! req.body.start_time ||
+			! req.body.start_date ) {
 		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.mountpath );
 		return;
@@ -522,7 +517,7 @@ app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 		if ( permission ) {
 
 			if ( ! res.locals.can_admin( permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
-				req.flash( 'danger', messages[ 'permission-admin-only' ] );
+				req.flash( 'danger', 'permission-admin-only' );
 				res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 				return;
 			}
@@ -564,7 +559,7 @@ app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 					$push: {
 						permissions: new_permission
 					}
-				}, function ( status ) {
+				}, function () {
 					res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 				} );
 			} );
@@ -590,7 +585,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 		}
 
 		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
-			req.flash( 'danger', messages[ 'permission-admin-only' ] );
+			req.flash( 'danger', 'permission-admin-only' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;
 		}
@@ -614,8 +609,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 } );
 
 app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
-	if ( ! req.body.start_time ||
- 		 ! req.body.start_date ) {
+	if ( ! req.body.start_time || ! req.body.start_date ) {
 		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.mountpath );
 		return;
@@ -635,7 +629,7 @@ app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 		}
 
 		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
-			req.flash( 'danger', messages[ 'permission-admin-only' ] );
+			req.flash( 'danger', 'permission-admin-only' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;
 		}
@@ -664,7 +658,7 @@ app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 			permission.date_expires = null;
 		}
 
-		member.save( function ( err ) {
+		member.save( function () {
 			req.flash( 'success', 'permission-updated' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 		} );
@@ -686,14 +680,14 @@ app.post( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
 		}
 
 		if ( ! res.locals.can_admin( member.permissions.id( req.params.id ).permission.slug ) && ! res.locals.access( 'superadmin' ) ) {
-			req.flash( 'danger', messages[ 'permission-admin-only' ] );
+			req.flash( 'danger', 'permission-admin-only' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 			return;
 		}
 
 		member.permissions.pull( { _id: req.params.id } );
 
-		member.save( function ( err ) {
+		member.save( function () {
 			req.flash( 'success', 'permission-removed' );
 			res.redirect( app.mountpath + '/' + req.params.uuid + '/permissions' );
 		} );
@@ -726,7 +720,7 @@ app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
 				key: ''
 			}
 		};
-		Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
+		Members.update( { uuid: req.params.uuid }, { $set: member }, function() {
 			var options = {
 				firstname: req.user.firstname
 			};
@@ -740,7 +734,7 @@ app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
 				function() {
 					req.flash( 'success', '2fa-disabled' );
 					res.redirect( app.mountpath + '/' + req.params.uuid );
-			} );
+				} );
 		} );
 	} else {
 		req.flash( 'success', '2fa-no-change' );
@@ -773,7 +767,7 @@ app.post( '/:uuid/override', auth.isSuperAdmin, function( req, res ) {
 		signup_override: ( req.body.override ? true : false )
 	};
 
-	Members.update( { uuid: req.params.uuid }, member, function( status ) {
+	Members.update( { uuid: req.params.uuid }, member, function() {
 		req.flash( 'success', 'override-updated' );
 		res.redirect( app.mountpath + '/' + req.params.uuid + '/override' );
 	} );

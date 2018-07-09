@@ -1,5 +1,4 @@
-var mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId;
+var mongoose = require( 'mongoose' );
 
 module.exports = {
 	name: 'HistoricEvents',

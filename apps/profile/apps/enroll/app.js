@@ -48,9 +48,9 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 		res.render( 'replace', { code: req.body.enrollment_code } );
 	} else {
 		if ( ! req.body.enrollment_code ) {
-				req.flash( 'danger', 'information-ommited' );
-				res.redirect( app.parent.mountpath + app.mountpath );
-				return;
+			req.flash( 'danger', 'information-ommited' );
+			res.redirect( app.parent.mountpath + app.mountpath );
+			return;
 		}
 
 		Enroll.findOne( {
@@ -64,7 +64,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 
 			Members.findOne( { 'tag.id': record.tag }, function( err, member ) {
 				if ( member ) {
-					record.remove( function( error ) {} );
+					record.remove( function () {} );
 					req.flash( 'danger', 'enroll-tag-dupe' );
 					res.redirect( '/profile/tag' );
 					return;
@@ -74,7 +74,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 				var monthFromToday = moment().subtract( 1, 'months' );
 
 				if ( created.isBefore( monthFromToday ) ) {
-					record.remove( function( error ) {} );
+					record.remove( function () {} );
 					req.flash( 'danger', 'enroll-expired' );
 					res.redirect( app.parent.mountpath + app.mountpath );
 					return;
@@ -101,14 +101,14 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 						} );
 					}
 
-					req.user.save( function( error ) {
+					req.user.save( function() {
 						console.log( 'Enrolling tag: ' + record.tag + ' for user: ' + req.user.email );
 
 						if ( ! foundPermission ) {
 							console.log( 'Granting "' + req.user.email + '" access permission' );
 						}
 
-						record.remove( function( error ) {} );
+						record.remove( function() {} );
 						req.flash( 'success', 'enroll-success' );
 						res.redirect( '/profile/tag' );
 					} );

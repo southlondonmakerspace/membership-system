@@ -1,18 +1,11 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
 
-var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
-	db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members;
-
-var config = require( __config + '/config.json' );
+var auth = require( __js + '/authentication' );
 
 var app_config = {};
 

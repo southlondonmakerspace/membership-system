@@ -191,7 +191,7 @@ app.post( '/', function( req, res ) {
 									req.log.debug( {
 										app: 'join',
 										action: 'signup',
-										error: "Mongo schema validation error: " + status.error[key].message
+										error: 'Mongo schema validation error: ' + status.error[key].message
 									} );
 								}
 							} else if ( status.code == 11000 ) {
@@ -232,7 +232,7 @@ app.post( '/', function( req, res ) {
 								function() {
 									req.flash( 'success', 'account-created' );
 									res.redirect( '/' );
-							} );
+								} );
 						}
 					} );
 				} );

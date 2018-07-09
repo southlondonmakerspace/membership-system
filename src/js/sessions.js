@@ -6,7 +6,7 @@ var session = require( 'express-session' ),
 	cookie = require('cookie-parser'),
 	body = require( 'body-parser' ),
 	passport = require( 'passport' );
-	csrf = require( 'csurf' );
+var csrf = require( 'csurf' );
 
 var MongoDBStore = require( 'connect-mongodb-session' )( session );
 

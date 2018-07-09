@@ -52,7 +52,7 @@ app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) 
 			name: permission.name
 		} );
 		res.locals.breadcrumb.push( {
-			name: "Members"
+			name: 'Members'
 		} );
 		res.locals.breadcrumb.push( {
 			name: start.getFullYear()
@@ -73,22 +73,22 @@ app.get( '/:slug/members/:year/:month', auth.isSuperAdmin, function( req, res ) 
 			{
 				$group: {
 					_id: {
-						member: "$member",
-						day: { $dayOfYear: "$happened" }
+						member: '$member',
+						day: { $dayOfYear: '$happened' }
 					}
 				}
 			},
 			{
 				$group: {
-					_id: "$_id.member",
-					days: { $push: "$_id.day" }
+					_id: '$_id.member',
+					days: { $push: '$_id.day' }
 				}
 			},
 			{
 				$project: {
 					_id: 0,
-					member: "$_id",
-					count: { $size: "$days" }
+					member: '$_id',
+					count: { $size: '$days' }
 				}
 			},
 			{
@@ -130,7 +130,7 @@ app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 			name: permission.name
 		} );
 		res.locals.breadcrumb.push( {
-			name: "Members"
+			name: 'Members'
 		} );
 		res.locals.breadcrumb.push( {
 			name: start.getFullYear()
@@ -148,22 +148,22 @@ app.get( '/:slug/members/:year', auth.isSuperAdmin, function( req, res ) {
 			{
 				$group: {
 					_id: {
-						member: "$member",
-						day: { $dayOfYear: "$happened" }
+						member: '$member',
+						day: { $dayOfYear: '$happened' }
 					}
 				}
 			},
 			{
 				$group: {
-					_id: "$_id.member",
-					days: { $push: "$_id.day" }
+					_id: '$_id.member',
+					days: { $push: '$_id.day' }
 				}
 			},
 			{
 				$project: {
 					_id: 0,
-					member: "$_id",
-					count: { $size: "$days" }
+					member: '$_id',
+					count: { $size: '$days' }
 				}
 			},
 			{
@@ -205,7 +205,7 @@ app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 			name: permission.name
 		} );
 		res.locals.breadcrumb.push( {
-			name: "Days"
+			name: 'Days'
 		} );
 		res.locals.breadcrumb.push( {
 			name: start.getFullYear()
@@ -223,22 +223,22 @@ app.get( '/:slug/days/:year?', auth.isSuperAdmin, function( req, res ) {
 			{
 				$group: {
 					_id: {
-						member: "$member",
-						day: { $dayOfYear: "$happened" },
+						member: '$member',
+						day: { $dayOfYear: '$happened' },
 					}
 				}
 			},
 			{
 				$group: {
-					_id: "$_id.day",
-					members: { $push: "$_id.member" }
+					_id: '$_id.day',
+					members: { $push: '$_id.member' }
 				}
 			},
 			{
 				$project: {
 					_id: 0,
-					day: "$_id",
-					count: { $size: "$members" }
+					day: '$_id',
+					count: { $size: '$members' }
 				}
 			},
 			{
@@ -284,7 +284,7 @@ app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 			name: permission.name
 		} );
 		res.locals.breadcrumb.push( {
-			name: "Days of Week"
+			name: 'Days of Week'
 		} );
 		res.locals.breadcrumb.push( {
 			name: start.getFullYear()
@@ -302,23 +302,23 @@ app.get( '/:slug/days-of-week/:year?', auth.isSuperAdmin, function( req, res ) {
 			{
 				$group: {
 					_id: {
-						member: "$member",
-						day: { $dayOfWeek: "$happened" },
-						week: { $week: "$happened" },
+						member: '$member',
+						day: { $dayOfWeek: '$happened' },
+						week: { $week: '$happened' },
 					}
 				}
 			},
 			{
 				$group: {
-					_id: "$_id.day",
-					members: { $push: "$_id.member" }
+					_id: '$_id.day',
+					members: { $push: '$_id.member' }
 				}
 			},
 			{
 				$project: {
 					_id: 0,
-					day: "$_id",
-					count: { $size: "$members" }
+					day: '$_id',
+					count: { $size: '$members' }
 				}
 			},
 			{
@@ -362,7 +362,7 @@ app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, r
 			name: permission.name
 		} );
 		res.locals.breadcrumb.push( {
-			name: "Days of Week"
+			name: 'Days of Week'
 		} );
 		res.locals.breadcrumb.push( {
 			name: start.getFullYear()
@@ -383,23 +383,23 @@ app.get( '/:slug/days-of-week/:year/:month', auth.isSuperAdmin, function( req, r
 			{
 				$group: {
 					_id: {
-						member: "$member",
-						day: { $dayOfWeek: "$happened" },
-						week: { $week: "$happened" },
+						member: '$member',
+						day: { $dayOfWeek: '$happened' },
+						week: { $week: '$happened' },
 					}
 				}
 			},
 			{
 				$group: {
-					_id: "$_id.day",
-					members: { $push: "$_id.member" }
+					_id: '$_id.day',
+					members: { $push: '$_id.member' }
 				}
 			},
 			{
 				$project: {
 					_id: 0,
-					day: "$_id",
-					count: { $size: "$members" }
+					day: '$_id',
+					count: { $size: '$members' }
 				}
 			},
 			{

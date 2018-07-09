@@ -7,7 +7,6 @@ var	express = require( 'express' ),
 
 var auth = require( __js + '/authentication' ),
 	db = require( __js + '/database' ),
-	Members = db.Members,
 	Payments = db.Payments,
 	HistoricEvents = db.HistoricEvents;
 

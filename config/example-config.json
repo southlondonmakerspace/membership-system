@@ -39,6 +39,12 @@
 	"dev": true,
 	"log": "/var/log/membership.log",
 	"logStdout": false,
+	"logSlack": {
+		"level": "error",
+		"webhook_url": "https://hooks.slack.com/services/example",
+		"channel": "#example",
+		"username": "example"
+	},
 	"appOverrides": {
 	}
 }

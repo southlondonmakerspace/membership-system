@@ -5,7 +5,8 @@ var config = require( __config );
 
 var bunyan = require( 'bunyan' ),
 	bunyanMiddleware = require( 'bunyan-middleware' ),
-	SyslogStream = require( 'bunyan-syslog-unixdgram' );
+	SyslogStream = require( 'bunyan-syslog-unixdgram' ),
+	BunyanSlack = require( 'bunyan-slack' );
 
 var crypto = require('crypto');
 var hash = crypto.createHash;
@@ -67,6 +68,14 @@ if (config.syslog == true) {
 			stream: stream
 		} );
 	}
+}
+
+if ( config.logSlack != undefined ) {
+	let stream = new BunyanSlack( config.logSlack );
+	bunyanConfig.streams.push( {
+		level: config.logSlack.level,
+		stream
+	} );
 }
 
 var logger = bunyan.createLogger( bunyanConfig );

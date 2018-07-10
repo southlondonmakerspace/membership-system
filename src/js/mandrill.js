@@ -14,6 +14,9 @@ const templates = {
 		return [{
 			name: 'EXPIRES',
 			content: moment(member.memberPermission.date_expires).format('dddd Do MMMM')
+		}, {
+			name: 'MEMBERSHIPID',
+			content: member.uuid
 		}];
 	}
 };

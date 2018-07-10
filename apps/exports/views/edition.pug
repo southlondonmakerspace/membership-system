@@ -1,0 +1,87 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Edition export'
+	- activeapp = 'exports'
+
+
+block contents
+	.row
+		.col-md-12
+			+page_header('Edition export - ' + exportDetails.description)
+	.row
+		.col-md-8.col-md-offset-2
+			h3 New members
+			if newMembers.length > 0
+				p Found #{newMembers.length} members not previously in the export
+				form(method='POST')
+					+csrf
+					input(type='hidden', name='action', value='add')
+					button.btn Add
+
+				h4 Member list
+				table.table.table-striped.table-condensed
+					thead
+						tr
+							th Name
+							th Email
+					tbody
+						each member in newMembers
+							tr
+								td #[a(href='/members/' + member.uuid) #{member.fullname}]
+								td= member.email
+			else
+				p All eligible members are in export
+
+			h3 Run export
+			p Export a CSV of all members with a given status
+			form(method='POST', target='_blank').form-horizontal
+				+csrf
+				input(type='hidden', name='action', value='export')
+
+				.form-group
+					label(for='status').form-label.col-md-3 Status
+					.col-md-4
+						select(id='status', name='status').form-control
+							option(value='') All
+							option(value='added') Added
+							option(value='sent') Sent
+
+				button.btn Export
+
+			h3 Update export members
+			p There are #{exportMembers.length} members in export
+			form(method='POST').form-horizontal
+				+csrf
+				input(type='hidden', name='action', value='update')
+
+				.form-group
+					label(for='old_status').form-label.col-md-3 Old status
+					.col-md-4
+						select(id='old_status', name='old_status').form-control
+							option(value='') All
+							option(value='added') Added
+							option(value='sent') Sent
+
+				.form-group
+					label(for='new_status').form-label.col-md-3 New status
+					.col-md-4
+						select(id='new_status', name='status').form-control
+							option(value='added') Added
+							option(value='sent') Sent
+
+				button.btn Update
+
+			h4 Member list
+			table.table.table-striped.table-condensed
+				thead
+					tr
+						th Name
+						th Email
+						th Status
+				tbody
+					each member in exportMembers
+						tr
+							td #[a(href='/members/' + member.uuid) #{member.fullname}]
+							td= member.email
+							td= member.editionExport.status

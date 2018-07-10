@@ -1,0 +1,17 @@
+{
+  "createSchema": {
+    "body": {
+      "type": "object",
+      "required": ["description", "type"],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["edition"]
+        }
+      }
+    }
+  }
+}

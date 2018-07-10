@@ -173,7 +173,18 @@ module.exports = {
 		} ],
 		last_seen: Date,
 		join_reason: String,
-		cancellation_reason: String
+		cancellation_reason: String,
+		exports: [ {
+			export_id: {
+				type: ObjectId,
+				ref: 'Exports',
+				required: true
+			},
+			status: {
+				type: String,
+				required: true
+			}
+		} ],
 	} )
 };
 

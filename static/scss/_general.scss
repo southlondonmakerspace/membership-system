@@ -1,56 +1,9 @@
-@font-face {
-    font-family: 'Source Sans Pro';
-    src: url('/fonts/SourceSansPro-SemiBold.woff2') format('woff2'),
-        url('/fonts/SourceSansPro-SemiBold.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Source Sans Pro';
-    src: url('/fonts/SourceSansPro-Light.woff2') format('woff2'),
-        url('/fonts/SourceSansPro-Light.woff') format('woff');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Source Sans Pro';
-    src: url('/fonts/SourceSansPro-Regular.woff2') format('woff2'),
-        url('/fonts/SourceSansPro-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Source Sans Pro';
-    src: url('/fonts/SourceSansPro-Bold.woff2') format('woff2'),
-        url('/fonts/SourceSansPro-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('/fonts/Roboto-Medium.woff2') format('woff2'),
-        url('/fonts/Roboto-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('/fonts/Roboto-Black.woff2') format('woff2'),
-        url('/fonts/Roboto-Black.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-}
-
 body {
-	padding-top: 20px;
-	padding-bottom: 20px;
+	padding: 0;
+	color: $c-black;
+	font-size: 18px;
+
 	&.dev {
-		margin-top: 5px;
 		&:before {
 			z-index: 1000;
 			content: '';
@@ -68,14 +21,47 @@ body {
 	}
 }
 
+h1,
+h2,
+h3,
+h4 {
+	font-family: "Roboto", sans-serif;
+	font-weight: 500;
+	color: inherit;
+	line-height: 1;
+}
+
+h1 {
+	font-size: 68px;
+}
+
+h2 {
+	font-size: 42px;
+}
+
+h3 {
+	font-size: 26px;
+}
+
+a {
+	color: $c-blue;
+}
+
+body.has-js .hidden-js {
+	display: none;
+}
+
+body:not(.has-js) .hidden-nojs {
+	display: none;
+}
+
 .logo {
-	margin-bottom: 20px;
+	margin: 20px 0;
 	display: inline-block;
 	width: 5em;
 	height: 5em;
-	background-color: red;
-	background-image: url(/svg/logo.svg);
-	background-size: 3em;
+	background-image: url(/static/svg/logo.svg);
+	background-size: 5em;
 	background-repeat: no-repeat;
 	background-position: center;
 }
@@ -98,7 +84,7 @@ body {
 	background: transparent;
 
 	.bg {
-		background-image: url( /imgs/jumbo.jpg );
+		background-image: url( /static/imgs/jumbo.jpg );
 		background-size: cover;
 		background-position: center;
 		display: block;
@@ -150,12 +136,29 @@ ul.nav.nav-tabs {
 	text-transform: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
-	border: 1px solid #ddd;
+	font-family: "Roboto", sans-serif;
+	font-weight: 900;
+	font-size: 24px;
+	transition: all .2s;
 
-	&:hover,
-	&:active {
-		border: 1px solid #ddd;
+	background-color: $c-blue;
+	&:hover {
+		background-color: darken($c-blue, 5%);
 	}
+
+	&,
+	&:hover,
+	&:focus {
+		color: white;
+	}
+}
+
+.btn-xs {
+	font-size: 12px;
+}
+
+.btn-sm {
+	font-size: 15px;
 }
 
 .btn-success,
@@ -187,6 +190,10 @@ ul.nav.nav-tabs {
 
 .alert {
 	font-weight: 600;
+	a {
+		color: inherit;
+		text-decoration: underline;
+	}
 }
 
 .btn:after {
@@ -243,4 +250,33 @@ ul.nav.nav-tabs {
 h4.list-group-item-heading .label {
 	position: relative;
 	top: -3px;
+}
+
+input[type=text],
+input[type=password],
+input[type=number],
+input[type=email],
+select {
+	&.form-control {
+		font-size: inherit;
+		color: inherit;
+	}
+}
+
+.form-group {
+	margin-bottom: 30px;
+	& + & {
+		margin-top: -15px;
+	}
+}
+
+dd {
+	margin-bottom: 1rem;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+	background-color: $c-blue;
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
 }

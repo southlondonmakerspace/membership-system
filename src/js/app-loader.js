@@ -61,12 +61,14 @@ function loadApp( uid, path, overrides ) {
 	var subapps = fs.existsSync( path + '/apps' ) ?
 		loadApps( path + '/apps', overrides.subapps ) : [];
 
-	return Object.assign( {
-		uid: uid,
+	return {
+		uid,
 		app: path + '/app.js',
 		priority: 100,
-		subapps: subapps
-	}, appConfig, overrides.config );
+		subapps,
+		...appConfig,
+		...overrides.config
+	};
 }
 
 function routeApps(mainApp, apps) {

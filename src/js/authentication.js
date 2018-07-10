@@ -177,6 +177,10 @@ var Authentication = {
 		} );
 	},
 
+	generateCode: function () {
+		return crypto.randomBytes( 10 ).toString( 'hex' );
+	},
+
 	// Used to create a long salt for each individual user
 	// returns a 256 byte / 512 character hex string
 	generateSalt: function( callback ) {
@@ -204,6 +208,18 @@ var Authentication = {
 				} );
 			} );
 		} );
+	},
+
+	hashPasswordPromise: function( password, salt, iterations ) {
+		return new Promise(resolve => {
+			Authentication.hashPassword( password, salt, iterations, resolve);
+		});
+	},
+
+	generatePasswordPromise: function( password ) {
+		return new Promise(resolve => {
+			Authentication.generatePassword( password, resolve );
+		});
 	},
 
 	LOGGED_IN: true,
@@ -309,6 +325,18 @@ var Authentication = {
 			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 			req.flash( 'error', 'login-required' );
 			res.redirect( '/login' );
+			return;
+		}
+	},
+
+	isNotLoggedIn: function( req, res, next ) {
+		var status = Authentication.loggedIn( req );
+		switch ( status ) {
+		case Authentication.NOT_LOGGED_IN:
+			return next();
+		default:
+			req.flash( 'warning', 'already-logged-in' );
+			res.redirect( '/profile' );
 			return;
 		}
 	},

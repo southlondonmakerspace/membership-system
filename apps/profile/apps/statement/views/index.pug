@@ -23,7 +23,7 @@ block contents
 							each payment, p in payments
 								tr
 									td
-										time( datetime=moment( payment.charge_date, moment.ISO_8601 ) ) #{ moment( payment.charge_date ).format( 'd/M/Y' ) }
+										time( datetime=moment( payment.charge_date, moment.ISO_8601 ) ) #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
 									td #{ payment.description }
 									td
 										include partials/status.pug

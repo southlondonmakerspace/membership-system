@@ -1,0 +1,87 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block append js
+	script(src='/static/js/join.js')
+
+block body
+	header.join-header
+		.join-header__bg
+
+		form(method='POST').join-form.js-join-form
+			+csrf
+
+			.join-title
+				div
+					img(src='/static/svg/logo.svg').join-title-logo
+				h1 Own your#[br]media
+
+			include /src/views/partials/flash.pug
+
+			h3 I'd like to contribute…
+			ul.join-options.hidden-nojs
+				each amount in [3, 5, 10]
+					li.join-options__opt
+						input(type='radio', name='amount', id='amount_' + amount, value=amount, required).js-join-amount
+						label(for='amount_' + amount).btn £#{amount}#[span.join-monthly /month]
+
+			div.join-other-amount
+				input(type='radio', name='amount', value='other', required, checked).js-join-other-amount
+				label
+					.hidden-nojs Or choose an amount…
+					span.join-other-amount-box
+						span £
+						input(type='number', name='amountOther', min=1, step=1, required).js-join-other-amount-box
+						span.join-monthly /month
+
+			.hidden-js.js-join-form-more
+				.hidden.js-join-sustain
+					h3 Can you help sustain us?
+					p.
+						We don’t have a billionaire owner, as members our
+						contributions are what keeps the Cable alive. Can you afford to
+						increase your contribution to #[b £3 or more]? As a thank you for
+						sustaining indepedent local journalism we’ll
+						#[b send you a quartley edition] of our print magazine.
+
+				h3 I'd like to pay…
+				ul.join-options
+					li.join-options__opt
+						input(type='radio', name='period', id='period_m', value='monthly', required, checked).js-join-period
+						label(for='period_m').btn Monthly
+					li.join-options__opt
+						input(type='radio', name='period', id='period_a', value='annually', required).js-join-period
+						label(for='period_a').btn Annually
+					li.join-options__opt
+
+				p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
+				p
+					button.btn.join-btn Join
+
+	.container
+		h2.join-why Why join?
+		ul.join-reasons
+			li
+				h1.row.join-reason-title(style='background-image:url(/imgs/join/photo1.jpg)')
+					.col-md-8.col-md-offset-2 Run by you
+				.row
+					p.col-md-8.col-md-offset-2.
+						The Bristol Cable is a #[b community co-operative] which
+						means we all have a say in how it is run. Our
+						#[b one member, one vote] policy means all members have
+						the same power to decide...
+			li
+				h1.row.join-reason-title(style='background-image:url(/imgs/join/photo2.jpg)')
+					.col-md-8.col-md-offset-2 Created by you
+				.row
+					p.col-md-8.col-md-offset-2.
+						As members we can all contribute to the Cable’s
+						journalism. At our monthly member’s meetings we discuss
+						the issues affecting our communities, drawing on your
+						experience and expertise to cover the stories that no
+						one else is talking about.
+
+	footer.join-footer
+		img(src='/static/svg/logo.svg').join-title-logo

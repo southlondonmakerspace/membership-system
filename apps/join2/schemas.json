@@ -1,0 +1,39 @@
+{
+	"joinSchema": {
+		"body": {
+			"type": "object",
+			"required": ["period", "amount"],
+			"properties": {
+				"period": {
+					"type": "string",
+					"enum": ["monthly", "annually"]
+				}
+			},
+			"oneOf": [
+				{
+					"properties": {
+						"amount": { "type": "integer", "minimum": 1 }
+					}
+				},
+				{
+					"properties": {
+						"amount": { "const": "other" },
+						"amountOther": { "type": "integer", "minimum": 1 }
+					},
+					"required": ["amountOther"]
+				}
+			]
+		}
+	},
+	"completeSchema": {
+		"query": {
+			"type": "object",
+			"required": ["redirect_flow_id"],
+			"properties": {
+				"redirect_flow_id": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

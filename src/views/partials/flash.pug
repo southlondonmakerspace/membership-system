@@ -1,5 +1,3 @@
-unless setupComplete
-	+flash( 'info', 'You need to finish setting up your account', { text: 'Finish Setup', url: '/profile/setup', type: 'primary' } )
 if flashes
 	each flash, f in flashes
 		+flash( flash.type, flash.message )

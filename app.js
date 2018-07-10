@@ -44,7 +44,7 @@ app.use( helmet() );
 require( __js + '/authentication' ).auth( app );
 
 // Setup static route
-app.use( express.static( __static ) );
+app.use( '/static', express.static( __static ) );
 
 // Handle sessions
 require( __js + '/sessions' )( app );

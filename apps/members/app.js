@@ -38,7 +38,9 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isMember, function( req, res ) {
+app.use( auth.isAdmin );
+
+app.get( '/', function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		var filter_permissions = [];
 
@@ -206,7 +208,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	} );
 } );
 
-app.get( '/:uuid', auth.isMember, function( req, res ) {
+app.get( '/:uuid', function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( ! member ) {
 			req.flash( 'warning', 'member-404' );
@@ -218,11 +220,12 @@ app.get( '/:uuid', auth.isMember, function( req, res ) {
 				name: member.fullname
 			} );
 			discourse.getUsername( member.discourse.username, function( discourse ) {
-				var total = 0;
+				const confirmedPayments = payments
+					.filter(p => ['paid_out', 'confirmed'].indexOf(p.status) > -1)
+					.map(p => Number(p.amount))
+					.filter(amount => !isNaN(amount));
 
-				for ( let p in payments ) {
-					total += payments[p].amount;
-				}
+				const total = confirmedPayments.reduce((a, b) => a + b, 0);
 
 				res.render( 'member', {
 					member: member,
@@ -480,7 +483,7 @@ app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/permissions', function( req, res ) {
 	Permissions.find( function( err, permissions ) {
 		Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 			if ( ! member ) {
@@ -504,7 +507,7 @@ app.get( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/permissions', function( req, res ) {
 	if ( ! req.body.permission ||
 			! req.body.start_time ||
 			! req.body.start_date ) {
@@ -570,7 +573,7 @@ app.post( '/:uuid/permissions', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
+app.get( '/:uuid/permissions/:id/modify', function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( ! member ) {
 			req.flash( 'warning', 'member-404' );
@@ -608,7 +611,7 @@ app.get( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/permissions/:id/modify', function( req, res ) {
 	if ( ! req.body.start_time || ! req.body.start_date ) {
 		req.flash( 'danger', 'information-ommited' );
 		res.redirect( app.mountpath );
@@ -665,7 +668,7 @@ app.post( '/:uuid/permissions/:id/modify', auth.isAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/permissions/:id/revoke', auth.isAdmin, function( req, res ) {
+app.post( '/:uuid/permissions/:id/revoke', function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		if ( ! member ) {
 			req.flash( 'warning', 'member-404' );

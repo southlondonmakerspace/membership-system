@@ -1,0 +1,475 @@
+{
+  "customers": [
+    {
+      "id": "CU38D9969CA774",
+      "created_at": "2016-07-20T05:38:16.224Z",
+      "email": "8A31D11FC49C@test.com",
+      "given_name": "Test",
+      "family_name": "Test",
+      "company_name": "",
+      "address_line1": "Test",
+      "address_line2": "Test",
+      "address_line3": "",
+      "city": "Test",
+      "region": "",
+      "postal_code": "BS1 1AA",
+      "country_code": "GB",
+      "language": "en",
+      "swedish_identity_number": null,
+      "danish_identity_number": null,
+      "metadata": {}
+    }
+  ],
+  "mandates": [
+    {
+      "id": "MD306786870C12",
+      "created_at": "2016-07-20T05:38:16.412Z",
+      "reference": "AEBE8D50EAA1",
+      "status": "active",
+      "scheme": "bacs",
+      "next_possible_charge_date": "2018-06-20",
+      "payments_require_approval": false,
+      "metadata": {},
+      "links": {
+        "customer_bank_account": "BA85B388BA62DC",
+        "creditor": "CRD60E031339DC",
+        "customer": "CU38D9969CA774"
+      }
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "SB7E6B8E6CCF5D",
+      "created_at": "2016-07-20T05:38:17.573Z",
+      "amount": 300,
+      "currency": "GBP",
+      "status": "active",
+      "name": "Membership - £3",
+      "start_date": "2016-07-24",
+      "end_date": null,
+      "interval": 1,
+      "interval_unit": "monthly",
+      "day_of_month": null,
+      "month": null,
+      "metadata": {},
+      "payment_reference": null,
+      "upcoming_payments": [
+        {
+          "charge_date": "2018-06-24",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-07-25",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-08-24",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-09-26",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-10-24",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-11-24",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-12-26",
+          "amount": 300
+        },
+        {
+          "charge_date": "2019-01-24",
+          "amount": 300
+        },
+        {
+          "charge_date": "2019-02-24",
+          "amount": 300
+        },
+        {
+          "charge_date": "2019-03-24",
+          "amount": 300
+        }
+      ],
+      "app_fee": null,
+      "links": {
+        "mandate": "MD306786870C12"
+      }
+    }
+  ],
+  "payments": [
+    {
+      "id": "PMA32D49BD17F0",
+      "created_at": "2018-05-19T23:06:10.049Z",
+      "charge_date": "2018-05-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMEE6C43C8D514",
+      "created_at": "2018-04-20T23:07:02.223Z",
+      "charge_date": "2018-04-25",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM50BC8A387171",
+      "created_at": "2018-03-22T00:06:56.693Z",
+      "charge_date": "2018-03-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMFCE5CC0BC672",
+      "created_at": "2018-02-22T00:06:54.763Z",
+      "charge_date": "2018-02-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM1DFEE7F667AE",
+      "created_at": "2018-01-20T00:17:25.994Z",
+      "charge_date": "2018-01-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM8E471B8C9061",
+      "created_at": "2017-12-22T00:07:18.825Z",
+      "charge_date": "2017-12-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMF9B3FECF02D0",
+      "created_at": "2017-11-20T00:05:02.944Z",
+      "charge_date": "2017-11-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM565ED77FDDAE",
+      "created_at": "2017-10-20T23:03:00.083Z",
+      "charge_date": "2017-10-25",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMBB4485C3BB5D",
+      "created_at": "2017-09-21T23:03:18.978Z",
+      "charge_date": "2017-09-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMEFC4B1AC4B91",
+      "created_at": "2017-08-19T23:02:46.352Z",
+      "charge_date": "2017-08-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM663F61755F7E",
+      "created_at": "2017-07-21T23:03:03.262Z",
+      "charge_date": "2017-07-26",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM28E0BC6B04AF",
+      "created_at": "2017-06-21T23:03:04.298Z",
+      "charge_date": "2017-06-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMC1433362A424",
+      "created_at": "2017-05-19T23:03:07.851Z",
+      "charge_date": "2017-05-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PME3E9571983DE",
+      "created_at": "2017-04-21T23:03:33.510Z",
+      "charge_date": "2017-04-26",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMA91B5F55DBDC",
+      "created_at": "2017-03-20T00:03:14.192Z",
+      "charge_date": "2017-03-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMF4145A9E52F5",
+      "created_at": "2017-02-20T00:03:09.099Z",
+      "charge_date": "2017-02-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM3DA6FF017F1F",
+      "created_at": "2017-01-21T00:03:23.296Z",
+      "charge_date": "2017-01-25",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMF99443DE59EA",
+      "created_at": "2016-12-22T00:03:16.742Z",
+      "charge_date": "2016-12-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM77D8D314B8B0",
+      "created_at": "2016-11-20T00:03:25.423Z",
+      "charge_date": "2016-11-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMBD250BC0E8C5",
+      "created_at": "2016-10-21T23:04:09.527Z",
+      "charge_date": "2016-10-26",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMFDBB45D9B2A3",
+      "created_at": "2016-09-21T23:03:55.835Z",
+      "charge_date": "2016-09-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PM4431D143B318",
+      "created_at": "2016-08-19T23:05:10.039Z",
+      "charge_date": "2016-08-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    },
+    {
+      "id": "PMC733FA282FEA",
+      "created_at": "2016-07-20T05:38:17.713Z",
+      "charge_date": "2016-07-24",
+      "amount": 300,
+      "description": "Membership - £3",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD306786870C12",
+        "subscription": "SB7E6B8E6CCF5D"
+      }
+    }
+  ],
+  "subscriptionCancelledEvents": []
+}

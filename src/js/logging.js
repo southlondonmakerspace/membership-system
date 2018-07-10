@@ -25,7 +25,7 @@ if ( config.logStdout != undefined && config.logStdout == true) {
 	bunyanConfig.streams.push(
 		{
 			level: 'debug',
-			stream: process.stdout
+			stream: process.stderr
 		}
 	);
 	bunyanConfig.streams.push(

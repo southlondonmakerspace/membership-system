@@ -20,31 +20,46 @@ html
 				title #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
 		block head
 			block css
-				link( rel="stylesheet", href="/css/theme.min.css" )
-				link( rel="stylesheet", href="/css/style.css" )
-			block js
-				script( src="/js/jquery.js" )
-				script( src="/js/bootstrap.js" )
-				script( src="/js/script.js" )
+				link( rel="stylesheet", href="/static/css/theme.min.css" )
+				link( rel="stylesheet", href="/static/css/style.css" )
 	body( class=( dev ? 'dev' : '' ) )
+		script.
+			document.body.className += ' has-js';
+
 		block body
 			.container
 				a( href="/" ).logo
 				block navbar
 					include partials/navbar.pug
-				block breadcrumb
-					include partials/breadcrumb.pug
 				include partials/flash.pug
 				block heading
 					if heading
 						+page_header( heading )
 				block contents
 				block footer
-					.row
-						.col-md-12
-							hr
-							small.text-muted #{ Options( 'organisation' ) }, #{ Options( 'software-name' ) } &mdash;
-								|  
-								a( href="https://github.com/southlondonmakerspace/membership-system", target="_blank" ) Contribute on GitHub
-							small.text-muted.pull-right
-								| #{ git }
+					include partials/footer.pug
+
+		block js
+			script( src="/static/js/jquery.js" )
+			script( src="/static/js/bootstrap.js" )
+			script( src="/static/js/script.js" )
+
+		script.
+			var _paq = _paq || [];
+			/* tracker methods like "setCustomDimension" should be called before
+			"trackPageView" */
+			_paq.push(["setCookieDomain", "*.dev.thebristolcable.org"]);
+			_paq.push(["setDomains",
+			["*.dev.thebristolcable.org","*.membership.thebristolcable.org","*.thebristolcable.org"]]);
+			_paq.push(["enableCrossDomainLinking"]);
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			(function() {
+				var u="//stats2.xtreamlab.net/";
+				_paq.push(['setTrackerUrl', u+'piwik.php']);
+				_paq.push(['setSiteId', '1']);
+				var d=document, g=d.createElement('script'),
+				s=d.getElementsByTagName('script')[0];
+				g.type='text/javascript'; g.async=true; g.defer=true;
+				g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+			  })();

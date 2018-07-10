@@ -15,6 +15,8 @@
 	"signup-closed": "false",
 	"signup-redirect": "https://example.com/closed",
 
+	"membership-support-email": "membership@example.com",
+
 	"flash-logged-in": "Login successful",
 	"flash-logged-out": "Logged out",
 	"flash-login-failed": "Login unsuccessful",
@@ -26,23 +28,15 @@
 	"flash-information-ommited": "Important information was ommited",
 
 	"flash-user-duplicate": "Unable to create account",
-	"flash-user-email": "Email required",
-	"flash-user-firstname": "First name required",
-	"flash-user-lastname": "Last name required",
-	"flash-user-address": "Address required",
-	"flash-user-postcode": "Address must include a valid UK postcode",
 
 	"flash-password-changed": "Password changed",
 	"flash-password-invalid": "Incorrect current password",
 	"flash-password-reset-code-err": "Invalid password reset code",
-	"flash-password-mismatch": "Passwords did not match",
-	"flash-password-err-length": "Password must be at least 8 characters long",
-	"flash-password-err-number": "Password must contain at least 1 number",
-	"flash-password-err-letter-up": "Password must contain at least 1 uppercase letter",
-	"flash-password-err-letter-low": "Password must contain at least 1 lowercase letter",
 
 	"flash-password-reset": "If there is an account associated with the email address you will receive an email shortly",
 	"flash-password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled",
+
+	"flash-email-duplicate": "Email address already in use",
 
 	"flash-account-created": "Account created, please check your email for a registration link",
 	"flash-member-created": "Member successful created",
@@ -91,20 +85,16 @@
 	"flash-discourse-cancelled": "Activation cancelled",
 
 	"flash-gocardless-updated": "GoCardless updated",
-	"flash-gocardless-subscription-success": "Subscription setup succesfully",
+	"flash-gocardless-subscription-success": "Contribution setup succesfully",
 	"flash-gocardless-subscription-min": "Minimum direct debit amount is £%",
-	"flash-gocardless-subscription-invalid-day": "Subscription payment date must be between 1st and 28th of the month or last day of the month",
-	"flash-gocardless-subscription-err": "Error setting up subscription",
-	"flash-gocardless-subscription-cancelled": "Subscription cancelled",
-	"flash-gocardless-subscription-cancellation-err": "Error cancelling subscription",
-	"flash-gocardless-subscription-exists": "You already have a subscription setup",
-	"flash-gocardless-subscription-404": "Your account has no subscription",
-	"flash-gocardless-mandate-success": "Direct Debit mandate setup succesfully",
-	"flash-gocardless-mandate-err": "Error setting up Direct Debit mandate",
-	"flash-gocardless-mandate-cancelled": "Direct Debit mandate cancelled",
-	"flash-gocardless-mandate-cancellation-err": "Error cancelling Direct Debit mandate",
-	"flash-gocardless-mandate-exists": "You already have a mandate setup",
-	"flash-gocardless-mandate-404": "Your account has no mandate",
+	"flash-gocardless-subscription-invalid-day": "Contribution payment date must be between 1st and 28th of the month or last day of the month",
+	"flash-gocardless-subscription-err": "Error setting up contribution",
+	"flash-gocardless-subscription-cancelled": "Contribution cancelled",
+	"flash-gocardless-subscription-cancellation-err": "Error cancelling contribution",
+	"flash-gocardless-subscription-updated": "Contribution updated",
+	"flash-gocardless-subscription-updating-err": "Error updating contribution",
+	"flash-gocardless-subscription-exists": "You already have an active contribution",
+	"flash-gocardless-subscription-doesnt-exist": "You don't have an active contribution",
 
 	"flash-event-404": "Event not found",
 	"flash-event-not-linkable": "Tag cannot be linked",
@@ -176,5 +166,19 @@
 	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag",
 
-	"flash-signup-closed": "Signups are currently closed"
+	"flash-validation-error-generic": "The data you provided was invalid",
+
+	"flash-validation-error.amount-minimum": "The minimum contribution is £1",
+	"flash-validation-error.amount-required": "Contribution amount is required",
+	"flash-validation-error.period-required": "Contribution period is required",
+	"flash-validation-error.amountOther-minimum": "The minimum contribution is £1",
+
+	"flash-validation-error.delivery_line1-minLength": "Delivery address line 1 is required",
+	"flash-validation-error.delivery_city-minLength": "Delivery town/city is required",
+
+	"flash-validation-error.verify-const": "Passwords did not match",
+
+	"flash-validation-error.email-format": "Email was invalid",
+	"flash-validation-error.postcode-format": "Postcode was invalid",
+	"flash-validation-error.password-format": "Password must be at least 8 characters and with at least one number, lower and upper case letter"
 }

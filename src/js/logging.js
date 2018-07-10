@@ -15,7 +15,10 @@ var randomKey = crypto.randomBytes(256);
 // Bunyan logging
 var bunyanConfig = {
 	name: 'Membership-System',
-	streams: []
+	streams: [],
+	serializers: {
+		error: bunyan.stdSerializers.err
+	}
 };
 
 if ( config.logStdout != undefined && config.logStdout == true) {
@@ -71,7 +74,26 @@ if (config.syslog == true) {
 }
 
 if ( config.logSlack != undefined ) {
-	let stream = new BunyanSlack( config.logSlack );
+	let stream = new BunyanSlack( {
+		...config.logSlack,
+		customFormatter(record, levelName) {
+			const msgPrefix = (config.dev ? '[DEV] ' : '') + `[${levelName.toUpperCase()}] `;
+
+			if (record.error) {
+				return {
+					text: msgPrefix + record.error.message,
+					attachments: [{
+						title: 'Stack trace',
+						text: record.error.stack
+					}]
+				};
+			} else {
+				return {
+					text: msgPrefix + record.msg
+				};
+			}
+		}
+	} );
 	bunyanConfig.streams.push( {
 		level: config.logSlack.level,
 		stream
@@ -103,12 +125,11 @@ function loggingMiddleware(req, res, next) {
 			params.sensitive.sessionID = req.sessionID;
 			params.anon_sessionId = hash('sha1').update(req.sessionID + randomKey).digest('base64');
 		}
+		log[level](params);
 		if (params.sensitive)
 		{
-			log[level](params);
 			delete params.sensitive;
 		}
-		log[level](params);
 	}
 
 	req.log = {

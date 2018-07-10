@@ -5,7 +5,12 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var auth = require( __js + '/authentication' );
+var PostcodesIO = require( 'postcodesio-client' ),
+	postcodes = new PostcodesIO();
+
+var auth = require( __js + '/authentication' ),
+	db = require( __js + '/database' ),
+	Members = db.Members;
 
 var app_config = {};
 
@@ -23,26 +28,25 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
-		name: "Update"
+		name: 'Update'
 	} );
 	res.render( 'index', { user: req.user } );
 } );
 
 app.post( '/', auth.isLoggedIn, function( req, res ) {
-	if ( ! req.body.firstname ||
-		 ! req.body.lastname ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'update',
-				error: 'First or last name were not provided',
-				sensitive: {
-					body: req.body
-				}
-			} );
+	if ( ! req.body.firstname || ! req.body.lastname ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'update',
+			error: 'First or last name were not provided',
+			sensitive: {
+				body: req.body
+			}
+		} );
 
-			req.flash( 'danger', 'information-ommited' );
-			res.redirect( app.parent.mountpath + app.mountpath );
-			return;
+		req.flash( 'danger', 'information-ommited' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
 	}
 
 	if ( ! req.body.address ) {

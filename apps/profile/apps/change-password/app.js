@@ -5,7 +5,11 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var auth = require( __js + '/authentication' );
+var auth = require( __js + '/authentication' ),
+	db = require( __js + '/database' ),
+	Members = db.Members;
+
+var Mail = require( __js + '/mail' );
 
 var app_config = {};
 
@@ -23,26 +27,26 @@ app.use( function( req, res, next ) {
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.locals.breadcrumb.push( {
-		name: "Change Password"
+		name: 'Change Password'
 	} );
 	res.render( 'index' );
 } );
 
 app.post( '/', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.current ||
-		 ! req.body.new ||
-		 ! req.body.verify ) {
-			req.log.debug( {
-				app: 'profile',
-				action: 'change-password',
-				error: 'Validation errors',
-				sensitive: {
-					body: req.body
-				}
-			} );
-			req.flash( 'danger', 'information-ommited' );
-			res.redirect( app.parent.mountpath + app.mountpath );
-			return;
+			! req.body.new ||
+			! req.body.verify ) {
+		req.log.debug( {
+			app: 'profile',
+			action: 'change-password',
+			error: 'Validation errors',
+			sensitive: {
+				body: req.body
+			}
+		} );
+		req.flash( 'danger', 'information-ommited' );
+		res.redirect( app.parent.mountpath + app.mountpath );
+		return;
 	}
 	Members.findOne( { _id: req.user._id }, function( err, user ) {
 		auth.hashPassword( req.body.current, user.password.salt, user.password.iterations, function( hash ) {
@@ -86,7 +90,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 					'password.hash': password.hash,
 					'password.iterations': password.iterations,
 					'password.reset_code': null,
-				} }, function( status ) {
+				} }, function() {
 					req.log.info( {
 						app: 'profile',
 						action: 'change-password'
@@ -105,7 +109,7 @@ app.post( '/', auth.isLoggedIn, function( req, res ) {
 						function() {
 							req.flash( 'success', 'password-changed' );
 							res.redirect( app.parent.mountpath + app.mountpath );
-					} );
+						} );
 				} );
 			} );
 		} );

@@ -199,7 +199,7 @@ module.exports.schema.virtual( 'setupComplete' ).get( function() {
 			! this.discourse.activated ||
 			! this.discourse.username ||
 			! this.tag.id
-		)
+	)
 		return false;
 	return true;
 } );

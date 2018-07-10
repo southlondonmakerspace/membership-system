@@ -33,13 +33,16 @@ async function loadData(file) {
 			};
 		});
 
-	const wpFile = Papa.parse(fs.readFileSync(file).toString(), {
-		header: true,
-		skipEmptyLines: true
-	});
-	const wpOverrides = wpFile.data.map(row => ({...row, type: 'wp'}));
-
-	return [...wpOverrides, ...gcOverrides];
+	if (file) {
+		const wpFile = Papa.parse(fs.readFileSync(file).toString(), {
+			header: true,
+			skipEmptyLines: true
+		});
+		const wpOverrides = wpFile.data.map(row => ({...row, type: 'wp'}));
+		return [...wpOverrides, ...gcOverrides];
+	} else {
+		return gcOverrides;
+	}
 }
 
 async function syncData(overrides) {
@@ -71,11 +74,6 @@ async function syncData(overrides) {
 			console.log(error.message);
 		}
 	}
-}
-
-if (!fs.existsSync(process.argv[2])) {
-  console.error('Argument is not a valid file');
-  process.exit(1);
 }
 
 loadData(process.argv[2])

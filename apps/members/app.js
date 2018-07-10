@@ -7,9 +7,6 @@ var	express = require( 'express' ),
 	app = express(),
 	discourse = require( __js + '/discourse' );
 
-var PostcodesIO = require( 'postcodesio-client' ),
-	postcodes = new PostcodesIO();
-
 var escapeStringRegexp = require( 'escape-string-regexp' );
 
 var moment = require( 'moment' );
@@ -21,6 +18,9 @@ var	db = require( __js + '/database' ),
 var Mail = require( __js + '/mail' );
 
 var auth = require( __js + '/authentication' );
+var { wrapAsync } = require( __js + '/utils' );
+var { hasSchema } = require( __js + '/middleware' );
+var { updateProfileSchema } = require('./schemas.json');
 
 var config = require( __config + '/config.json' );
 
@@ -259,63 +259,37 @@ app.get( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
-	if ( ! req.body.firstname ||
-			! req.body.lastname ||
-			! req.body.email ||
-			! req.body.address ) {
-		req.flash( 'danger', 'information-ommited' );
-		res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
-		return;
+app.post( '/:uuid/profile', [
+	auth.isSuperAdmin,
+	hasSchema(updateProfileSchema).orFlash
+], wrapAsync( async function( req, res ) {
+	const {
+		body: {
+			email, firstname, lastname, delivery_optin, delivery_line1,
+			delivery_line2, delivery_city, delivery_postcode
+		},
+		params: { uuid },
+		user
+	} = req;
+
+	if ( email !== user.email ) {
+		// TODO: update GoCardless email?
 	}
 
-	var postcode = '';
-	var results = req.body.address.match( /([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)/ );
+	const profile = {
+		email, firstname, lastname, delivery_optin,
+		delivery_address: delivery_optin ? {
+			line1: delivery_line1,
+			line2: delivery_line2,
+			city: delivery_city,
+			postcode: delivery_postcode
+		} : {}
+	};
 
-	if ( results ) {
-		postcode = results[0];
-	}
-	postcodes.lookup( postcode ).then( function( data ) {
-		var member = {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			email: req.body.email.toLowerCase(),
-			address: req.body.address
-		};
+	await Members.updateOne( { uuid }, { $set: profile } );
 
-		if ( data ) {
-			member.postcode_coordinates = {
-				lat: data.latitude,
-				lng: data.longitude,
-			};
-		} else {
-			member.postcode_coordinates = null;
-		}
-
-		Members.update( { uuid: req.params.uuid }, member, function() {
-			req.flash( 'success', 'profile-updated' );
-			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
-		} );
-	}, function( error ) {
-		req.log.debug( {
-			app: 'members',
-			action: 'postcode-lookup-error',
-			error: error
-		} );
-
-		var member = {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			email: req.body.email.toLowerCase(),
-			address: req.body.address
-		};
-
-		Members.update( { uuid: req.params.uuid }, member, function() {
-			req.flash( 'success', 'profile-updated' );
-			res.redirect( app.mountpath + '/' + req.params.uuid + '/profile' );
-		} );
-	} );
-} );
+	res.redirect(app.mountpath + '/' + uuid + '/profile');
+} ) );
 
 app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {

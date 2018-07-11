@@ -71,18 +71,16 @@ app.get( '/complete', [
 ], wrapAsync(async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
-	const permission = await Permissions.findOne( { slug: config.permission.member });
-
 	// Load join data and complete redirect flow
 	const joinFlow = await JoinFlows.findOne({ redirect_flow_id });
 	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
 		session_token: joinFlow.sessionToken
 	});
 
-	await JoinFlows.deleteOne({ redirect_flow_id });
-
-	const customer = await gocardless.customers.get(redirectFlow.links.customer);
+	const customerId = redirectFlow.links.customer;
 	const mandateId = redirectFlow.links.mandate;
+
+	const customer = await gocardless.customers.get(customerId);
 
 	const member = new Members( customerToMember( customer, mandateId ) );
 
@@ -91,13 +89,20 @@ app.get( '/complete', [
 	} catch ( saveError ) {
 		// Duplicate key (on email)
 		if ( saveError.code === 11000 ) {
-			// TODO: handle case of duplicate email address
-			res.send({'blah': 'duplicate email'});
+			req.log.error({
+				joinFlow,
+				customerId,
+				mandateId
+			}, 'Duplicate email on sign up');
+
+			res.redirect( app.mountpath + '/duplicate-email' );
 			return;
 		} else {
 			throw saveError;
 		}
 	}
+
+	await JoinFlows.deleteOne({redirect_flow_id});
 
 	const subscription =
 		await gocardless.subscriptions.create(joinFlowToSubscription(joinFlow, mandateId));
@@ -108,7 +113,7 @@ app.get( '/complete', [
 		'gocardless.period': joinFlow.period
 	}, $push: {
 		permissions: {
-			permission: permission.id,
+			permission: config.permission.memberId,
 			date_added: new Date(),
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		}
@@ -121,6 +126,10 @@ app.get( '/complete', [
 		res.redirect('/profile/complete');
 	});
 }));
+
+app.get('/duplicate-email', function (req, res) {
+	res.render('duplicate-email');
+});
 
 module.exports = function( config ) {
 	app_config = config;

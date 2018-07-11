@@ -104,8 +104,8 @@ var logger = bunyan.createLogger( bunyanConfig );
 
 function loggingMiddleware(req, res, next) {
 	var log = req.log;
-	function logAThing( level, params, req )
-	{
+
+	const logAThing = level => (params, msg) => {
 		params.ip = req.connection.remoteAddress; //TODO: this will only be correct when behind a reverse proxy, if app.set('trust proxy') is enabled!
 		if (! params.sensitive )
 		{
@@ -125,30 +125,18 @@ function loggingMiddleware(req, res, next) {
 			params.sensitive.sessionID = req.sessionID;
 			params.anon_sessionId = hash('sha1').update(req.sessionID + randomKey).digest('base64');
 		}
-		log[level](params);
+		log[level](params, msg);
 		if (params.sensitive)
 		{
 			delete params.sensitive;
 		}
-	}
+	};
 
 	req.log = {
-		info: function (params)
-		{
-			logAThing( 'info', params , req );
-		},
-		debug: function (params)
-		{
-			logAThing( 'debug', params , req );
-		},
-		error: function (params)
-		{
-			logAThing( 'error', params , req );
-		},
-		fatal: function (params)
-		{
-			logAThing( 'fatal', params , req );
-		}
+		info: logAThing('info'),
+		debug: logAThing('debug'),
+		error: logAThing('error'),
+		fatal: logAThing('fatal')
 	};
 	next();
 }

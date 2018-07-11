@@ -83,6 +83,8 @@ async function handleResourceEvent( event ) {
 		return await handleSubscriptionResourceEvent( event );
 	case 'mandates':
 		return await handleMandateResourceEvent( event );
+	case 'refunds':
+		return await handleRefundResourceEvent( event );
 	default:
 		log.debug( {
 			app: 'webhook',
@@ -138,6 +140,7 @@ async function createPayment( gcPayment ) {
 
 async function updatePayment( gcPayment, payment ) {
 	await payment.update( { $set: {
+		amount_refunded: gcPayment.amount_refunded,
 		status: gcPayment.status,
 		updated: new Date()
 	} } );
@@ -290,5 +293,14 @@ async function cancelledMandate( event ) {
 				mandate_id: event.links.mandate
 			}
 		} );
+	}
+}
+
+async function handleRefundResourceEvent( event ) {
+	const gcPayment = await gocardless.payments.get( event.links.payment );
+	const payment = await Payments.findOne( { payment_id: gcPayment.id } );
+
+	if ( payment ) {
+		await updatePayment( gcPayment, payment );
 	}
 }

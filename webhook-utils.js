@@ -8,6 +8,7 @@ function createPayment( gcPayment, now=new Date() ) {
 		status: gcPayment.status,
 		description: gcPayment.description,
 		amount: gcPayment.amount / 100,
+		amount_refunded: gcPayment.amount_refunded / 100,
 		charge_date: new Date( gcPayment.charge_date ),
 		...gcPayment.links.subscription && { subscription_id: gcPayment.links.subscription }
 	};

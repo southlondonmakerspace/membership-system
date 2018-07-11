@@ -29,7 +29,9 @@ block contents
 										include partials/status.pug
 									td
 										if payment.amount
-											| &pound;#{ payment.amount }
+											| £#{ payment.amount }
+											if payment.amount_refunded
+												|  (-£#{ payment.amount_refunded })
 										else
 											| &mdash;
 			else

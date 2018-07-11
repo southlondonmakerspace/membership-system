@@ -69,6 +69,11 @@ async function syncData(overrides) {
 					postcode: override.delivery_postcode
 				} : {}
 			}});
+
+			// Clear data from GoCardless
+			await gocardless.customers.update(override.gc_customer_id, {
+				metadata: {}
+			});
 		} catch (error) {
 			console.log(override);
 			console.log(error.message);

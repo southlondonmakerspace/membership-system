@@ -297,10 +297,21 @@ async function cancelledMandate( event ) {
 }
 
 async function handleRefundResourceEvent( event ) {
-	const gcPayment = await gocardless.payments.get( event.links.payment );
+	const refund = await gocardless.refunds.get( event.links.refund );
+
+	const gcPayment = await gocardless.payments.get( refund.links.payment );
 	const payment = await Payments.findOne( { payment_id: gcPayment.id } );
 
 	if ( payment ) {
 		await updatePayment( gcPayment, payment );
+
+		log.info( {
+			app: 'webhook',
+			action: 'process-refund',
+			sensitive: {
+				refund_id: refund.id,
+				payment_id: gcPayment.id
+			}
+		} );
 	}
 }

@@ -13,6 +13,11 @@ block body
 		form(method='POST').join-form.js-join-form
 			+csrf
 
+			if user
+				p.alert.alert-warning
+					| You're already a member! Not #{user.firstname}?
+					| #[a(href='/logout') Click here] to logout
+
 			.join-title
 				div
 					img(src='/static/svg/logo.svg').join-title-logo

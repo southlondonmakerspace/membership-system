@@ -1,32 +1,29 @@
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-var __config = __root + '/config';
+const __root = '../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
+const __config = __root + '/config';
 
-var	express = require( 'express' ),
-	app = express();
-
-var moment = require( 'moment' );
-
-const { JoinFlows, Members, Permissions } = require( __js + '/database' );
+const express = require( 'express' );
+const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
+const { JoinFlows, Members } = require( __js + '/database' );
+const gocardless = require( __js + '/gocardless' );
 const { hasSchema } = require( __js + '/middleware' );
+const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const gocardless = require( __js + '/gocardless' );
-
-const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 const { customerToMember, joinFlowToSubscription } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
+
+const app = express();
 
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
-app.use( auth.isNotLoggedIn );
 app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.activeApp = app_config.uid;
@@ -34,10 +31,13 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/' , function( req, res ) {
-	res.render( 'index' );
+	res.render( 'index', { user: req.user } );
 } );
 
-app.post( '/', hasSchema(joinSchema).orFlash, wrapAsync(async function( req, res ) {
+app.post( '/', [
+	auth.isNotLoggedIn,
+	hasSchema(joinSchema).orFlash
+], wrapAsync(async function( req, res ) {
 	const { body: { period, amount, amountOther } } = req;
 
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
@@ -67,6 +67,7 @@ app.post( '/', hasSchema(joinSchema).orFlash, wrapAsync(async function( req, res
 }));
 
 app.get( '/complete', [
+	auth.isNotLoggedIn,
 	hasSchema(completeSchema).orRedirect( '/join' )
 ], wrapAsync(async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;

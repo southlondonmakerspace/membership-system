@@ -139,11 +139,7 @@ async function createPayment( gcPayment ) {
 }
 
 async function updatePayment( gcPayment, payment ) {
-	await payment.update( { $set: {
-		amount_refunded: gcPayment.amount_refunded,
-		status: gcPayment.status,
-		updated: new Date()
-	} } );
+	await payment.update( { $set: utils.createPayment(gcPayment) } );
 
 	log.info( {
 		app: 'webhook',

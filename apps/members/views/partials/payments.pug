@@ -21,7 +21,10 @@ if payments.length > 0
 						td #{ payment.description }
 						td
 							include /apps/profile/apps/statement/views/partials/status.pug
-						td #{ payment.amount ? '£' + payment.amount : '–' }
+						td
+							| #{ payment.amount ? '£' + payment.amount : '–' }
+							if payment.amount_refunded
+								|  (-£#{payment.amount_refunded})
 			tfoot
 				tr
 					th( colspan=5 ) Total

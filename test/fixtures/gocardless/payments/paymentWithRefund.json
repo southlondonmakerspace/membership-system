@@ -1,0 +1,24 @@
+{
+  "id": "PM00000000000",
+  "created_at": "2017-12-03T05:00:00.00Z",
+  "charge_date": "2017-12-06",
+  "amount": 1200,
+  "description": "Test payment",
+  "currency": "GBP",
+  "status": "paid_out",
+  "amount_refunded": 1200,
+  "reference": null,
+  "metadata": {},
+  "links": {
+    "mandate": "MD000000000000",
+    "creditor": "CR000000000000",
+    "payout": "PO000000000000",
+    "subscription": "SB000000000000"
+  },
+  "transaction_fee": 12,
+  "payout_date": null,
+  "payout_sent_date": null,
+  "payout_received_date": null,
+  "app_fee": 0,
+  "source": "dashboard"
+}

@@ -22,6 +22,7 @@ module.exports = {
 		status: String,
 		description: String,
 		amount: Number,
+		amount_refunded: Number,
 		created: Date,
 		charge_date: Date,
 		updated: Date,

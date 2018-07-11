@@ -222,7 +222,7 @@ app.get( '/:uuid', function( req, res ) {
 			discourse.getUsername( member.discourse.username, function( discourse ) {
 				const confirmedPayments = payments
 					.filter(p => ['paid_out', 'confirmed'].indexOf(p.status) > -1)
-					.map(p => Number(p.amount))
+					.map(p => p.amount - p.amount_refunded)
 					.filter(amount => !isNaN(amount));
 
 				const total = confirmedPayments.reduce((a, b) => a + b, 0);

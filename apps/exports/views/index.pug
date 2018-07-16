@@ -8,7 +8,7 @@ block contents
 		.col-md-12
 			+page_header('Create export')
 	.row
-		.col-md-8.col-md-offset-2
+		.col-md-8
 			form(method='POST').form-horizontal
 				+csrf
 
@@ -18,11 +18,12 @@ block contents
 					label(for='type').col-md-3.control-label Type
 					.col-md-4
 						select(name='type', id='type').form-control
-							option(value='edition') Edition distribution
+							each exportType, exportId in exportTypes
+								option(value=exportId)= exportType.name
 
 
 				.col-md-4.col-md-offset-3
-					button.btn Export
+					button.btn Create export
 
 	.row
 		.col-md-12
@@ -33,5 +34,6 @@ block contents
 			.col-md-12
 				p
 					a(href='/exports/' + e._id)= e.description
+					| , created #{moment(e.date).format('DD/MM/YYYY [at] HH:mm')}
 
 

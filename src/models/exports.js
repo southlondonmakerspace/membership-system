@@ -6,7 +6,7 @@ module.exports = {
 		type: {
 			type: String,
 			required: true,
-			enum: ['edition']
+			enum: ['edition', 'active-members']
 		},
 		description: {
 			type: String,

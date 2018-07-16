@@ -26,9 +26,13 @@ html
 		script.
 			document.body.className += ' has-js';
 
-		block body
+		.top
 			.container
-				a( href="/" ).logo
+				a( href="https://thebristolcable.org/" ).logo
+				a.main-site-btn(href='https://thebristolcable.org') Go to thebristolcable.org
+
+		block body
+			.container.main
 				block navbar
 					include partials/navbar.pug
 				include partials/flash.pug

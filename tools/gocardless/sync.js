@@ -8,34 +8,14 @@ const __js = __src + '/js';
 
 const config = require(__config);
 const db = require(__js + '/database').connect(config.mongo);
-const gocardless = require(__js + '/gocardless');
 
 const utils = require('./sync-utils.js');
 const { keyBy } = require('../utils');
 const { createPayment } = require('../../webhook-utils.js');
 
-async function loadData(file=null) {
-	let data;
-
-	if (file) {
-		console.log( '# Loading data from file...' );
-		data = JSON.parse(fs.readFileSync(file));
-	} else {
-		console.log( '# Loading data from GoCardless...' );
-
-		const customers = await gocardless.customers.all({limit: 500});
-		const mandates = await gocardless.mandates.all({limit: 500});
-		const subscriptions = await gocardless.subscriptions.all({limit: 500});
-		const payments = await gocardless.payments.all({limit: 500});
-		const subscriptionCancelledEvents = await gocardless.events.all({
-			limit: 500,
-			resource_type: 'subscriptions',
-			action: 'cancelled',
-		});
-
-		data = { customers, mandates, subscriptions, payments, subscriptionCancelledEvents };
-		fs.writeFileSync( 'gc-data.json', JSON.stringify(data));
-	}
+async function loadData(file) {
+	console.log( '# Loading data from file...' );
+	const data = JSON.parse(fs.readFileSync(file));
 
 	console.log(`Got ${data.customers.length} customers`);
 	console.log(`Got ${data.mandates.length} mandates`);

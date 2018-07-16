@@ -132,6 +132,10 @@ const exportTypes = {
 	edition: {
 		query: getEditionQuery,
 		export: getEditionExport
+	},
+	'active-members': {
+		query: getActiveMembersQuery,
+		export: getActiveMembersExport
 	}
 };
 
@@ -165,6 +169,26 @@ async function getEditionExport(members) {
 			(b.IsLocal - a.IsLocal) ||
 				(b.LastName.toLowerCase() > a.LastName.toLowerCase() ? -1 : 1)
 		));
+}
+
+async function getActiveMembersQuery() {
+	const permission = await Permissions.findOne( { slug: config.permission.member });
+	return {
+		permissions: {$elemMatch: {
+			permission,
+			date_expires: {$gte: new Date()}
+		}}
+	};
+}
+
+async function getActiveMembersExport(members) {
+	return members
+		.map(member => ({
+			EmailAddress: member.email,
+			FirstName: member.firstname,
+			LastName: member.lastname
+		}))
+		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
 }
 
 module.exports = function( config ) {

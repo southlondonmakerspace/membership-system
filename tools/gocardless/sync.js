@@ -8,34 +8,14 @@ const __js = __src + '/js';
 
 const config = require(__config);
 const db = require(__js + '/database').connect(config.mongo);
-const gocardless = require(__js + '/gocardless');
 
 const utils = require('./sync-utils.js');
 const { keyBy } = require('../utils');
 const { createPayment } = require('../../webhook-utils.js');
 
-async function loadData(file=null) {
-	let data;
-
-	if (file) {
-		console.log( '# Loading data from file...' );
-		data = JSON.parse(fs.readFileSync(file));
-	} else {
-		console.log( '# Loading data from GoCardless...' );
-
-		const customers = await gocardless.customers.all({limit: 500});
-		const mandates = await gocardless.mandates.all({limit: 500});
-		const subscriptions = await gocardless.subscriptions.all({limit: 500});
-		const payments = await gocardless.payments.all({limit: 500});
-		const subscriptionCancelledEvents = await gocardless.events.all({
-			limit: 500,
-			resource_type: 'subscriptions',
-			action: 'cancelled',
-		});
-
-		data = { customers, mandates, subscriptions, payments, subscriptionCancelledEvents };
-		fs.writeFileSync( 'gc-data.json', JSON.stringify(data));
-	}
+async function loadData(file) {
+	console.log( '# Loading data from file...' );
+	const data = JSON.parse(fs.readFileSync(file));
 
 	console.log(`Got ${data.customers.length} customers`);
 	console.log(`Got ${data.mandates.length} mandates`);
@@ -65,7 +45,7 @@ async function syncCustomers(validCustomers) {
 
 	await db.Payments.deleteMany({});
 
-	let created = 0, updated = 0;
+	let created = 0, updated = 0, payments = [];
 
 	for (let customer of validCustomers) {
 		try {
@@ -109,25 +89,27 @@ async function syncCustomers(validCustomers) {
 				created++;
 			}
 
-			await syncPayments(member, customer);
+			payments = [...payments, ...customer.payments.map(payment => ({
+				...createPayment(payment),
+				member: member._id
+			}))];
+
+			delete membersByCustomerId[customer.id];
 		} catch (error) {
 			console.log(customer.id, error.message);
 		}
 	}
 
-	console.log('Created', created);
-	console.log('Updated', updated);
+	console.log('Created', created, 'members');
+	console.log('Updated', updated, 'members');
 
-	// TODO: remove unwanted?
-}
+	for (const customerId in membersByCustomerId) {
+		const member = membersByCustomerId[customerId];
+		console.log(member.email, 'was not updated');
+	}
 
-async function syncPayments(member, customer) {
-	const payments = customer.payments.map(payment => ({
-		...createPayment(payment),
-		member: member._id
-	}));
-
-	await db.Payments.insertMany(payments);
+	console.log('Inserting', payments.length, 'payments');
+	await db.Payments.collection.insertMany(payments, {ordered: false});
 }
 
 console.log( 'Starting...' );

@@ -110,6 +110,8 @@ async function syncCustomers(validCustomers) {
 			}
 
 			await syncPayments(member, customer);
+
+			delete membersByCustomerId[customer.id];
 		} catch (error) {
 			console.log(customer.id, error.message);
 		}
@@ -118,7 +120,10 @@ async function syncCustomers(validCustomers) {
 	console.log('Created', created);
 	console.log('Updated', updated);
 
-	// TODO: remove unwanted?
+	for (const customerId in membersByCustomerId) {
+		const member = membersByCustomerId[customerId];
+		console.log(member.email, 'was not updated');
+	}
 }
 
 async function syncPayments(member, customer) {

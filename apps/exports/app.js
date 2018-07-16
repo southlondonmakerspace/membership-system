@@ -41,7 +41,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/', wrapAsync( async function( req, res ) {
 	const exports = await Exports.find();
-	res.render('index', {exports});
+	res.render('index', {exports, exportTypes});
 } ) );
 
 app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, res ) {
@@ -54,9 +54,10 @@ app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, 
 
 app.get( '/:uuid', wrapAsync( async function( req, res ) {
 	const exportDetails = await Exports.findOne({_id: req.params.uuid});
+	const exportType = exportTypes[exportDetails.type];
 
 	const newMembers = await Members.find({
-		...await exportTypes[exportDetails.type].query(),
+		...await exportType.query(),
 		exports: {$not: {$elemMatch: {
 			export_id: exportDetails
 		}}}
@@ -68,8 +69,13 @@ app.get( '/:uuid', wrapAsync( async function( req, res ) {
 		}}
 	});
 
+	exportMembers.forEach(member => {
+		member.currentExport = member.exports.find(e => e.export_id.equals(exportDetails._id));
+	});
+
 	res.render('export', {
 		exportDetails,
+		exportType,
 		exportMembers,
 		newMembers
 	});
@@ -79,10 +85,11 @@ app.post( '/:uuid', wrapAsync( async function( req, res ) {
 	const {body: data, params: {uuid}} = req;
 
 	const exportDetails = await Exports.findOne({_id: uuid});
+	const exportType = exportTypes[exportDetails.type];
 
 	if (data.action === 'add') {
 		await Members.updateMany({
-			...await exportTypes[exportDetails.type].query(),
+			...await exportType.query(),
 			exports: {$not: {$elemMatch: {
 				export_id: exportDetails
 			}}}
@@ -90,7 +97,7 @@ app.post( '/:uuid', wrapAsync( async function( req, res ) {
 			$push: {
 				exports: {
 					export_id: exportDetails,
-					status: 'added'
+					status: exportType.statuses[0]
 				}
 			}
 		});
@@ -123,17 +130,21 @@ app.post( '/:uuid', wrapAsync( async function( req, res ) {
 		});
 
 		const exportName = `export-${exportDetails.description}_${new Date().toISOString()}.csv`;
-		const exportData = await exportTypes[exportDetails.type].export(members);
+		const exportData = await exportType.export(members);
 		res.attachment(exportName).send(Papa.unparse(exportData));
 	}
 } ) );
 
 const exportTypes = {
 	edition: {
+		name: 'Edition export',
+		statuses: ['added', 'sent'],
 		query: getEditionQuery,
 		export: getEditionExport
 	},
 	'active-members': {
+		name: 'Active members export',
+		statuses: ['added', 'seen'],
 		query: getActiveMembersQuery,
 		export: getActiveMembersExport
 	}

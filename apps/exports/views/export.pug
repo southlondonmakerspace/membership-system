@@ -8,8 +8,10 @@ block prepend title
 block contents
 	.row
 		.col-md-12
-			+page_header('Export - ' + exportDetails.description)
-			p Created #{moment(exportDetails.date).format('DD/MM/YYYY [at] HH:mm')}
+			+page_header(exportDetails.description)
+			p.
+				#{exportType.name}, created
+				#{moment(exportDetails.date).format('DD/MM/YYYY [at] HH:mm')}
 	.row
 		.col-md-8
 			h3 New members
@@ -44,9 +46,9 @@ block contents
 					label(for='status').form-label.col-md-3 Status
 					.col-md-4
 						select(id='status', name='status').form-control
-							option(value='') All
-							option(value='added') Added
-							option(value='sent') Sent
+							option(value='') -- All --
+							each status in exportType.statuses
+								option= status
 
 				button.btn Export
 
@@ -60,16 +62,16 @@ block contents
 					label(for='old_status').form-label.col-md-3 Old status
 					.col-md-4
 						select(id='old_status', name='old_status').form-control
-							option(value='') All
-							option(value='added') Added
-							option(value='sent') Sent
+							option(value='') -- All --
+							each status in exportType.statuses
+								option= status
 
 				.form-group
 					label(for='new_status').form-label.col-md-3 New status
 					.col-md-4
 						select(id='new_status', name='status').form-control
-							option(value='added') Added
-							option(value='sent') Sent
+							each status in exportType.statuses
+								option= status
 
 				button.btn Update
 
@@ -85,4 +87,4 @@ block contents
 						tr
 							td #[a(href='/members/' + member.uuid) #{member.fullname}]
 							td= member.email
-							td= member.editionExport.status
+							td= member.currentExport.status

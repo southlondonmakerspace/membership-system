@@ -27,9 +27,13 @@ html
 			document.body.className += ' has-js';
 
 		.top
-			.container
-				a( href="https://thebristolcable.org/" ).logo
-				a.main-site-btn(href='https://thebristolcable.org') Go to thebristolcable.org
+			.top-content
+				a( href="https://thebristolcable.org/" )
+					img( src="/static/svg/logo.svg" ).top-logo
+					| Go to thebristolcable.org
+				if isLoggedIn
+					.top-content__right
+						a( href="/logout") Logout
 
 		block body
 			.container.main

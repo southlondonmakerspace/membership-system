@@ -95,6 +95,8 @@ function templateLocals( req, res, next ) {
 		return admin_permissions.indexOf( permission ) != -1;
 	};
 
+	res.locals.isLoggedIn = !!req.user;
+
 	// Delete login redirect URL if user navigates to anything other than the login page
 	if ( req.originalUrl != '/login' && req.originalUrl != '/otp' )
 		delete req.session.requestedUrl;

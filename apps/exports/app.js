@@ -20,7 +20,7 @@ var auth = require( __js + '/authentication' );
 const { wrapAsync } = require( __js + '/utils' );
 const { hasSchema } = require( __js + '/middleware' );
 
-const { createSchema } = require('./schemas.json');
+const { createSchema, updateSchema } = require('./schemas.json');
 
 var app_config = {};
 
@@ -81,10 +81,10 @@ app.get( '/:uuid', wrapAsync( async function( req, res ) {
 	});
 } ) );
 
-app.post( '/:uuid', wrapAsync( async function( req, res ) {
-	const {body: data, params: {uuid}} = req;
+app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( req, res ) {
+	const data = req.body;
 
-	const exportDetails = await Exports.findOne({_id: uuid});
+	const exportDetails = await Exports.findOne({_id: req.params.uuid});
 	const exportType = exportTypes[exportDetails.type];
 
 	if (data.action === 'add') {

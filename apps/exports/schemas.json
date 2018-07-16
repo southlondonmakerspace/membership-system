@@ -1,17 +1,64 @@
 {
-  "createSchema": {
-    "body": {
-      "type": "object",
-      "required": ["description", "type"],
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "enum": ["edition", "active-members"]
-        }
-      }
-    }
-  }
+	"createSchema": {
+		"body": {
+			"type": "object",
+			"required": ["description", "type"],
+			"properties": {
+				"description": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": ["edition", "active-members"]
+				}
+			}
+		}
+	},
+	"updateSchema": {
+		"body": {
+			"type": "object",
+			"required": ["action"],
+			"properties": {
+				"action": {
+					"type": "string",
+					"enum": ["add", "update", "export"]
+				}
+			},
+			"oneOf": [
+				{
+					"properties": {
+						"action": {
+							"const": "add"
+						}
+					}
+				},
+				{
+					"required": ["old_status", "status"],
+					"properties": {
+						"action": {
+							"const": "update"
+						},
+						"old_status": {
+							"type": "string"
+						},
+						"status": {
+							"type": "string",
+							"minLength": 1
+						}
+					}
+				},
+				{
+					"required": ["status"],
+					"properties": {
+						"action": {
+							"const": "export"
+						},
+						"status": {
+							"type": "string"
+						}
+					}
+				}
+			]
+		}
+	}
 }

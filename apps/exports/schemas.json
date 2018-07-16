@@ -9,7 +9,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["edition"]
+          "enum": ["edition", "active-members"]
         }
       }
     }

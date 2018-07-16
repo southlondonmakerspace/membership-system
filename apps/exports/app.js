@@ -54,37 +54,9 @@ app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, 
 
 app.get( '/:uuid', wrapAsync( async function( req, res ) {
 	const exportDetails = await Exports.findOne({_id: req.params.uuid});
-	const context = await exportHandlers[exportDetails.type].get(exportDetails);
-	res.render(exportDetails.type, context);
-} ) );
 
-app.post( '/:uuid', wrapAsync( async function( req, res ) {
-	const exportDetails = await Exports.findOne({_id: req.params.uuid});
-	await exportHandlers[exportDetails.type].post(exportDetails, req, res);
-} ) );
-
-const exportHandlers = {
-	edition: {
-		get: getEditionExport,
-		post: postEditionExport
-	}
-};
-
-async function getEligibilityCriteria() {
-	const permission = await Permissions.findOne( { slug: config.permission.member });
-	return {
-		'gocardless.amount': {$gte: 3},
-		permissions: {$elemMatch: {
-			permission,
-			date_expires: {$gte: new Date()}
-		}},
-		delivery_optin: true
-	};
-}
-
-async function getEditionExport(exportDetails) {
 	const newMembers = await Members.find({
-		...await getEligibilityCriteria(),
+		...await exportTypes[exportDetails.type].query(),
 		exports: {$not: {$elemMatch: {
 			export_id: exportDetails
 		}}}
@@ -96,47 +68,21 @@ async function getEditionExport(exportDetails) {
 		}}
 	});
 
-	exportMembers.forEach(member => {
-		member.editionExport = member.exports.find(e => e.export_id.equals(exportDetails._id));
+	res.render('export', {
+		exportDetails,
+		exportMembers,
+		newMembers
 	});
+} ) );
 
-	return {newMembers, exportMembers, exportDetails};
-}
+app.post( '/:uuid', wrapAsync( async function( req, res ) {
+	const {body: data, params: {uuid}} = req;
 
-async function postEditionExport(exportDetails, req, res) {
-	const data = req.body;
+	const exportDetails = await Exports.findOne({_id: uuid});
 
-	if (data.action === 'export') {
-		const members = await Members.find({
-			exports: {$elemMatch: {
-				export_id: exportDetails,
-				...data.status !== '' && {status: data.status}
-			}}
-		});
-
-		const exportData = members
-			.map(member => {
-				const postcode = member.delivery_address.postcode.trim().toUpperCase();
-				return {
-					FirstName: member.firstname,
-					LastName: member.lastname,
-					Address1: member.delivery_address.line1,
-					Address2: member.delivery_address.line2,
-					City: member.delivery_address.city,
-					Postcode: postcode,
-					IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3))
-				};
-			})
-			.sort((a, b) => (
-				(b.IsLocal - a.IsLocal) ||
-					(b.LastName.toLowerCase() > a.LastName.toLowerCase() ? -1 : 1)
-			));
-
-		res.attachment(`export-${exportDetails.description}_${new Date().toISOString()}.csv`).send(Papa.unparse(exportData));
-	} else if (data.action === 'add') {
-		// TODO: generate PDFs
+	if (data.action === 'add') {
 		await Members.updateMany({
-			...await getEligibilityCriteria(),
+			...await exportTypes[exportDetails.type].query(),
 			exports: {$not: {$elemMatch: {
 				export_id: exportDetails
 			}}}
@@ -151,6 +97,7 @@ async function postEditionExport(exportDetails, req, res) {
 
 		req.flash('success', 'exports-added');
 		res.redirect('/exports/' + exportDetails._id);
+
 	} else if (data.action === 'update') {
 		await Members.updateMany({
 			exports: {$elemMatch: {
@@ -163,9 +110,61 @@ async function postEditionExport(exportDetails, req, res) {
 				'exports.$.status': data.status
 			}
 		});
+
 		req.flash('success', 'exports-updated');
 		res.redirect('/exports/' + exportDetails._id);
+
+	} else if (data.action == 'export') {
+		const members = await Members.find({
+			exports: {$elemMatch: {
+				export_id: exportDetails,
+				...data.status !== '' && {status: data.status}
+			}}
+		});
+
+		const exportName = `export-${exportDetails.description}_${new Date().toISOString()}.csv`;
+		const exportData = await exportTypes[exportDetails.type].export(members);
+		res.attachment(exportName).send(Papa.unparse(exportData));
 	}
+} ) );
+
+const exportTypes = {
+	edition: {
+		query: getEditionQuery,
+		export: getEditionExport
+	}
+};
+
+async function getEditionQuery() {
+	const permission = await Permissions.findOne( { slug: config.permission.member });
+	return {
+		'gocardless.amount': {$gte: 3},
+		permissions: {$elemMatch: {
+			permission,
+			date_expires: {$gte: new Date()}
+		}},
+		delivery_optin: true
+	};
+}
+
+async function getEditionExport(members) {
+	return members
+		.map(member => {
+			const postcode = member.delivery_address.postcode.trim().toUpperCase();
+			return {
+				FirstName: member.firstname,
+				LastName: member.lastname,
+				Address1: member.delivery_address.line1,
+				Address2: member.delivery_address.line2,
+				City: member.delivery_address.city,
+				Postcode: postcode,
+				IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3))
+			};
+		})
+		.sort((a, b) => (
+			(b.IsLocal - a.IsLocal) ||
+				(b.LastName.toLowerCase() > a.LastName.toLowerCase() ? -1 : 1)
+		));
 }
 
 module.exports = function( config ) {

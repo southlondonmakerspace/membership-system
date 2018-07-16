@@ -1,16 +1,17 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = 'Edition export'
+	- title = 'Export'
 	- activeapp = 'exports'
 
 
 block contents
 	.row
 		.col-md-12
-			+page_header('Edition export - ' + exportDetails.description)
+			+page_header('Export - ' + exportDetails.description)
+			p Created #{moment(exportDetails.date).format('DD/MM/YYYY [at] HH:mm')}
 	.row
-		.col-md-8.col-md-offset-2
+		.col-md-8
 			h3 New members
 			if newMembers.length > 0
 				p Found #{newMembers.length} members not previously in the export

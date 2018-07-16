@@ -65,7 +65,7 @@ async function syncCustomers(validCustomers) {
 
 	await db.Payments.deleteMany({});
 
-	let created = 0, updated = 0;
+	let created = 0, updated = 0, payments = [];
 
 	for (let customer of validCustomers) {
 		try {
@@ -109,7 +109,10 @@ async function syncCustomers(validCustomers) {
 				created++;
 			}
 
-			await syncPayments(member, customer);
+			payments = [...payments, ...customer.payments.map(payment => ({
+				...createPayment(payment),
+				member: member._id
+			}))];
 
 			delete membersByCustomerId[customer.id];
 		} catch (error) {
@@ -117,22 +120,16 @@ async function syncCustomers(validCustomers) {
 		}
 	}
 
-	console.log('Created', created);
-	console.log('Updated', updated);
+	console.log('Created', created, 'members');
+	console.log('Updated', updated, 'members');
 
 	for (const customerId in membersByCustomerId) {
 		const member = membersByCustomerId[customerId];
 		console.log(member.email, 'was not updated');
 	}
-}
 
-async function syncPayments(member, customer) {
-	const payments = customer.payments.map(payment => ({
-		...createPayment(payment),
-		member: member._id
-	}));
-
-	await db.Payments.insertMany(payments);
+	console.log('Inserting', payments.length, 'payments');
+	await db.Payments.collection.insertMany(payments, {ordered: false});
 }
 
 console.log( 'Starting...' );

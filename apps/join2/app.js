@@ -66,44 +66,54 @@ app.post( '/', [
 	}
 }));
 
+async function createOrUpdateMember(member) {
+	try {
+		return await Members.create(member);
+	} catch (saveError) {
+		if ( saveError.code === 11000 ) {
+			const existingMember = await Members.findOne({email: member.email});
+
+			// Already a customer with an active mandate
+			if (existingMember.gocardless.mandate_id) {
+				return null;
+			} else {
+				await existingMember.update({
+					$set: {gocardless: member.gocardless},
+					$pull: {permissions: {permission: config.permission.memberId}}
+				});
+				return existingMember;
+			}
+		} else {
+			throw saveError;
+		}
+	}
+}
+
 app.get( '/complete', [
 	auth.isNotLoggedIn,
 	hasSchema(completeSchema).orRedirect( '/join' )
 ], wrapAsync(async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
-	// Load join data and complete redirect flow
 	const joinFlow = await JoinFlows.findOne({ redirect_flow_id });
 	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
 		session_token: joinFlow.sessionToken
 	});
 
-	const customerId = redirectFlow.links.customer;
+	await JoinFlows.deleteOne({redirect_flow_id});
+
+	const customer = await gocardless.customers.get(redirectFlow.links.customer);
+
 	const mandateId = redirectFlow.links.mandate;
 
-	const customer = await gocardless.customers.get(customerId);
-
-	const member = new Members( customerToMember( customer, mandateId ) );
-
-	try {
-		await member.save();
-	} catch ( saveError ) {
-		// Duplicate key (on email)
-		if ( saveError.code === 11000 ) {
-			req.log.error({
-				joinFlow,
-				customerId,
-				mandateId
-			}, 'Duplicate email on sign up');
-
-			res.redirect( app.mountpath + '/duplicate-email' );
-			return;
-		} else {
-			throw saveError;
-		}
+	const member = await createOrUpdateMember(customerToMember(customer, mandateId));
+	if (!member) {
+		req.log.error({
+			email: customer.email
+		}, `Duplicate email ${customer.email} on sign up`);
+		res.redirect( app.mountpath + '/duplicate-email' );
+		return;
 	}
-
-	await JoinFlows.deleteOne({redirect_flow_id});
 
 	const subscription =
 		await gocardless.subscriptions.create(joinFlowToSubscription(joinFlow, mandateId));

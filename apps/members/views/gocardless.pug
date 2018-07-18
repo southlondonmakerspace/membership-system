@@ -13,6 +13,4 @@ block contents
 			form( method="post" ).form-horizontal
 				+csrf
 				+input( 'text', 'Customer ID', 'customer_id', { value: member.gocardless.customer_id, left: 3, right: 4 } )
-				+input( 'text', 'Mandate ID', 'mandate_id', { value: member.gocardless.mandate_id, left: 3, right: 4 } )
-				+input( 'text', 'Subscription ID', 'subscription_id', { value: member.gocardless.subscription_id, left: 3, right: 4 } )
-				+form_button( 'Update', 'primary', { left: 3 } )
+				+form_button( 'Resync', 'primary', { left: 3 } )

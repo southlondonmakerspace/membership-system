@@ -4,25 +4,25 @@ block contents
 	p=baseurl
 	.row
 		h2.col-md-9.col-md-offset-3 Hello #{ user.firstname }
-	.row
-		.col-md-3
-			- page = 'home'
-			include partials/sidebar.pug
-		.col-md-9
-			.page-header
+	if user.memberPermission
+		.row
+			.col-md-3
+				- page = 'home'
+				include partials/sidebar.pug
+			.col-md-9
+				.page-header
 
-			unless membership_expires
-				.alert.alert-danger.
-					Your membership has expired, this could be due to a failed
-					payment. Please contact
-					#[a(href='mailto:membership@thebristolcable.org') membership@thebristolcable.org]
-					to restart your membership.
+				if user.memberPermission.date_expires < moment()
+					.alert.alert-danger.
+						Your membership has expired, please contact
+						#[a(href='mailto:membership@thebristolcable.org') membership@thebristolcable.org]
+						to restart your membership.
 
-			dl
-				dt Joined
-				dd #{ moment( user.joined ).format('Do MMMM YYYY') }
-				if membership_expires
-					dt Contribution
-					dd.
-						£#{ user.gocardless.actualAmount }/#{ user.gocardless.period },
-						renews #{ membership_expires.format('Do MMMM YYYY') }
+				dl
+					dt Joined
+					dd #{ moment( user.joined ).format('Do MMMM YYYY') }
+					if user.memberPermission.date_expires >= moment()
+						dt Contribution
+						dd.
+							£#{ user.gocardless.actualAmount }/#{ user.gocardless.period },
+							renews #{ moment(user.memberPermission.date_expires).format('Do MMMM YYYY') }

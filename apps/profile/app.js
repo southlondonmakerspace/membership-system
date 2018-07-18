@@ -1,12 +1,8 @@
 const __root = '../..';
 const __src = __root + '/src';
 const __js = __src + '/js';
-const __config = __root + '/config';
-
-const config = require( __config + '/config.json' );
 
 const express = require( 'express' );
-const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
 
@@ -32,22 +28,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {
-	const { user } = req;
-
-	let membership_expires;
-
-	if ( auth.activeMember( req ) && user.memberPermission ) {
-		const expires = moment( user.memberPermission.date_expires );
-
-		// If we're in the grace period assume payment has gone through
-		if ( expires.subtract( config.gracePeriod ).isBefore() ) {
-			membership_expires = expires; // TODO: calculate next payment date
-		} else {
-			membership_expires = expires;
-		}
-	}
-
-	res.render( 'profile', { user, membership_expires } );
+	res.render( 'profile', { user: req.user } );
 } );
 
 module.exports = function( config ) {

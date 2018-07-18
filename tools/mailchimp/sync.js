@@ -159,17 +159,15 @@ async function checkBatchErrors(batch) {
 
 async function dispatchOperations(operations) {
 	for (const operation of operations) {
-		try {
-			await mailchimp.instance({
-				method: operation.method,
-				url: operation.path,
-				...operation.body && {data: JSON.parse(operation.body)}
-			});
-		} catch (error) {
-			if (operation.operation_id !== 'delete' || error.response.status !== 404) {
-				console.log(error);
+		await mailchimp.instance({
+			method: operation.method,
+			url: operation.path,
+			...operation.body && {data: JSON.parse(operation.body)},
+			validateStatus: status => {
+				return status >= 200 && status < 300 ||
+					operation.operation_id === 'delete' && status === 404;
 			}
-		}
+		});
 	}
 }
 

@@ -1,18 +1,11 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
 
-var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
-	db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members;
-
-var config = require( __config + '/config.json' );
+var auth = require( __js + '/authentication' );
 
 var app_config = {};
 
@@ -40,7 +33,7 @@ app.post( '/revoke', auth.isLoggedIn, function( req, res ) {
 	console.log( 'Revoking tag: ' + req.user.tag.id + ' for user: ' + req.user.email );
 	req.user.tag.id = '';
 	req.user.tag.hashed = '';
-	req.user.save( function( err ) {
+	req.user.save( function () {
 		req.flash( 'danger', 'tag-revoked' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

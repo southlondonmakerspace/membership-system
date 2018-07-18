@@ -1,6 +1,9 @@
-var mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId,
-	crypto = require( 'crypto' );
+const { permission: { memberId } } = require( '../../config/config.json' );
+
+const mongoose = require( 'mongoose' );
+const crypto = require( 'crypto' );
+
+const ObjectId = mongoose.Schema.ObjectId;
 
 module.exports = {
 	name: 'Members',
@@ -34,11 +37,9 @@ module.exports = {
 		password: {
 			hash: {
 				type: String,
-				required: true
 			},
 			salt: {
 				type: String,
-				required: true
 			},
 			iterations: {
 				type: Number,
@@ -81,13 +82,26 @@ module.exports = {
 			type: String,
 			required: true
 		},
-		address: {
-			type: String,
-			required: true
+		delivery_optin: {
+			type: Boolean
 		},
-		postcode_coordinates: {
-			lat: Number,
-			lng: Number
+		delivery_address: {
+			line1: {
+				type: String
+			},
+			line2: {
+				type: String,
+			},
+			city: {
+				type: String,
+			},
+			postcode: {
+				type: String
+			},
+			postcode_coordinates: {
+				lat: Number,
+				lng: Number
+			}
 		},
 		tag: {
 			id: {
@@ -124,27 +138,19 @@ module.exports = {
 
 		},
 		gocardless: {
-			redirect_flow_id: {
-				type: String
+			customer_id: String,
+			mandate_id: String,
+			subscription_id: String,
+			amount: Number,
+			period: {
+				type: String,
+				enum: ['monthly', 'annually']
 			},
-			mandate_id: {
-				type: String
+			pending_update: {
+				amount: Number,
+				date: Date
 			},
-			subscription_id: {
-				type: String
-			},
-			session_token: {
-				type: String
-			},
-			minimum: {
-				type: Number
-			},
-			next_possible_charge_date: {
-				type: Date
-			},
-			amount: {
-				type: Number
-			}
+			cancelled_at: Date
 		},
 		permissions: [ {
 			permission: {
@@ -157,11 +163,6 @@ module.exports = {
 				default: Date.now,
 				required: true
 			},
-			date_updated: {
-				type: Date,
-				default: Date.now,
-				required: true
-			},
 			date_expires: {
 				type: Date
 			},
@@ -170,7 +171,20 @@ module.exports = {
 				default: false
 			}
 		} ],
-		last_seen: Date
+		last_seen: Date,
+		join_reason: String,
+		cancellation_reason: String,
+		exports: [ {
+			export_id: {
+				type: ObjectId,
+				ref: 'Exports',
+				required: true
+			},
+			status: {
+				type: String,
+				required: true
+			}
+		} ],
 	} )
 };
 
@@ -183,23 +197,30 @@ module.exports.schema.virtual( 'gravatar' ).get( function() {
 	return '//www.gravatar.com/avatar/' + md5;
 } );
 
+module.exports.schema.virtual( 'gocardless.actualAmount' ).get( function () {
+	return this.gocardless.amount * ( this.gocardless.period === 'annually'  ? 12 : 1 );
+} );
+
 module.exports.schema.virtual( 'can_admin' ).get( function() {
 	var can_admin = [];
-	this.permissions.forEach( function( permission, p ) {
+	this.permissions.forEach( function( permission ) {
 		if ( permission.admin )
-			can_admin.push( permission.permission.slug )
+			can_admin.push( permission.permission.slug );
 	} );
 	return can_admin;
 } );
 
+module.exports.schema.virtual( 'memberPermission' )
+	.get( function () {
+		return this.permissions.find(p => p.permission.equals(memberId));
+	} )
+	.set( function (value) {
+		const i = this.permissions.findIndex(p => p.permission.equals(memberId));
+		this.permissions[i] = value;
+	} );
+
 module.exports.schema.virtual( 'setupComplete' ).get( function() {
-	if (	! this.emergency_contact.telephone ||
-			! this.gocardless.mandate_id ||
-			! this.gocardless.subscription_id ||
-			! this.discourse.activated ||
-			! this.discourse.username ||
-			! this.tag.id
-		)
+	if ( ! this.password.hash )
 		return false;
 	return true;
 } );

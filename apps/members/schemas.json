@@ -1,0 +1,57 @@
+{
+	"updateProfileSchema": {
+		"body": {
+			"type": "object",
+			"required": ["email", "firstname", "lastname", "delivery_optin"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"format": "email"
+				},
+				"firstname": {
+					"type": "string",
+					"minLength": 1
+				},
+				"lastname": {
+					"type": "string",
+					"minLength": 1
+				},
+				"delivery_optin": {
+					"type": "boolean"
+				}
+			},
+			"oneOf": [
+				{
+					"required": ["delivery_line1", "delivery_city", "delivery_postcode"],
+					"properties": {
+						"delivery_optin": {
+							"const": true
+						},
+						"delivery_line1": {
+							"type": "string",
+							"minLength": 1
+						},
+						"delivery_line2": {
+							"type": "string"
+						},
+						"delivery_city": {
+							"type": "string",
+							"minLength": 1
+						},
+						"delivery_postcode": {
+							"type": "string",
+							"format": "postcode"
+						}
+					}
+				},
+				{
+					"properties": {
+						"delivery_optin": {
+							"const": false
+						}
+					}
+				}
+			]
+		}
+	}
+}

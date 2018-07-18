@@ -26,12 +26,12 @@ var Mail = {
 		message.to = to;
 		message.subject = subject + ' – ' + Options.getText( 'organisation' );
 
-		transporter.sendMail( message, function( err, info ) {
+		transporter.sendMail( message, function( err ) {
 			var status;
 
 			if ( err ) {
 				status = false;
-				console.log( 'Error sending email "' + subject + '" to ' + to + ": " );
+				console.log( 'Error sending email "' + subject + '" to ' + to + ': ' );
 				console.log( err );
 			} else {
 				status = true;

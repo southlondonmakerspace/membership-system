@@ -4,7 +4,15 @@ html
 	head
 		meta( charset="utf-8" )
 		meta( name="viewport", content="initial-scale=1.0, width=device-width" )
-		link( rel="shortcut icon" href="/imgs/favicon.ico" )
+
+		link( rel="apple-touch-icon", sizes="180x180", href="/apple-touch-icon.png" )
+		link( rel="icon", type="image/png", sizes="32x32", href="/favicon-32x32.png" )
+		link( rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16.png" )
+		link( rel="manifest", href="/site.webmanifest" )
+		link( rel="mask-icon", href="/safari-pinned-tab.svg", color="#5bbad5" )
+		meta( name="msapplication-TileColor", content="#da532c" )
+		meta( name="theme-color", content="#ffffff" )
+
 		block title
 			if title
 				title #{ title } &mdash; #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
@@ -12,31 +20,46 @@ html
 				title #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
 		block head
 			block css
-				link( rel="stylesheet", href="/css/theme.min.css" )
-				link( rel="stylesheet", href="/css/style.css" )
-			block js
-				script( src="/js/jquery.js" )
-				script( src="/js/bootstrap.js" )
-				script( src="/js/script.js" )
+				link( rel="stylesheet", href="/static/css/theme.min.css" )
+				link( rel="stylesheet", href="/static/css/style.css" )
 	body( class=( dev ? 'dev' : '' ) )
+		script.
+			document.body.className += ' has-js';
+
 		block body
 			.container
 				a( href="/" ).logo
 				block navbar
 					include partials/navbar.pug
-				block breadcrumb
-					include partials/breadcrumb.pug
 				include partials/flash.pug
 				block heading
 					if heading
 						+page_header( heading )
 				block contents
 				block footer
-					.row
-						.col-md-12
-							hr
-							small.text-muted #{ Options( 'organisation' ) }, #{ Options( 'software-name' ) } &mdash;
-								|  
-								a( href="https://github.com/southlondonmakerspace/membership-system", target="_blank" ) Contribute on GitHub
-							small.text-muted.pull-right
-								| #{ git }
+					include partials/footer.pug
+
+		block js
+			script( src="/static/js/jquery.js" )
+			script( src="/static/js/bootstrap.js" )
+			script( src="/static/js/script.js" )
+
+		script.
+			var _paq = _paq || [];
+			/* tracker methods like "setCustomDimension" should be called before
+			"trackPageView" */
+			_paq.push(["setCookieDomain", "*.dev.thebristolcable.org"]);
+			_paq.push(["setDomains",
+			["*.dev.thebristolcable.org","*.membership.thebristolcable.org","*.thebristolcable.org"]]);
+			_paq.push(["enableCrossDomainLinking"]);
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			(function() {
+				var u="//stats2.xtreamlab.net/";
+				_paq.push(['setTrackerUrl', u+'piwik.php']);
+				_paq.push(['setSiteId', '1']);
+				var d=document, g=d.createElement('script'),
+				s=d.getElementsByTagName('script')[0];
+				g.type='text/javascript'; g.async=true; g.defer=true;
+				g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+			  })();

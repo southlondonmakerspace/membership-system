@@ -1,0 +1,94 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block append js
+	+passwordRequirementsJS
+	script(src='/static/js/delivery-address.js')
+
+block append css
+	+passwordRequirementsCSS
+
+block body
+	header.join-header
+		.join-header__bg
+
+		.join-form
+			.join-title
+				div
+					img(src='/static/svg/logo.svg').join-title-logo
+				h1 Hello#[br]#{user.firstname}
+
+			h3 Thank you!
+			p.
+				You are now an owner of independent media. With more people like you
+				we can sustain and grow the Cable.
+
+	.container
+		.row
+			.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
+				.alert.alert-info Finish setting up your account
+
+				include /src/views/partials/flash
+
+				form( method="post", novalidate ).form-horizontal
+					+csrf
+
+					h3 Your account
+
+					p.
+						You’ll be able to manage your membership using your email
+						address and password. We’re also excited to be rolling
+						out some new features over the next couple of months.
+
+					+input( 'text', 'Email address', 'email', { required: true, left: 4, right: 6, value: user.email } )
+					+input( 'password', 'Password', 'password', { required: true, id: 'password', class: 'pw-req', left: 4, right: 6 } )
+					+input( 'password', 'Confirm password', 'verify', { required: true, id: 'verify', class: 'pw-mat', left: 4, right: 6 } )
+
+					h3 Delivery details
+
+					if user.gocardless.amount < 3
+						p.
+							Would you like to receive a #[b free copy of our quartley magazine]?
+					else
+						p.
+							Would you like to receive very occasional post from us?
+
+					ul.join-options
+						li.join-options__opt
+							input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='true', required, checked).js-delivery-opt
+							label(for='delivery_optin_yes').btn Yes
+						li.join-options__opt
+							input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='false', required).js-delivery-opt
+							label(for='delivery_optin_no').btn No
+						li.join-options__opt
+
+					.js-delivery-details
+						p.
+							We've assumed your delivery address is the same as your
+							billing address, update it below if needed.
+						+input( 'text', 'Address line 1', 'delivery_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
+						+input( 'text', 'Address line 2', 'delivery_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
+						+input( 'text', 'City/town', 'delivery_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
+						+input( 'text', 'Postcode', 'delivery_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
+
+					h3 Why did you join?
+
+					p.
+						Would you mind telling us where you heard about the Cable?
+						You don't have to but it would really helpful for us to know
+						how the message is getting out.
+
+					.form-group
+						div.col-md-12
+							select(name='reason').form-control
+								option(disabled, selected, value='') Select an option
+								option I found a copy of your print magazine
+								option I was recommended to you by a friend
+								option I'd rather not say
+								option Other
+
+					button.btn.join-btn Save
+
+		include /src/views/partials/footer

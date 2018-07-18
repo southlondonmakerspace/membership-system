@@ -4,8 +4,7 @@ var __js = __src + '/js';
 var __config = __root + '/config';
 
 var	express = require( 'express' ),
-	app = express(),
-	request= require( 'request' );
+	app = express();
 
 var config = require( __config + '/config.json' );
 
@@ -68,7 +67,7 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 				if ( req.body.user ) {
 					var index = parseInt( req.body.user );
 					if ( index > 0 || index < users.length ) {
-						Members.findOne( { "discourse.id": user.id }, function( err, member ) {
+						Members.findOne( { 'discourse.id': user.id }, function( err, member ) {
 							if ( member ) {
 								req.flash( 'warning', 'discouse-id-duplicate' );
 								res.redirect( app.parent.mountpath + app.mountpath );
@@ -76,10 +75,10 @@ app.post( '/link', auth.isLoggedIn, function( req, res ) {
 								auth.generateActivationCode( function( code ) {
 									code = code.toString( 'hex' );
 
-									Members.update( { "_id": req.user._id }, { $set: {
-										"discourse.username": user.username,
-										"discourse.activation_code": code
-									} }, function ( error ) {} );
+									Members.update( { '_id': req.user._id }, { $set: {
+										'discourse.username': user.username,
+										'discourse.activation_code': code
+									} }, function () {} );
 
 									discourse.sendActivationMessage( user.username, code );
 
@@ -110,7 +109,7 @@ app.get( '/cancel', auth.isLoggedIn, function( req, res ) {
 		username: '',
 		activated: false
 	};
-	req.user.save( function( err ) {
+	req.user.save( function () {
 		req.flash( 'warning', 'discourse-cancelled' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );
@@ -119,10 +118,10 @@ app.get( '/cancel', auth.isLoggedIn, function( req, res ) {
 app.post( '/activate', auth.isLoggedIn, function( req, res ) {
 	if ( ! req.body.activation_code || req.body.activation_code !== '' ) {
 		if ( req.body.activation_code == req.user.discourse.activation_code ) {
-			Members.update( { "_id": req.user._id }, { $set: {
-				"discourse.activated": true,
-				"discourse.activation_code": null
-			} }, function ( error ) {} );
+			Members.update( { '_id': req.user._id }, { $set: {
+				'discourse.activated': true,
+				'discourse.activation_code': null
+			} }, function () {} );
 			req.flash( 'info', 'discourse-linked' );
 			return res.redirect( app.parent.mountpath + app.mountpath );
 		}
@@ -143,7 +142,7 @@ app.post( '/unlink', auth.isLoggedIn, function( req, res ) {
 		username: '',
 		activated: false
 	};
-	req.user.save( function( err ) {
+	req.user.save( function () {
 		req.flash( 'danger', 'discourse-unlinked' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} );

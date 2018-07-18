@@ -3,11 +3,7 @@ ul.nav.nav-pills.nav-stacked
 	li( class=( page == 'overview' ? 'active' : '' ) ): a( href='/members/' + member.uuid ) Overview
 	if access( 'superadmin' )
 		li( class=( page == 'profile' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/profile' ) Profile
-		li( class=( page == 'activation' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/activation' ) Activation
-		li( class=( page == 'override' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/override' ) Signup Override
 		li( class=( page == 'tag' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/tag' ) Tag
 		if ( member.otp.activated )
 			li( class=( page == '2fa' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/2fa' ) 2FA
-		li( class=( page == 'discourse' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/discourse' ) Discourse
-		li( class=( page == 'gocardless' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/gocardless' ) GoCardless
 	li( class=( page == 'permissions' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/permissions' ) Permissions

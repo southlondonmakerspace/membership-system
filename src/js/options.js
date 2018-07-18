@@ -1,9 +1,6 @@
-var __home = __dirname + "/../..";
-var __config = __home + '/config/config.json';
+var __home = __dirname + '/../..';
 var __src = __home + '/src';
 var __js = __src + '/js';
-
-var config = require( __config );
 
 var db = require( __js + '/database' ),
 	OptionsDB = db.Options;
@@ -44,12 +41,12 @@ var Options = {
 		} );
 		if ( option ) {
 			switch ( option.value ) {
-				case 'true':
-					return true;
-				case 'false':
-					return false;
-				default:
-					return;
+			case 'true':
+				return true;
+			case 'false':
+				return false;
+			default:
+				return;
 			}
 		} else {
 			return;
@@ -82,10 +79,10 @@ var Options = {
 		callback();
 	},
 	_save: function( key ) {
-		OptionsDB.update( { key: key }, { value: Options.getText( key ) }, { upsert: true }, function( err, status ) {} );
+		OptionsDB.update( { key: key }, { value: Options.getText( key ) }, { upsert: true }, function() {} );
 	},
 	_unset: function( key ) {
-		OptionsDB.remove( { key: key }, function( err, status ) {} );
+		OptionsDB.remove( { key: key }, function () {} );
 	},
 	load: function( req, res, next ) {
 		res.locals.Options = Options.getText;
@@ -101,7 +98,7 @@ var Options = {
 						opt.default = false;
 						opt.value = option.value;
 					}
-				} )
+				} );
 			}
 			callback();
 		} );

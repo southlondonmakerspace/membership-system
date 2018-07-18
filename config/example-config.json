@@ -38,5 +38,13 @@
 	"iterations": 50000,
 	"dev": true,
 	"log": "/var/log/membership.log",
-	"logStdout": false
+	"logStdout": false,
+	"logSlack": {
+		"level": "error",
+		"webhook_url": "https://hooks.slack.com/services/example",
+		"channel": "#example",
+		"username": "example"
+	},
+	"appOverrides": {
+	}
 }

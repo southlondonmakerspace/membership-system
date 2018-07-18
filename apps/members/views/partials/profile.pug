@@ -2,6 +2,16 @@
 dl.dl-horizontal
 	dt Email
 	dd  #{ member.email }
-	if access( 'superadmin' )
-		dt Address
-		dd #{ member.address.replace( /\r?\n/g, ", " ) }
+	dt Delivery opt in?
+	dd #{ member.delivery_optin ? 'Yes' : 'No' }
+	if member.delivery_optin
+		dt Delivery address
+		dd
+			| #{ member.delivery_address.line1}
+			br
+			if member.delivery_address.line2
+				| #{ member.delivery_address.line2}
+				br
+			| #{ member.delivery_address.city}
+			br
+			| #{ member.delivery_address.postcode}

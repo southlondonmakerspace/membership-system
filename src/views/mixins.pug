@@ -30,7 +30,7 @@ mixin input( type, label, name, opts )
 							- i++
 							div( class=type )
 								label( for=name + "_" + i )
-									input( name=name, type=type, value=value, checked=( opts.value === true || value == opts.value ), id=name + "_" + i )
+									input( name=name, type=type, value=value, required=opts.required, checked=( opts.value === true || value == opts.value ), id=name + "_" + i )
 									|  #{ text }
 						- break
 				if opts.after
@@ -62,12 +62,15 @@ mixin page_header( title, opts )
 					small  #{ opts.small }
 
 mixin passwordRequirementsCSS
-	link( rel="stylesheet", href="/css/password-requirements.css" )
+	link( rel="stylesheet", href="/static/css/password-requirements.css" )
 
 mixin passwordRequirementsJS
-	script( src="/js/password-requirements.js" )
+	script( src="/static/js/password-requirements.js" )
 
 mixin flash( status, text, opts )
 	.alert( class='alert-' + status)=text
 		if ( opts && opts.text && opts.url && opts.type )
 			a( href=opts.url, style="margin-top:-.3em;margin-right:-.3em", class="btn-" + opts.type ).btn.btn-sm.pull-right=opts.text
+
+mixin email( address )
+	a( href='mailto:' + address )= address

@@ -38,8 +38,6 @@ block contents
 								th User
 								th Payment ID
 								th Subscription ID
-								th Created
-								th Updated
 								th Charge Date
 								th Description
 								th Status
@@ -53,8 +51,6 @@ block contents
 										td –
 									td: a( href="https://manage.gocardless.com/payments/" + payment.payment_id, target="_blank" ) #{ payment.payment_id }
 									td: a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id, target="_blank" ) #{ payment.subscription_id }
-									td #{ moment( payment.created ).format( 'HH:mm DD/MM/YYYY' ) }
-									td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm DD/MM/YYYY' ) : '–' }
 									td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
 									td #{ payment.description }
 									td
@@ -62,7 +58,7 @@ block contents
 									td #{ payment.amount ? '£' + payment.amount : '–' }
 						tfoot
 							tr
-								th( colspan=8 ) Total
+								th( colspan=6 ) Total confirmed
 								th £#{ total }
 			else
 				+messageBlock( 'info', 'There are no transactions this month.' )

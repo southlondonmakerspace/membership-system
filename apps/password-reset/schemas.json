@@ -1,0 +1,34 @@
+{
+	"getResetCodeSchema": {
+		"body": {
+			"type": "object",
+			"required": ["email"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"format": "email"
+				}
+			}
+		}
+	},
+ "resetPasswordSchema": {
+		"body": {
+			"type": "object",
+			"required": ["password_reset_code", "password", "verify"],
+			"properties": {
+				"password_reset_code": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string",
+					"format": "password"
+				},
+				"verify": {
+					"const": {
+						"$data": "1/password"
+					}
+				}
+			}
+		}
+ }
+}

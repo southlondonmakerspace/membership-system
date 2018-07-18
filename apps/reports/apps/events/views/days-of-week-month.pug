@@ -5,7 +5,7 @@ block prepend title
 	- activeapp = 'reports'
 	
 block append js
-	script( src="/js/chart.js" )
+	script( src="/static/js/chart.js" )
 	script var data = !{ JSON.stringify( data ) };
 	script.
 		jQuery( document ).ready( function() {

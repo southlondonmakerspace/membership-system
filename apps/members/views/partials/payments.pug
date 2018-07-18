@@ -6,8 +6,6 @@ if payments.length > 0
 				tr
 					th Payment ID
 					th Subscription ID
-					th Created
-					th Updated
 					th Charge Date
 					th Description
 					th Status
@@ -19,16 +17,17 @@ if payments.length > 0
 							a( href="https://manage.gocardless.com/payments/" + payment.payment_id ) #{ payment.payment_id }
 						td 
 							a( href="https://manage.gocardless.com/subscriptions/" + payment.subscription_id ) #{ payment.subscription_id }
-						td #{ moment( payment.created ).format( 'HH:mm:ss DD/MM/YYYY' ) }
-						td #{ payment.amount ? moment( payment.updated ).format( 'HH:mm:ss DD/MM/YYYY' ) : '–' }
 						td #{ moment( payment.charge_date ).format( 'DD/MM/YYYY' ) }
 						td #{ payment.description }
 						td
 							include /apps/profile/apps/statement/views/partials/status.pug
-						td #{ payment.amount ? '£' + payment.amount : '–' }
+						td
+							| #{ payment.amount ? '£' + payment.amount : '–' }
+							if payment.amount_refunded
+								|  (-£#{payment.amount_refunded})
 			tfoot
 				tr
-					th( colspan=7 ) Total
+					th( colspan=5 ) Total
 					th £ #{ total }
 else
 	p Member has no payment history

@@ -39,9 +39,9 @@ app.get( '/:activation_code' , function( req, res ) {
 
 app.post( '/', function( req, res ) {
 	if ( ! req.body.activation_code || ! req.body.password ) {
-			req.flash( 'danger', 'information-ommited' );
-			res.redirect( '/activate' );
-			return;
+		req.flash( 'danger', 'information-ommited' );
+		res.redirect( '/activate' );
+		return;
 	}
 	if ( req.user ) {
 		req.flash( 'warning', 'already-logged-in' );
@@ -89,7 +89,7 @@ app.post( '/', function( req, res ) {
 						activation_code: null,
 						activated: true
 					}
-				}, function ( status ) {
+				}, function () {
 					req.log.info( {
 						app: 'activate',
 						action: 'activate',
@@ -98,7 +98,7 @@ app.post( '/', function( req, res ) {
 							activation_code: req.body.activation_code
 						}
 					} );
-					req.login( user, function( err ) {
+					req.login( user, function() {
 						req.flash( 'success', 'activation-success' );
 						res.redirect( '/profile/setup' );
 					} );

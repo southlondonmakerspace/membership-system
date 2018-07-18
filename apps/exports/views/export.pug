@@ -14,6 +14,13 @@ block contents
 				#{moment(exportDetails.date).format('DD/MM/YYYY [at] HH:mm')}
 	.row
 		.col-md-8
+			form(method='POST')
+				+csrf
+				input(type='hidden', name='action', value='delete')
+				button.btn.btn-danger.outline Delete
+
+			hr
+
 			h3 New members
 			if newMembers.length > 0
 				p Found #{newMembers.length} members not previously in the export
@@ -36,6 +43,8 @@ block contents
 			else
 				p All eligible members are in export
 
+			hr
+
 			h3 Run export
 			p Export a CSV of all members with a given status
 			form(method='POST', target='_blank').form-horizontal
@@ -51,6 +60,8 @@ block contents
 								option= status
 
 				button.btn Export
+
+			hr
 
 			h3 Update export members
 			p There are #{exportMembers.length} members in export
@@ -74,6 +85,8 @@ block contents
 								option= status
 
 				button.btn Update
+
+			hr
 
 			h4 Member list
 			table.table.table-striped.table-condensed

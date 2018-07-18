@@ -121,7 +121,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		req.flash('success', 'exports-updated');
 		res.redirect('/exports/' + exportDetails._id);
 
-	} else if (data.action == 'export') {
+	} else if (data.action === 'export') {
 		const members = await Members.find({
 			exports: {$elemMatch: {
 				export_id: exportDetails,
@@ -132,6 +132,13 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		const exportName = `export-${exportDetails.description}_${new Date().toISOString()}.csv`;
 		const exportData = await exportType.export(members);
 		res.attachment(exportName).send(Papa.unparse(exportData));
+	} else if (data.action === 'delete') {
+		await Exports.deleteOne({_id: exportDetails._id});
+		await Members.updateMany({}, {
+			$pull: {exports: {export_id: exportDetails._id}}
+		});
+		req.flash('success', 'exports-deleted');
+		res.redirect('/exports');
 	}
 } ) );
 

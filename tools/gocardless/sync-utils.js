@@ -137,6 +137,12 @@ function getMembershipInfo(customer) {
 		};
 	}
 
+	function getStartDate() {
+		const subscription = isSuccessfulPayment(latestPayment) ?
+			latestPayment.subscription : latestSubscription;
+		return moment.utc(subscription.created_at);
+	}
+
 	function getExpiryDate() {
 		return isSuccessfulPayment(latestPayment) ?
 			moment.utc(latestPayment.charge_date).add(getSubscriptionDuration(latestPayment.subscription)) :
@@ -165,6 +171,7 @@ function getMembershipInfo(customer) {
 
 	return {
 		...getPeriodAndAmount(),
+		starts: getStartDate(),
 		expires: getExpiryDate(),
 		pendingUpdate: getPendingUpdate(),
 		cancelledAt: getCancelledAt()

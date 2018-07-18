@@ -64,11 +64,15 @@ async function fetchMembers(startDate, endDate) {
 
 	console.log(`Got ${members.length} members`);
 
+	const now = moment();
 	// Hack to store membership active status somewhere
 	members.forEach(member => {
-		const memberPermission = member.permissions.find(p => permission.equals(p.permission));
-		member.isActiveMember = memberPermission.date_added < moment() &&
-			(!memberPermission.date_expires || memberPermission.date_expires > moment());
+		member.isActiveMember = member.memberPermission.date_added < now &&
+			(!member.memberPermission.date_expires || member.memberPermission.date_expires > now);
+	});
+
+	members.forEach(member => {
+		console.log(member.isActiveMember ? 'U' : 'D', member.email);
 	});
 
 	return members;
@@ -173,11 +177,6 @@ async function dispatchOperations(operations) {
 
 if (process.argv[2] === '-n') {
 	fetchMembers(process.argv[3], process.argv[4])
-		.then(members => {
-			members.forEach(member => {
-				console.log(member.isActiveMember ? 'U' : 'D', member.email);
-			});
-		})
 		.catch(err => console.log(err))
 		.then(() => db.mongoose.disconnect());
 } else {

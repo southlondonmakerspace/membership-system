@@ -62,27 +62,27 @@ async function syncCustomers(validCustomers) {
 				...membershipInfo.cancelledAt && {cancelled_at: membershipInfo.cancelledAt.toDate()}
 			};
 
-			const added = moment(customer.created_at).toDate();
 			const expires = membershipInfo.expires.add(config.gracePeriod).toDate();
 
 			if (member) {
-				const memberPermission = member.permissions.find(p => permission.equals(p.permission));
 				// TODO: check if it needs updating
 				member.gocardless = gocardless;
-				memberPermission.date_expires = expires;
+				member.memberPermission.date_added = membershipInfo.starts.toDate();
+				member.memberPermission.date_expires = expires;
 				await member.save();
+
 				updated++;
 			} else {
 				member = await db.Members.create({
 					firstname: customer.given_name,
 					lastname: customer.family_name,
 					email: customer.email,
-					joined: added,
+					joined: moment(customer.created_at).toDate(),
 					activated: true,
 					gocardless,
 					permissions: [{
 						permission,
-						date_added: added,
+						date_added: membershipInfo.starts.toDate(),
 						date_expires: expires
 					}]
 				});

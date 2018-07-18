@@ -115,7 +115,6 @@ app.get( '/complete', [
 	}, $push: {
 		permissions: {
 			permission: config.permission.memberId,
-			date_added: new Date(),
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		}
 	}});

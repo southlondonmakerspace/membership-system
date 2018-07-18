@@ -21,7 +21,7 @@
 			"properties": {
 				"action": {
 					"type": "string",
-					"enum": ["add", "update", "export"]
+					"enum": ["add", "update", "export", "delete"]
 				}
 			},
 			"oneOf": [
@@ -55,6 +55,13 @@
 						},
 						"status": {
 							"type": "string"
+						}
+					}
+				},
+				{
+					"properties": {
+						"action": {
+							"const": "delete"
 						}
 					}
 				}

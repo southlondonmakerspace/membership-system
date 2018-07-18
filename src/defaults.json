@@ -169,6 +169,7 @@
 	"flash-exports-created": "Export created",
 	"flash-exports-added": "Added members to export",
 	"flash-exports-updated": "Updated export status",
+	"flash-exports-deleted": "Export deleted",
 
 	"flash-validation-error-generic": "The data you provided was invalid",
 

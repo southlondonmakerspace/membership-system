@@ -35,6 +35,10 @@ var Authentication = {
 						return done( null, false, { message: 'account-locked' } );
 					}
 
+					if ( !user.password.salt ) {
+						return done( null, false, { message: 'login-failed' } );
+					}
+
 					// Hash the entered password with the members salt
 					Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
 						// Check the hashes match

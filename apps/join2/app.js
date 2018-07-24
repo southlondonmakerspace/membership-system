@@ -97,13 +97,21 @@ app.get('/restart/:code', wrapAsync(async (req, res) => {
 
 	const { customer_id, mandate_id, amount, period } = member.restart;
 
-	member.gocardless = {customer_id, mandate_id};
-	member.permissions = member.permissions.filter(p => !p.permission.equals(config.permission.memberId));
-	member.restart = undefined;
+	// Something has created a new subscription in the mean time!
+	if (member.gocardless.subscription_id) {
+		member.gocardless = {customer_id, mandate_id};
+		member.permissions = member.permissions.filter(p => !p.permission.equals(config.permission.memberId));
+		member.restart = undefined;
 
-	await member.save();
+		await member.save();
 
-	await createSubscription(member, {amount, period});
+		await createSubscription(member, {amount, period});
+	} else {
+		member.restart = undefined;
+		await member.save();
+
+		req.flash( 'danger', '' ); // TODO: flash message
+	}
 
 	req.login(member, function ( loginError ) {
 		if ( loginError ) {

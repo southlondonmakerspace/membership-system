@@ -114,13 +114,10 @@ app.get( '/complete', [
 		if ( saveError.code === 11000 ) {
 			const oldMember = await Members.findOne({email: memberObj.email});
 			if (oldMember.gocardless.subscription_id) {
-				req.log.error({
-					email: oldMember.email
-				}, `Duplicate email ${oldMember.email} on sign up`);
 				res.redirect( app.mountpath + '/duplicate-email' );
 			} else {
 				oldMember.restart = {
-					code: 'asds', // TODO: generate code
+					code: auth.generateCode(),
 					customer_id: customerId,
 					mandate_id: mandateId,
 					amount: joinFlow.amount,

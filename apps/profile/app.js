@@ -12,6 +12,8 @@ var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
+app.use( auth.isLoggedIn );
+
 app.use( function( req, res, next ) {
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
@@ -34,7 +36,7 @@ app.use( function( req, res, next ) {
 	}
 } );
 
-app.get( '/', auth.isLoggedIn, function( req, res ) {
+app.get( '/', function( req, res ) {
 	res.render( 'profile', { user: req.user } );
 } );
 

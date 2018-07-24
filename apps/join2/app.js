@@ -91,10 +91,11 @@ app.get( '/complete', [
 
 	const joinFlow = await JoinFlows.findOneAndDelete({ redirect_flow_id });
 
-	const {links: {customer: customerId, mandate: mandateId}} =
-		await gocardless.redirectFlows.complete(redirect_flow_id, {
-			session_token: joinFlow.sessionToken
-		});
+	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
+		session_token: joinFlow.sessionToken
+	});
+	const customerId = redirectFlow.links.customer;
+	const mandateId = redirectFlow.links.mandate;
 
 	const customer = await gocardless.customers.get(customerId);
 

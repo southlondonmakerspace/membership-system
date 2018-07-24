@@ -147,7 +147,7 @@ app.get('/restart/:code', wrapAsync(async (req, res) => {
 
 	member.gocardless = {customer_id, mandate_id};
 	member.permissions = member.permissions.filter(p => !p.permission.equals(config.permission.memberId));
-	delete member.restart;
+	member.restart = undefined;
 
 	await member.save();
 

@@ -45,8 +45,12 @@ app.post( '/', hasSchema( rejoinSchema ).orFlash, wrapAsync( async (req, res) =>
 	const { body: { period, amount, amountOther }, user } = req;
 
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
-
-	if (user.gocardless.mandate_id) {
+	
+	if (user.gocardless.subscription_id) {
+		// TODO: flash active subscription notice
+		res.redirect( app.mountpath );
+	// Has an active mandate, we can instantly restart!
+	} else if (user.gocardless.mandate_id) {
 		await createSubscription(user, {amount, period});
 		// TODO: flash restarted!
 		res.redirect('/profile');

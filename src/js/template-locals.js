@@ -74,6 +74,7 @@ function templateLocals( req, res, next ) {
 
 	// Template permissions
 	res.locals.access = function( permission ) {
+		if ( !req.user ) return false;
 		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
 		if ( permission == 'member' ) permission = config.permission.member;
 		if ( permission == 'admin' ) permission = config.permission.admin;

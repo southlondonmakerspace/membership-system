@@ -9,12 +9,13 @@ const moment = require( 'moment' );
 const auth = require( __js + '/authentication' );
 const { JoinFlows, Members } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
+const mandrill = require( __js + '/mandrill' );
 const { hasSchema } = require( __js + '/middleware' );
 const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { customerToMember, joinFlowToSubscription } = require( './utils' );
+const { customerToMember, joinInfoToSubscription } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
 
@@ -66,68 +67,102 @@ app.post( '/', [
 	}
 }));
 
-app.get( '/complete', [
-	auth.isNotLoggedIn,
-	hasSchema(completeSchema).orRedirect( '/join' )
-], wrapAsync(async function( req, res ) {
-	const { query: { redirect_flow_id } } = req;
-
-	// Load join data and complete redirect flow
-	const joinFlow = await JoinFlows.findOne({ redirect_flow_id });
-	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
-		session_token: joinFlow.sessionToken
-	});
-
-	const customerId = redirectFlow.links.customer;
-	const mandateId = redirectFlow.links.mandate;
-
-	const customer = await gocardless.customers.get(customerId);
-
-	const member = new Members( customerToMember( customer, mandateId ) );
-
-	try {
-		await member.save();
-	} catch ( saveError ) {
-		// Duplicate key (on email)
-		if ( saveError.code === 11000 ) {
-			req.log.error({
-				joinFlow,
-				customerId,
-				mandateId
-			}, 'Duplicate email on sign up');
-
-			res.redirect( app.mountpath + '/duplicate-email' );
-			return;
-		} else {
-			throw saveError;
-		}
-	}
-
-	await JoinFlows.deleteOne({redirect_flow_id});
-
+async function createSubscription(member, {amount, period}) {
 	const subscription =
-		await gocardless.subscriptions.create(joinFlowToSubscription(joinFlow, mandateId));
+		await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
 
 	await member.update({$set: {
 		'gocardless.subscription_id': subscription.id,
-		'gocardless.amount': joinFlow.amount,
-		'gocardless.period': joinFlow.period
+		'gocardless.amount': amount,
+		'gocardless.period': period
 	}, $push: {
 		permissions: {
 			permission: config.permission.memberId,
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		}
 	}});
+}
+
+app.get( '/complete', [
+	auth.isNotLoggedIn,
+	hasSchema(completeSchema).orRedirect( '/join' )
+], wrapAsync(async function( req, res ) {
+	const { query: { redirect_flow_id } } = req;
+
+	const joinFlow = await JoinFlows.findOneAndRemove({ redirect_flow_id });
+
+	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
+		session_token: joinFlow.sessionToken
+	});
+	const customerId = redirectFlow.links.customer;
+	const mandateId = redirectFlow.links.mandate;
+
+	const customer = await gocardless.customers.get(customerId);
+
+	const memberObj = customerToMember(customer, mandateId);
+	try {
+		const member = await Members.create(memberObj);
+		await createSubscription(member, joinFlow);
+		req.login(member, function ( loginError ) {
+			if ( loginError ) {
+				throw loginError;
+			}
+			res.redirect('/profile/complete');
+		});
+	} catch ( saveError ) {
+		// Duplicate email
+		if ( saveError.code === 11000 ) {
+			const oldMember = await Members.findOne({email: memberObj.email});
+			if (oldMember.gocardless.subscription_id) {
+				res.redirect( app.mountpath + '/duplicate-email' );
+			} else {
+				oldMember.restart = {
+					code: auth.generateCode(),
+					customer_id: customerId,
+					mandate_id: mandateId,
+					amount: joinFlow.amount,
+					period: joinFlow.period
+				};
+				await oldMember.save();
+				await mandrill.send('restart-membership', oldMember);
+
+				res.redirect( app.mountpath + '/expired-member' );
+			}
+		} else {
+			throw saveError;
+		}
+	}
+
+
+
+}));
+
+app.get('/restart/:code', wrapAsync(async (req, res) => {
+	const member = await Members.findOne({'restart.code': req.params.code});
+
+	const { customer_id, mandate_id, amount, period } = member.restart;
+
+	member.gocardless = {customer_id, mandate_id};
+	member.permissions = member.permissions.filter(p => !p.permission.equals(config.permission.memberId));
+	member.restart = undefined;
+
+	await member.save();
+
+	await createSubscription(member, {amount, period});
 
 	req.login(member, function ( loginError ) {
 		if ( loginError ) {
 			throw loginError;
 		}
-		res.redirect('/profile/complete');
+		res.redirect('/profile');
 	});
 }));
 
-app.get('/duplicate-email', function (req, res) {
+app.get('/expired-member', (req, res) => {
+	res.render('expired-member');
+});
+
+app.get('/duplicate-email', (req, res) => {
 	res.render('duplicate-email');
 });
 

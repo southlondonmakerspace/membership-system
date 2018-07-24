@@ -1,0 +1,19 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = "Expired membership"
+
+block contents
+	+page_header( 'Expired membership' )
+
+	.row
+		.col-md-6
+			p.
+				This email address is already associated with an expired
+				membership, we're really happy you've decided to come back!
+
+			p.
+				However, for security reasons we need to make sure you have
+				access to the email address before we can restart your
+				membership. We've sent you an email, please click the link to
+				proceed.

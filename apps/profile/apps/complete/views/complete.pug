@@ -65,9 +65,6 @@ block body
 						li.join-options__opt
 
 					.js-delivery-details
-						p.
-							We've assumed your delivery address is the same as your
-							billing address, update it below if needed.
 						+input( 'text', 'Address line 1', 'delivery_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
 						+input( 'text', 'Address line 2', 'delivery_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
 						+input( 'text', 'City/town', 'delivery_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )

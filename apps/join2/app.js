@@ -89,7 +89,7 @@ app.get( '/complete', [
 ], wrapAsync(async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
-	const joinFlow = await JoinFlows.findOneAndDelete({ redirect_flow_id });
+	const joinFlow = await JoinFlows.findOneAndRemove({ redirect_flow_id });
 
 	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
 		session_token: joinFlow.sessionToken
@@ -141,22 +141,17 @@ app.get( '/complete', [
 }));
 
 app.get('/restart/:code', wrapAsync(async (req, res) => {
-	const member = await Members.findOneAndUpdate({'restart.code': req.params.code}, {
-		$set: {
-			gocardless: {
-				customer_id: member.restart.customer_id,
-				mandate_id: member.restart.mandate_id
-			}
-		},
-		$pull: {
-			permissions: {permission: config.permission.memberId}
-		},
-		$unset: {
-			restart: true
-		}
-	}, {new: true});
+	const member = await Members.findOne({'restart.code': req.params.code});
 
-	await createSubscription(member, member.restart);
+	const { customer_id, mandate_id, amount, period } = member.restart;
+
+	member.gocardless = {customer_id, mandate_id};
+	member.permissions = member.permissions.filter(p => !p.permission.equals(config.permission.memberId));
+	delete member.restart;
+
+	await member.save();
+
+	await createSubscription(member, {amount, period});
 
 	req.login(member, function ( loginError ) {
 		if ( loginError ) {

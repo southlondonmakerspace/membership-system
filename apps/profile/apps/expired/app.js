@@ -66,18 +66,22 @@ app.get( '/complete', [
 ], wrapAsync( async (req, res) => {
 	const { user } = req;
 
-	const { customerId, mandateId, amount, period } =
-		await completeJoinFlow(req.query.redirect_flow_id);
+	if (user.gocardless.subscription_id) {
+		req.flash( 'danger', '' ); // TODO: flash already has sub
+	} else {
+		const { customerId, mandateId, amount, period } =
+			await completeJoinFlow(req.query.redirect_flow_id);
 
-	user.gocardless = {
-		customer_id: customerId,
-		mandate_id: mandateId
-	};
-	user.permissions = user.permissions.filter(p => !p.permission.equals(config.permission.memberId));
+		user.gocardless = {
+			customer_id: customerId,
+			mandate_id: mandateId
+		};
+		user.permissions = user.permissions.filter(p => !p.permission.equals(config.permission.memberId));
 
-	await user.save();
+		await user.save();
 
-	await createSubscription(user, {amount, period});
+		await createSubscription(user, {amount, period});
+	}
 
 	// TODO: flash restarted!
 	res.redirect('/profile');

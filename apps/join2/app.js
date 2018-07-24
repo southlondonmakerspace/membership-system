@@ -111,7 +111,7 @@ app.get( '/complete', [
 		});
 	} catch ( saveError ) {
 		// Duplicate email
-		if ( saveError === 11000 ) {
+		if ( saveError.code === 11000 ) {
 			const oldMember = await Members.findOne({email: memberObj.email});
 			if (oldMember.gocardless.subscription_id) {
 				req.log.error({

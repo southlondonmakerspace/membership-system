@@ -3,6 +3,7 @@ const __src = __root + '/src';
 const __js = __src + '/js';
 
 const express = require( 'express' );
+const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
 
@@ -19,12 +20,18 @@ app.use( function( req, res, next ) {
 	} );
 	res.locals.activeApp = app_config.uid;
 
-	if ( req.user && !req.user.setupComplete && req.originalUrl !== '/profile/complete') {
-		res.redirect('/profile/complete');
+	if ( req.user ) {
+		if (req.user.memberPermission && req.user.memberPermission.date_expires < moment() &&
+				req.originalUrl !== '/profile/expired') {
+			res.redirect('/profile/expired');
+		} else if (!req.user.setupComplete && req.originalUrl !== '/profile/complete') {
+			res.redirect('/profile/complete');
+		} else {
+			next();
+		}
 	} else {
 		next();
 	}
-
 } );
 
 app.get( '/', auth.isLoggedIn, function( req, res ) {

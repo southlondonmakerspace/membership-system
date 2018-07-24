@@ -82,19 +82,23 @@ async function completeJoinFlow(redirect_flow_id) {
 }
 
 async function createSubscription(member, {amount, period}) {
-	const subscription =
-		await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
+	if (member.gocardless.subscription_id) {
+		throw new Error('Tried to create subscription on member with active subscription');
+	} else {
+		const subscription =
+			await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
 
-	await member.update({$set: {
-		'gocardless.subscription_id': subscription.id,
-		'gocardless.amount': amount,
-		'gocardless.period': period
-	}, $push: {
-		permissions: {
-			permission: config.permission.memberId,
-			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
-		}
-	}});
+		await member.update({$set: {
+			'gocardless.subscription_id': subscription.id,
+			'gocardless.amount': amount,
+			'gocardless.period': period
+		}, $push: {
+			permissions: {
+				permission: config.permission.memberId,
+				date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
+			}
+		}});
+	}
 }
 
 module.exports = {

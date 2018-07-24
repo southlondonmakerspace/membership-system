@@ -1,36 +1,105 @@
-const utils = require('../../src/js/utils');
+const __root = '../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
+const __config = __root + '/config';
+
+const moment = require( 'moment' );
+
+const auth = require( __js + '/authentication' );
+const { JoinFlows } = require( __js + '/database' );
+const gocardless = require( __js + '/gocardless' );
+const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
+
+const config = require( __config + '/config.json' );
+
+async function customerToMember(customerId, mandateId) {
+	const customer = await gocardless.customers.get(customerId);
+
+	return {
+		firstname: customer.given_name,
+		lastname: customer.family_name,
+		email: customer.email,
+		delivery_optin: false,
+		delivery_address: {
+			line1: customer.address_line1,
+			line2: customer.address_line2,
+			city: customer.city,
+			postcode: customer.postal_code
+		},
+		gocardless: {
+			customer_id: customer.id,
+			mandate_id: mandateId
+		},
+		activated: true
+	};
+}
+
+function joinInfoToSubscription(amount, period, mandateId) {
+	const actualAmount = getActualAmount(amount, period);
+
+	return {
+		amount: actualAmount * 100,
+		currency: 'GBP',
+		interval_unit: period === 'annually' ? 'yearly' : 'monthly',
+		name: getSubscriptionName(actualAmount, period),
+		links: {
+			mandate: mandateId
+		}
+	};
+}
+
+async function createJoinFlow(amount, period, completeUrl) {
+	const sessionToken = auth.generateCode();
+	const name = getSubscriptionName(getActualAmount(amount, period), period);
+
+	const redirectFlow = await gocardless.redirectFlows.create({
+		description: name,
+		session_token: sessionToken,
+		success_redirect_url: completeUrl
+	});
+
+	await JoinFlows.create({
+		redirect_flow_id: redirectFlow.id,
+		sessionToken, amount, period
+	});
+
+	return redirectFlow.redirect_url;
+}
+
+async function completeJoinFlow(redirect_flow_id) {
+	const joinFlow = await JoinFlows.findOneAndRemove({ redirect_flow_id });
+
+	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
+		session_token: joinFlow.sessionToken
+	});
+
+	return {
+		customerId: redirectFlow.links.customer,
+		mandateId: redirectFlow.links.mandate,
+		amount: joinFlow.amount,
+		period: joinFlow.period
+	};
+}
+
+async function createSubscription(member, {amount, period}) {
+	const subscription =
+		await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
+
+	await member.update({$set: {
+		'gocardless.subscription_id': subscription.id,
+		'gocardless.amount': amount,
+		'gocardless.period': period
+	}, $push: {
+		permissions: {
+			permission: config.permission.memberId,
+			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
+		}
+	}});
+}
 
 module.exports = {
-	customerToMember(customer, mandateId) {
-		return {
-			firstname: customer.given_name,
-			lastname: customer.family_name,
-			email: customer.email,
-			delivery_optin: false,
-			delivery_address: {
-				line1: customer.address_line1,
-				line2: customer.address_line2,
-				city: customer.city,
-				postcode: customer.postal_code
-			},
-			gocardless: {
-				customer_id: customer.id,
-				mandate_id: mandateId
-			},
-			activated: true
-		};
-	},
-	joinInfoToSubscription(amount, period, mandateId) {
-		const actualAmount = utils.getActualAmount(amount, period);
-
-		return {
-			amount: actualAmount * 100,
-			currency: 'GBP',
-			interval_unit: period === 'annually' ? 'yearly' : 'monthly',
-			name: utils.getSubscriptionName(actualAmount, period),
-			links: {
-				mandate: mandateId
-			}
-		};
-	}
+	customerToMember,
+	createJoinFlow,
+	completeJoinFlow,
+	createSubscription
 };

@@ -1,3 +1,4 @@
+const { getActualAmount } = require('../js/utils');
 const { permission: { memberId } } = require( '../../config/config.json' );
 
 const mongoose = require( 'mongoose' );
@@ -185,6 +186,16 @@ module.exports = {
 				required: true
 			}
 		} ],
+		restart: {
+			code: String,
+			customer_id: String,
+			mandate_id: String,
+			amount: Number,
+			period: {
+				type: String,
+				enum: ['monthly', 'annually']
+			}
+		}
 	} )
 };
 
@@ -198,7 +209,7 @@ module.exports.schema.virtual( 'gravatar' ).get( function() {
 } );
 
 module.exports.schema.virtual( 'gocardless.actualAmount' ).get( function () {
-	return this.gocardless.amount * ( this.gocardless.period === 'annually'  ? 12 : 1 );
+	return getActualAmount(this.gocardless.amount, this.gocardless.period);
 } );
 
 module.exports.schema.virtual( 'can_admin' ).get( function() {

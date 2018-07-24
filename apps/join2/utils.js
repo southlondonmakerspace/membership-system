@@ -20,12 +20,14 @@ module.exports = {
 			activated: true
 		};
 	},
-	joinFlowToSubscription(joinFlow, mandateId) {
+	joinInfoToSubscription(amount, period, mandateId) {
+		const actualAmount = utils.getActualAmount(amount, period);
+
 		return {
-			amount: joinFlow.actualAmount * 100,
+			amount: actualAmount * 100,
 			currency: 'GBP',
-			interval_unit: joinFlow.period === 'annually' ? 'yearly' : 'monthly',
-			name: utils.getSubscriptionName(joinFlow.actualAmount, joinFlow.period),
+			interval_unit: period === 'annually' ? 'yearly' : 'monthly',
+			name: utils.getSubscriptionName(actualAmount, period),
 			links: {
 				mandate: mandateId
 			}

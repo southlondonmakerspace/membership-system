@@ -18,7 +18,11 @@ const templates = {
 			name: 'MEMBERSHIPID',
 			content: member.uuid
 		}];
-	}
+	},
+	'restart-membership': member => [{
+		name: 'RESTARTLINK',
+		content: config.audience + '/join/restart/' + member.restart.code
+	}]
 };
 
 function memberToTemplate(templateId, member) {

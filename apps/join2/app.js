@@ -9,12 +9,13 @@ const moment = require( 'moment' );
 const auth = require( __js + '/authentication' );
 const { JoinFlows, Members } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
+const mandrill = require( __js + '/mandrill' );
 const { hasSchema } = require( __js + '/middleware' );
 const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { customerToMember, joinFlowToSubscription } = require( './utils' );
+const { customerToMember, joinInfoToSubscription } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
 
@@ -66,27 +67,20 @@ app.post( '/', [
 	}
 }));
 
-async function createOrUpdateMember(member) {
-	try {
-		return await Members.create(member);
-	} catch (saveError) {
-		if ( saveError.code === 11000 ) {
-			const existingMember = await Members.findOne({email: member.email});
+async function createSubscription(member, {amount, period}) {
+	const subscription =
+		await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
 
-			// Already a customer with an active mandate
-			if (existingMember.gocardless.mandate_id) {
-				return null;
-			} else {
-				await existingMember.update({
-					$set: {gocardless: member.gocardless},
-					$pull: {permissions: {permission: config.permission.memberId}}
-				});
-				return existingMember;
-			}
-		} else {
-			throw saveError;
+	await member.update({$set: {
+		'gocardless.subscription_id': subscription.id,
+		'gocardless.amount': amount,
+		'gocardless.period': period
+	}, $push: {
+		permissions: {
+			permission: config.permission.memberId,
+			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		}
-	}
+	}});
 }
 
 app.get( '/complete', [
@@ -95,49 +89,87 @@ app.get( '/complete', [
 ], wrapAsync(async function( req, res ) {
 	const { query: { redirect_flow_id } } = req;
 
-	const joinFlow = await JoinFlows.findOne({ redirect_flow_id });
-	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
-		session_token: joinFlow.sessionToken
-	});
+	const joinFlow = await JoinFlows.findOneAndDelete({ redirect_flow_id });
 
-	await JoinFlows.deleteOne({redirect_flow_id});
+	const {links: {customer: customerId, mandate: mandateId}} =
+		await gocardless.redirectFlows.complete(redirect_flow_id, {
+			session_token: joinFlow.sessionToken
+		});
 
-	const customer = await gocardless.customers.get(redirectFlow.links.customer);
+	const customer = await gocardless.customers.get(customerId);
 
-	const mandateId = redirectFlow.links.mandate;
+	const memberObj = customerToMember(customer, mandateId);
+	try {
+		const member = await Members.create(memberObj);
+		await createSubscription(member, joinFlow);
+		req.login(member, function ( loginError ) {
+			if ( loginError ) {
+				throw loginError;
+			}
+			res.redirect('/profile/complete');
+		});
+	} catch ( saveError ) {
+		// Duplicate email
+		if ( saveError === 11000 ) {
+			const oldMember = await Members.findOne({email: memberObj.email});
+			if (oldMember.gocardless.subscription_id) {
+				req.log.error({
+					email: oldMember.email
+				}, `Duplicate email ${oldMember.email} on sign up`);
+				res.redirect( app.mountpath + '/duplicate-email' );
+			} else {
+				oldMember.restart = {
+					code: 'asds', // TODO: generate code
+					customer_id: customerId,
+					mandate_id: mandateId,
+					amount: joinFlow.amount,
+					period: joinFlow.period
+				};
+				await oldMember.save();
+				await mandrill.send('restart-membership', oldMember);
 
-	const member = await createOrUpdateMember(customerToMember(customer, mandateId));
-	if (!member) {
-		req.log.error({
-			email: customer.email
-		}, `Duplicate email ${customer.email} on sign up`);
-		res.redirect( app.mountpath + '/duplicate-email' );
-		return;
+				res.redirect( app.mountpath + '/expired-member' );
+			}
+		} else {
+			throw saveError;
+		}
 	}
 
-	const subscription =
-		await gocardless.subscriptions.create(joinFlowToSubscription(joinFlow, mandateId));
 
-	await member.update({$set: {
-		'gocardless.subscription_id': subscription.id,
-		'gocardless.amount': joinFlow.amount,
-		'gocardless.period': joinFlow.period
-	}, $push: {
-		permissions: {
-			permission: config.permission.memberId,
-			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
+
+}));
+
+app.get('/restart/:code', wrapAsync(async (req, res) => {
+	const member = await Members.findOneAndUpdate({'restart.code': req.params.code}, {
+		$set: {
+			gocardless: {
+				customer_id: member.restart.customer_id,
+				mandate_id: member.restart.mandate_id
+			}
+		},
+		$pull: {
+			permissions: {permission: config.permission.memberId}
+		},
+		$unset: {
+			restart: true
 		}
-	}});
+	}, {new: true});
+
+	await createSubscription(member, member.restart);
 
 	req.login(member, function ( loginError ) {
 		if ( loginError ) {
 			throw loginError;
 		}
-		res.redirect('/profile/complete');
+		res.redirect('/profile');
 	});
 }));
 
-app.get('/duplicate-email', function (req, res) {
+app.get('/expired-member', (req, res) => {
+	res.render('expired-member');
+});
+
+app.get('/duplicate-email', (req, res) => {
 	res.render('duplicate-email');
 });
 

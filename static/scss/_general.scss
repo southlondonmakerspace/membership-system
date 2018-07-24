@@ -55,45 +55,37 @@ body:not(.has-js) .hidden-nojs {
 	display: none;
 }
 
-.logo {
-	margin: 20px 0;
-	display: inline-block;
-	width: 5em;
-	height: 5em;
-	background-image: url(/static/svg/logo.svg);
-	background-size: 5em;
-	background-repeat: no-repeat;
-	background-position: center;
-}
+.top {
+	padding: 10px 40px;
+	font-weight: 600;
+	white-space: nowrap;
 
-.bg {
-  background: url('/assets/example/bg_blueplane.jpg') no-repeat center center;
-  position: fixed;
-  width: 100%;
-  height: 350px; /*same height as jumbotron */
-  top:0;
-  left:0;
-  z-index: -1;
-}
-
-.jumbotron {
-	position: relative;
-	color: white;
-	text-shadow: #444 0 1px 1px;
-	overflow: hidden;
-	background: transparent;
-
-	.bg {
-		background-image: url( /static/imgs/jumbo.jpg );
-		background-size: cover;
-		background-position: center;
-		display: block;
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		-webkit-filter: blur(2px);
-		filter: blur(2px);
+	a,
+	&:hover {
+		color: $c-black;
 	}
+}
+
+.top-content {
+	max-width: 1170px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+}
+
+.top-content__right {
+	flex: 1 1 100%;
+	text-align: right;
+}
+
+.top-logo {
+	width: 50px;
+	height: 50px;
+	margin-right: 10px;
+}
+
+.main {
+	margin-top: 15px;
 }
 
 .btn-link {

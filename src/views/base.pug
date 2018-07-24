@@ -26,9 +26,17 @@ html
 		script.
 			document.body.className += ' has-js';
 
+		.top
+			.top-content
+				a( href="https://thebristolcable.org/" )
+					img( src="/static/svg/logo.svg" ).top-logo
+					| Go to thebristolcable.org
+				if isLoggedIn
+					.top-content__right
+						a( href="/logout") Logout
+
 		block body
-			.container
-				a( href="/" ).logo
+			.container.main
 				block navbar
 					include partials/navbar.pug
 				include partials/flash.pug

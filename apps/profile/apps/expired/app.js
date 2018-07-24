@@ -73,7 +73,10 @@ app.get( '/complete', [
 		customer_id: customerId,
 		mandate_id: mandateId
 	};
+	user.permissions = user.permissions.filter(p => !p.permission.equals(config.permission.memberId));
+
 	await user.save();
+
 	await createSubscription(user, {amount, period});
 
 	// TODO: flash restarted!

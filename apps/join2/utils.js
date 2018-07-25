@@ -88,16 +88,14 @@ async function createSubscription(member, {amount, period}) {
 		const subscription =
 			await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
 
-		await member.update({$set: {
-			'gocardless.subscription_id': subscription.id,
-			'gocardless.amount': amount,
-			'gocardless.period': period
-		}, $push: {
-			permissions: {
-				permission: config.permission.memberId,
-				date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
-			}
-		}});
+		member.gocardless.subscription_id = subscription.id;
+		member.gocardless.amount = amount;
+		member.gocardless.period = period;
+		member.memberPermission = {
+			date_added: new Date(),
+			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
+		};
+		await member.save();
 	}
 }
 

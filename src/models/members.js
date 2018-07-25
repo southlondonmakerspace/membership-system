@@ -226,8 +226,16 @@ module.exports.schema.virtual( 'memberPermission' )
 		return this.permissions.find(p => p.permission.equals(memberId));
 	} )
 	.set( function (value) {
+		// Ensure permission is always member
+		const memberPermission = {...value, permission: memberId};
+
 		const i = this.permissions.findIndex(p => p.permission.equals(memberId));
-		this.permissions[i] = value;
+		if (i > -1) {
+			this.permissions[i] = memberPermission;
+		} else {
+			console.log('here');
+			this.permissions.push(memberPermission);
+		}
 	} );
 
 module.exports.schema.virtual( 'setupComplete' ).get( function() {

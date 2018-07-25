@@ -95,6 +95,7 @@
 	"flash-gocardless-subscription-updating-err": "Error updating contribution",
 	"flash-gocardless-subscription-exists": "You already have an active contribution",
 	"flash-gocardless-subscription-doesnt-exist": "You don't have an active contribution",
+	"flash-gocardless-subscription-restarted": "You have successfully restarted your contribution",
 
 	"flash-event-404": "Event not found",
 	"flash-event-not-linkable": "Tag cannot be linked",

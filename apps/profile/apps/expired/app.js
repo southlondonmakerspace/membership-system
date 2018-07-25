@@ -47,12 +47,12 @@ app.post( '/', hasSchema( rejoinSchema ).orFlash, wrapAsync( async (req, res) =>
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
 	
 	if (user.gocardless.subscription_id) {
-		// TODO: flash active subscription notice
+		req.flash( 'danger', 'gocardless-subscription-exists' );
 		res.redirect( app.mountpath );
-	// Has an active mandate, we can instantly restart!
 	} else if (user.gocardless.mandate_id) {
+		// Has an active mandate, we can instantly restart!
 		await createSubscription(user, {amount, period});
-		// TODO: flash restarted!
+		req.flash( 'success', 'gocardless-subscription-restarted');
 		res.redirect('/profile');
 	} else {
 		const completeUrl = config.audience + app.mountpath + '/complete';
@@ -67,7 +67,7 @@ app.get( '/complete', [
 	const { user } = req;
 
 	if (user.gocardless.subscription_id) {
-		req.flash( 'danger', '' ); // TODO: flash already has sub
+		req.flash( 'danger', 'gocardless-subscription-exists' );
 	} else {
 		const { customerId, mandateId, amount, period } =
 			await completeJoinFlow(req.query.redirect_flow_id);
@@ -76,14 +76,12 @@ app.get( '/complete', [
 			customer_id: customerId,
 			mandate_id: mandateId
 		};
-		user.permissions = user.permissions.filter(p => !p.permission.equals(config.permission.memberId));
-
 		await user.save();
 
 		await createSubscription(user, {amount, period});
+		req.flash( 'success', 'gocardless-subscription-restarted');
 	}
 
-	// TODO: flash restarted!
 	res.redirect('/profile');
 } ) );
 

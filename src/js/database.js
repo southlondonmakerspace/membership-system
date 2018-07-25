@@ -15,9 +15,7 @@ exports.mongoose = mongoose;
 
 exports.connect = function( url ) {
 	mongoose.Promise = global.Promise;
-	mongoose.connect( url, {
-		useMongoClient: true
-	} );
+	mongoose.connect( url, { useNewUrlParser: true } );
 	var db = mongoose.connection;
 	db.on( 'connected', function() {
 		log.debug( {

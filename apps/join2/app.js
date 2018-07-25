@@ -59,6 +59,8 @@ app.get( '/complete', [
 	try {
 		const newMember = await Members.create(memberObj);
 		await createSubscription(newMember, {amount, period});
+		await mandrill.send('welcome', newMember);
+
 		req.login(newMember, function ( loginError ) {
 			if ( loginError ) {
 				throw loginError;

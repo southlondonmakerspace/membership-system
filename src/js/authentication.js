@@ -139,16 +139,6 @@ var Authentication = {
 
 					user.quickPermissions = permissions;
 
-					// Determin if user is still mid-setup
-					user.setup = false;
-					if ( user.emergency_contact.telephone ||
-							user.gocardless.mandate_id === '' ||
-							user.gocardless.subscription_id === '' ||
-							! user.discourse.activated ||
-							user.discourse.username === '' ||
-							user.tag.id === '' )
-						user.setup = true;
-
 					// Return user data
 					return done( null, user );
 				} else {

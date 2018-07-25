@@ -4,18 +4,16 @@ const __js = __src + '/js';
 const __config = __root + '/config';
 
 const express = require( 'express' );
-const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
-const { JoinFlows, Members } = require( __js + '/database' );
-const gocardless = require( __js + '/gocardless' );
+const { Members } = require( __js + '/database' );
 const mandrill = require( __js + '/mandrill' );
 const { hasSchema } = require( __js + '/middleware' );
-const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
+const { wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { customerToMember, joinInfoToSubscription } = require( './utils' );
+const { customerToMember, createJoinFlow, completeJoinFlow, createSubscription } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
 
@@ -43,67 +41,25 @@ app.post( '/', [
 
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
 
-	const sessionToken = auth.generateCode();
-	const name = getSubscriptionName(amountNo * (period === 'annually' ? 12 : 1), period);
 	const completeUrl = config.audience + app.mountpath + '/complete';
+	const redirectUrl = await createJoinFlow(amountNo, period, completeUrl);
 
-	try {
-		const redirectFlow = await gocardless.redirectFlows.create({
-			description: name,
-			session_token: sessionToken,
-			success_redirect_url: completeUrl
-		});
-
-		await new JoinFlows({
-			redirect_flow_id: redirectFlow.id,
-			amount: amountNo,
-			sessionToken, period
-		}).save();
-
-		res.redirect( redirectFlow.redirect_url );
-	} catch ( error ) {
-		req.flash( 'danger', 'gocardless-mandate-err' );
-		res.redirect( app.mountpath );
-	}
+	res.redirect( redirectUrl );
 }));
-
-async function createSubscription(member, {amount, period}) {
-	const subscription =
-		await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
-
-	await member.update({$set: {
-		'gocardless.subscription_id': subscription.id,
-		'gocardless.amount': amount,
-		'gocardless.period': period
-	}, $push: {
-		permissions: {
-			permission: config.permission.memberId,
-			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
-		}
-	}});
-}
 
 app.get( '/complete', [
 	auth.isNotLoggedIn,
 	hasSchema(completeSchema).orRedirect( '/join' )
 ], wrapAsync(async function( req, res ) {
-	const { query: { redirect_flow_id } } = req;
+	const { customerId, mandateId, amount, period } =
+		await completeJoinFlow(req.query.redirect_flow_id);
 
-	const joinFlow = await JoinFlows.findOneAndRemove({ redirect_flow_id });
+	const memberObj = await customerToMember(customerId, mandateId);
 
-	const redirectFlow = await gocardless.redirectFlows.complete(redirect_flow_id, {
-		session_token: joinFlow.sessionToken
-	});
-	const customerId = redirectFlow.links.customer;
-	const mandateId = redirectFlow.links.mandate;
-
-	const customer = await gocardless.customers.get(customerId);
-
-	const memberObj = customerToMember(customer, mandateId);
 	try {
-		const member = await Members.create(memberObj);
-		await createSubscription(member, joinFlow);
-		req.login(member, function ( loginError ) {
+		const newMember = await Members.create(memberObj);
+		await createSubscription(newMember, {amount, period});
+		req.login(newMember, function ( loginError ) {
 			if ( loginError ) {
 				throw loginError;
 			}
@@ -120,8 +76,7 @@ app.get( '/complete', [
 					code: auth.generateCode(),
 					customer_id: customerId,
 					mandate_id: mandateId,
-					amount: joinFlow.amount,
-					period: joinFlow.period
+					amount, period
 				};
 				await oldMember.save();
 				await mandrill.send('restart-membership', oldMember);
@@ -142,13 +97,19 @@ app.get('/restart/:code', wrapAsync(async (req, res) => {
 
 	const { customer_id, mandate_id, amount, period } = member.restart;
 
-	member.gocardless = {customer_id, mandate_id};
-	member.permissions = member.permissions.filter(p => !p.permission.equals(config.permission.memberId));
-	member.restart = undefined;
+	// Something has created a new subscription in the mean time!
+	if (member.gocardless.subscription_id) {
+		member.restart = undefined;
+		await member.save();
+		req.flash( 'danger', 'gocardless-subscription-exists' );
+	} else {
+		member.gocardless = {customer_id, mandate_id};
+		member.restart = undefined;
+		await member.save();
 
-	await member.save();
-
-	await createSubscription(member, {amount, period});
+		await createSubscription(member, {amount, period});
+		req.flash( 'success', 'gocardless-subscription-restarted' );
+	}
 
 	req.login(member, function ( loginError ) {
 		if ( loginError ) {

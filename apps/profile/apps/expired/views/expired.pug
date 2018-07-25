@@ -1,0 +1,56 @@
+extends /src/views/base.pug
+
+block append js
+	script(src='/static/js/join.js')
+
+block contents
+	.row
+		.col-md-12
+			h2.page-header Hello #{user.firstname}
+
+
+	.row
+		.col-md-6
+			.alert.alert-danger Your membership expired on #{ moment(user.memberPermission.date_expires).format('dddd, MMMM Do YYYY') }
+
+			if user.gocardless.subscription_id
+				p.
+					This is probably because your last payment failed. Please
+					get in touch at #[email('memership@thebristolcable.org')]
+					and we'll sort it out.
+			else
+				p.
+					We'd love you to rejoin!
+
+				form(method='POST').join-form.js-join-form
+					+csrf
+					h3 I'd like to contribute…
+					ul.join-options.hidden-nojs
+						each amount in [3, 5, 10]
+							li.join-options__opt
+								input(type='radio', name='amount', id='amount_' + amount, value=amount, required).js-join-amount
+								label(for='amount_' + amount).btn £#{amount}#[span.join-monthly /month]
+
+					div.join-other-amount
+						input(type='radio', name='amount', value='other', required, checked).js-join-other-amount
+						label
+							.hidden-nojs Or choose an amount…
+							span.join-other-amount-box
+								span £
+								input(type='number', name='amountOther', min=1, step=1, required).js-join-other-amount-box
+								span.join-monthly /month
+
+					h3 I'd like to pay…
+					ul.join-options
+						li.join-options__opt
+							input(type='radio', name='period', id='period_m', value='monthly', required, checked).js-join-period
+							label(for='period_m').btn Monthly
+						li.join-options__opt
+							input(type='radio', name='period', id='period_a', value='annually', required).js-join-period
+							label(for='period_a').btn Annually
+						li.join-options__opt
+
+					p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
+					p
+						button.btn.join-btn Rejoin
+

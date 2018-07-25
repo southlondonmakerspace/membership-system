@@ -233,7 +233,6 @@ module.exports.schema.virtual( 'memberPermission' )
 		if (i > -1) {
 			this.permissions[i] = memberPermission;
 		} else {
-			console.log('here');
 			this.permissions.push(memberPermission);
 		}
 	} );

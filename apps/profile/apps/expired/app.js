@@ -51,7 +51,7 @@ app.post( '/', hasSchema( rejoinSchema ).orFlash, wrapAsync( async (req, res) =>
 		res.redirect( app.mountpath );
 	} else if (user.gocardless.mandate_id) {
 		// Has an active mandate, we can instantly restart!
-		await createSubscription(user, {amount, period});
+		await createSubscription(user, {amount: amountNo, period});
 		req.flash( 'success', 'gocardless-subscription-restarted');
 		res.redirect('/profile');
 	} else {

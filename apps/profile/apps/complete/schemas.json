@@ -2,12 +2,8 @@
 	"completeSchema": {
 		"body": {
 			"type": "object",
-			"required": ["email", "password", "verify", "delivery_optin"],
+			"required": ["password", "verify", "delivery_optin"],
 			"properties": {
-				"email": {
-					"type": "string",
-					"format": "email"
-				},
 				"password": {
 					"type": "string",
 					"format": "password"

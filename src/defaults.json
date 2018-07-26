@@ -53,6 +53,8 @@
 	"flash-member-404": "Member not found",
 
 	"flash-profile-updated": "Profile updated",
+	"flash-account-updated": "Your account details have been updated",
+	"flash-delivery-updated": "Your delivery details have been updated",
 
 	"flash-emergency-contact-updated": "Emergency contact updated",
 

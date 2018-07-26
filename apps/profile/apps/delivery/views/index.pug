@@ -1,7 +1,7 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = "Edit Profile"
+	- title = "Delivery details"
 
 block append js
 	script(src='/static/js/delivery-address.js')
@@ -9,19 +9,12 @@ block append js
 block contents
 	.row
 		.col-md-3
-			- page = 'profile'
+			- page = 'delivery'
 			include ../../../views/partials/sidebar.pug
 		.col-md-9.col-lg-7
-			+page_header( 'Update account' )
+			+page_header( 'Delivery details' )
 			form( method="post" ).form-horizontal
 				+csrf
-
-				h3 Account details
-				+input( 'email', 'Email', 'email', { value: user.email, left: 3, right: 5, required: true } )
-				+input( 'text', 'First name', 'firstname', { value: user.firstname, left: 3, right: 5, required: true } )
-				+input( 'text', 'Last name', 'lastname', { value: user.lastname, left: 3, right: 5, required: true } )
-
-				h3 Delivery details
 
 				p Would you like to receive a print copy of the quartley magazine?
 

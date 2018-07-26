@@ -3,6 +3,7 @@
 		h3 &nbsp;
 
 ul.nav.nav-pills.nav-stacked
+	li( class=( page == 'home' ? 'active' : '' ) ): a( href="/profile" ) Profile
 	li( class=( page == 'profile' ? 'active' : '' ) ): a( href="/profile/update" ) Update details
 	li( class=( page == 'change-password' ? 'active' : '' ) ): a( href="/profile/change-password" ) Change password
 	li( class=( page == 'direct-debit' ? 'active' : '' ) ): a( href="/profile/direct-debit" ) Update contribution

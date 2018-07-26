@@ -5,11 +5,12 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var auth = require( __js + '/authentication' );
+const auth = require( __js + '/authentication' );
+const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
-const { hasSchema } = require( __js + '/middleware' );
 const { updateSchema } = require( './schemas.json' );
+const { syncMemberDetails } = require( './utils' );
 
 var app_config = {};
 
@@ -36,9 +37,9 @@ app.post( '/', [
 	const { body: { email, firstname, lastname, delivery_optin, delivery_line1,
 		delivery_line2, delivery_city, delivery_postcode }, user } = req;
 
-	if ( email !== user.email ) {
-		// TODO: update GoCardless email?
-	}
+	const needsSync = email !== user.email ||
+		firstname !== user.firstname ||
+		lastname !== user.lastname;
 
 	const profile = {
 		email, firstname, lastname, delivery_optin,
@@ -52,6 +53,10 @@ app.post( '/', [
 
 	try {
 		await user.update( { $set: profile }, { runValidators: true } );
+
+		if ( needsSync ) {
+			await syncMemberDetails( user, {email, firstname, lastname} );
+		}
 
 		req.log.info( {
 			app: 'profile',

@@ -8,6 +8,7 @@ const moment = require( 'moment' );
 const auth = require( __js + '/authentication' );
 const { JoinFlows } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
+const mailchimp = require( __js + '/mailchimp' );
 const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
@@ -96,6 +97,15 @@ async function createSubscription(member, {amount, period}) {
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		};
 		await member.save();
+
+		await mailchimp.defaultLists.members.upsert(member.email, {
+			email_address: member.email,
+			merge_fields: {
+				FNAME: member.firstname,
+				LNAME: member.lastname
+			},
+			status_if_new: 'subscribed'
+		});
 	}
 }
 

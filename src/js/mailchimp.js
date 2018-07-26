@@ -57,7 +57,7 @@ function lists(listId) {
 					...data
 				});
 			},
-			async unsert(email, data) {
+			async upsert(email, data) {
 				await listInstance.put('/members/' + emailToHash(email), data);
 			},
 			async update(email, data) {
@@ -83,6 +83,30 @@ module.exports = {
 		async get(batchId) {
 			const response = await batchInstance.get('/' + batchId);
 			return response.data;
+		}
+	},
+	defaultLists: {
+		members: {
+			async create(email, data) {
+				for (let listId of config.mailchimp.lists) {
+					await lists(listId).members.create(email, data);
+				}
+			},
+			async upsert(email, data) {
+				for (let listId of config.mailchimp.lists) {
+					await lists(listId).members.upsert(email, data);
+				}
+			},
+			async update(email, data) {
+				for (let listId of config.mailchimp.lists) {
+					await lists(listId).members.update(email, data);
+				}
+			},
+			async delete(email) {
+				for (let listId of config.mailchimp.lists) {
+					await lists(listId).members.delete(email);
+				}
+			}
 		}
 	}
 };

@@ -55,7 +55,7 @@ app.post( '/', [
 		await user.update( { $set: profile }, { runValidators: true } );
 
 		if ( needsSync ) {
-			await syncMemberDetails( user, {email, firstname, lastname} );
+			await syncMemberDetails( user, { email, firstname, lastname } );
 		}
 
 		req.log.info( {

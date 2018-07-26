@@ -22,6 +22,8 @@ var { wrapAsync } = require( __js + '/utils' );
 var { hasSchema } = require( __js + '/middleware' );
 var { updateProfileSchema } = require('./schemas.json');
 
+const { syncMemberDetails } = require( __root + '/apps/profile/apps/update/utils' );
+
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -268,13 +270,14 @@ app.post( '/:uuid/profile', [
 			email, firstname, lastname, delivery_optin, delivery_line1,
 			delivery_line2, delivery_city, delivery_postcode
 		},
-		params: { uuid },
-		user
+		params: { uuid }
 	} = req;
 
-	if ( email !== user.email ) {
-		// TODO: update GoCardless email?
-	}
+	const user = await Members.findOne( { uuid } );
+
+	const needsSync = email !== user.email ||
+		firstname !== user.firstname ||
+		lastname !== user.lastname;
 
 	const profile = {
 		email, firstname, lastname, delivery_optin,
@@ -286,7 +289,20 @@ app.post( '/:uuid/profile', [
 		} : {}
 	};
 
-	await Members.updateOne( { uuid }, { $set: profile } );
+	try {
+		await Members.updateOne( { uuid }, { $set: profile } );
+
+		if ( needsSync ) {
+			await syncMemberDetails( user, { email, firstname, lastname } );
+		}
+	} catch ( saveError ) {
+		// Duplicate key (on email)
+		if ( saveError.code === 11000 ) {
+			req.flash( 'danger', 'email-duplicate' );
+		} else {
+			throw saveError;
+		}
+	}
 
 	res.redirect(app.mountpath + '/' + uuid + '/profile');
 } ) );

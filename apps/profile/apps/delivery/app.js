@@ -56,7 +56,7 @@ app.post( '/', [
 		}
 	} );
 
-	req.flash( 'success', 'account-updated' );
+	req.flash( 'success', 'delivery-updated' );
 	res.redirect( app.parent.mountpath + app.mountpath );
 } ) );
 

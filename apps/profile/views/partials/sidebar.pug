@@ -3,10 +3,8 @@
 		h3 &nbsp;
 
 ul.nav.nav-pills.nav-stacked
-	li( class=( page == 'profile' ? 'active' : '' ) ): a( href="/profile/update" ) Update details
+	li( class=( page == 'home' ? 'active' : '' ) ): a( href="/profile" ) Profile
+	li( class=( page == 'account' ? 'active' : '' ) ): a( href="/profile/account" ) Account details
+	li( class=( page == 'delivery' ? 'active' : '' ) ): a( href="/profile/delivery" ) Delivery details
 	li( class=( page == 'change-password' ? 'active' : '' ) ): a( href="/profile/change-password" ) Change password
 	li( class=( page == 'direct-debit' ? 'active' : '' ) ): a( href="/profile/direct-debit" ) Update contribution
-	if access( 'member' )
-		li( class=( page == 'statement' ? 'active' : '' ) ): a( href="/profile/statement" ) Payment history
-	if access( 'admin' )
-		li( class=( page == 'permissions' ? 'active' : '' ) ): a( href="/profile/permissions" ) Permissions

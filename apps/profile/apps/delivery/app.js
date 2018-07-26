@@ -10,7 +10,6 @@ const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
 const { updateSchema } = require( './schemas.json' );
-const { syncMemberDetails } = require( './utils' );
 
 var app_config = {};
 
@@ -34,15 +33,11 @@ app.post( '/', [
 	auth.isLoggedIn,
 	hasSchema(updateSchema).orFlash
 ], wrapAsync( async function( req, res ) {
-	const { body: { email, firstname, lastname, delivery_optin, delivery_line1,
-		delivery_line2, delivery_city, delivery_postcode }, user } = req;
-
-	const needsSync = email !== user.email ||
-		firstname !== user.firstname ||
-		lastname !== user.lastname;
+	const { body: { delivery_optin, delivery_line1, delivery_line2, delivery_city,
+		delivery_postcode }, user } = req;
 
 	const profile = {
-		email, firstname, lastname, delivery_optin,
+		delivery_optin,
 		delivery_address: delivery_optin ? {
 			line1: delivery_line1,
 			line2: delivery_line2,
@@ -51,31 +46,17 @@ app.post( '/', [
 		} : {}
 	};
 
-	try {
-		await user.update( { $set: profile }, { runValidators: true } );
+	await user.update( { $set: profile }, { runValidators: true } );
 
-		if ( needsSync ) {
-			await syncMemberDetails( user, { email, firstname, lastname } );
+	req.log.info( {
+		app: 'profile',
+		action: 'update',
+		sensitive: {
+			profile: profile
 		}
+	} );
 
-		req.log.info( {
-			app: 'profile',
-			action: 'update',
-			sensitive: {
-				profile: profile
-			}
-		} );
-
-		req.flash( 'success', 'profile-updated' );
-	} catch ( error ) {
-		// Duplicate key (on email)
-		if ( error.code === 11000 ) {
-			req.flash( 'danger', 'email-duplicate' );
-		} else {
-			throw error;
-		}
-	}
-
+	req.flash( 'success', 'delivery-updated' );
 	res.redirect( app.parent.mountpath + app.mountpath );
 } ) );
 

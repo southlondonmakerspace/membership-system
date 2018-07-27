@@ -155,6 +155,10 @@ body:not(.has-js) .hidden-nojs {
 	margin-top: 0;
 }
 
+label.question {
+	font-weight: 600;
+}
+
 .navbar {
 	box-shadow: none;
 	-webkit-box-shadow: none;
@@ -310,7 +314,7 @@ select {
 .form-group {
 	margin-bottom: 30px;
 	& + & {
-		margin-top: -15px;
+		margin-top: -10px;
 	}
 }
 
@@ -322,5 +326,11 @@ dd {
 	background-color: $c-blue;
 }
 
-.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+.checkbox-inline, .radio-inline {
+	padding-left: 25px;
+	margin-right: 5px;
+}
+
+.radio input[type=radio], .radio-inline input[type=radio], input[type=radio] {
+	margin-top: 7px;
 }

@@ -48,22 +48,25 @@ html
 								+page_header( heading )
 						block contents
 
-			footer.footer
+			footer.footer.small
 				.container
 					.row
-						.col-md-6
-							p.small
+						.col-sm-6
+							p
 								= Options( 'organisation' )
 								br
 								b Online
 								| , in print, on the street
-
-
-							small.text-muted.pull-right
-								| #{ git }
-							small
-								a( href="https://github.com/wpf500/membership-system", target="_blank" ) Contribute on GitHub
-						.col-md-6
+						.col-sm-6
+							ul.footer-links
+								li Privacy policy
+								li Terms & conditions
+								li Facebook
+								li Twitter
+					.row
+						.col-sm-12
+							a( href="https://github.com/wpf500/membership-system", target="_blank" ) Contribute on GitHub
+							span.text-muted  (#{ git })
 
 		block js
 			script( src="/static/js/jquery.js" )

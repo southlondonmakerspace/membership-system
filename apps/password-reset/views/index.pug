@@ -1,19 +1,15 @@
-extends /src/views/base.pug
+extends /src/views/splash.pug
 
 block prepend title
 	- title = app.title
-	- heading = title
 
-block navbar
-
-block contents
-	p To reset your password, enter your email address. You will receive an email with a link to reset your password.
-	form( method="post" ).form-horizontal
+block splash-contents
+	h3 Reset your password
+	p Enter your email address and we'll send you an email with a link to reset your password.
+	form( method="post" )
 		+csrf
 		.form-group
-			label( for="email" ).col-md-2.control-label Email address
-			.col-md-4
-				input( type="email", name="email", required )#email.form-control
+			label( for="email" ) Email address
+			input( type="email", name="email", required )#email.form-control
 		.form-group
-			.col-md-offset-2.col-md-4
-				button.btn.btn-primary Reset Password
+			button.btn.btn-primary Reset Password

@@ -6,6 +6,9 @@ block prepend title
 block splash-contents
 	h3 Reset your password
 	p Enter your email address and we'll send you an email with a link to reset your password.
+
+	include /src/views/partials/flash.pug
+
 	form( method="post" )
 		+csrf
 		.form-group

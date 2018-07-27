@@ -39,7 +39,8 @@ html
 			.container.main
 				block navbar
 					include partials/navbar.pug
-				include partials/flash.pug
+				block flashes
+					include partials/flash.pug
 				block heading
 					if heading
 						+page_header( heading )

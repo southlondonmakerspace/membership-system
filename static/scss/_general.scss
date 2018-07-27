@@ -328,3 +328,36 @@ dd {
 .radio input[type=radio], .radio-inline input[type=radio], input[type=radio] {
 	margin-top: 7px;
 }
+
+.page-header h3 {
+	margin-top: 0;
+}
+
+.navbar-open {
+	display: block;
+	width: calc(100% - 22px);
+	border-radius: 3px;
+	outline: 0;
+	border: 0;
+	margin: 0 11px 11px;
+	-webkit-appearance: none;
+	appearance: none;
+	color: white;
+	text-align: left;
+	line-height: 50px;
+	padding-left: 16px;
+	background: $c-blue;
+	font-weight: 600;
+
+	@media (min-width: 768px) {
+		display: none;
+	}
+
+	.navbar-toggle .icon-bar {
+		background: white;
+	}
+
+	.navbar-toggle {
+		margin-right: 0;
+	}
+}

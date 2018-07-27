@@ -28,13 +28,14 @@ html
 
 		.wrapper
 			header.top
-				.top-content
-					a( href="https://thebristolcable.org/" )
-						img( src="/static/svg/logo.svg" ).top-logo
-						| Go to thebristolcable.org
-					if isLoggedIn
-						.top-content__right
-							a( href="/logout") Logout
+				.container
+					.row
+						.col-xs-6
+							a( href="https://thebristolcable.org/" )
+								img( src="/static/svg/logo.svg" ).top-logo
+						if isLoggedIn
+							.col-xs-6.text-right
+								a( href="/logout") Logout
 
 			main.main
 				block body
@@ -55,8 +56,7 @@ html
 							p
 								= Options( 'organisation' )
 								br
-								b Online
-								| , in print, on the street
+								| Online, in print, on the street
 						.col-sm-6
 							ul.footer-links
 								li

@@ -10,8 +10,8 @@ block contents
 
 
 	.row
-		.col-md-6
-			.alert.alert-danger Your membership expired on #{ moment(user.memberPermission.date_expires).format('dddd, MMMM Do YYYY') }
+		.col-sm-8.col-md-6
+			.alert.alert-warning Your membership expired on #{ moment(user.memberPermission.date_expires).format('dddd, MMMM Do YYYY') }
 
 			if user.gocardless.subscription_id
 				p.
@@ -20,7 +20,8 @@ block contents
 					and we'll sort it out.
 			else
 				p.
-					We'd love you to rejoin!
+					We'd love you to come back! You can easily restart your
+					membership today.
 
 				form(method='POST').join-form.js-join-form
 					+csrf

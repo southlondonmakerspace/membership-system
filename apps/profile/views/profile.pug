@@ -1,8 +1,6 @@
 extends /src/views/base.pug
 
 block contents
-	.row
-		h2.col-md-9.col-md-offset-3 Hello #{ user.firstname }
 	if user.memberPermission
 		.row
 			.col-md-3
@@ -10,6 +8,7 @@ block contents
 				include partials/sidebar.pug
 			.col-md-9
 				.page-header
+					h3 Hello #{ user.firstname }
 
 				dl
 					dt Joined

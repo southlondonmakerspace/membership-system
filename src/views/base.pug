@@ -26,27 +26,51 @@ html
 		script.
 			document.body.className += ' has-js';
 
-		.top
-			.top-content
-				a( href="https://thebristolcable.org/" )
-					img( src="/static/svg/logo.svg" ).top-logo
-					| Go to thebristolcable.org
-				if isLoggedIn
-					.top-content__right
-						a( href="/logout") Logout
+		.wrapper
+			header.top
+				.top-content
+					a( href="https://thebristolcable.org/" )
+						img( src="/static/svg/logo.svg" ).top-logo
+						| Go to thebristolcable.org
+					if isLoggedIn
+						.top-content__right
+							a( href="/logout") Logout
 
-		block body
-			.container.main
-				block navbar
-					include partials/navbar.pug
-				block flashes
-					include partials/flash.pug
-				block heading
-					if heading
-						+page_header( heading )
-				block contents
-				block footer
-					include partials/footer.pug
+			main.main
+				block body
+					.container
+						block navbar
+							include partials/navbar.pug
+						block flashes
+							include partials/flash.pug
+						block heading
+							if heading
+								+page_header( heading )
+						block contents
+
+			footer.footer.small
+				.container
+					.row
+						.col-sm-6
+							p
+								= Options( 'organisation' )
+								br
+								b Online
+								| , in print, on the street
+						.col-sm-6
+							ul.footer-links
+								li
+									a( href="https://thebristolcable.org/privacy-policy/" ) Privacy policy
+								li
+									a( href="https://thebristolcable.org/terms/" ) Terms & conditions
+								li
+									a( href="https://www.facebook.com/thebristolcable/" ) Facebook
+								li
+									a( href="https://twitter.com/TheBristolCable" ) Twitter
+					.row
+						.col-sm-12
+							a( href="https://github.com/wpf500/membership-system", target="_blank" ) Contribute on GitHub
+							span.text-muted  (#{ git })
 
 		block js
 			script( src="/static/js/jquery.js" )

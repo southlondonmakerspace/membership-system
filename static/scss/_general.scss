@@ -32,7 +32,13 @@ h4 {
 }
 
 h1 {
-	font-size: 68px;
+	font-size: 36px;
+	@media (min-width: 460px) {
+		font-size: 52px;
+	}
+	@media (min-width: 600px) {
+		font-size: 68px;
+	}
 }
 
 h2 {
@@ -62,27 +68,15 @@ body:not(.has-js) .hidden-nojs {
 }
 
 .top {
-	padding: 10px 40px;
+	padding: 10px 0;
 	font-weight: 600;
-	white-space: nowrap;
 	margin-bottom: 22px;
+	line-height: 50px;
 
 	a,
 	&:hover {
 		color: $c-black;
 	}
-}
-
-.top-content {
-	max-width: 1170px;
-	margin: 0 auto;
-	display: flex;
-	align-items: center;
-}
-
-.top-content__right {
-	flex: 1 1 100%;
-	text-align: right;
 }
 
 .top-logo {

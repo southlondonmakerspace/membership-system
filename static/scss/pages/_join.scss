@@ -1,11 +1,16 @@
+$bp-join: 600px;
+
 .join-header {
 	position: relative;
 	background: url(/static/imgs/join/header.jpg) no-repeat top center, $c-black;
 	background-size: 100%;
 	color: white;
-	padding: 4rem;
 	margin: -22px 0 4rem;
 	overflow: hidden;
+	padding: 2rem;
+	@media (min-width: $bp-join) {
+		padding: 4rem;
+	}
 }
 
 .join-header__bg {
@@ -50,22 +55,36 @@
 }
 
 .join-title-logo {
-	width: 200px;
-	height: 200px;
+	width: 100px;
+	height: 100px;
 	margin-right: 2rem;
+	@media (min-width: 460px) {
+		width: 150px;
+		height: 150px;
+	}
+	@media (min-width: $bp-join) {
+		width: 200px;
+		height: 200px;
+	}
 }
 
 .join-options {
 	list-style: none;
 	margin: 0 -0.5rem 2rem;
 	padding: 0;
-	display: flex;
+	@media (min-width: $bp-join) {
+		display: flex;
+	}
 }
 
 .join-options__opt {
 	flex: 1 1 100%;
-	max-width: 200px;
-	margin: 0 0.5rem;
+	margin: 0 0.5rem 1rem;
+
+	@media (min-width: $bp-join) {
+		margin-bottom: 0;
+		max-width: 200px;
+	}
 
 	input[type=radio] {
 		display: none;
@@ -107,8 +126,13 @@
 	font-family: "Roboto", sans-serif;
 	font-size: 24px;
 	font-weight: bold;
-	text-align: center;
-	width: calc(33% - 0.5rem);
+	padding: 0 15px;
+
+	width: 100%;
+	@media (min-width: $bp-join) {
+		text-align: center;
+		width: calc(33% - 0.5rem);
+	}
 
 	&:hover {
 		border-color: darken($c-blue, 5%);
@@ -145,7 +169,12 @@
 
 .join-btn {
 	background-color: $c-green;
-	min-width: 200px;
+	width: 100%;
+
+	@media (min-width: $bp-join) {
+		width: auto;
+		min-width: 200px;
+	}
 
 	&:hover {
 		background-color: darken($c-green, 5%);

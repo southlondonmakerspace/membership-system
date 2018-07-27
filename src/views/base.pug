@@ -26,27 +26,44 @@ html
 		script.
 			document.body.className += ' has-js';
 
-		.top
-			.top-content
-				a( href="https://thebristolcable.org/" )
-					img( src="/static/svg/logo.svg" ).top-logo
-					| Go to thebristolcable.org
-				if isLoggedIn
-					.top-content__right
-						a( href="/logout") Logout
+		.wrapper
+			header.top
+				.top-content
+					a( href="https://thebristolcable.org/" )
+						img( src="/static/svg/logo.svg" ).top-logo
+						| Go to thebristolcable.org
+					if isLoggedIn
+						.top-content__right
+							a( href="/logout") Logout
 
-		block body
-			.container.main
-				block navbar
-					include partials/navbar.pug
-				block flashes
-					include partials/flash.pug
-				block heading
-					if heading
-						+page_header( heading )
-				block contents
-				block footer
-					include partials/footer.pug
+			main.main
+				block body
+					.container
+						block navbar
+							include partials/navbar.pug
+						block flashes
+							include partials/flash.pug
+						block heading
+							if heading
+								+page_header( heading )
+						block contents
+
+			footer.footer
+				.container
+					.row
+						.col-md-6
+							p.small
+								= Options( 'organisation' )
+								br
+								b Online
+								| , in print, on the street
+
+
+							small.text-muted.pull-right
+								| #{ git }
+							small
+								a( href="https://github.com/wpf500/membership-system", target="_blank" ) Contribute on GitHub
+						.col-md-6
 
 		block js
 			script( src="/static/js/jquery.js" )

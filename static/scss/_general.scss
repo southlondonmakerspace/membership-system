@@ -55,10 +55,17 @@ body:not(.has-js) .hidden-nojs {
 	display: none;
 }
 
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
 .top {
 	padding: 10px 40px;
 	font-weight: 600;
 	white-space: nowrap;
+	margin-bottom: 22px;
 
 	a,
 	&:hover {
@@ -85,7 +92,7 @@ body:not(.has-js) .hidden-nojs {
 }
 
 .main {
-	margin-top: 15px;
+	flex: 1 1 100%;
 }
 
 .splash-logo {
@@ -103,6 +110,13 @@ body:not(.has-js) .hidden-nojs {
     margin-bottom: 22px;
     text-align: center;
   }
+}
+
+.footer {
+  background-color: #ecf0f4;
+  color: #337ab7;
+  padding: 22px;
+  margin-top: 22px;
 }
 
 .btn-link {

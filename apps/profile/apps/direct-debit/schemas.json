@@ -2,7 +2,7 @@
 	"cancelSubscriptionSchema": {
 		"body": {
 			"type": "object",
-			"required": ["satisifed", "reason"],
+			"required": ["satisfied", "reason"],
 			"properties": {
 				"satisfied": {
 					"type": "integer",

@@ -329,17 +329,13 @@ dd {
 	margin-top: 7px;
 }
 
-.page-header h3 {
-	margin-top: 0;
-}
-
 .navbar-open {
 	display: block;
-	width: calc(100% - 22px);
+	width: calc(100% - 30px);
 	border-radius: 3px;
 	outline: 0;
 	border: 0;
-	margin: 0 11px 11px;
+	margin: 0 15px 11px;
 	-webkit-appearance: none;
 	appearance: none;
 	color: white;
@@ -360,4 +356,8 @@ dd {
 	.navbar-toggle {
 		margin-right: 0;
 	}
+}
+
+.navbar-profile {
+	margin-bottom: 0;
 }

@@ -2,9 +2,21 @@
 	if page !== 'home'
 		h3 &nbsp;
 
-ul.nav.nav-pills.nav-stacked
-	li( class=( page == 'home' ? 'active' : '' ) ): a( href="/profile" ) Profile
-	li( class=( page == 'account' ? 'active' : '' ) ): a( href="/profile/account" ) Account details
-	li( class=( page == 'delivery' ? 'active' : '' ) ): a( href="/profile/delivery" ) Delivery details
-	li( class=( page == 'change-password' ? 'active' : '' ) ): a( href="/profile/change-password" ) Change password
-	li( class=( page == 'direct-debit' ? 'active' : '' ) ): a( href="/profile/direct-debit" ) Update contribution
+.navbar.navbar-default
+	.navbar-header
+		button(
+			type='button',
+			data-toggle='collapse',
+			data-target='#profile-nav'
+		).navbar-toggle.collapsed
+			span.sr-only Toggle navigation
+			span.icon-bar
+			span.icon-bar
+			span.icon-bar
+	.navbar-collapse.collapse#profile-nav
+		ul(role="navigation").nav.nav-pills.nav-stacked
+			li( class=( page == 'home' ? 'active' : '' ) ): a( href="/profile" ) Profile
+			li( class=( page == 'account' ? 'active' : '' ) ): a( href="/profile/account" ) Account details
+			li( class=( page == 'delivery' ? 'active' : '' ) ): a( href="/profile/delivery" ) Delivery details
+			li( class=( page == 'change-password' ? 'active' : '' ) ): a( href="/profile/change-password" ) Change password
+			li( class=( page == 'direct-debit' ? 'active' : '' ) ): a( href="/profile/direct-debit" ) Update contribution

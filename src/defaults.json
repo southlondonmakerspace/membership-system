@@ -33,7 +33,7 @@
 	"flash-password-invalid": "Incorrect current password",
 	"flash-password-reset-code-err": "Invalid password reset code",
 
-	"flash-password-reset": "If there is an account associated with the email address you will receive an email shortly",
+	"flash-password-reset": "If there is an account associated with % you will receive an email shortly",
 	"flash-password-reset-attempt": "Since your last login someone requested a password reset, this has now been cancelled",
 
 	"flash-email-duplicate": "Email address already in use",

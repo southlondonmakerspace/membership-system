@@ -174,7 +174,11 @@ module.exports = {
 		} ],
 		last_seen: Date,
 		join_reason: String,
-		cancellation_reason: String,
+		cancellation: {
+			satisfied: Number,
+			reason: String,
+			other: String
+		},
 		exports: [ {
 			export_id: {
 				type: ObjectId,

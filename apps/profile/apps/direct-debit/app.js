@@ -62,7 +62,7 @@ app.post( '/cancel-subscription', [
 	isLoggedInWithSubscription,
 	hasSchema(cancelSubscriptionSchema).orFlash
 ], wrapAsync( async ( req, res ) => {
-	const { user, body: { reason } } = req;
+	const { user, body: { satisfied, reason, other } } = req;
 
 	try {
 		await gocardless.subscriptions.cancel( user.gocardless.subscription_id );
@@ -70,7 +70,9 @@ app.post( '/cancel-subscription', [
 		await Members.update( { _id: user._id }, { $unset: {
 			'gocardless.subscription_id': true
 		}, $set: {
-			'cancellation_reason': reason
+			'cancellation': {
+				satisfied, reason, other
+			}
 		} } );
 
 		req.flash( 'success', 'gocardless-subscription-cancelled' );

@@ -2,11 +2,19 @@
 	"cancelSubscriptionSchema": {
 		"body": {
 			"type": "object",
-			"required": ["reason"],
+			"required": ["satisfied", "reason"],
 			"properties": {
+				"satisfied": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 5
+				},
 				"reason": {
 					"type": "string",
 					"minLength": 1
+				},
+				"other": {
+					"type": "string"
 				}
 			}
 		}

@@ -1,6 +1,11 @@
 extends /src/views/base.pug
 
 block contents
+	if access( 'admin' )
+		.row
+			.col-md-12
+				.alert.alert-info Admin account
+
 	if user.memberPermission
 		.row
 			.col-md-3
@@ -18,7 +23,3 @@ block contents
 						dd.
 							£#{ user.gocardless.actualAmount }/#{ user.gocardless.period },
 							renews #{ moment(user.memberPermission.date_expires).format('Do MMMM YYYY') }
-	else
-		.row
-			.col-md-12
-				.alert.alert-info Admin account

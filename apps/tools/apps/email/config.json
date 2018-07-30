@@ -1,0 +1,9 @@
+{
+	"title": "Email",
+	"path": "email",
+	"permissions": [
+		"superadmin", "admin"
+	],
+	"menu": "main",
+	"priority": 3
+}

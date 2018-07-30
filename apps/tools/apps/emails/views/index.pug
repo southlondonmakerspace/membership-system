@@ -39,6 +39,6 @@ block contents
 						span.label.label-success Sent
 						|
 						|
-					a(href='/tools/email/' + te._id)= te.name
+					a(href='/tools/emails/' + te._id)= te.name
 					| , #{te.numberOfRecipients} recipients,
 					| created #{moment(te.created).format('DD/MM/YYYY [at] HH:mm')}

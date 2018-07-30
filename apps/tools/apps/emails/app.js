@@ -25,7 +25,7 @@ app.use( function( req, res, next ) {
 		name: app_config.title,
 		url: app.mountpath
 	} );
-	res.locals.activeApp = 'email';
+	res.locals.activeApp = 'emails';
 	next();
 } );
 
@@ -66,7 +66,7 @@ app.post('/', busboy(), (req, res) => {
 			recipients
 		});
 		req.flash('success', 'transactional-email-created');
-		res.redirect('/tools/email/' + transactionalEmail._id);
+		res.redirect('/tools/emails/' + transactionalEmail._id);
 	});
 
 	req.pipe(req.busboy);
@@ -112,11 +112,11 @@ app.post('/:id', wrapAsync(async (req, res) => {
 		await transactionalEmail.update({$set: {sent: new Date()}});
 
 		req.flash('success', 'transactional-email-sending');
-		res.redirect('/tools/email/' + transactionalEmail._id);
+		res.redirect('/tools/emails/' + transactionalEmail._id);
 	} else if (action === 'delete') {
 		await TransactionalEmails.deleteOne({_id: req.params.id});
 		req.flash('success', 'transactional-email-deleted');
-		res.redirect('/tools/email');
+		res.redirect('/tools/emails');
 	}
 }));
 

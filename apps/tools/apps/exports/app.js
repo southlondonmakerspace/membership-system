@@ -49,7 +49,7 @@ app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, 
 
 	const exportDetails = await Exports.create({type, description});
 	req.flash('success', 'exports-created');
-	res.redirect('/exports/' + exportDetails._id);
+	res.redirect('/tools/exports/' + exportDetails._id);
 } ) );
 
 app.get( '/:uuid', wrapAsync( async function( req, res ) {
@@ -103,7 +103,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		});
 
 		req.flash('success', 'exports-added');
-		res.redirect('/exports/' + exportDetails._id);
+		res.redirect('/tools/exports/' + exportDetails._id);
 
 	} else if (data.action === 'update') {
 		await Members.updateMany({
@@ -119,7 +119,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		});
 
 		req.flash('success', 'exports-updated');
-		res.redirect('/exports/' + exportDetails._id);
+		res.redirect('/tools/exports/' + exportDetails._id);
 
 	} else if (data.action === 'export') {
 		const members = await Members.find({
@@ -138,7 +138,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 			$pull: {exports: {export_id: exportDetails._id}}
 		});
 		req.flash('success', 'exports-deleted');
-		res.redirect('/exports');
+		res.redirect('/tools/exports');
 	}
 } ) );
 

@@ -42,7 +42,10 @@ h1 {
 }
 
 h2 {
-	font-size: 42px;
+	font-size: 28px;
+	@media (min-width: 460px) {
+		font-size: 42px;
+	}
 }
 
 h3 {
@@ -109,7 +112,7 @@ body:not(.has-js) .hidden-nojs {
 .footer {
 	background-color: #ecf0f4;
 	color: #337ab7;
-	padding: 22px;
+	padding: 22px 0;
 	margin-top: 22px;
 
 	a {

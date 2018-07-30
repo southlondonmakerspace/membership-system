@@ -182,39 +182,49 @@ $bp-join: 600px;
 	}
 }
 
+.join-container {
+	max-width: 1000px;
+}
+
 .join-why {
 	text-align: center;
-	margin-bottom: 4rem;
+	margin-bottom: 2rem;
 }
 
 .join-reasons {
 	list-style: none;
 	margin: 0 auto;
 	padding: 0;
-	max-width: 900px;
 
 	li {
-		margin-bottom: 8rem;
+		margin-bottom: 2rem;
+	}
+
+	img {
+		display: block;
+		width: 100%;
+		margin-bottom: 20px;
+	}
+	
+	.pull-left img,
+	.pull-right img {
+		@media (min-width: 768px) {
+			margin-top: -53px;
+		}
+	}
+
+	h2 span {
+		color: $c-blue;
 	}
 }
 
-.join-reason-title {
-	height: 200px;
-	background-attachment: fixed;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 100%;
-	color: white;
-	line-height: 200px;
-	margin-bottom: 2rem;
+.join-center-col {
+	float: none;
+	margin: 0 auto;
 
-	@media (min-width: 900px) {
-		background-size: 900px;
+	@media (min-width: 768px) {
+		h2 {
+			text-align: center;
+		}
 	}
-}
-
-.join-footer {
-	background-color: $c-black;
-	color: white;
-	height: 300px;
 }

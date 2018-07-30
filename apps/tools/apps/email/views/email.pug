@@ -1,0 +1,61 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Email'
+
+block contents
+	.row
+		.col-md-12
+			+page_header(transactionalEmail.name)
+			p Got #{transactionalEmail.recipients.length} recipients
+
+			form(method='POST')
+				+csrf
+				input(type='hidden', name='action', value='delete')
+				button.btn.btn-danger.outline Delete
+
+	.row
+		.col-md-8
+			hr
+			h3 Send email
+
+			if transactionalEmail.sent
+				.alert.alert-danger
+					| You already sent this email on
+					|
+					= moment(transactionalEmail.sent).format('Do MMMM YYYY')
+
+			form(method='POST', onsubmit='return confirm(\'Are you sure?!\')').form-horizontal
+				+csrf
+				input(type='hidden', name='action', value='send')
+
+				.form-group
+					label(for='template').col-md-3 Template
+					.col-md-6
+						select(name='template', required)#template.form-control
+							option(value='', selected, disabled) Select a template
+							each template in templates
+								option(value=template.slug)= template.name
+
+				h4 Merge variables
+				.js-merge-vars
+					each i in [1, 2]
+						.form-group
+							.col-sm-3
+								input(type=text, name='mergeKeys[]').form-control
+							.col-sm-6
+								select(name='mergeValues[]').form-control
+									option(value='', selected, disabled) Select field
+									each field in fields
+										option= field
+				p
+					button(type='button').btn.js-add-merge-var Add field
+
+				p
+					button.btn.btn-primary.outline Send email
+
+block append js
+	script.
+		$('.js-add-merge-var').on('click', function () {
+			$('.js-merge-vars').append($('.js-merge-vars').children().first().clone());
+		});

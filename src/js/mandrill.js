@@ -53,5 +53,10 @@ module.exports = {
 		return new Promise((resolve, reject) => {
 			client.messages.sendTemplate(memberToTemplate(templateId, member), resolve, reject);
 		});
+	},
+	listTemplates() {
+		return new Promise((resolve, reject) => {
+			client.templates.list(resolve, reject);
+		});
 	}
 };

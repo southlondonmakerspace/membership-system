@@ -1,0 +1,28 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Email'
+
+block contents
+	.row
+		.col-md-12
+			+page_header('Transactional emails')
+			p Create transactional email to users
+	.row
+		.col-md-8
+			hr
+			h3 Create transactional email
+
+			form(action='?_csrf=' + csrf, method='POST', enctype='multipart/form-data').form-horizontal
+
+				.form-group
+					label(for='name').control-label.col-md-3 Name
+					.col-md-6
+						input(type='text', name='name')#name.form-control
+				.form-group
+					label(for='file').control-label.col-md-3 Recipient list
+					.col-md-6
+						input(type='file', name='file')#file.form-control
+				.form-group
+					.col-md-6.col-md-offset-3
+						button.btn.btn-primary Create email

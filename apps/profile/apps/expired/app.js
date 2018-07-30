@@ -13,7 +13,7 @@ const { wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { createJoinFlow, completeJoinFlow, createSubscription } = require( __root + '/apps/join2/utils' );
+const { createJoinFlow, completeJoinFlow, createSubscription } = require( __root + '/apps/join/utils' );
 
 const { rejoinSchema, completeSchema } = require( './schemas.json' );
 

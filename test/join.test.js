@@ -1,7 +1,7 @@
 const test = require('ava');
 const ajv = require('../src/js/ajv');
 
-const { joinSchema } = require('../apps/join2/schemas.json');
+const { joinSchema } = require('../apps/join/schemas.json');
 
 const joinValidator = ajv.compile(joinSchema.body);
 

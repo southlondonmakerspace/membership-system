@@ -9,7 +9,7 @@
 				},
 				"type": {
 					"type": "string",
-					"enum": ["edition", "active-members"]
+					"enum": ["edition", "active-members", "reset-password"]
 				}
 			}
 		}

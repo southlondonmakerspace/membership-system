@@ -6,9 +6,13 @@ block prepend title
 block contents
 	.row
 		.col-md-12
-			+page_header('Create export')
+			+page_header('Exports')
+			p Manage and create tracked exports
+
 	.row
 		.col-md-8
+			hr
+			h3 Create export
 			form(method='POST').form-horizontal
 				+csrf
 
@@ -27,7 +31,8 @@ block contents
 
 	.row
 		.col-md-12
-			+page_header('Existing exports')
+			hr
+			h3 Existing exports
 
 	each e in exports
 		.row

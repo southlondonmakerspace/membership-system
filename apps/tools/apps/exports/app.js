@@ -154,6 +154,12 @@ const exportTypes = {
 		statuses: ['added', 'seen'],
 		query: getActiveMembersQuery,
 		export: getActiveMembersExport
+	},
+	'reset-password': {
+		name: 'Password reset export',
+		statuses: ['added', 'reset'],
+		query: getActiveMembersQuery,
+		export: getPasswordResetExport
 	}
 };
 
@@ -205,6 +211,23 @@ async function getActiveMembersExport(members) {
 			EmailAddress: member.email,
 			FirstName: member.firstname,
 			LastName: member.lastname
+		}))
+		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
+}
+
+async function getPasswordResetExport(members) {
+	for (let member of members) {
+		const code = auth.generateCode();
+		member.password.reset_code = code;
+		await member.save();
+	}
+
+	return members
+		.map(member => ({
+			EmailAddress: member.email,
+			FirstName: member.firstname,
+			LastName: member.lastname,
+			ResetPasswordURL: config.audience + '/password-reset/code/' + member.password.reset_code
 		}))
 		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
 }

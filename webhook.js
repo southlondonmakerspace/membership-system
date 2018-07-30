@@ -215,7 +215,7 @@ async function cancelledSubscription( event ) {
 			'gocardless.cancelled_at': new Date()
 		} } );
 
-		await mandrill.send('cancelled-contribution', member);
+		await mandrill.sendToMember('cancelled-contribution', member);
 
 		log.info( {
 			app: 'webhook',

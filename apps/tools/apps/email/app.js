@@ -76,7 +76,6 @@ app.post('/:id', wrapAsync(async (req, res) => {
 
 	if (action === 'send') {
 		const transactionalEmail = await TransactionalEmails.findOne({_id: req.params.id});
-		console.log(mergeKeys, mergeValues);
 		await transactionalEmail.update({$set: {sent: new Date()}});
 		res.redirect('/tools/email/' + transactionalEmail._id);
 	} else if (action === 'delete') {

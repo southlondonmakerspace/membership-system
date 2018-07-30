@@ -49,9 +49,18 @@ function memberToTemplate(templateId, member) {
 }
 
 module.exports = {
-	send(templateId, member) {
+	sendToMember(templateId, member) {
 		return new Promise((resolve, reject) => {
 			client.messages.sendTemplate(memberToTemplate(templateId, member), resolve, reject);
+		});
+	},
+	sendMessage(templateId, message) {
+		return new Promise((resolve, reject) => {
+			client.messages.sendTemplate({
+				template_name: templateId,
+				template_content: {},
+				message
+			}, resolve, reject);
 		});
 	},
 	listTemplates() {

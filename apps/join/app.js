@@ -59,7 +59,7 @@ app.get( '/complete', [
 	try {
 		const newMember = await Members.create(memberObj);
 		await createSubscription(newMember, {amount, period});
-		await mandrill.send('welcome', newMember);
+		await mandrill.sendToMember('welcome', newMember);
 
 		req.login(newMember, function ( loginError ) {
 			if ( loginError ) {
@@ -81,7 +81,7 @@ app.get( '/complete', [
 					amount, period
 				};
 				await oldMember.save();
-				await mandrill.send('restart-membership', oldMember);
+				await mandrill.sendToMember('restart-membership', oldMember);
 
 				res.redirect( app.mountpath + '/expired-member' );
 			}

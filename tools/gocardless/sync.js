@@ -109,8 +109,8 @@ async function syncCustomers(validCustomers) {
 	}
 
 	console.log('Inserting', payments.length, 'payments');
-	for (let i = 0; i < payments.length; i += 10000) {
-		await db.Payments.collection.insert(payments.slice(i, i + 10000), {ordered: false});
+	for (let i = 0; i < payments.length; i += 1000) {
+		await db.Payments.collection.insertMany(payments.slice(i, i + 1000), {ordered: false});
 	}
 }
 

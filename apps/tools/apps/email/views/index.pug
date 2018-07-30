@@ -14,7 +14,6 @@ block contents
 			h3 Create transactional email
 
 			form(action='?_csrf=' + csrf, method='POST', enctype='multipart/form-data').form-horizontal
-
 				.form-group
 					label(for='name').control-label.col-md-3 Name
 					.col-md-6
@@ -26,3 +25,20 @@ block contents
 				.form-group
 					.col-md-6.col-md-offset-3
 						button.btn.btn-primary Create email
+
+	.row
+		.col-md-12
+			hr
+			h3 Existing transactional emails
+
+	each te in transactionalEmails
+		.row
+			.col-md-12
+				p
+					if te.sent
+						span.label.label-success Sent
+						|
+						|
+					a(href='/tools/email/' + te._id)= te.name
+					| , #{te.numberOfRecipients} recipients,
+					| created #{moment(te.created).format('DD/MM/YYYY [at] HH:mm')}

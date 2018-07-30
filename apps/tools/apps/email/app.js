@@ -30,7 +30,17 @@ app.use( function( req, res, next ) {
 } );
 
 app.get('/', wrapAsync(async (req, res) => {
-	res.render('index');
+	const transactionalEmails = await TransactionalEmails.aggregate([
+		{$project: {
+			name: 1,
+			created: 1,
+			sent: 1,
+			numberOfRecipients: {$size: '$recipients'}
+		}}
+	]);
+	console.log(transactionalEmails);
+
+	res.render('index', {transactionalEmails});
 }));
 
 app.post('/', busboy(), (req, res) => {
@@ -55,6 +65,7 @@ app.post('/', busboy(), (req, res) => {
 			name,
 			recipients
 		});
+		req.flash('success', 'transactional-email-created');
 		res.redirect('/tools/email/' + transactionalEmail._id);
 	});
 
@@ -72,11 +83,35 @@ app.get('/:id', wrapAsync(async (req, res) => {
 }));
 
 app.post('/:id', wrapAsync(async (req, res) => {
-	const { action, mergeKeys, mergeValues } = req.body;
+	const { action, emailField, nameField, mergeKeys, mergeFields, template } = req.body;
 
 	if (action === 'send') {
 		const transactionalEmail = await TransactionalEmails.findOne({_id: req.params.id});
+
+		const mergeVars = mergeKeys
+			.map((key, i) => ({key, field: mergeFields[i]}))
+			.filter(({key}) => !!key);
+
+		const message = {
+			to: transactionalEmail.recipients.map(recipient => ({
+				email: recipient[emailField],
+				name: recipient[nameField]
+			})),
+			merge_vars: transactionalEmail.recipients.map(recipient => {
+				return {
+					rcpt: recipient[emailField],
+					vars: mergeVars.map(({key, field}) => ({
+						name: key,
+						content: recipient[field]
+					}))
+				};
+			})
+		};
+
+		await mandrill.sendMessage(template, message);
 		await transactionalEmail.update({$set: {sent: new Date()}});
+
+		req.flash('success', 'transactional-email-sending');
 		res.redirect('/tools/email/' + transactionalEmail._id);
 	} else if (action === 'delete') {
 		await TransactionalEmails.deleteOne({_id: req.params.id});

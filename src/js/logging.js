@@ -143,7 +143,10 @@ function loggingMiddleware(req, res, next) {
 
 module.exports = {
 	installMiddleware: function (app) {
-		app.use( bunyanMiddleware( { logger: logger, level: 'trace' } ) );
+		app.use( bunyanMiddleware( {
+			logger: logger,
+			filter: req => req.url.startsWith('/static')
+		} ) );
 		app.use( loggingMiddleware );
 	},
 	log: logger

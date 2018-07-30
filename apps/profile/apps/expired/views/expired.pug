@@ -19,13 +19,14 @@ block contents
 					get in touch at #[+email('membership@thebristolcable.org')]
 					and we'll sort it out.
 			else
+				h3 Restart membership
 				p.
-					We'd love you to come back! You can easily restart your
-					membership today.
+					We'd love to welcome you back as a member! You can easily
+					restart your membership today.
 
 				form(method='POST').join-form.js-join-form
 					+csrf
-					h3 I'd like to contribute…
+					h4 I'd like to contribute…
 					ul.join-options.hidden-nojs
 						each amount in [3, 5, 10]
 							li.join-options__opt
@@ -41,7 +42,7 @@ block contents
 								input(type='number', name='amountOther', min=1, step=1, required).js-join-other-amount-box
 								span.join-monthly /month
 
-					h3 I'd like to pay…
+					h4 I'd like to pay…
 					ul.join-options
 						li.join-options__opt
 							input(type='radio', name='period', id='period_m', value='monthly', required, checked).js-join-period
@@ -50,6 +51,20 @@ block contents
 							input(type='radio', name='period', id='period_a', value='annually', required).js-join-period
 							label(for='period_a').btn Annually
 						li.join-options__opt
+
+					if bankAccount
+						div.radio
+							label
+								input(type='radio', name='useMandate', value='true', required, checked)
+								| Reuse existing account •••••••
+								= bankAccount.account_number_ending
+								|  (
+								= bankAccount.bank_name
+								| )
+						div.radio
+							label
+								input(type='radio', name='useMandate', value='false', required)
+								| Use new bank details
 
 					p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
 					p

@@ -7,6 +7,7 @@ const express = require( 'express' );
 const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
+const gocardless = require( __js + '/gocardless' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
@@ -37,20 +38,28 @@ app.use( function( req, res, next ) {
 	}
 } );
 
-app.get( '/', function( req, res ) {
-	res.render( 'expired', { user: req.user } );
-} );
+async function getBankAccount(mandateId) {
+	const mandate = await gocardless.mandates.get(mandateId);
+	return await gocardless.customerBankAccounts.get(mandate.links.customer_bank_account);
+}
+
+app.get( '/', wrapAsync(async function( req, res ) {
+	const { user } = req;
+	const bankAccount = user.gocardless.mandate_id ?
+		await getBankAccount(user.gocardless.mandate_id) : null;
+
+	res.render( 'expired', { user, bankAccount } );
+} ) );
 
 app.post( '/', hasSchema( rejoinSchema ).orFlash, wrapAsync( async (req, res) => {
-	const { body: { period, amount, amountOther }, user } = req;
+	const { body: { period, amount, amountOther, useMandate }, user } = req;
 
 	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
 	
 	if (user.gocardless.subscription_id) {
 		req.flash( 'danger', 'gocardless-subscription-exists' );
 		res.redirect( app.mountpath );
-	} else if (user.gocardless.mandate_id) {
-		// Has an active mandate, we can instantly restart!
+	} else if (user.gocardless.mandate_id && useMandate) {
 		await createSubscription(user, {amount: amountNo, period});
 		req.flash( 'success', 'gocardless-subscription-restarted');
 		res.redirect('/profile');

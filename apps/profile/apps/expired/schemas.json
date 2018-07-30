@@ -7,6 +7,9 @@
 				"period": {
 					"type": "string",
 					"enum": ["monthly", "annually"]
+				},
+				"useMandate": {
+					"type": "boolean"
 				}
 			},
 			"oneOf": [

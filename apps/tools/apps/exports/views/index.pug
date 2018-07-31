@@ -6,9 +6,13 @@ block prepend title
 block contents
 	.row
 		.col-md-12
-			+page_header('Create export')
+			+page_header('Exports')
+			p Manage and create tracked exports
+
 	.row
 		.col-md-8
+			hr
+			h3 Create export
 			form(method='POST').form-horizontal
 				+csrf
 
@@ -27,13 +31,14 @@ block contents
 
 	.row
 		.col-md-12
-			+page_header('Existing exports')
+			hr
+			h3 Existing exports
 
 	each e in exports
 		.row
 			.col-md-12
 				p
-					a(href='/exports/' + e._id)= e.description
+					a(href='/tools/exports/' + e._id)= e.description
 					| , created #{moment(e.date).format('DD/MM/YYYY [at] HH:mm')}
 
 

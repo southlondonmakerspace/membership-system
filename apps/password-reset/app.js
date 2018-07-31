@@ -41,7 +41,7 @@ app.post( '/', hasSchema(getResetCodeSchema).orFlash, wrapAsync( async function(
 		member.password.reset_code = code;
 		await member.save();
 
-		await mandrill.send('reset-password', member);
+		await mandrill.sendToMember('reset-password', member);
 	}
 
 	Options.get( 'flash-password-reset', message => {

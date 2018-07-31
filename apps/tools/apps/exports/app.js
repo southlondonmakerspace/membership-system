@@ -1,4 +1,4 @@
-var __root = '../..';
+var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
 var __config = __root + '/config';
@@ -49,7 +49,7 @@ app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, 
 
 	const exportDetails = await Exports.create({type, description});
 	req.flash('success', 'exports-created');
-	res.redirect('/exports/' + exportDetails._id);
+	res.redirect('/tools/exports/' + exportDetails._id);
 } ) );
 
 app.get( '/:uuid', wrapAsync( async function( req, res ) {
@@ -103,7 +103,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		});
 
 		req.flash('success', 'exports-added');
-		res.redirect('/exports/' + exportDetails._id);
+		res.redirect('/tools/exports/' + exportDetails._id);
 
 	} else if (data.action === 'update') {
 		await Members.updateMany({
@@ -119,7 +119,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		});
 
 		req.flash('success', 'exports-updated');
-		res.redirect('/exports/' + exportDetails._id);
+		res.redirect('/tools/exports/' + exportDetails._id);
 
 	} else if (data.action === 'export') {
 		const members = await Members.find({
@@ -138,7 +138,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 			$pull: {exports: {export_id: exportDetails._id}}
 		});
 		req.flash('success', 'exports-deleted');
-		res.redirect('/exports');
+		res.redirect('/tools/exports');
 	}
 } ) );
 
@@ -154,6 +154,12 @@ const exportTypes = {
 		statuses: ['added', 'seen'],
 		query: getActiveMembersQuery,
 		export: getActiveMembersExport
+	},
+	'reset-password': {
+		name: 'Password reset export',
+		statuses: ['added', 'reset'],
+		query: getActiveMembersQuery,
+		export: getPasswordResetExport
 	}
 };
 
@@ -205,6 +211,23 @@ async function getActiveMembersExport(members) {
 			EmailAddress: member.email,
 			FirstName: member.firstname,
 			LastName: member.lastname
+		}))
+		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
+}
+
+async function getPasswordResetExport(members) {
+	for (let member of members) {
+		const code = auth.generateCode();
+		member.password.reset_code = code;
+		await member.save();
+	}
+
+	return members
+		.map(member => ({
+			EmailAddress: member.email,
+			FirstName: member.firstname,
+			LastName: member.lastname,
+			ResetPasswordURL: config.audience + '/password-reset/code/' + member.password.reset_code
 		}))
 		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
 }

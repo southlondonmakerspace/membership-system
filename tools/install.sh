@@ -4,7 +4,15 @@ adduser --disabled-password membership-system
 chmod 700 /home/membership-system
 
 # Install standard dependencies
-apt-get install -y build-essential nginx python
+apt-get update
+apt-get install -y build-essential nginx python software-properties-common
+
+# Install certbot
+add-apt-repository ppa:certbot/certbot
+apt-get update
+apt-get install -y python-certbot-nginx
+
+# MANUAL: Set nginx user to membership-system
 
 # Install NodeJS and binaries
 curl -sL https://deb.nodesource.com/setup_8.x | bash -
@@ -31,7 +39,7 @@ npm run first-time
 # Create initial superadmin
 npm run new-user
 
-# MUST MANUALLY SET CONFIG
+# MANUAL: set membership system config
 
 exit
 
@@ -41,3 +49,6 @@ chown membership-system:membership-system /var/log/membership-system
 
 ln -s /opt/membership-system/config/nginx.conf /etc/nginx/sites-enabled/thebristolcable.conf
 
+certbot -n -d membership.thebristolcable.org -m web@thebristolcable.org --no-eff-email
+
+nginx -s reload

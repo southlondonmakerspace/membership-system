@@ -14,8 +14,6 @@ var auth = require( __js + '/authentication' ),
 var TOTP = require( 'notp' ).totp;
 var base32 = require( 'thirty-two' );
 
-var Mail = require( __js + '/mail' );
-
 var config = require( __config + '/config.json' );
 
 var app_config = {};
@@ -71,20 +69,8 @@ app.post( '/setup', auth.isLoggedIn, function( req, res ) {
 		req.user.otp.activated = true;
 		req.session.method = 'totp';
 		req.user.save( function() {
-			var options = {
-				firstname: req.user.firstname
-			};
-
-			Mail.sendMail(
-				req.user.email,
-				'Two Factor Authentaction Enabled',
-				__dirname + '/email-templates/enabled.text.pug',
-				__dirname + '/email-templates/enabled.html.pug',
-				options,
-				function() {
-					req.flash( 'success', '2fa-enabled' );
-					res.redirect( '/profile/2fa' );
-				} );
+			req.flash( 'success', '2fa-enabled' );
+			res.redirect( '/profile/2fa' );
 		} );
 	} else {
 		req.flash( 'danger', '2fa-setup-failed' );
@@ -112,20 +98,8 @@ app.post( '/disable', auth.isLoggedIn, function( req, res ) {
 				req.user.otp.activated = false;
 				req.user.otp.key = '';
 				req.user.save( function() {
-					var options = {
-						firstname: req.user.firstname
-					};
-
-					Mail.sendMail(
-						req.user.email,
-						'Two Factor Authentaction Disabled',
-						__dirname + '/email-templates/disabled.text.pug',
-						__dirname + '/email-templates/disabled.html.pug',
-						options,
-						function() {
-							req.flash( 'success', '2fa-disabled' );
-							res.redirect( '/profile/2fa' );
-						} );
+					req.flash( 'success', '2fa-disabled' );
+					res.redirect( '/profile/2fa' );
 				} );
 			} else {
 				req.flash( 'warning', '2fa-unable-to-disable' );

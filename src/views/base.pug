@@ -50,9 +50,12 @@ html
 						.col-xs-6
 							a( href="https://thebristolcable.org/" )
 								img( src="/static/svg/logo.svg" ).header-logo
-						if isLoggedIn
-							.col-xs-6.text-right
-								a( href="/logout") Logout
+						.col-xs-6.text-right
+							if isLoggedIn
+								a( href="/logout" ) Logout
+							else
+								a( href="/login" ) Login
+
 
 			main.main
 				block body

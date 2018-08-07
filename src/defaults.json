@@ -6,6 +6,7 @@
 	"home-link-text": "Find out more",
 	"home-link-url": "http://example.com/about",
 	"gocardless-minimum": "20",
+	"off-switch": "false",
 
 	"content-email-admin": "This can only be changed by an administrator.",
 	"leaders": "directors",

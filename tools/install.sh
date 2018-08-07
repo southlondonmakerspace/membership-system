@@ -41,6 +41,8 @@ npm run new-user
 
 # MANUAL: set membership system config
 
+pm2 start config/ecosystem.config.js
+
 exit
 
 ln -s /home/membership-system/membership-system /opt/membership-system

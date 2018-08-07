@@ -21,5 +21,4 @@ block contents
 					if user.memberPermission.date_expires >= moment()
 						dt Contribution
 						dd.
-							£#{ user.gocardless.actualAmount }/#{ user.gocardless.period },
-							renews #{ moment(user.memberPermission.date_expires).format('Do MMMM YYYY') }
+							£#{ user.gocardless.actualAmount }/#{ user.gocardless.period }

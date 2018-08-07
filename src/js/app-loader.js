@@ -11,12 +11,25 @@ var log = require( __js + '/logging' ).log;
 var fs = require( 'fs' );
 var helmet = require( 'helmet' );
 
+var auth = require( __js + '/authentication' );
+var Options = require( __js + '/options' )();
+
 module.exports = function( app ) {
 	// Loop through main app directory contents
 	var apps = loadApps( __apps, config.appOverrides );
 
 	// Load template locals;
 	app.use( require( __js + '/template-locals' )( apps ) );
+
+	// Off switch!
+	app.use( ( req, res, next ) => {
+		if ( Options.getBool( 'off-switch' ) && req.originalUrl !== '/login' &&
+				auth.canSuperAdmin( req ) !== auth.LOGGED_IN ) {
+			res.render( 'maintenance' );
+		} else {
+			next();
+		}
+	} );
 
 	// Route apps
 	routeApps(app, apps);

@@ -10,6 +10,7 @@ var querystring = require('querystring');
 
 var auth = require( __js + '/authentication' ),
 	Options = require( __js + '/options' )();
+const { wrapAsync } = require( __js + '/utils' );
 
 var TOTP = require( 'notp' ).totp;
 var base32 = require( 'thirty-two' );
@@ -34,49 +35,50 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
-app.get( '/setup', auth.isLoggedIn, function( req, res ) {
+app.get( '/setup', auth.isLoggedIn, wrapAsync( async function( req, res ) {
 	if ( req.user.otp.activated ) {
 		req.flash( 'danger', '2fa-already-enabled' );
 		res.redirect( '/profile/2fa' );
 		return;
 	}
-	auth.generateOTPSecret( function( secret ) {
-		req.user.otp.key = secret;
-		req.user.save( function( ) {
-			var otpoptions = querystring.stringify( {
-				issuer: ( ( config.dev ) ? ' [DEV] ' : '' ) + Options.getText( 'organisation' ),
-				secret: secret
-			} );
-			var otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
-			var otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions;
-			var url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent( otpauth );
-			res.render( 'setup', {
-				qr: url,
-				secret: secret
-			} );
-		} );
-	} );
-} );
 
-app.post( '/setup', auth.isLoggedIn, function( req, res ) {
+	const secret = await auth.generateOTPSecretPromise();
+
+	await req.user.update( { $set: { 'otp.key': secret } } );
+
+	const otpoptions = querystring.stringify( {
+		issuer: ( ( config.dev ) ? ' [DEV] ' : '' ) + Options.getText( 'organisation' ),
+		secret: secret
+	} );
+	const otpissuerName = encodeURIComponent( Options.getText( 'organisation' ) + ( ( config.dev ) ? '_dev' : '' ) );
+	const otpauth = 'otpauth://totp/' + otpissuerName + ':' + req.user.email + '?' + otpoptions;
+	const url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent( otpauth );
+
+	res.render( 'setup', {
+		qr: url,
+		secret: secret
+	} );
+} ) );
+
+app.post( '/setup', auth.isLoggedIn, wrapAsync( async function( req, res ) {
 	if ( req.user.otp.activated ) {
 		req.flash( 'danger', '2fa-already-enabled' );
 		res.redirect( '/profile/2fa' );
 		return;
 	}
-	var test = TOTP.verify( req.body.code, base32.decode( req.user.otp.key ) );
+	const test = TOTP.verify( req.body.code, base32.decode( req.user.otp.key ) );
 	if ( test && Math.abs( test.delta ) < 2 ) {
-		req.user.otp.activated = true;
 		req.session.method = 'totp';
-		req.user.save( function() {
-			req.flash( 'success', '2fa-enabled' );
-			res.redirect( '/profile/2fa' );
-		} );
+
+		await req.user.update({$set: {'otp.activated': true}});
+
+		req.flash( 'success', '2fa-enabled' );
+		res.redirect( '/profile/2fa' );
 	} else {
 		req.flash( 'danger', '2fa-setup-failed' );
 		res.redirect( '/profile/2fa' );
 	}
-} );
+} ) );
 
 app.get( '/disable', auth.isLoggedIn, function( req, res ) {
 	if ( req.user.otp.activated ) {

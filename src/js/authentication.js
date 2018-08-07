@@ -216,6 +216,10 @@ var Authentication = {
 		});
 	},
 
+	generateOTPSecretPromise: function () {
+		return new Promise(resolve => Authentication.generateOTPSecret(resolve));
+	},
+
 	LOGGED_IN: true,
 	NOT_LOGGED_IN: false,
 	NOT_ACTIVATED: -1,

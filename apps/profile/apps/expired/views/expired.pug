@@ -56,15 +56,19 @@ block contents
 						div.radio
 							label
 								input(type='radio', name='useMandate', value='true', required, checked)
-								| Reuse existing account •••••••
-								= bankAccount.account_number_ending
-								|  (
-								= bankAccount.bank_name
-								| )
+								| Use saved bank account
+								br
+								i
+									= bankAccount.account_holder_name
+									| ,
+									|
+									= bankAccount.bank_name
+									| , account number •••••••
+									= bankAccount.account_number_ending
 						div.radio
 							label
 								input(type='radio', name='useMandate', value='false', required)
-								| Use new bank details
+								| Use new bank account details
 
 					p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
 					p

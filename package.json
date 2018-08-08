@@ -61,8 +61,10 @@
     "first-time": "node tools/first-time/first-time",
     "new-user": "node tools/new-user/new-user",
     "import": "node tools/import/import",
+    "build-css": "node-sass --source-map true -r static/scss -o static/css",
     "watch-css": "node-sass --source-map true -rw static/scss -o static/css",
     "watch": "npm run watch-css",
+    "build": "npm run build-css",
     "test": "ava"
   },
   "devDependencies": {

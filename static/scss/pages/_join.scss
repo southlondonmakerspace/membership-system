@@ -188,6 +188,26 @@ $bp-join-why: 768px;
 	}
 }
 
+.join-secure {
+	position: relative;
+	padding-left: 30px;
+	opacity: 0.8;
+
+	& > svg {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		margin-top: -12px;
+		width: 24px;
+		height: 24px;
+	}
+
+	& > a {
+		color: inherit;
+		text-decoration: underline;
+	}
+}
+
 .join-container {
 	max-width: 1000px;
 }

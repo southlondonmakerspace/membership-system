@@ -1,20 +1,19 @@
-var __root = '../../../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
+const __root = '../../../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
 
-var	express = require( 'express' ),
-	app = express();
+const express = require('express');
 
-var auth = require( __js + '/authentication' ),
-	{ hasSchema } = require( __js + '/middleware' ),
-	db = require( __js + '/database' ),
-	Members = db.Members;
+const auth = require( __js + '/authentication' );
+const { Members } = require( __js + '/database' );
+const gocardless = require( __js + '/gocardless' );
+const mandrill = require( __js + '/mandrill' );
+const{ hasSchema } = require( __js + '/middleware' );
+const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 
 const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
 
-const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
-const gocardless = require( __js + '/gocardless' );
-
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -65,15 +64,19 @@ app.post( '/cancel-subscription', [
 	const { user, body: { satisfied, reason, other } } = req;
 
 	try {
+		await user.update( { $set: {
+			'cancellation': { satisfied, reason, other }
+		} } );
+
 		await gocardless.subscriptions.cancel( user.gocardless.subscription_id );
 
-		await Members.update( { _id: user._id }, { $unset: {
-			'gocardless.subscription_id': true
+		await user.update( { $unset: {
+			'gocardless.subscription_id': true,
 		}, $set: {
-			'cancellation': {
-				satisfied, reason, other
-			}
+			'gocardless.cancelled_at': new Date()
 		} } );
+
+		await mandrill.sendToMember('cancelled-contribution-no-survey', user);
 
 		req.flash( 'success', 'gocardless-subscription-cancelled' );
 	} catch ( error ) {

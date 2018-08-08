@@ -202,18 +202,20 @@ async function handleSubscriptionResourceEvent( event ) {
 }
 
 async function cancelledSubscription( event ) {
-	const member = await Members.findOne( { 'gocardless.subscription_id': event.links.subscription } );
+	const member = await Members.findOne( {
+		'gocardless.subscription_id': event.links.subscription,
+		// Ignore users that cancelled online, we've already handled them
+		'cancellation.satisified': { $exists: false }
+	} );
 
 	if ( member ) {
 		await member.update( { $unset: {
 			'gocardless.subscription_id': true,
+		}, $set: {
 			'gocardless.cancelled_at': new Date()
 		} } );
 
-		// Send email without survey if they have already given a reason
-		const email = member.cancellation.satisfied ?
-			'cancelled-contribution-no-survey' : 'cancelled-contribution';
-		await mandrill.sendToMember(email, member);
+		await mandrill.sendToMember('cancelled-contribution', member);
 
 		log.info( {
 			app: 'webhook',

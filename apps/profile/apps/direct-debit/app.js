@@ -33,10 +33,10 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	const { user } = req;
 
 	if ( user.gocardless.subscription_id ) {
+		const gc = user.gocardless;
 		res.render( 'active', {
-			amount: user.gocardless.actualAmount,
-			period: user.gocardless.period,
-			pending_update: user.gocardless.pending_update
+			amount: gc.pending_update && gc.pending_update.amount || gc.actualAmount,
+			period: gc.period
 		} );
 	} else {
 		res.render( 'cancelled' );

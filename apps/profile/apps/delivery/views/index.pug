@@ -16,7 +16,27 @@ block contents
 			form( method="post" ).form-horizontal
 				+csrf
 
-				p Would you like to receive a print copy of the quartley magazine?
+				if user.gocardless.amount >= 3
+					p.
+						You are eligible for a
+						#[b free copy of our quarterly newspaper]!
+						We would also like to send you very occasional mail
+						such as a reminder for the AGM.
+					p.
+						Can we send you our quarterly newspaper and very
+						occasional mail?
+				else
+					.alert.alert-warning.
+						You aren't eligible for a
+						#[b free copy of our quarterly newspaper]
+					p.
+						Unfortunately it's not financial viable for us to send
+						copies of the quarterly newspaper to members
+						contributing less than £3 per month. However, we'd
+						like to send you very occasional mail such as a reminder
+						for the AGM.
+					p.
+						Can we send you very occasional mail?
 
 				ul.join-options
 					li.join-options__opt

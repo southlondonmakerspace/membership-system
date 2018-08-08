@@ -147,10 +147,6 @@ module.exports = {
 				type: String,
 				enum: ['monthly', 'annually']
 			},
-			pending_update: {
-				amount: Number,
-				date: Date
-			},
 			cancelled_at: Date
 		},
 		permissions: [ {

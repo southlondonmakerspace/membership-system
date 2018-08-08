@@ -157,11 +157,6 @@ async function confirmPayment( gcPayment, payment ) {
 
 		const member = await Members.findOne( { _id: payment.member } );
 		if (member.memberPermission) {
-			const pendingUpdate = member.gocardless.pending_update;
-			if (pendingUpdate && payment.charge_date >= pendingUpdate.date) {
-				delete member.gocardless.pending_update;
-			}
-
 			member.memberPermission.date_expires = expiryDate.toDate();
 			await member.save();
 

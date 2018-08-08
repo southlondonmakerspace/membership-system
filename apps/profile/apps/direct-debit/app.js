@@ -35,7 +35,7 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	if ( user.gocardless.subscription_id ) {
 		const gc = user.gocardless;
 		res.render( 'active', {
-			amount: gc.pending_update && gc.pending_update.amount || gc.actualAmount,
+			amount: gc.actualAmount,
 			period: gc.period
 		} );
 	} else {
@@ -103,18 +103,13 @@ app.post( '/update-subscription', [
 		req.flash( 'danger', 'gocardless-subscription-updating-err' );
 	} else {
 		try {
-			const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
+			await gocardless.subscriptions.update( user.gocardless.subscription_id, {
 				amount: amount * 100,
 				name: getSubscriptionName( amount, user.gocardless.period )
 			} );
 
-			const payment = subscription.upcoming_payments.find( p => p.amount === subscription.amount );
-
 			await user.update( { $set: {
-				'gocardless.pending_update': {
-					amount,
-					...payment && { date: new Date( payment.charge_date ) }
-				}
+				'gocardless.amount': amount
 			} } );
 
 			req.flash( 'success', 'gocardless-subscription-updated' );

@@ -55,7 +55,6 @@ async function syncCustomers(validCustomers) {
 			const gocardless = {
 				amount: membershipInfo.amount,
 				period: membershipInfo.period,
-				pending_update: membershipInfo.pendingUpdate,
 				customer_id: customer.id,
 				...customer.latestActiveMandate && {mandate_id: customer.latestActiveMandate.id},
 				...customer.latestActiveSubscription && {subscription_id: customer.latestActiveSubscription.id},

@@ -215,7 +215,10 @@ async function cancelledSubscription( event ) {
 			'gocardless.cancelled_at': new Date()
 		} } );
 
-		await mandrill.sendToMember('cancelled-contribution', member);
+		// Send email without survey if they have already given a reason
+		const email = member.cancellation.satisfied ?
+			'cancelled-contribution-no-survey' : 'cancelled-contribution';
+		await mandrill.sendToMember(email, member);
 
 		log.info( {
 			app: 'webhook',

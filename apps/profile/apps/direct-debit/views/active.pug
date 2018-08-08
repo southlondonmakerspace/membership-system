@@ -10,31 +10,31 @@ block contents
 			include /apps/profile/views/partials/sidebar.pug
 		.col-md-9.col-lg-7
 			+page_header( 'Update contribution' )
-			if pending_update.amount
-				.alert.alert-info.
-					Your new contribution of £#{ pending_update.amount } will start on
-					#{ moment( pending_update.date ).format('DD/MM/YYYY') }
-			if amount
-				p
-					| You currently contribute £#{ amount } per
-					|
-					= period === 'monthly' ? 'month' : 'year'
-					| .
-			form( method='post', action='/profile/direct-debit/update-subscription').form-horizontal
-				+csrf
+			p
+				| You currently contribute £#{ amount } per
+				|
+				= period === 'monthly' ? 'month' : 'year'
+				| .
+			if period === 'monthly'
+				form( method='post', action='/profile/direct-debit/update-subscription').form-horizontal
+					+csrf
 
-				.form-group
-					label( for='amount' ).col-md-3.control-label New amount
-					.input-group.col-md-4
-						span.input-group-addon £
-						input( type='number', name='amount', id='amount', value=pending_update.amount || amount, required, min=1, step=1 ).form-control
+					.form-group
+						label( for='amount' ).col-md-3.control-label New amount
+						.input-group.col-md-4
+							span.input-group-addon £
+							input( type='number', name='amount', id='amount', value=amount, required, min=1, step=1 ).form-control
 
-				p
-					button.btn.join-btn Update contribution
+					p
+						button.btn.join-btn Update contribution
 
-			p.
-				To change your billing cycling please contact
-				#[+email('membership@thebristolcable.org')].
+				p.
+					To change your billing cycling please contact
+					#[+email('membership@thebristolcable.org')].
+			else
+				p.
+					Annual contributions cannot currently be changed online, please
+					contact #[+email('membership@thebristolcable.org')] to do so.
 
 			hr
 

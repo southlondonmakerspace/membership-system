@@ -10,15 +10,17 @@ const templates = {
 		name: 'RPLINK',
 		content: config.audience + '/password-reset/code/' + member.password.reset_code
 	}],
-	'cancelled-contribution': member => {
-		return [{
-			name: 'EXPIRES',
-			content: moment(member.memberPermission.date_expires).format('dddd Do MMMM')
-		}, {
-			name: 'MEMBERSHIPID',
-			content: member.uuid
-		}];
-	},
+	'cancelled-contribution': member => [{
+		name: 'EXPIRES',
+		content: moment(member.memberPermission.date_expires).format('dddd Do MMMM')
+	}, {
+		name: 'MEMBERSHIPID',
+		content: member.uuid
+	}],
+	'cancelled-contribution-no-survey': member => [{
+		name: 'EXPIRES',
+		content: moment(member.memberPermission.date_expires).format('dddd Do MMMM')
+	}],
 	'restart-membership': member => [{
 		name: 'RESTARTLINK',
 		content: config.audience + '/join/restart/' + member.restart.code

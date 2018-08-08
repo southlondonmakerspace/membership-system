@@ -7,7 +7,7 @@ block append js
 	script(src='/static/js/join.js')
 
 block body
-	header.join-header
+	header.join-header#join
 		.join-header__bg
 
 		form(method='POST').join-form.js-join-form
@@ -43,13 +43,15 @@ block body
 
 			.hidden-js.js-join-form-more
 				.hidden.js-join-sustain
+					p.alert.alert-warning.
+						We won't be able to send you our quarterly newspaper.
 					h3 Can you help sustain us?
 					p.
-						Members contributions are what keeps the Cable alive.
+						The Cable is dependent on member contributions to stay alive.
 						Can you afford to increase your contribution to
 						#[b £3 or more]? As a thank you for sustaining independent
-						local journalism we’ll #[b send you a quartley edition]
-						of our print magazine.
+						local journalism we’ll #[b send you a quarterly edition]
+						of our newspaper.
 
 				h3 I'd like to pay…
 				ul.join-options
@@ -65,10 +67,19 @@ block body
 				p
 					button.btn.join-btn Join
 
+				p.join-secure.small
+					svg(xmlns='http://www.w3.org/2000/svg', viewBox='0 0 24 24')
+						path(fill='currentColor', d='M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10 0v-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8z')
+					| Your payment will be processed securely with GoCardless
+					| under the Direct Debit Guarantee scheme.
+					|
+					a(href='https://www.directdebit.co.uk/DirectDebitExplained/pages/directdebitguarantee.aspx', target='_blank') Read more
+					| .
+
 	.container.join-container
 		.row
 			.col-sm-10.col-md-7.join-center-col
-				h1.text-center Why join?
+				h2.text-center Why join?
 				p.
 					The Bristol Cable is a #[b grassroots] community-led media
 					cooperative in Bristol.
@@ -128,3 +139,11 @@ block body
 							Made free to access by members, because we believe
 							journalism is a public good everyone should have
 							access to.
+	.join-footer
+		.join-title
+			div
+				img(src='/static/svg/logo.svg').join-title-logo
+			h1 Like what#[br]you see?
+		.text-center
+			h3 Join 2,000 people who own their media
+			a(href='#join').btn.join-btn Join now

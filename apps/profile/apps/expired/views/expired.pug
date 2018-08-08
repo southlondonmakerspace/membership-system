@@ -10,7 +10,7 @@ block contents
 
 
 	.row
-		.col-sm-8.col-md-6
+		.col-sm-8.col-md-7.col-lg-6
 			.alert.alert-warning Your membership expired on #{ moment(user.memberPermission.date_expires).format('dddd, MMMM Do YYYY') }
 
 			if user.gocardless.subscription_id
@@ -56,17 +56,30 @@ block contents
 						div.radio
 							label
 								input(type='radio', name='useMandate', value='true', required, checked)
-								| Reuse existing account •••••••
-								= bankAccount.account_number_ending
-								|  (
-								= bankAccount.bank_name
-								| )
+								| Use saved bank account
+								br
+								i
+									= bankAccount.account_holder_name
+									| ,
+									|
+									= bankAccount.bank_name
+									| , account number •••••••
+									= bankAccount.account_number_ending
 						div.radio
 							label
 								input(type='radio', name='useMandate', value='false', required)
-								| Use new bank details
+								| Use new bank account details
 
 					p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
 					p
 						button.btn.join-btn Rejoin
+
+					p.join-secure.small
+						svg(xmlns='http://www.w3.org/2000/svg', viewBox='0 0 24 24')
+							path(fill='currentColor', d='M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10 0v-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8z')
+						| Your payment will be processed securely with GoCardless
+						| under the Direct Debit Guarantee scheme.
+						|
+						a(href='https://www.directdebit.co.uk/DirectDebitExplained/pages/directdebitguarantee.aspx', target='_blank') Read more
+						| .
 

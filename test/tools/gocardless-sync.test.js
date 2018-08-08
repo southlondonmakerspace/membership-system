@@ -74,7 +74,6 @@ test('Membership info', t => {
 		t.is(info.period, expected.period);
 		t.is(info.starts.toISOString(), expected.starts.toISOString());
 		t.is(info.expires.toISOString(), expected.expires.toISOString());
-		t.deepEqual(info.pendingUpdate, {});
 		if (info.cancelledAt) {
 			t.is(info.cancelledAt.toISOString(), expected.cancelledAt.toISOString());
 		} else {
@@ -142,39 +141,26 @@ test('Membership info with pending updates', t => {
 		t.is(info.starts.toISOString(), expected.starts.toISOString());
 		t.is(info.expires.toISOString(), expected.expires.toISOString());
 		t.falsy(info.createdAt);
-		t.deepEqual(info.pendingUpdate, expected.pendingUpdate);
 	}
 
 	testMembershipInfo(pendingPaymentWithAmountUpdate, {
-		amount: 5,
+		amount: 12,
 		period: 'monthly',
 		starts: moment.utc('2018-06-12T18:55:47.872Z'),
-		expires: moment.utc('2018-06-18'),
-		pendingUpdate: {
-			amount: 12,
-			date:  moment.utc('2018-07-18').toDate()
-		}
+		expires: moment.utc('2018-06-18')
 	});
 
 	testMembershipInfo(successfulPaymentWithAmountUpdate, {
-		amount: 9,
+		amount: 20,
 		period: 'annually',
 		starts: moment.utc('2017-10-16T01:43:35.227Z'),
-		expires: moment.utc('2018-11-22'),
-		pendingUpdate: {
-			amount: 20,
-			date:  moment.utc('2018-11-22').toDate()
-		}
+		expires: moment.utc('2018-11-22')
 	});
 	
 	testMembershipInfo(amountUpdateByNewSubscription, {
-		amount: 5,
+		amount: 4,
 		period: 'monthly',
 		starts: moment.utc('2017-09-19T05:40:54.359Z'),
-		expires: moment.utc('2018-06-24'),
-		pendingUpdate: {
-			amount: 4,
-			date: moment.utc('2018-06-23').toDate()
-		}
+		expires: moment.utc('2018-06-24')
 	});
 });

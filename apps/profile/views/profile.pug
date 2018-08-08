@@ -15,6 +15,20 @@ block contents
 				.page-header
 					h3 Hello #{ user.firstname }
 
+				p Welcome to your new online Cable membership.
+				p From here you can manage all your account details.
+
+				if !user.gocardless.subscription_id
+					.alert.alert-warning
+						| You cancelled your contribution and your membership
+						| will expire on
+						|
+						= moment(user.memberPermission.date_expires).format('dddd, MMMM Do YYYY')
+						| .
+					p.
+						To restart your contribution please contact
+						#[+email('membership@thebristolcable.org')].
+
 				dl
 					dt Joined
 					dd #{ moment( user.joined ).format('Do MMMM YYYY') }

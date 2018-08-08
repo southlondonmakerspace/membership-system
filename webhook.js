@@ -157,11 +157,6 @@ async function confirmPayment( gcPayment, payment ) {
 
 		const member = await Members.findOne( { _id: payment.member } );
 		if (member.memberPermission) {
-			const pendingUpdate = member.gocardless.pending_update;
-			if (pendingUpdate && payment.charge_date >= pendingUpdate.date) {
-				delete member.gocardless.pending_update;
-			}
-
 			member.memberPermission.date_expires = expiryDate.toDate();
 			await member.save();
 
@@ -207,11 +202,16 @@ async function handleSubscriptionResourceEvent( event ) {
 }
 
 async function cancelledSubscription( event ) {
-	const member = await Members.findOne( { 'gocardless.subscription_id': event.links.subscription } );
+	const member = await Members.findOne( {
+		'gocardless.subscription_id': event.links.subscription,
+		// Ignore users that cancelled online, we've already handled them
+		'cancellation.satisified': { $exists: false }
+	} );
 
 	if ( member ) {
 		await member.update( { $unset: {
 			'gocardless.subscription_id': true,
+		}, $set: {
 			'gocardless.cancelled_at': new Date()
 		} } );
 

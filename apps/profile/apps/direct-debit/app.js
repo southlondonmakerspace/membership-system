@@ -1,20 +1,19 @@
-var __root = '../../../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
+const __root = '../../../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
 
-var	express = require( 'express' ),
-	app = express();
+const express = require('express');
 
-var auth = require( __js + '/authentication' ),
-	{ hasSchema } = require( __js + '/middleware' ),
-	db = require( __js + '/database' ),
-	Members = db.Members;
+const auth = require( __js + '/authentication' );
+const { Members } = require( __js + '/database' );
+const gocardless = require( __js + '/gocardless' );
+const mandrill = require( __js + '/mandrill' );
+const{ hasSchema } = require( __js + '/middleware' );
+const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
 
 const { cancelSubscriptionSchema, updateSubscriptionSchema } = require('./schemas.json');
 
-const { getSubscriptionName, wrapAsync } = require( __js + '/utils' );
-const gocardless = require( __js + '/gocardless' );
-
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -33,10 +32,10 @@ app.get( '/', auth.isLoggedIn, function( req, res ) {
 	const { user } = req;
 
 	if ( user.gocardless.subscription_id ) {
+		const gc = user.gocardless;
 		res.render( 'active', {
-			amount: user.gocardless.actualAmount,
-			period: user.gocardless.period,
-			pending_update: user.gocardless.pending_update
+			amount: gc.actualAmount,
+			period: gc.period
 		} );
 	} else {
 		res.render( 'cancelled' );
@@ -65,15 +64,19 @@ app.post( '/cancel-subscription', [
 	const { user, body: { satisfied, reason, other } } = req;
 
 	try {
+		await user.update( { $set: {
+			'cancellation': { satisfied, reason, other }
+		} } );
+
 		await gocardless.subscriptions.cancel( user.gocardless.subscription_id );
 
-		await Members.update( { _id: user._id }, { $unset: {
-			'gocardless.subscription_id': true
+		await user.update( { $unset: {
+			'gocardless.subscription_id': true,
 		}, $set: {
-			'cancellation': {
-				satisfied, reason, other
-			}
+			'gocardless.cancelled_at': new Date()
 		} } );
+
+		await mandrill.sendToMember('cancelled-contribution-no-survey', user);
 
 		req.flash( 'success', 'gocardless-subscription-cancelled' );
 	} catch ( error ) {
@@ -99,30 +102,29 @@ app.post( '/update-subscription', [
 ], wrapAsync( async ( req, res ) => {
 	const { body:  { amount }, user } = req;
 
-	try {
-		const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
-			amount: amount * 100,
-			name: getSubscriptionName( amount, user.gocardless.period )
-		} );
-
-		const payment = subscription.upcoming_payments.find( p => p.amount === subscription.amount );
-
-		await user.update( { $set: {
-			'gocardless.pending_update': {
-				amount,
-				...payment && { date: new Date( payment.charge_date ) }
-			}
-		} } );
-
-		req.flash( 'success', 'gocardless-subscription-updated' );
-	} catch ( error ) {
-		req.log.error( {
-			app: 'direct-debit',
-			action: 'update-subscription',
-			error
-		});
-
+	if ( user.gocardless.period !== 'monthly' ) {
 		req.flash( 'danger', 'gocardless-subscription-updating-err' );
+	} else {
+		try {
+			await gocardless.subscriptions.update( user.gocardless.subscription_id, {
+				amount: amount * 100,
+				name: getSubscriptionName( amount, user.gocardless.period )
+			} );
+
+			await user.update( { $set: {
+				'gocardless.amount': amount
+			} } );
+
+			req.flash( 'success', 'gocardless-subscription-updated' );
+		} catch ( error ) {
+			req.log.error( {
+				app: 'direct-debit',
+				action: 'update-subscription',
+				error
+			});
+
+			req.flash( 'danger', 'gocardless-subscription-updating-err' );
+		}
 	}
 
 	res.redirect( app.parent.mountpath + app.mountpath );

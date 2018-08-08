@@ -153,11 +153,8 @@ function getMembershipInfo(customer) {
 		const activeSubscription = customer.latestActiveSubscription;
 
 		if (activeSubscription && latestPayment.amount !== activeSubscription.amount) {
-			const payment =
-				activeSubscription.upcoming_payments.find(p => p.amount === activeSubscription.amount);
 			return {
 				amount: activeSubscription.amount / 100,
-				...payment && {date: moment.utc(payment.charge_date).toDate()}
 			};
 		} else {
 			return {};
@@ -171,9 +168,9 @@ function getMembershipInfo(customer) {
 
 	return {
 		...getPeriodAndAmount(),
+		...getPendingUpdate(),
 		starts: getStartDate(),
 		expires: getExpiryDate(),
-		pendingUpdate: getPendingUpdate(),
 		cancelledAt: getCancelledAt()
 	};
 }

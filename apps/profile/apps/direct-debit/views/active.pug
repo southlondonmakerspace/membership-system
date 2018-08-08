@@ -20,21 +20,26 @@ block contents
 					|
 					= period === 'monthly' ? 'month' : 'year'
 					| .
-			form( method='post', action='/profile/direct-debit/update-subscription').form-horizontal
-				+csrf
+			if period === 'monthly'
+				form( method='post', action='/profile/direct-debit/update-subscription').form-horizontal
+					+csrf
 
-				.form-group
-					label( for='amount' ).col-md-3.control-label New amount
-					.input-group.col-md-4
-						span.input-group-addon £
-						input( type='number', name='amount', id='amount', value=pending_update.amount || amount, required, min=1, step=1 ).form-control
+					.form-group
+						label( for='amount' ).col-md-3.control-label New amount
+						.input-group.col-md-4
+							span.input-group-addon £
+							input( type='number', name='amount', id='amount', value=pending_update.amount || amount, required, min=1, step=1 ).form-control
 
-				p
-					button.btn.join-btn Update contribution
+					p
+						button.btn.join-btn Update contribution
 
-			p.
-				To change your billing cycling please contact
-				#[+email('membership@thebristolcable.org')].
+				p.
+					To change your billing cycling please contact
+					#[+email('membership@thebristolcable.org')].
+			else
+				p.
+					Annual contributions cannot currently be changed online, please
+					contact #[+email('membership@thebristolcable.org')] to do so.
 
 			hr
 

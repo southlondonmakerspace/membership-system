@@ -99,30 +99,34 @@ app.post( '/update-subscription', [
 ], wrapAsync( async ( req, res ) => {
 	const { body:  { amount }, user } = req;
 
-	try {
-		const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
-			amount: amount * 100,
-			name: getSubscriptionName( amount, user.gocardless.period )
-		} );
-
-		const payment = subscription.upcoming_payments.find( p => p.amount === subscription.amount );
-
-		await user.update( { $set: {
-			'gocardless.pending_update': {
-				amount,
-				...payment && { date: new Date( payment.charge_date ) }
-			}
-		} } );
-
-		req.flash( 'success', 'gocardless-subscription-updated' );
-	} catch ( error ) {
-		req.log.error( {
-			app: 'direct-debit',
-			action: 'update-subscription',
-			error
-		});
-
+	if ( user.gocardless.period !== 'monthly' ) {
 		req.flash( 'danger', 'gocardless-subscription-updating-err' );
+	} else {
+		try {
+			const subscription = await gocardless.subscriptions.update( user.gocardless.subscription_id, {
+				amount: amount * 100,
+				name: getSubscriptionName( amount, user.gocardless.period )
+			} );
+
+			const payment = subscription.upcoming_payments.find( p => p.amount === subscription.amount );
+
+			await user.update( { $set: {
+				'gocardless.pending_update': {
+					amount,
+					...payment && { date: new Date( payment.charge_date ) }
+				}
+			} } );
+
+			req.flash( 'success', 'gocardless-subscription-updated' );
+		} catch ( error ) {
+			req.log.error( {
+				app: 'direct-debit',
+				action: 'update-subscription',
+				error
+			});
+
+			req.flash( 'danger', 'gocardless-subscription-updating-err' );
+		}
 	}
 
 	res.redirect( app.parent.mountpath + app.mountpath );

@@ -7,7 +7,7 @@ block append js
 	script(src='/static/js/join.js')
 
 block body
-	header.join-header
+	header.join-header#join
 		.join-header__bg
 
 		form(method='POST').join-form.js-join-form
@@ -68,7 +68,7 @@ block body
 	.container.join-container
 		.row
 			.col-sm-10.col-md-7.join-center-col
-				h1.text-center Why join?
+				h2.text-center Why join?
 				p.
 					The Bristol Cable is a #[b grassroots] community-led media
 					cooperative in Bristol.
@@ -128,3 +128,11 @@ block body
 							Made free to access by members, because we believe
 							journalism is a public good everyone should have
 							access to.
+	.join-footer
+		.join-title
+			div
+				img(src='/static/svg/logo.svg').join-title-logo
+			h1 Like what#[br]you see?
+		.text-center
+			h3 Join 2,000 people who own their media
+			a(href='#join').btn.join-btn Join now

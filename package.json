@@ -52,16 +52,16 @@
     "uuid": "^3.2.1"
   },
   "scripts": {
-    "dev": "nodemon --exec \"npm run lint && concurrently -c red,green,blue npm:app npm:webhook npm:watch\"",
+    "start": "nodemon --exec \"npm run lint && concurrently -c red,green,blue npm:app npm:webhook npm:watch\"",
     "app": "node app | bunyan",
-    "webhook": "nodemon webhook | bunyan",
+    "webhook": "node webhook | bunyan",
     "first-time": "node tools/first-time/first-time",
     "new-user": "node tools/new-user/new-user",
     "lint": "eslint apps/ src/ test/ webhook.js",
     "build:css": "node-sass --source-map true -r static/scss -o static/css",
     "watch:css": "node-sass --source-map true -rw static/scss -o static/css",
-    "watch": "concurrently  'npm:watch:*'",
-    "build": "concurrently 'npm:build:*'",
+    "watch": "concurrently  npm:watch:*",
+    "build": "concurrently npm:build:*",
     "test": "ava"
   },
   "devDependencies": {

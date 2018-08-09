@@ -52,27 +52,24 @@
     "uuid": "^3.2.1"
   },
   "scripts": {
-    "start": "node app | bunyan -c 'this.sensitive == undefined'",
-    "production": "npm-run-all --parallel start webhook",
-    "lint": "eslint apps/ src/ test/ webhook.js",
-    "dev": "nodemon app --exec \"npm run lint && node app\" | npx bunyan",
-    "webhook": "node webhook",
-    "webhook-dev": "nodemon webhook | npx bunyan",
+    "dev": "nodemon --exec \"npm run lint && concurrently -c red,green,blue npm:app npm:webhook npm:watch\"",
+    "app": "node app | bunyan",
+    "webhook": "nodemon webhook | bunyan",
     "first-time": "node tools/first-time/first-time",
     "new-user": "node tools/new-user/new-user",
-    "import": "node tools/import/import",
-    "build-css": "node-sass --source-map true -r static/scss -o static/css",
-    "watch-css": "node-sass --source-map true -rw static/scss -o static/css",
-    "watch": "npm run watch-css",
-    "build": "npm run build-css",
+    "lint": "eslint apps/ src/ test/ webhook.js",
+    "build:css": "node-sass --source-map true -r static/scss -o static/css",
+    "watch:css": "node-sass --source-map true -rw static/scss -o static/css",
+    "watch": "concurrently  'npm:watch:*'",
+    "build": "concurrently 'npm:build:*'",
     "test": "ava"
   },
   "devDependencies": {
     "ava": "^0.25.0",
+    "concurrently": "^3.6.1",
     "eslint": "^4.19.1",
     "node-sass": "^4.9.0",
     "nodemon": "^1.14.12",
-    "npm-run-all": "^4.1.2",
     "watchify": "^3.10.0"
   },
   "ava": {

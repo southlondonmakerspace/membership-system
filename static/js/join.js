@@ -27,6 +27,10 @@
 		}
 	});
 
+	$form.on('submit', () => {
+		_paq.push(['trackGoal', 2]);
+	});
+
 	$otherAmountBox.on('focus', function () {
 		$amount.prop('checked', false);
 		$otherAmount.prop('checked', true);

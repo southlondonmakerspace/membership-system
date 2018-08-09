@@ -13,22 +13,27 @@ html
 		meta( name="msapplication-TileColor", content="#da532c" )
 		meta( name="theme-color", content="#ffffff" )
 
-		meta(property="og:locale" content="en_GB")
-		meta(property="og:type" content="website")
-		meta(property="og:title" content="The Bristol Cable: News, Investigations &amp; Events | The city&#039;s media co-operative.")
-		meta(property="og:description" content="Latest Bristol news, investigations &amp; events. The city&#039;s media co-operative – created and owned by local people. Sticking up for Bristol.")
-		meta(property="og:url" content="https://membership.thebristolcable.org/")
-		meta(property="og:site_name" content="The Bristol Cable")
-		meta(property="og:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
-		meta(property="og:image:secure_url" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
-		meta(property="og:image:width" content="512")
-		meta(property="og:image:height" content="512")
-		meta(name="twitter:card" content="summary_large_image")
-		meta(name="twitter:description" content="Latest Bristol news, investigations &amp; events. The city&#039;s media co-operative – created and owned by local people. Sticking up for Bristol.")
-		meta(name="twitter:title" content="The Bristol Cable: News, Investigations &amp; Events | The city&#039;s media co-operative.")
-		meta(name="twitter:site" content="@TheBristolCable")
-		meta(name="twitter:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
-		meta(name="twitter:creator" content="@TheBristolCable")
+		block meta
+			if !shareTitle
+				- shareTitle = 'The Bristol Cable: News, Investigations & Events | The city\'s media co-operative.';
+			if !shareDescription
+				- shareDescription = 'Latest Bristol news, investigations &amp; events. The city\'s media co-operative – created and owned by local people. Sticking up for Bristol.';
+			meta(property="og:locale" content="en_GB")
+			meta(property="og:type" content="website")
+			meta(property="og:title" content=shareTitle)
+			meta(property="og:description" content=shareDescription)
+			meta(property="og:url" content="https://membership.thebristolcable.org/")
+			meta(property="og:site_name" content="The Bristol Cable")
+			meta(property="og:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(property="og:image:secure_url" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(property="og:image:width" content="512")
+			meta(property="og:image:height" content="512")
+			meta(name="twitter:card" content="summary_large_image")
+			meta(name="twitter:description" content=shareDescription)
+			meta(name="twitter:title" content=shareTitle)
+			meta(name="twitter:site" content="@TheBristolCable")
+			meta(name="twitter:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(name="twitter:creator" content="@TheBristolCable")
 
 		block title
 			if title

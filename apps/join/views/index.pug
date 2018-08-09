@@ -1,5 +1,9 @@
 extends /src/views/base.pug
 
+block prepend meta
+	- shareTitle = 'Join the Bristol Cable today!'
+	- shareDescription = 'Become a member of local media created and owned by the people of Bristol.'
+
 block prepend title
 	- title = app.title
 

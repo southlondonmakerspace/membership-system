@@ -67,7 +67,16 @@ body:not(.has-js) .hidden-nojs {
 .wrapper {
 	display: flex;
 	flex-direction: column;
-	min-height: 100vh;
+	height: 100vh;
+}
+
+.header,
+.footer {
+	flex-shrink: 0;
+}
+
+.main {
+	flex: 1 0 auto;
 }
 
 .header {
@@ -86,10 +95,6 @@ body:not(.has-js) .hidden-nojs {
 	width: 50px;
 	height: 50px;
 	margin-right: 10px;
-}
-
-.main {
-	flex: 1 1 100%;
 }
 
 .splash-logo {

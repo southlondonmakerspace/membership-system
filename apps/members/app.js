@@ -215,7 +215,7 @@ app.get( '/:uuid', function( req, res ) {
 			res.redirect( app.mountpath );
 			return;
 		}
-		Payments.find( { member: member._id }, function( err, payments ) {
+		Payments.find( { member: member._id } ).sort( { 'charge_date': -1 } ).exec( function( err, payments ) {
 			res.locals.breadcrumb.push( {
 				name: member.fullname
 			} );

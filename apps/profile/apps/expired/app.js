@@ -13,7 +13,7 @@ const { wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { createJoinFlow, completeJoinFlow, createSubscription } = require( __root + '/apps/join/utils' );
+const { processJoinForm, createJoinFlow, completeJoinFlow, startMembership } = require( __root + '/apps/join/utils' );
 
 const { rejoinSchema, completeSchema } = require( './schemas.json' );
 
@@ -52,20 +52,19 @@ app.get( '/', wrapAsync(async function( req, res ) {
 } ) );
 
 app.post( '/', hasSchema( rejoinSchema ).orFlash, wrapAsync( async (req, res) => {
-	const { body: { period, amount, amountOther, useMandate }, user } = req;
-
-	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
+	const { body: { useMandate }, user } = req;
+	const joinForm = processJoinForm(req.body);
 	
 	if (user.gocardless.subscription_id) {
 		req.flash( 'danger', 'gocardless-subscription-exists' );
 		res.redirect( app.mountpath );
 	} else if (user.gocardless.mandate_id && useMandate) {
-		await createSubscription(user, {amount: amountNo, period});
+		await startMembership(user, joinForm);
 		req.flash( 'success', 'gocardless-subscription-restarted');
 		res.redirect('/profile');
 	} else {
 		const completeUrl = config.audience + app.mountpath + '/complete';
-		const redirectUrl = await createJoinFlow(amountNo, period, completeUrl);
+		const redirectUrl = await createJoinFlow(completeUrl, joinForm);
 		res.redirect( redirectUrl );
 	}
 }));
@@ -78,8 +77,7 @@ app.get( '/complete', [
 	if (user.gocardless.subscription_id) {
 		req.flash( 'danger', 'gocardless-subscription-exists' );
 	} else {
-		const { customerId, mandateId, amount, period } =
-			await completeJoinFlow(req.query.redirect_flow_id);
+		const {customerId, mandateId, joinForm} = await completeJoinFlow(req.query.redirect_flow_id);
 
 		user.gocardless = {
 			customer_id: customerId,
@@ -87,7 +85,7 @@ app.get( '/complete', [
 		};
 		await user.save();
 
-		await createSubscription(user, {amount, period});
+		await startMembership(user, joinForm);
 		req.flash( 'success', 'gocardless-subscription-restarted');
 	}
 

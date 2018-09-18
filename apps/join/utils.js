@@ -35,7 +35,7 @@ async function customerToMember(customerId, mandateId) {
 	};
 }
 
-function joinInfoToSubscription(amount, period, mandateId) {
+function joinInfoToSubscription({amount, period}, mandateId) {
 	const actualAmount = getActualAmount(amount, period);
 
 	return {
@@ -54,9 +54,16 @@ function generateReferralCode({firstname, lastname}) {
 	return (firstname[0] + lastname[0] + no).toUpperCase();
 }
 
-async function createJoinFlow(amount, period, completeUrl) {
+function processJoinForm(data) {
+	const { amount: amountCanned, amountOther, period, referrer, gift } = data;
+	const amount = amountCanned === 'other' ? parseInt(amountOther) : parseInt(amountCanned);
+	return { amount, period, referrer, gift };
+}
+
+async function createJoinFlow(completeUrl, joinForm) {
 	const sessionToken = auth.generateCode();
-	const name = getSubscriptionName(getActualAmount(amount, period), period);
+	const name =
+		getSubscriptionName(getActualAmount(joinForm.amount, joinForm.period), joinForm.period);
 
 	const redirectFlow = await gocardless.redirectFlows.create({
 		description: name,
@@ -66,7 +73,7 @@ async function createJoinFlow(amount, period, completeUrl) {
 
 	await JoinFlows.create({
 		redirect_flow_id: redirectFlow.id,
-		sessionToken, amount, period
+		sessionToken, joinForm
 	});
 
 	return redirectFlow.redirect_url;
@@ -82,8 +89,7 @@ async function completeJoinFlow(redirect_flow_id) {
 	return {
 		customerId: redirectFlow.links.customer,
 		mandateId: redirectFlow.links.mandate,
-		amount: joinFlow.amount,
-		period: joinFlow.period
+		joinForm: joinFlow.joinForm
 	};
 }
 
@@ -102,16 +108,16 @@ async function createMember(memberObj) {
 	}
 }
 
-async function createSubscription(member, {amount, period}) {
+async function startMembership(member, joinForm) {
 	if (member.gocardless.subscription_id) {
 		throw new Error('Tried to create subscription on member with active subscription');
 	} else {
 		const subscription =
-			await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
+			await gocardless.subscriptions.create(joinInfoToSubscription(joinForm, member.gocardless.mandate_id));
 
 		member.gocardless.subscription_id = subscription.id;
-		member.gocardless.amount = amount;
-		member.gocardless.period = period;
+		member.gocardless.amount = joinForm.amount;
+		member.gocardless.period = joinForm.period;
 		member.memberPermission = {
 			date_added: new Date(),
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
@@ -130,9 +136,10 @@ async function createSubscription(member, {amount, period}) {
 }
 
 module.exports = {
+	processJoinForm,
 	customerToMember,
 	createJoinFlow,
 	completeJoinFlow,
 	createMember,
-	createSubscription
+	startMembership
 };

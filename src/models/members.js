@@ -1,8 +1,10 @@
+const mongoose = require( 'mongoose' );
+const crypto = require( 'crypto' );
+
 const { getActualAmount } = require('../js/utils');
 const { audience, permission: { memberId } } = require( '../../config/config.json' );
 
-const mongoose = require( 'mongoose' );
-const crypto = require( 'crypto' );
+const { joinFormFields } = require('./join-flows');
 
 const ObjectId = mongoose.Schema.ObjectId;
 
@@ -195,13 +197,9 @@ module.exports = {
 		} ],
 		restart: {
 			code: String,
-			customer_id: String,
-			mandate_id: String,
-			amount: Number,
-			period: {
-				type: String,
-				enum: ['monthly', 'annually']
-			}
+			customerId: String,
+			mandateId: String,
+			joinForm: joinFormFields
 		}
 	} )
 };

@@ -13,7 +13,7 @@ const { wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { customerToMember, createJoinFlow, completeJoinFlow, createMember, createSubscription } = require( './utils' );
+const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember, startMembership } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
 
@@ -37,12 +37,9 @@ app.post( '/', [
 	auth.isNotLoggedIn,
 	hasSchema(joinSchema).orFlash
 ], wrapAsync(async function( req, res ) {
-	const { body: { period, amount, amountOther } } = req;
-
-	const amountNo = amount === 'other' ? parseInt(amountOther) : parseInt(amount);
-
+	const joinForm = processJoinForm(req.body);
 	const completeUrl = config.audience + app.mountpath + '/complete';
-	const redirectUrl = await createJoinFlow(amountNo, period, completeUrl);
+	const redirectUrl = await createJoinFlow(completeUrl, joinForm);
 
 	res.redirect( redirectUrl );
 }));
@@ -51,14 +48,13 @@ app.get( '/complete', [
 	auth.isNotLoggedIn,
 	hasSchema(completeSchema).orRedirect( '/join' )
 ], wrapAsync(async function( req, res ) {
-	const { customerId, mandateId, amount, period } =
-		await completeJoinFlow(req.query.redirect_flow_id);
+	const {customerId, mandateId, joinForm} = await completeJoinFlow(req.query.redirect_flow_id);
 
 	const memberObj = await customerToMember(customerId, mandateId);
 
 	try {
 		const newMember = await createMember(memberObj);
-		await createSubscription(newMember, {amount, period});
+		await startMembership(newMember, joinForm);
 		await mandrill.sendToMember('welcome', newMember);
 
 		req.login(newMember, function ( loginError ) {
@@ -76,9 +72,8 @@ app.get( '/complete', [
 			} else {
 				oldMember.restart = {
 					code: auth.generateCode(),
-					customer_id: customerId,
-					mandate_id: mandateId,
-					amount, period
+					customerId, mandateId,
+					...joinForm
 				};
 				await oldMember.save();
 				await mandrill.sendToMember('restart-membership', oldMember);
@@ -89,15 +84,10 @@ app.get( '/complete', [
 			throw saveError;
 		}
 	}
-
-
-
 }));
 
 app.get('/restart/:code', wrapAsync(async (req, res) => {
 	const member = await Members.findOne({'restart.code': req.params.code});
-
-	const { customer_id, mandate_id, amount, period } = member.restart;
 
 	// Something has created a new subscription in the mean time!
 	if (member.gocardless.subscription_id) {
@@ -105,11 +95,16 @@ app.get('/restart/:code', wrapAsync(async (req, res) => {
 		await member.save();
 		req.flash( 'danger', 'gocardless-subscription-exists' );
 	} else {
-		member.gocardless = {customer_id, mandate_id};
+		const {customerId, mandateId, joinForm} = member.restart;
+
+		member.gocardless = {
+			customer_id: customerId,
+			mandate_id: mandateId
+		};
 		member.restart = undefined;
 		await member.save();
 
-		await createSubscription(member, {amount, period});
+		await startMembership(member, joinForm);
 		req.flash( 'success', 'gocardless-subscription-restarted' );
 	}
 

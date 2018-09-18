@@ -27,7 +27,7 @@
 		}
 	});
 
-	$form.on('submit', () => {
+	$form.on('submit', function () {
 		_paq.push(['trackGoal', 2]);
 	});
 

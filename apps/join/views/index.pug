@@ -54,7 +54,7 @@ block body
 					.hidden-nojs Or choose an amount…
 					span.join-other-amount-box
 						span £
-						input(type='number', name='amountOther', min=1, step=1, required).js-join-other-amount-box
+						input(type='number', name='amountOther', min=1, step=1, required).join-other-amount-box__input.js-join-other-amount-box
 						span.join-monthly /month
 
 			.hidden-js.js-join-form-more
@@ -65,34 +65,21 @@ block body
 						Unfortunately we can't send gifts for contributions of less than
 						£3, can you afford to give a little more?
 					.join-gifts-wrapper
-						ul.join-gifts.js-join-gifts-3
-							li.join-gifts__item
-								input(type='radio', id='gift_tshirt', name='gift', value='tshirt')
-								label(for='gift_tshirt')
-									img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-									small T-shirt
-							li.join-gifts__item
-								input(type='radio', id='gift_voucher', name='gift', value='voucher')
-								label(for='gift_voucher')
-									img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-									small Voucher
-							li.join-gifts__item
-								input(type='radio', id='gift_mug', name='gift', value='mug')
-								label(for='gift_mug')
-									img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-									small Mug
-						ul.join-gifts.js-join-gifts-5
+						ul.join-gifts
+							each gift in gifts3
+								li.join-gifts__item
+									input(type='radio', id='gift_' + gift.id, name='gift', value=gift.id, required).js-join-gift-3
+									label(for='gift_' + gift.id)
+										img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
+										small= gift.name
+						ul.join-gifts
 							li.join-gifts__note.small Only available at £5 or more
-							li.join-gifts__item
-								input(type='radio', id='gift_mug', name='gift', value='mug')
-								label(for='gift_mug')
-									img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-									small Mug
-							li.join-gifts__item
-								input(type='radio', id='gift_mug', name='gift', value='mug')
-								label(for='gift_mug')
-									img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-									small Mug
+							each gift in gifts5
+								li.join-gifts__item
+									input(type='radio', id='gift_' + gift.id, name='gift', value=gift.id, required).js-join-gift-5
+									label(for='gift_' + gift.id)
+										img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
+										small= gift.name
 					p.join-info.small Find out more about gifts #[a here]
 				else
 					.hidden.js-join-sustain

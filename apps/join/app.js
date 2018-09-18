@@ -33,10 +33,29 @@ app.get( '/' , function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
+const gifts3 = [{
+	id: 'tshirt',
+	name: 'T-shirt'
+}, {
+	id: 'mug',
+	name: 'Mug'
+}, {
+	id: 'voucher',
+	name: 'Voucher'
+}];
+
+const gifts5 = [{
+	id: 'blah',
+	name: 'Blah'
+}, {
+	id: 'blah2',
+	name: 'Blah 2'
+}];
+
 app.get( '/r/:code', wrapAsync( async function( req, res ) {
 	const referrer = await Members.findOne( { referral_code: req.params.code } );
 	if ( referrer ) {
-		res.render( 'index', { user: req.user, referrer } );
+		res.render( 'index', { user: req.user, referrer, gifts3, gifts5 } );
 	} else {
 		res.redirect( '/join' );
 	}

@@ -1,6 +1,13 @@
 $c-blue: #048BA8;
+$c-blue--dark1: darken($c-blue, 7%);
+$c-blue--dark2: darken($c-blue, 15%);
+
 $c-green: #4DA167;
+$c-green--dark1: darken($c-green, 5%);
+
 $c-black: #31393C;
+
+@import "mixins";
 
 @import "fonts";
 @import "general";

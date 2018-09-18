@@ -164,6 +164,7 @@ $bp-join-why: 768px;
 	outline: 0;
 	text-align: right;
 
+	-moz-appearance: textfield;
 	&::-webkit-inner-spin-button,
 	&::-webkit-outer-spin-button {
 		-webkit-appearance: none;
@@ -229,7 +230,7 @@ $bp-join-why: 768px;
 		background-color: $c-blue;
 	}
 	@include custom-radio--is(disabled) {
-		opacity: 0.5;
+		opacity: 0.3;
 	}
 }
 

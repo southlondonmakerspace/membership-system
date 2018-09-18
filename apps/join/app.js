@@ -33,6 +33,15 @@ app.get( '/' , function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
+app.get( '/r/:code', wrapAsync( async function( req, res ) {
+	const referrer = await Members.findOne( { referral_code: req.params.code } );
+	if ( referrer ) {
+		res.render( 'index', { user: req.user, referrer } );
+	} else {
+		res.redirect( '/join' );
+	}
+} ) );
+
 app.post( '/', [
 	auth.isNotLoggedIn,
 	hasSchema(joinSchema).orFlash

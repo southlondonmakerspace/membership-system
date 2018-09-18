@@ -2,6 +2,8 @@
 	var $form = $('.js-join-form');
 	var $formMore = $form.find('.js-join-form-more');
 	var $sustain = $form.find('.js-join-sustain');
+	var $gifts3 = $form.find('.js-join-gifts-3');
+	var $gifts5 = $form.find('.js-join-gifts-5');
 	var $amount = $form.find('.js-join-amount');
 	var $otherAmount = $form.find('.js-join-other-amount');
 	var $otherAmountBox = $form.find('.js-join-other-amount-box');
@@ -21,6 +23,8 @@
 		if (amount) {
 			$formMore.removeClass('hidden-js');
 			$sustain.toggleClass('hidden', amount >= 3);
+			$gifts3.toggleClass('is-disabled', amount < 3);
+			$gifts5.toggleClass('is-disabled', amount < 5);
 			$charge.text('£' + (amount * (period === 'annually' ? 12 : 1)));
 		} else {
 			$charge.text('£?');

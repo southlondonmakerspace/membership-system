@@ -70,15 +70,17 @@ app.get( '/complete', [
 			if (oldMember.gocardless.subscription_id) {
 				res.redirect( app.mountpath + '/duplicate-email' );
 			} else {
+				const code = auth.generateCode();
+
 				await RestartFlows.create( {
-					code: auth.generateCode(),
+					code,
 					member: oldMember._id,
 					customerId,
 					mandateId,
 					joinForm
 				} );
 
-				await mandrill.sendToMember('restart-membership', oldMember);
+				await mandrill.sendToMember('restart-membership', oldMember, {code});
 
 				res.redirect( app.mountpath + '/expired-member' );
 			}

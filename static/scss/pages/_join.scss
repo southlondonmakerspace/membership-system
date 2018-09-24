@@ -221,8 +221,7 @@ $bp-join-why: 768px;
 		padding: 0.5rem;
 		cursor: pointer;
 		border-radius: 3px;
-		transition: background-color 0.2s;
-		transition: opacity 0.2s;
+		transition: background-color 0.2s, opacity 0.2s;
 	}
 	@include custom-radio--is(focus) {
 		background-color: $c-blue--dark1;

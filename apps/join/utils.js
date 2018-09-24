@@ -6,7 +6,7 @@ const __config = __root + '/config';
 const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
-const { JoinFlows, Members } = require( __js + '/database' );
+const { JoinFlows, Members, Referrals } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
 const mailchimp = require( __js + '/mailchimp' );
 const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
@@ -54,10 +54,11 @@ function generateReferralCode({firstname, lastname}) {
 	return (firstname[0] + lastname[0] + no).toUpperCase();
 }
 
+// Should return schema defined in joinFormFields
 function processJoinForm(data) {
-	const { amount: amountCanned, amountOther, period, referrer, gift } = data;
+	const { amount: amountCanned, amountOther, period, referralCode, referralGift } = data;
 	const amount = amountCanned === 'other' ? parseInt(amountOther) : parseInt(amountCanned);
-	return { amount, period, referrer, gift };
+	return { amount, period, referralCode, referralGift };
 }
 
 async function createJoinFlow(completeUrl, joinForm) {
@@ -123,6 +124,15 @@ async function startMembership(member, joinForm) {
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		};
 		await member.save();
+
+		if (joinForm.referralCode) {
+			const referrer = await Members.findOne({referralCode: joinForm.referralCode});
+			await Referrals.create({
+				referrer: referrer._id,
+				referree: member._id,
+				referreeGift: joinForm.referralGift
+			});
+		}
 
 		await mailchimp.defaultLists.members.upsert(member.email, {
 			email_address: member.email,

@@ -60,7 +60,7 @@ block body
 			.hidden-js.js-join-form-more
 				if referrer
 					h3 I'd like my gift to be a…
-					input(type='hidden', name='referralCode', value=referrer.referral_code)
+					input(type='hidden', name='referralCode', value=referrer.referralCode)
 					p.hidden.js-join-sustain.
 						Unfortunately we can't send gifts for contributions of less than
 						£3, can you afford to give a little more?
@@ -68,7 +68,7 @@ block body
 						ul.join-gifts
 							each gift in gifts3
 								li.join-gifts__item
-									input(type='radio', id='gift_' + gift.id, name='gift', value=gift.id, required).js-join-gift-3
+									input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required).js-join-gift-3
 									label(for='gift_' + gift.id)
 										img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
 										small= gift.name
@@ -76,7 +76,7 @@ block body
 							li.join-gifts__note.small Only available at £5 or more
 							each gift in gifts5
 								li.join-gifts__item
-									input(type='radio', id='gift_' + gift.id, name='gift', value=gift.id, required).js-join-gift-5
+									input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required).js-join-gift-5
 									label(for='gift_' + gift.id)
 										img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
 										small= gift.name

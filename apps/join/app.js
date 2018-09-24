@@ -52,8 +52,8 @@ const gifts5 = [{
 	name: 'Blah 2'
 }];
 
-app.get( '/r/:code', wrapAsync( async function( req, res ) {
-	const referrer = await Members.findOne( { referral_code: req.params.code } );
+app.get( '/referral/:code', wrapAsync( async function( req, res ) {
+	const referrer = await Members.findOne( { referralCode: req.params.code } );
 	if ( referrer ) {
 		res.render( 'index', { user: req.user, referrer, gifts3, gifts5 } );
 	} else {

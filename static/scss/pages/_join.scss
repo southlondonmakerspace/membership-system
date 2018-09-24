@@ -231,6 +231,7 @@ $bp-join-why: 768px;
 	}
 	@include custom-radio--is(disabled) {
 		opacity: 0.3;
+		pointer-events: none;
 	}
 }
 

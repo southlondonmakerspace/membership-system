@@ -15,7 +15,7 @@ const config = require( __config + '/config.json' );
 
 const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember, startMembership } = require( './utils' );
 
-const { joinSchema, completeSchema } = require( './schemas.json' );
+const { joinSchema, referralSchema, completeSchema } = require( './schemas.json' );
 
 const app = express();
 
@@ -35,21 +35,26 @@ app.get( '/' , function( req, res ) {
 
 const gifts3 = [{
 	id: 'tshirt',
-	name: 'T-shirt'
+	name: 'T-shirt',
+	minAmount: 3
 }, {
 	id: 'mug',
-	name: 'Mug'
+	name: 'Mug',
+	minAmount: 3
 }, {
 	id: 'voucher',
-	name: 'Voucher'
+	name: 'Voucher',
+	minAmount: 3
 }];
 
 const gifts5 = [{
 	id: 'blah',
-	name: 'Blah'
+	name: 'Blah',
+	minAmount: 5
 }, {
 	id: 'blah2',
-	name: 'Blah 2'
+	name: 'Blah 2',
+	minAmount: 5
 }];
 
 app.get( '/referral/:code', wrapAsync( async function( req, res ) {
@@ -66,11 +71,31 @@ app.post( '/', [
 	hasSchema(joinSchema).orFlash
 ], wrapAsync(async function( req, res ) {
 	const joinForm = processJoinForm(req.body);
+
 	const completeUrl = config.audience + app.mountpath + '/complete';
 	const redirectUrl = await createJoinFlow(completeUrl, joinForm);
 
 	res.redirect( redirectUrl );
 }));
+
+app.post( '/referral/:code', [
+	auth.isNotLoggedIn,
+	hasSchema(joinSchema).orFlash,
+	hasSchema(referralSchema).orFlash
+], wrapAsync( async function ( req, res ) {
+	const joinForm = processJoinForm(req.body);
+
+	const gift = [...gifts3, ...gifts5].find(gift => gift.id === joinForm.referralGift);
+	if (!gift || gift.minAmount > joinForm.amount) {
+		req.flash('warning', 'referral-gift-invalid');
+		res.redirect(req.originalUrl);
+	} else {
+		const completeUrl = config.audience + app.mountpath + '/complete';
+		const redirectUrl = await createJoinFlow(completeUrl, joinForm);
+
+		res.redirect( redirectUrl );
+	}
+} ) );
 
 app.get( '/complete', [
 	auth.isNotLoggedIn,

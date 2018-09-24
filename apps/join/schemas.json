@@ -25,6 +25,22 @@
 			]
 		}
 	},
+	"referralSchama": {
+		"body": {
+			"type": "object",
+			"required": ["referralCode", "referralGift"],
+			"properties": {
+				"referralCode": {
+					"type": "String",
+					"minLength": 1
+				},
+				"referralGift": {
+					"type": "String",
+					"minLength": 1
+				}
+			}
+		}
+	},
 	"completeSchema": {
 		"query": {
 			"type": "object",

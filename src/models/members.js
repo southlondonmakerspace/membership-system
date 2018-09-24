@@ -4,8 +4,6 @@ const crypto = require( 'crypto' );
 const { getActualAmount } = require('../js/utils');
 const { audience, permission: { memberId } } = require( '../../config/config.json' );
 
-const { joinFormFields } = require('./join-flows');
-
 const ObjectId = mongoose.Schema.ObjectId;
 
 module.exports = {
@@ -194,13 +192,7 @@ module.exports = {
 				type: String,
 				required: true
 			}
-		} ],
-		restart: {
-			code: String,
-			customerId: String,
-			mandateId: String,
-			joinForm: joinFormFields
-		}
+		} ]
 	} )
 };
 

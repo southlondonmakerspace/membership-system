@@ -6,7 +6,7 @@ const __config = __root + '/config';
 const express = require( 'express' );
 
 const auth = require( __js + '/authentication' );
-const { Members } = require( __js + '/database' );
+const { Members, RestartFlows } = require( __js + '/database' );
 const mandrill = require( __js + '/mandrill' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
@@ -70,12 +70,14 @@ app.get( '/complete', [
 			if (oldMember.gocardless.subscription_id) {
 				res.redirect( app.mountpath + '/duplicate-email' );
 			} else {
-				oldMember.restart = {
+				await RestartFlows.create( {
 					code: auth.generateCode(),
-					customerId, mandateId,
-					...joinForm
-				};
-				await oldMember.save();
+					member: oldMember._id,
+					customerId,
+					mandateId,
+					joinForm
+				} );
+
 				await mandrill.sendToMember('restart-membership', oldMember);
 
 				res.redirect( app.mountpath + '/expired-member' );
@@ -87,21 +89,17 @@ app.get( '/complete', [
 }));
 
 app.get('/restart/:code', wrapAsync(async (req, res) => {
-	const member = await Members.findOne({'restart.code': req.params.code});
+	const {member, customerId, mandateId, joinForm} =
+		await RestartFlows.findOneAndRemove({'code': req.params.code}).populate('member').exec();
 
 	// Something has created a new subscription in the mean time!
 	if (member.gocardless.subscription_id) {
-		member.restart = undefined;
-		await member.save();
 		req.flash( 'danger', 'gocardless-subscription-exists' );
 	} else {
-		const {customerId, mandateId, joinForm} = member.restart;
-
 		member.gocardless = {
 			customer_id: customerId,
 			mandate_id: mandateId
 		};
-		member.restart = undefined;
 		await member.save();
 
 		await startMembership(member, joinForm);

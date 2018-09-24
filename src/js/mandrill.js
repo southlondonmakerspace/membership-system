@@ -24,7 +24,8 @@ const templates = {
 	'restart-membership': (member, {code}) => [{
 		name: 'RESTARTLINK',
 		content: config.audience + '/join/restart/' + code
-	}]
+	}],
+	'successful-referral': () => []
 };
 
 function memberToTemplate(templateId, member, params) {

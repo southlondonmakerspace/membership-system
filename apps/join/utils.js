@@ -9,6 +9,7 @@ const auth = require( __js + '/authentication' );
 const { JoinFlows, Members, Referrals } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
 const mailchimp = require( __js + '/mailchimp' );
+const mandrill = require( __js + '/mandrill' );
 const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
@@ -132,6 +133,8 @@ async function startMembership(member, joinForm) {
 				referree: member._id,
 				referreeGift: joinForm.referralGift
 			});
+
+			await mandrill.sendToMember('successful-referral', referrer);
 		}
 
 		await mailchimp.defaultLists.members.upsert(member.email, {

@@ -8,7 +8,7 @@
 	var $otherAmount = $form.find('.js-join-other-amount');
 	var $otherAmountBox = $form.find('.js-join-other-amount-box');
 	var $gift = $form.find('.js-join-gift');
-	var $gift5note = $form.find('.js-join-gift-5-note');
+	var $giftNote = $form.find('.js-join-gift-note');
 	var $giftDetails = $form.find('.js-join-gift-details');
 	var $period = $form.find('.js-join-period');
 	var $charge = $form.find('.js-join-charge');
@@ -39,7 +39,10 @@
 					else
 						return val;
 				});
-			$gift5note.toggleClass('hidden', amount >= 5);
+
+			$giftNote.each(function () {
+				$(this).toggleClass('hidden', amount >= $(this).data('amount'));
+			});
 
 			$charge.text('£' + (amount * (period === 'annually' ? 12 : 1)));
 		} else {

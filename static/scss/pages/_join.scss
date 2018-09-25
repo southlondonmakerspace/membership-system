@@ -48,19 +48,31 @@ $bp-join-why: 768px;
 }
 
 .join-referrer {
-	display: flex;
-	align-items: center;
 	margin-bottom: 22px;
 
-	svg {
-		margin-right: 1rem;
+	@media (min-width: $bp-join-form) {
+		display: flex;
+		align-items: center;
 	}
 
-	h3 {
-		margin-top: 0;
-	}
 	p {
 		margin-bottom: 0;
+	}
+}
+
+.join-referrer-icon {
+	margin-right: 1rem;
+	float: left;
+}
+
+.join-referrer-hello {
+	margin-top: 0;
+	min-height: 105px;
+	display: flex;
+	align-items: center;
+	@media (min-width: $bp-join-form) {
+		display: block;
+		min-height: 0;
 	}
 }
 
@@ -192,9 +204,11 @@ $bp-join-why: 768px;
 	list-style: none;
 	margin: 0 0 0.5rem;
 	padding: 0;
-	display: flex;
-	align-items: stretch;
-	flex-wrap: wrap;
+	@media (min-width: $bp-join-form) {
+		display: flex;
+		align-items: stretch;
+		flex-wrap: wrap;
+	}
 }
 
 .join-gifts__note {
@@ -208,23 +222,26 @@ $bp-join-why: 768px;
 }
 
 .join-gifts__item {
-	width: 95px;
-	text-align: center;
-	margin: 0 0.5rem;
+	margin: 0 0.5rem 1rem;
 
-	small {
-		display: block;
-		line-height: 1.25;
+	@media (min-width: $bp-join-form) {
+		width: 95px;
+		text-align: center;
+		margin-bottom: 0.5rem;
 	}
 
 	@include custom-radio {
-		margin: 0;
+		margin: 0 0 0.5rem;
 		padding: 0.5rem;
 		height: 100%;
 		cursor: pointer;
 		border-radius: 3px;
-		body.has-js & {
-			border-radius: 3px 3px 0 0;
+		display: flex;
+		background-color: $c-blue--dark2;
+		align-items: center;
+		@media (min-width: $bp-join-form) {
+			display: block;
+			background-color: transparent;
 		}
 	}
 	@include custom-radio--is(focus) {
@@ -233,14 +250,21 @@ $bp-join-why: 768px;
 	@include custom-radio--is(checked) {
 		position: relative;
 		background-color: $c-blue;
-		body.has-js &::after {
-			content: "";
-			position: absolute;
-			top: 100%;
-			left: 0;
-			width: 100%;
-			height: calc(0.5rem + 4px);
-			background-color: $c-blue;
+		body.has-js & {
+			display: none;
+			@media (min-width: $bp-join-form) {
+				display: block;
+			}
+			border-radius: 3px 3px 0 0;
+			&::after {
+				content: "";
+				position: absolute;
+				top: 100%;
+				left: 0;
+				width: 100%;
+				height: calc(0.5rem + 4px);
+				background-color: $c-blue;
+			}
 		}
 	}
 	@include custom-radio--is(disabled) {
@@ -251,40 +275,71 @@ $bp-join-why: 768px;
 
 .join-gift-img {
 	display: block;
-	margin: 0 auto 5px;
-	width: 75px;
+	margin-right: 0.5rem;
+	width: 30px;
+	height: 30px;
 	border-radius: 100px;
-	border: 3px solid $c-blue;
+	border: 3px solid $c-blue--dark2;
 	transition: border-color 0.2s;
+
+	@media (min-width: $bp-join-form) {
+		border-color: $c-blue;
+		margin: 0 auto 5px;
+		width: 75px;
+		height: 75px;
+	}
+}
+
+.join-gift-name {
+	display: block;
+	line-height: 1.25;
 }
 
 $gift-img-size: 100px;
 
-.join-gift-details {
+.join-gifts__item-details {
 	position: relative;
 	border-radius: 3px;
 	background-color: $c-blue;
 	color: white;
 	margin: 0 0.5rem 1rem;
-	padding: 1rem 1rem 1rem calc(#{$gift-img-size} + 2.5rem);
+	padding: 1rem;
 	min-height: calc(#{$gift-img-size} + 2rem);
+
+	@media (min-width: $bp-join-form) {
+		order: 1;
+		padding-left: calc(#{$gift-img-size} + 2.5rem);
+	}
 
 	h4 {
 		margin: 0.5rem 0;
+		display: flex;
+		height: calc(#{$gift-img-size} - 1rem);
+		align-items: center;
+		@media (min-width: $bp-join-form) {
+			display: block;
+			height: auto;
+		}
 	}
 
 	p {
 		margin-bottom: 0.3rem;
+		clear: both;
 	}
 }
 
-.join-gift-details__img {
-	position: absolute;
-	left: 1rem;
-	top: 1rem;
+.join-gifts__item-details__img {
+	border-radius: 100px;
 	width: $gift-img-size;
 	height: $gift-img-size;
-	border-radius: 100px;
+	float: left;
+	margin: 0 1rem 1rem 0;
+
+	@media (min-width: $bp-join-form) {
+		position: absolute;
+		left: 1rem;
+		top: 1rem;
+	}
 }
 
 .join-gift-option {

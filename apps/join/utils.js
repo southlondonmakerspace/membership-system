@@ -65,10 +65,7 @@ function processJoinForm({
 		period,
 		referralCode,
 		referralGift,
-		referralGiftOptions: Object.keys(referralGiftOptions).map(key => ({
-			key,
-			value: referralGiftOptions[key]
-		}))
+		referralGiftOptions
 	};
 }
 

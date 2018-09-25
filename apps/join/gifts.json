@@ -12,8 +12,7 @@
 		"name": "Journey to Justice mug",
 		"description": "(Very) limited edition mugs produced right here in Bristol by PRSC celebrating and memorialising Bristolians who have fought for our rights.",
 		"options": [{
-			"id": "design",
-			"label": "Design",
+			"id": "Design",
 			"values": [1, 2, 3, 4, 5]
 		}]
 	}],
@@ -22,12 +21,10 @@
 		"name": "Cable t-shirt",
 		"description": "Ethically produced on organic cotton, these stylish shirts will mark you out and someone who knows what’s going on.",
 		"options": [{
-			"id": "fit",
-			"label": "Fit",
+			"id": "Fit",
 			"values": ["Male", "Female"]
 		}, {
-			"id": "size",
-			"label": "Size",
+			"id": "Size",
 			"values": ["XS", "S", "M", "L", "XL"]
 		}]
 	}, {

@@ -27,7 +27,7 @@ mixin giftsList(gifts, amount)
 				if gift.options
 					each option in gift.options
 						p.small
-							span.join-gift-option= option.label
+							span.join-gift-option= option.id
 							each value in option.values
 								label.join-gift-option-value
 									input(type='radio', name='referralGiftOptions[' + option.id + ']', value=value)

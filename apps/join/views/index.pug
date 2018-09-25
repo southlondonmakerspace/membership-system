@@ -30,7 +30,7 @@ mixin giftsList(gifts, amount)
 							span.join-gift-option= option.label
 							each value in option.values
 								label.join-gift-option-value
-									input(type='radio', name='referralGift_option_' + option.id, value=value)
+									input(type='radio', name='referralGiftOptions[' + option.id + ']', value=value)
 									= value
 
 block body

@@ -56,10 +56,20 @@ function generateReferralCode({firstname, lastname}) {
 }
 
 // Should return schema defined in joinFormFields
-function processJoinForm(data) {
-	const { amount: amountCanned, amountOther, period, referralCode, referralGift } = data;
-	const amount = amountCanned === 'other' ? parseInt(amountOther) : parseInt(amountCanned);
-	return { amount, period, referralCode, referralGift };
+function processJoinForm({
+	amount, amountOther, period, referralCode, referralGift, referralGiftOptions
+}) {
+
+	return {
+		amount: amount === 'other' ? parseInt(amountOther) : parseInt(amount),
+		period,
+		referralCode,
+		referralGift,
+		referralGiftOptions: Object.keys(referralGiftOptions).map(key => ({
+			key,
+			value: referralGiftOptions[key]
+		}))
+	};
 }
 
 async function createJoinFlow(completeUrl, joinForm) {
@@ -131,7 +141,8 @@ async function startMembership(member, joinForm) {
 			await Referrals.create({
 				referrer: referrer._id,
 				referree: member._id,
-				referreeGift: joinForm.referralGift
+				referreeGift: joinForm.referralGift,
+				referreeGiftOptions: joinForm.referralGiftOptions
 			});
 
 			await mandrill.sendToMember('successful-referral', referrer);

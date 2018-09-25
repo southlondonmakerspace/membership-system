@@ -21,7 +21,15 @@ module.exports = {
 			required: true
 		},
 		referrerGift: String,
-		referreeGift: String
+		referrerGiftOptions: [{
+			key: String,
+			value: String
+		}],
+		referreeGift: String,
+		referreeGiftOptions: [{
+			key: String,
+			value: String
+		}]
 	} )
 };
 

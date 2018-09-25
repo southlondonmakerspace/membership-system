@@ -10,7 +10,11 @@ const joinFormFields = {
 		enum: ['monthly', 'annually']
 	},
 	referralCode: String,
-	referralGift: String
+	referralGift: String,
+	referralGiftOptions: [{
+		key: String,
+		value: String
+	}]
 };
 
 module.exports = {

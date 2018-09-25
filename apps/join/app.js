@@ -15,7 +15,13 @@ const config = require( __config + '/config.json' );
 
 const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember, startMembership } = require( './utils' );
 
+const { gifts3, gifts5 } = require( './gifts.json' );
 const { joinSchema, referralSchema, completeSchema } = require( './schemas.json' );
+
+const gifts = [
+	...gifts3.map(gift => ({...gift, minAmount: 3})),
+	...gifts5.map(gift => ({...gift, minAmount: 5}))
+];
 
 const app = express();
 
@@ -32,30 +38,6 @@ app.use( function( req, res, next ) {
 app.get( '/' , function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
-
-const gifts3 = [{
-	id: 'tshirt',
-	name: 'T-shirt',
-	minAmount: 3
-}, {
-	id: 'mug',
-	name: 'Mug',
-	minAmount: 3
-}, {
-	id: 'voucher',
-	name: 'Voucher',
-	minAmount: 3
-}];
-
-const gifts5 = [{
-	id: 'blah',
-	name: 'Blah',
-	minAmount: 5
-}, {
-	id: 'blah2',
-	name: 'Blah 2',
-	minAmount: 5
-}];
 
 app.get( '/referral/:code', wrapAsync( async function( req, res ) {
 	const referrer = await Members.findOne( { referralCode: req.params.code } );
@@ -85,7 +67,7 @@ app.post( '/referral/:code', [
 ], wrapAsync( async function ( req, res ) {
 	const joinForm = processJoinForm(req.body);
 
-	const gift = [...gifts3, ...gifts5].find(gift => gift.id === joinForm.referralGift);
+	const gift = gifts.find(gift => gift.id === joinForm.referralGift);
 	if (!gift || gift.minAmount > joinForm.amount) {
 		req.flash('warning', 'referral-gift-invalid');
 		res.redirect(req.originalUrl);

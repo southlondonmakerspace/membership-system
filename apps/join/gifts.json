@@ -1,0 +1,51 @@
+{
+	"gifts3": [{
+		"id": "cable-ticket",
+		"name": "Ticket to Cable gig",
+		"description": "The Cable has been known to throw a great party. Details to be confirmed but expect a great venue and local acts."
+	}, {
+		"id": "cable-mug",
+		"name": "Cable mug",
+		"description": "Beautifully custom designed mugs for sharing a warm pot of community-ownership."
+	}, {
+		"id": "jtj-mug",
+		"name": "Journey to Justice mug",
+		"description": "(Very) limited edition mugs produced right here in Bristol by PRSC celebrating and memorialising Bristolians who have fought for our rights.",
+		"options": [{
+			"id": "design",
+			"label": "Design",
+			"values": [1, 2, 3, 4, 5]
+		}]
+	}],
+	"gifts5": [{
+		"id": "cable-tshirt",
+		"name": "Cable t-shirt",
+		"description": "Ethically produced on organic cotton, these stylish shirts will mark you out and someone who knows what’s going on.",
+		"options": [{
+			"id": "fit",
+			"label": "Fit",
+			"values": ["Male", "Female"]
+		}, {
+			"id": "size",
+			"label": "Size",
+			"values": ["XS", "S", "M", "L", "XL"]
+		}]
+	}, {
+		"id": "custom-poster",
+		"name": "Custom Cable poster",
+		"description": "Designed by a local Cable illustrator, this beautiful A4 poster visualises the power of community media."
+	}, {
+		"id": "ws-voucher",
+		"name": "£10 Watershed voucher",
+		"description": "You may or may not love independent cinema. Either way they show some cracking films at the Watershed."
+	}, {
+		"id": "bsw-voucher",
+		"name": "£10 Bristol Streetwear voucher",
+		"description": "The company that has gained notoriety for adding Bristol attitude and humour to high profile brands."
+	}, {
+		"id": "tb-voucher",
+		"name": "£10 Tangent Books voucher",
+		"description": "Founded in 2004, Tangent Books is the go to for everything from real guides to Bristol, radical history and more."
+	}]
+}
+

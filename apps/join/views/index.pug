@@ -11,6 +11,30 @@ block prepend title
 block append js
 	script(src='/static/js/join.js')
 
+mixin giftsList(gifts, amount)
+	ul.join-gifts
+		if amount == 5
+			li.join-gifts__note.small.hidden.js-join-gift-5-note Only available at £5 or more
+		each gift in gifts
+			li.join-gifts__item
+				input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required, data-amount=amount).js-join-gift
+				label(for='gift_' + gift.id)
+					img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
+					small= gift.name
+	each gift in gifts
+		.join-gift-details.hidden.js-join-gift-details(data-id=gift.id)
+			img(src='/static/imgs/join/gifts/mug.jpg').join-gift-details__img
+			h4= gift.name
+			p.small= gift.description
+			if gift.options
+				each option in gift.options
+					p.small
+						span.join-gift-option= option.label
+						each value in option.values
+							label.join-gift-option-value
+								input(type='radio', name='referralGift_option_' + option.id, value=value)
+								= value
+
 block body
 	header.join-header#join
 		.join-header__bg
@@ -45,11 +69,12 @@ block body
 			ul.join-options.hidden-nojs
 				each amount in [3, 5, 10]
 					li.join-options__opt
-						input(type='radio', name='amount', id='amount_' + amount, value=amount, required).js-join-amount
+						- checked = referrer && amount == 5
+						input(type='radio', name='amount', id='amount_' + amount, value=amount, required, checked=checked).js-join-amount
 						label(for='amount_' + amount).btn £#{amount}#[span.join-monthly /month]
 
 			div.join-other-amount
-				input(type='radio', name='amount', value='other', required, checked).js-join-other-amount
+				input(type='radio', name='amount', value='other', required, checked=!referrer).js-join-other-amount
 				label
 					.hidden-nojs Or choose an amount…
 					span.join-other-amount-box
@@ -59,28 +84,15 @@ block body
 
 			.hidden-js.js-join-form-more
 				if referrer
-					h3 I'd like my gift to be a…
+					h3 I'd like my bribe to be a…
 					input(type='hidden', name='referralCode', value=referrer.referralCode)
 					p.hidden.js-join-sustain.
 						Unfortunately we can't send gifts for contributions of less than
 						£3, can you afford to give a little more?
 					.join-gifts-wrapper
-						ul.join-gifts
-							each gift in gifts3
-								li.join-gifts__item
-									input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required).js-join-gift-3
-									label(for='gift_' + gift.id)
-										img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-										small= gift.name
-						ul.join-gifts
-							li.join-gifts__note.small Only available at £5 or more
-							each gift in gifts5
-								li.join-gifts__item
-									input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required).js-join-gift-5
-									label(for='gift_' + gift.id)
-										img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-										small= gift.name
-					p.join-info.small Find out more about gifts #[a here]
+						+giftsList(gifts5, 5)
+						+giftsList(gifts3, 3)
+					p.join-info.small Find out more about the referral scheme #[a here].
 				else
 					.hidden.js-join-sustain
 						h3 Can you help sustain us?

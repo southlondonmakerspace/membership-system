@@ -192,46 +192,119 @@ $bp-join-why: 768px;
 	list-style: none;
 	margin: 0 0 0.5rem;
 	padding: 0;
-	display: inline-flex;
+	display: flex;
+	align-items: stretch;
+	flex-wrap: wrap;
 }
 
 .join-gifts__note {
 	position: absolute;
+	z-index: 1;
 	left: 0;
 	width: 100%;
-	bottom: 100%;
-	margin-bottom: 3px;
+	top: 45px;
 	text-align: center;
+	transform: translate(0, -50%);
 }
 
 .join-gifts__item {
-	width: 90px;
+	width: 95px;
 	text-align: center;
 	margin: 0 0.5rem;
 
-	img {
-		width: 100%;
-		border-radius: 100px;
-		border: 3px solid $c-blue;
-		transition: border-color 0.2s;
+	small {
+		display: block;
+		line-height: 1.25;
 	}
 
 	@include custom-radio {
 		margin: 0;
 		padding: 0.5rem;
+		height: 100%;
 		cursor: pointer;
 		border-radius: 3px;
-		transition: background-color 0.2s, opacity 0.2s;
+		body.has-js & {
+			border-radius: 3px 3px 0 0;
+		}
 	}
 	@include custom-radio--is(focus) {
 		background-color: $c-blue--dark1;
 	}
 	@include custom-radio--is(checked) {
+		position: relative;
 		background-color: $c-blue;
+		body.has-js &::after {
+			content: "";
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			height: calc(0.5rem + 4px);
+			background-color: $c-blue;
+		}
 	}
 	@include custom-radio--is(disabled) {
-		opacity: 0.3;
+		opacity: 0.2;
 		pointer-events: none;
+	}
+}
+
+.join-gift-img {
+	display: block;
+	margin: 0 auto 5px;
+	width: 75px;
+	border-radius: 100px;
+	border: 3px solid $c-blue;
+	transition: border-color 0.2s;
+}
+
+$gift-img-size: 100px;
+
+.join-gift-details {
+	position: relative;
+	border-radius: 3px;
+	background-color: $c-blue;
+	color: white;
+	margin: 0 0.5rem 1rem;
+	padding: 1rem 1rem 1rem calc(#{$gift-img-size} + 2.5rem);
+	min-height: calc(#{$gift-img-size} + 2rem);
+
+	h4 {
+		margin: 0.5rem 0;
+	}
+
+	p {
+		margin-bottom: 0.3rem;
+	}
+}
+
+.join-gift-details__img {
+	position: absolute;
+	left: 1rem;
+	top: 1rem;
+	width: $gift-img-size;
+	height: $gift-img-size;
+	border-radius: 100px;
+}
+
+.join-gift-option {
+	display: inline-block;
+	min-width: 30px;
+	font-weight: 700;
+}
+
+.join-gift-option-value {
+	display: inline-block;
+	margin-left: 10px;
+
+	input[type=radio] {
+		margin-top: 5px;
+		&::after {
+			border-color: white;
+		}
+		&::before {
+			background-color: white;
+		}
 	}
 }
 

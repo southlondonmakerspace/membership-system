@@ -10,14 +10,30 @@ block contents
 			include ../../../views/partials/sidebar.pug
 		.col-md-9.col-lg-7
 			+page_header( 'Referrals' )
-			ul.row
-				each referral in referrals
-					li.col-md-6
-						.panel.panel-default
-							.panel-body
-								p
-									| You referred
-									|
-									= referral.referree.firstname
+			p.
+				Refer a friend to join the Cable and we'll send you both a
+				gift as a thank you for helping us on the journey towards
+				sustainability.
 
+			form( method="post" ).form-horizontal
+				+csrf
+				+input( 'email', 'Email address', 'email', { required: true, left: 3, right: 5 } )
+				.form-group
+					.col-md-offset-3.col-md-5
+						button.btn.join-btn Refer
 
+			h3 Your referrees
+			if referrals.length > 0
+				.row
+					ul.referrals-list
+						each referral in referrals
+							li.col-md-6
+								.panel.panel-default
+									.panel-body
+										p
+											| You referred
+											|
+											= referral.referree.firstname
+			else
+				p.
+					You haven't referred anyone.

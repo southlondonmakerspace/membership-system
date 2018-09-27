@@ -1,0 +1,30 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = "Choose a referral gift"
+
+block append js
+	script(src='/static/js/referral.js')
+
+block contents
+	.row
+		.col-md-3
+			- page = 'referrals'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9.col-lg-7
+			+page_header( 'A successful referral!' )
+
+			p.
+				You referred #{ referral.referree.firstname } to the Cable,
+				we're really grateful for it!  Our community is now a bit
+				bigger and more vibrant, and we are edging closer to financial
+				sustainability.
+
+			p.
+				As a thank you for making local independent journalism possible
+				we'd love to send you a gift, choose below!
+
+			h3 Choose a gift
+			form(method='POST').js-referral-form
+				include /src/views/partials/gifts
+				button.btn.join-btn Confirm

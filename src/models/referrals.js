@@ -23,7 +23,11 @@ module.exports = {
 		referrerGift: String,
 		referrerGiftOptions: Object,
 		referreeGift: String,
-		referreeGiftOptions: Object
+		referreeGiftOptions: Object,
+		referreeAmount: {
+			type: Number,
+			required: true
+		}
 	} )
 };
 

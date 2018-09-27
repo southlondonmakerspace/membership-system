@@ -1,0 +1,171 @@
+.gifts-wrapper {
+	margin: 0 -0.5rem 0.5rem;
+}
+
+.gifts {
+	position: relative;
+	list-style: none;
+	margin: 0 0 0.5rem;
+	padding: 0;
+	@media (min-width: $bp-join-form) {
+		display: flex;
+		align-items: stretch;
+		flex-wrap: wrap;
+	}
+}
+
+.gifts__note {
+	position: absolute;
+	z-index: 1;
+	left: 0;
+	width: 100%;
+	top: 45px;
+	text-align: center;
+	transform: translate(0, -50%);
+}
+
+.gifts__item {
+	margin: 0 0.5rem 1rem;
+
+	@media (min-width: $bp-join-form) {
+		width: 95px;
+		text-align: center;
+		margin-bottom: 0.5rem;
+	}
+
+	@include custom-radio {
+		margin: 0 0 0.5rem;
+		padding: 0.5rem;
+		height: 100%;
+		cursor: pointer;
+		border-radius: 3px;
+		display: flex;
+		background-color: $c-blue--dark2;
+		color: white;
+		align-items: center;
+		@media (min-width: $bp-join-form) {
+			display: block;
+			background-color: transparent;
+			color: inherit;
+		}
+	}
+	@include custom-radio--is(focus) {
+		background-color: $c-blue--dark1;
+		color: white;
+	}
+	@include custom-radio--is(checked) {
+		position: relative;
+		background-color: $c-blue;
+		color: white;
+		body.has-js & {
+			display: none;
+			@media (min-width: $bp-join-form) {
+				display: block;
+			}
+			border-radius: 3px 3px 0 0;
+			&::after {
+				content: "";
+				position: absolute;
+				top: 100%;
+				left: 0;
+				width: 100%;
+				height: calc(0.5rem + 4px);
+				background-color: $c-blue;
+			}
+		}
+	}
+	@include custom-radio--is(disabled) {
+		opacity: 0.2;
+		pointer-events: none;
+	}
+}
+
+.gift-img {
+	display: block;
+	margin-right: 0.5rem;
+	width: 30px;
+	height: 30px;
+	border-radius: 100px;
+	border: 3px solid $c-blue--dark2;
+	transition: border-color 0.2s;
+
+	@media (min-width: $bp-join-form) {
+		border-color: $c-blue;
+		margin: 0 auto 5px;
+		width: 75px;
+		height: 75px;
+	}
+}
+
+.gift-name {
+	display: block;
+	line-height: 1.25;
+}
+
+$gift-img-size: 100px;
+
+.gifts__item-details {
+	position: relative;
+	border-radius: 3px;
+	background-color: $c-blue;
+	color: white;
+	margin: 0 0.5rem 1rem;
+	padding: 1rem;
+	min-height: calc(#{$gift-img-size} + 2rem);
+
+	@media (min-width: $bp-join-form) {
+		order: 1;
+		padding-left: calc(#{$gift-img-size} + 2.5rem);
+	}
+
+	h4 {
+		margin: 0.5rem 0;
+		display: flex;
+		height: calc(#{$gift-img-size} - 1rem);
+		align-items: center;
+		@media (min-width: $bp-join-form) {
+			display: block;
+			height: auto;
+		}
+	}
+
+	p {
+		margin-bottom: 0.3rem;
+		clear: both;
+	}
+}
+
+.gifts__item-details__img {
+	border-radius: 100px;
+	width: $gift-img-size;
+	height: $gift-img-size;
+	float: left;
+	margin: 0 1rem 1rem 0;
+
+	@media (min-width: $bp-join-form) {
+		position: absolute;
+		left: 1rem;
+		top: 1rem;
+	}
+}
+
+.gift-option {
+	display: inline-block;
+	min-width: 30px;
+	font-weight: 700;
+}
+
+.gift-option-value {
+	display: inline-block;
+	margin-left: 10px;
+
+	input[type=radio] {
+		margin-top: 5px;
+		&::after {
+			border-color: white;
+		}
+		&::before {
+			background-color: white;
+		}
+	}
+}

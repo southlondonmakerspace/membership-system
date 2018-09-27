@@ -11,28 +11,6 @@ block prepend title
 block append js
 	script(src='/static/js/join.js')
 
-mixin giftsList(gifts, amount)
-	ul.join-gifts
-		li(data-amount=amount).join-gifts__note.small.hidden.js-join-gift-note Only available at £#{amount} or more
-		each gift in gifts
-			li.join-gifts__item
-				input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required, data-amount=amount).js-join-gift
-				label(for='gift_' + gift.id)
-					img(src='/static/imgs/join/gifts/mug.jpg').join-gift-img
-					small.join-gift-name= gift.name
-			li(data-id=gift.id).join-gifts__item-details.hidden.js-join-gift-details
-				img(src='/static/imgs/join/gifts/mug.jpg').join-gifts__item-details__img
-				h4= gift.name
-				p.small= gift.description
-				if gift.options
-					each option in gift.options
-						p.small
-							span.join-gift-option= option.id
-							each value in option.values
-								label.join-gift-option-value
-									input(type='radio', name='referralGiftOptions[' + option.id + ']', value=value)
-									= value
-
 block body
 	header.join-header#join
 		.join-header__bg
@@ -53,7 +31,7 @@ block body
 			if referrer
 				.join-referrer
 					.join-referrer-icon
-						<svg xmlns="http://www.w3.org/2000/svg" width="70" height="105" viewBox="4 0 16 24"><path fill="white" d="M14.5 15h1.5v9l-3.958-3-4.042 3v-9h1.463c.83.582 1.381 1 2.537 1 .975 0 1.88-.415 2.5-1zm-2.5-12c-2.205 0-4 1.794-4 4s1.795 4 4 4c2.206 0 4-1.794 4-4s-1.794-4-4-4zm6.926 5.277c.051.147.074.297.074.445 0 .449-.222.883-.615 1.156-1.256.87-1.09.651-1.562 2.067-.198.591-.77.99-1.414.99h-.004c-1.549-.005-1.279-.088-2.528.789-.262.184-.569.276-.877.276s-.615-.092-.876-.275c-1.249-.878-.98-.794-2.528-.789h-.004c-.645 0-1.216-.399-1.413-.99-.473-1.417-.311-1.198-1.562-2.067-.395-.274-.617-.708-.617-1.157 0-.148.024-.298.074-.444.483-1.411.484-1.139 0-2.555-.05-.147-.074-.297-.074-.445 0-.45.222-.883.616-1.157 1.251-.868 1.089-.648 1.562-2.067.197-.591.769-.99 1.413-.99h.004c1.545.005 1.271.095 2.528-.79.262-.183.569-.274.877-.274s.615.091.876.274c1.249.878.98.795 2.528.79h.004c.645 0 1.216.399 1.414.99.473 1.416.307 1.197 1.562 2.067.394.273.616.707.616 1.156 0 .148-.023.299-.074.445-.483 1.41-.485 1.139 0 2.555zm-1.926-1.277c0-2.761-2.238-5-5-5-2.761 0-5 2.239-5 5s2.239 5 5 5c2.762 0 5-2.239 5-5z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="70" height="105" viewBox="4 0 16 24"><path fill="currentColor" d="M14.5 15h1.5v9l-3.958-3-4.042 3v-9h1.463c.83.582 1.381 1 2.537 1 .975 0 1.88-.415 2.5-1zm-2.5-12c-2.205 0-4 1.794-4 4s1.795 4 4 4c2.206 0 4-1.794 4-4s-1.794-4-4-4zm6.926 5.277c.051.147.074.297.074.445 0 .449-.222.883-.615 1.156-1.256.87-1.09.651-1.562 2.067-.198.591-.77.99-1.414.99h-.004c-1.549-.005-1.279-.088-2.528.789-.262.184-.569.276-.877.276s-.615-.092-.876-.275c-1.249-.878-.98-.794-2.528-.789h-.004c-.645 0-1.216-.399-1.413-.99-.473-1.417-.311-1.198-1.562-2.067-.395-.274-.617-.708-.617-1.157 0-.148.024-.298.074-.444.483-1.411.484-1.139 0-2.555-.05-.147-.074-.297-.074-.445 0-.45.222-.883.616-1.157 1.251-.868 1.089-.648 1.562-2.067.197-.591.769-.99 1.413-.99h.004c1.545.005 1.271.095 2.528-.79.262-.183.569-.274.877-.274s.615.091.876.274c1.249.878.98.795 2.528.79h.004c.645 0 1.216.399 1.414.99.473 1.416.307 1.197 1.562 2.067.394.273.616.707.616 1.156 0 .148-.023.299-.074.445-.483 1.41-.485 1.139 0 2.555zm-1.926-1.277c0-2.761-2.238-5-5-5-2.761 0-5 2.239-5 5s2.239 5 5 5c2.762 0 5-2.239 5-5z"/></svg>
 					div
 						h3.join-referrer-hello #{referrer.firstname} thinks you should join the Cable
 						p.
@@ -87,9 +65,7 @@ block body
 					p.hidden.js-join-sustain.
 						Unfortunately we can't send gifts for contributions of less than
 						£3, can you afford to give a little more?
-					.join-gifts-wrapper
-						+giftsList(gifts5, 5)
-						+giftsList(gifts3, 3)
+					include /src/views/partials/gifts
 					p.join-info.small Find out more about the referral scheme #[a here].
 				else
 					.hidden.js-join-sustain

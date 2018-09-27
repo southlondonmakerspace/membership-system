@@ -1,3 +1,5 @@
+$bp-join-form: 600px;
+
 $c-blue: #048BA8;
 $c-blue--dark1: darken($c-blue, 7%);
 $c-blue--dark2: darken($c-blue, 15%);
@@ -11,5 +13,8 @@ $c-black: #31393C;
 
 @import "fonts";
 @import "general";
+
+@import "components/gifts";
+
 @import "pages/join";
 @import "pages/referrals";

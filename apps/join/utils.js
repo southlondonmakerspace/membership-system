@@ -139,7 +139,8 @@ async function startMembership(member, joinForm) {
 				referrer: referrer._id,
 				referree: member._id,
 				referreeGift: joinForm.referralGift,
-				referreeGiftOptions: joinForm.referralGiftOptions
+				referreeGiftOptions: joinForm.referralGiftOptions,
+				referreeAmount: joinForm.amount
 			});
 
 			await mandrill.sendToMember('successful-referral', referrer);

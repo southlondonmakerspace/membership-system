@@ -9,10 +9,14 @@ const { Referrals } = require( __js + '/database' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
+const { gifts3, gifts5 } = require( __root + '/apps/join/gifts.json' );
+
 const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
+
+app.use( auth.isLoggedIn );
 
 app.use( function( req, res, next ) {
 	res.locals.app = app_config;
@@ -24,9 +28,14 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/', auth.isLoggedIn, wrapAsync( async function( req, res ) {
+app.get( '/', wrapAsync( async function( req, res ) {
 	const referrals = await Referrals.find({ referrer: req.user }).populate('referree');
 	res.render( 'index', { referrals } );
+} ) );
+
+app.get( '/:id', wrapAsync( async function( req, res ) {
+	const referral = await Referrals.findOne({ referrer: req.user, _id: req.params.id }).populate('referree');
+	res.render( 'referral', { referral, gifts3, gifts5 } );
 } ) );
 
 module.exports = function( config ) {

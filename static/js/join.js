@@ -7,9 +7,9 @@
 	var $amount = $form.find('.js-join-amount');
 	var $otherAmount = $form.find('.js-join-other-amount');
 	var $otherAmountBox = $form.find('.js-join-other-amount-box');
-	var $gift = $form.find('.js-join-gift');
-	var $giftNote = $form.find('.js-join-gift-note');
-	var $giftDetails = $form.find('.js-join-gift-details');
+	var $gift = $form.find('.js-gift');
+	var $giftNote = $form.find('.js-gift-note');
+	var $giftDetails = $form.find('.js-gift-details');
 	var $period = $form.find('.js-join-period');
 	var $charge = $form.find('.js-join-charge');
 

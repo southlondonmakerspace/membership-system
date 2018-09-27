@@ -13,7 +13,7 @@
 		"description": "(Very) limited edition mugs produced right here in Bristol by PRSC celebrating and memorialising Bristolians who have fought for our rights.",
 		"options": [{
 			"id": "Design",
-			"values": [1, 2, 3, 4, 5]
+			"values": ["1", "2", "3", "4", "5"]
 		}]
 	}],
 	"gifts5": [{

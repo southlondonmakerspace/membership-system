@@ -181,6 +181,7 @@
 
 	"flash-referral-gift-invalid": "This gift is not available",
 	"flash-referral-gift-chosen": "You have chosen your referral gift",
+	"flash-referral-gift-no-stock": "Unfortunately the selected gift is out of stock",
 
 	"flash-validation-error-generic": "The data you provided was invalid",
 

@@ -6,7 +6,7 @@ const __config = __root + '/config';
 const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
-const { JoinFlows, Members, Referrals } = require( __js + '/database' );
+const { JoinFlows, JTJStock, Members, Referrals } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
 const mailchimp = require( __js + '/mailchimp' );
 const mandrill = require( __js + '/mandrill' );
@@ -36,7 +36,7 @@ async function customerToMember(customerId, mandateId) {
 	};
 }
 
-function joinInfoToSubscription({amount, period}, mandateId) {
+function joinInfoToSubscription(amount, period, mandateId) {
 	const actualAmount = getActualAmount(amount, period);
 
 	return {
@@ -117,31 +117,35 @@ async function createMember(memberObj) {
 	}
 }
 
-async function startMembership(member, joinForm) {
+async function startMembership(member, {
+	amount, period, referralCode, referralGift, referralGiftOptions
+}) {
 	if (member.gocardless.subscription_id) {
 		throw new Error('Tried to create subscription on member with active subscription');
 	} else {
 		const subscription =
-			await gocardless.subscriptions.create(joinInfoToSubscription(joinForm, member.gocardless.mandate_id));
+			await gocardless.subscriptions.create(joinInfoToSubscription(amount, period, member.gocardless.mandate_id));
 
 		member.gocardless.subscription_id = subscription.id;
-		member.gocardless.amount = joinForm.amount;
-		member.gocardless.period = joinForm.period;
+		member.gocardless.amount = amount;
+		member.gocardless.period = period;
 		member.memberPermission = {
 			date_added: new Date(),
 			date_expires: moment.utc(subscription.start_date).add(config.gracePeriod).toDate()
 		};
 		await member.save();
 
-		if (joinForm.referralCode) {
-			const referrer = await Members.findOne({referralCode: joinForm.referralCode});
+		if (referralCode) {
+			const referrer = await Members.findOne({referralCode});
 			await Referrals.create({
 				referrer: referrer._id,
 				referree: member._id,
-				referreeGift: joinForm.referralGift,
-				referreeGiftOptions: joinForm.referralGiftOptions,
-				referreeAmount: joinForm.amount
+				referreeGift: referralGift,
+				referreeGiftOptions: referralGiftOptions,
+				referreeAmount: amount
 			});
+
+			await updateGiftStock({referralGift, referralGiftOptions});
 
 			await mandrill.sendToMember('successful-referral', referrer);
 		}
@@ -158,11 +162,35 @@ async function startMembership(member, joinForm) {
 	}
 }
 
+async function getJTJInStock() {
+	const jtjStock = await JTJStock.find({});
+	const jtjInStock = {};
+	jtjStock.forEach(stock => jtjInStock[stock.design] = stock.stock > 0);
+	return jtjInStock;
+}
+
+async function isGiftInStock({referralGift, referralGiftOptions}) {
+	if (referralGift === 'jtj-mug') {
+		return (await JTJStock.findOne({design: referralGiftOptions.Design})).stock > 0;
+	} else {
+		return true;
+	}
+}
+
+async function updateGiftStock({referralGift, referralGiftOptions}) {
+	if (referralGift === 'jtj-mug') {
+		await JTJStock.updateOne({design: referralGiftOptions.Design}, {$inc: {stock: -1}});
+	}
+}
+
 module.exports = {
 	processJoinForm,
 	customerToMember,
 	createJoinFlow,
 	completeJoinFlow,
 	createMember,
-	startMembership
+	startMembership,
+	getJTJInStock,
+	isGiftInStock,
+	updateGiftStock
 };

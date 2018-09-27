@@ -16,9 +16,10 @@ mixin giftsList(gifts, amount)
 						p.small
 							span.gift-option= option.id
 							each value in option.values
-								label.gift-option-value
-									input(type='radio', name='referralGiftOptions[' + option.id + ']', value=value)
-									= value
+								if gift.id !== 'jtj-mug' || jtjInStock[value]
+									label.gift-option-value
+										input(type='radio', name='referralGiftOptions[' + option.id + ']', value=value)
+										= value
 
 .gifts-wrapper
 	+giftsList(gifts5, 5)

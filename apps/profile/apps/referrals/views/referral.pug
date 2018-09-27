@@ -25,6 +25,10 @@ block contents
 				we'd love to send you a gift, choose below!
 
 			h3 Choose a gift
-			form(method='POST').js-referral-form
-				include /src/views/partials/gifts
-				button.btn.join-btn Confirm
+			if referral.referrerGift
+				p You've already chosen your gift.
+			else
+				form(method='POST').js-referral-form
+					+csrf
+					include /src/views/partials/gifts
+					button.btn.join-btn Confirm

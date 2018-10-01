@@ -12,6 +12,8 @@ mixin giftsList(gifts, amount)
 				h4= gift.name
 				p.small= gift.description
 				if gift.options
+					p.small
+						b Select from…
 					each option in gift.options
 						p.small
 							span.gift-option= option.id

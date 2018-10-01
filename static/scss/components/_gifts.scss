@@ -178,7 +178,7 @@ $bp-jtj-mug: 400px;
 	margin: 0 -2px;
 	@media (min-width: $bp-jtj-mug) {
 		justify-content: flex-start;
-		margin: 0 -5px;
+		margin: 0 -4px;
 	}
 
 	& .gift-option-id {
@@ -189,13 +189,15 @@ $bp-jtj-mug: 400px;
 .gift-jtj-mug-option-value {
 	@include custom-radio {
 		border: 2px solid white;
+		border-radius: 100px;
+		overflow: hidden;
 		max-width: 35px;
 		opacity: 0.5;
 		transition: opacity 0.2s;
 		cursor: pointer;
 		margin: 0 2px;
 		@media (min-width: $bp-jtj-mug) {
-			margin: 0 5px;
+			margin: 0 4px;
 		}
 
 		& > img {

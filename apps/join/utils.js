@@ -15,10 +15,9 @@ const mandrill = require( __js + '/mandrill' );
 const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
 
 const { gifts3, gifts5 } = require( './gifts.json' );
-const gifts = [
-	...gifts3.map(gift => ({...gift, minAmount: 3})),
-	...gifts5.map(gift => ({...gift, minAmount: 5}))
-];
+const giftsById = {};
+gifts3.forEach(gift => giftsById[gift.id] = {...gift, minAmount: 3});
+gifts5.forEach(gift => giftsById[gift.id] = {...gift, minAmount: 5});
 
 async function customerToMember(customerId, mandateId) {
 	const customer = await gocardless.customers.get(customerId);
@@ -176,7 +175,7 @@ async function getJTJInStock() {
 }
 
 async function isGiftAvailable({referralGift, referralGiftOptions, amount}) {
-	const gift = gifts[referralGift];
+	const gift = giftsById[referralGift];
 	if (gift && gift.minAmount <= amount) {
 		return referralGift !== 'jtj-mug' ||
 			(await JTJStock.findOne({design: referralGiftOptions.Design})).stock > 0;

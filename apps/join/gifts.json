@@ -8,7 +8,7 @@
 		"id": "cable-mug",
 		"name": "Cable mug",
 		"image": "mug.jpg",
-		"description": "Beautifully custom designed mugs for sharing a warm pot of community-ownership."
+		"description": "Beautiful custom designed mugs for sharing a warm pot of community-ownership."
 	}, {
 		"id": "jtj-mug",
 		"name": "Journey to Justice mug",
@@ -23,7 +23,7 @@
 		"id": "cable-tshirt",
 		"name": "Cable t-shirt",
 		"image": "cable-tshirt.jpg",
-		"description": "Ethically produced on organic cotton, these stylish shirts will mark you out and someone who knows what’s going on.",
+		"description": "Ethically produced on organic cotton, these stylish shirts will mark you out as someone who knows what’s going on.",
 		"options": [{
 			"id": "Fit",
 			"values": ["Male", "Female"]

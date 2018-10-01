@@ -12,6 +12,8 @@
 	var $giftDetails = $form.find('.js-gift-details');
 	var $period = $form.find('.js-join-period');
 	var $charge = $form.find('.js-join-charge');
+	var $jtjImg = $('.js-jtj-mug-img');
+	var $jtjMugOptionValue = $('.js-jtj-mug-option-value');
 
 	$form.on('change input', function () {
 		var amount = $amount.filter(':checked').val();
@@ -69,6 +71,11 @@
 
 	$amount.on('change', function () {
 		$otherAmountBox.val('');
+	});
+
+	$jtjMugOptionValue.on('input', function () {
+		console.log(this, $jtjMugOptionValue.filter(':checked').data('img'));
+		$jtjImg.attr('src', $jtjMugOptionValue.filter(':checked').data('img'));
 	});
 
 	$otherAmount.prop('checked', false);

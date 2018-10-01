@@ -1,9 +1,12 @@
 /* global $ */
 
+// TODO: Copied from join.js, use imports
 (function () {
 	var $form = $('.js-referral-form');
 	var $gift = $form.find('.js-gift');
 	var $giftDetails = $form.find('.js-gift-details');
+	var $jtjImg = $('.js-jtj-mug-img');
+	var $jtjMugOptionValue = $('.js-jtj-mug-option-value');
 
 	$form.on('change input', function () {
 		var gift = $gift.filter(':checked').val();
@@ -13,5 +16,10 @@
 			$this.toggleClass('hidden', !isActive);
 			$this.find('input').prop('disabled', !isActive).prop('required', isActive);
 		});
+	});
+
+	$jtjMugOptionValue.on('input', function () {
+		console.log(this, $jtjMugOptionValue.filter(':checked').data('img'));
+		$jtjImg.attr('src', $jtjMugOptionValue.filter(':checked').data('img'));
 	});
 })();

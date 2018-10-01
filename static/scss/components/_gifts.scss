@@ -149,7 +149,7 @@ $gift-img-size: 100px;
 	}
 }
 
-.gift-option {
+.gift-option-id {
 	display: inline-block;
 	min-width: 30px;
 	font-weight: 700;
@@ -167,5 +167,43 @@ $gift-img-size: 100px;
 		&::before {
 			background-color: white;
 		}
+	}
+}
+
+$bp-jtj-mug: 400px;
+
+.gift-option.gift-option--jtj-mug {
+	display: flex;
+	justify-content: space-between;
+	margin: 0 -2px;
+	@media (min-width: $bp-jtj-mug) {
+		justify-content: flex-start;
+		margin: 0 -5px;
+	}
+
+	& .gift-option-id {
+		display: none;
+	}
+}
+
+.gift-jtj-mug-option-value {
+	@include custom-radio {
+		border: 2px solid white;
+		max-width: 35px;
+		opacity: 0.5;
+		transition: opacity 0.2s;
+		cursor: pointer;
+		margin: 0 2px;
+		@media (min-width: $bp-jtj-mug) {
+			margin: 0 5px;
+		}
+
+		& > img {
+			width: 100%;
+		}
+	}
+
+	@include custom-radio--is(invalid, checked) {
+		opacity: 1;
 	}
 }

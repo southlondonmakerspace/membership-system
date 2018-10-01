@@ -27,8 +27,12 @@ block contents
 			h3 Choose a gift
 			if referral.referrerGift !== undefined
 				p You've already chosen your gift.
+			else if referral.referreeAmount < 3
+				p.
+					Unfortunately you're referree signed up for less than £3
 			else
 				form(method='POST').js-referral-form
 					+csrf
+					- giftAmount = referral.referreeAmount
 					include /src/views/partials/gifts
 					button.btn.join-btn Confirm

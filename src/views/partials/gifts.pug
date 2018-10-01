@@ -1,10 +1,17 @@
 mixin giftsList(gifts, amount)
 	ul.gifts
-		li(data-amount=amount).gifts__note.small.hidden.js-gift-note Only available at £#{amount} or more
+		- giftsDisabled = giftAmount && amount > giftAmount
+		if giftsDisabled
+			li.gifts__note.small Only available at £#{amount} or more
+		else
+			li(data-amount=amount).gifts__note.small.hidden.js-gift-note Only available at £#{amount} or more
 		each gift in gifts
 			- imgClass = gift.id === 'jtj-mug' && 'js-jtj-mug-img'
 			li.gifts__item
-				input(type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id, required, data-amount=amount).js-gift
+				input(
+					type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id,
+					required, disabled=giftsDisabled, data-amount=amount
+				).js-gift
 				label(for='gift_' + gift.id)
 					img(src='/static/imgs/gifts/' + gift.image, class=imgClass).gift-img
 					small.gift-name= gift.name

@@ -41,6 +41,8 @@ block contents
 														<path fill="#45905c" stroke="white" stroke-width="1" d="M5.48 10.089l1.583-1.464c1.854.896 3.028 1.578 5.11 3.063 3.916-4.442 6.503-6.696 11.312-9.688l.515 1.186c-3.965 3.46-6.87 7.314-11.051 14.814-2.579-3.038-4.301-4.974-7.469-7.911z"/>
 										div
 											h3= referral.referree.firstname
+											if referral.referreeAmount < 3
+												p Not eligible for a gift
 											if referral.referrerGift
 												p You chose a#[br]#{ giftsById[referral.referrerGift].name }
 											else if referral.referrerGift === ''

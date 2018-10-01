@@ -35,8 +35,7 @@
 					"minLength": 1
 				},
 				"referralGift": {
-					"type": "String",
-					"minLength": 1
+					"type": "String"
 				}
 			}
 		}

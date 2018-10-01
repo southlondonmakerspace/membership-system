@@ -175,6 +175,8 @@ async function getJTJInStock() {
 }
 
 async function isGiftAvailable({referralGift, referralGiftOptions, amount}) {
+	if (referralGift === '') return true; // No gift option
+
 	const gift = giftsById[referralGift];
 	if (gift && gift.minAmount <= amount) {
 		return referralGift !== 'jtj-mug' ||

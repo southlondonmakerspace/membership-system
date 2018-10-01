@@ -25,7 +25,7 @@ block contents
 				we'd love to send you a gift, choose below!
 
 			h3 Choose a gift
-			if referral.referrerGift
+			if referral.referrerGift !== undefined
 				p You've already chosen your gift.
 			else
 				form(method='POST').js-referral-form

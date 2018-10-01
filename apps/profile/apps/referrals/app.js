@@ -54,7 +54,7 @@ app.post( '/:id', hasSchema(chooseGiftSchema).orFlash, wrapAsync( async ( req, r
 		amount: referral.referreeAmount
 	};
 
-	if (!referral.referrerGift && await isGiftAvailable(giftParams)) {
+	if (referral.referrerGift === undefined && await isGiftAvailable(giftParams)) {
 		await Referrals.updateOne({
 			_id: req.params.id,
 			referrer: req.user

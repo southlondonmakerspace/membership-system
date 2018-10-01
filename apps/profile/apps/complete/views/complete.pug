@@ -48,8 +48,15 @@ block body
 
 					h3 Delivery details
 
+					mixin deliveryAddress
+						+input( 'text', 'Address line 1', 'delivery_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
+						+input( 'text', 'Address line 2', 'delivery_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
+						+input( 'text', 'City/town', 'delivery_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
+						+input( 'text', 'Postcode', 'delivery_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
+
 					if referral && referral.referreeGift
 						.alert.alert-warning We need your address to send you you're referral gift
+						+deliveryAddress
 
 					if user.gocardless.amount >= 3
 						p.
@@ -75,7 +82,6 @@ block body
 							Can we send you very occasional mail? You can
 							change your mind later.
 
-
 					ul.join-options
 						li.join-options__opt
 							input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='true', required, checked).js-delivery-opt
@@ -85,11 +91,9 @@ block body
 							label(for='delivery_optin_no').btn No
 						li.join-options__opt
 
-					.js-delivery-details
-						+input( 'text', 'Address line 1', 'delivery_line1', { required: true, left: 4, right: 6, value: user.delivery_address.line1 } )
-						+input( 'text', 'Address line 2', 'delivery_line2', { left: 4, right: 6, value: user.delivery_address.line2 } )
-						+input( 'text', 'City/town', 'delivery_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
-						+input( 'text', 'Postcode', 'delivery_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
+					unless referral && referral.referreeGift
+						.js-delivery-details
+							+deliveryAddress
 
 					h3 And finally…
 

@@ -14,15 +14,10 @@ const { wrapAsync } = require( __js + '/utils' );
 const config = require( __config + '/config.json' );
 
 const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember,
-	startMembership, getJTJInStock, isGiftInStock } = require( './utils' );
+	startMembership, getJTJInStock, isGiftAvailable } = require( './utils' );
 
 const { gifts3, gifts5 } = require( './gifts.json' );
 const { joinSchema, referralSchema, completeSchema } = require( './schemas.json' );
-
-const gifts = [
-	...gifts3.map(gift => ({...gift, minAmount: 3})),
-	...gifts5.map(gift => ({...gift, minAmount: 5}))
-];
 
 const app = express();
 
@@ -69,17 +64,10 @@ app.post( '/referral/:code', [
 ], wrapAsync( async function ( req, res ) {
 	const joinForm = processJoinForm(req.body);
 
-	const gift = gifts.find(gift => gift.id === joinForm.referralGift);
-
-	if (gift && joinForm.amount >= gift.minAmount) {
-		if (await isGiftInStock(joinForm)) {
-			const completeUrl = config.audience + app.mountpath + '/complete';
-			const redirectUrl = await createJoinFlow(completeUrl, joinForm);
-			res.redirect(redirectUrl);
-		} else {
-			req.flash('warning', 'referral-gift-no-stock');
-			res.redirect(req.originalUrl);
-		}
+	if (await isGiftAvailable(joinForm)) {
+		const completeUrl = config.audience + app.mountpath + '/complete';
+		const redirectUrl = await createJoinFlow(completeUrl, joinForm);
+		res.redirect(redirectUrl);
 	} else {
 		req.flash('warning', 'referral-gift-invalid');
 		res.redirect(req.originalUrl);

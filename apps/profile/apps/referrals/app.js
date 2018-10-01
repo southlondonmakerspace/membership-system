@@ -10,7 +10,7 @@ const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
 const { gifts3, gifts5 } = require( __root + '/apps/join/gifts.json' );
-const { getJTJInStock, isGiftInStock, updateGiftStock } = require( __root + '/apps/join/utils' );
+const { getJTJInStock, isGiftAvailable, updateGiftStock } = require( __root + '/apps/join/utils' );
 
 const { chooseGiftSchema } = require( './schema.json' );
 
@@ -46,24 +46,29 @@ app.get( '/:id', wrapAsync( async ( req, res ) => {
 } ) );
 
 app.post( '/:id', hasSchema(chooseGiftSchema).orFlash, wrapAsync( async ( req, res ) => {
-	const { referralGift, referralGiftOptions } = req.body;
+	const referral = await Referrals.findOne({ _id: req.params.id, referrer: req.user }).populate('referree');
 
-	if (await isGiftInStock({referralGift, referralGiftOptions})) {
+	const giftParams = {
+		referralGift: req.body.referralGift,
+		referralGiftOptions: req.body.referralGiftOptions,
+		amount: referral.referreeAmount
+	};
+
+	if (!referral.referrerGift && await isGiftAvailable(giftParams)) {
 		await Referrals.updateOne({
 			_id: req.params.id,
-			referrer: req.user,
-			referrerGift: {$exists: false} // Don't update gifts
+			referrer: req.user
 		}, {$set: {
-			referrerGift: referralGift,
-			referrerGiftOptions: referralGiftOptions
+			referrerGift: giftParams.referralGift,
+			referrerGiftOptions: giftParams.referralGiftOptions
 		}});
 
-		await updateGiftStock({referralGift, referralGiftOptions});
+		await updateGiftStock(giftParams);
 
 		req.flash( 'success', 'referral-gift-chosen' );
 		res.redirect( app.parent.mountpath + app.mountpath );
 	} else {
-		req.flash( 'warning', 'referral-gift-no-stock' );
+		req.flash( 'warning', 'referral-gift-invalid' );
 		res.redirect( req.originalUrl );
 	}
 } ) );

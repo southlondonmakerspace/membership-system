@@ -1,15 +1,17 @@
-var __root = '../../../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
+const __root = '../../../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
 
-var	express = require( 'express' ),
-	app = express();
+const express = require( 'express' );
+
+const auth = require( __js + '/authentication' );
+const { Referrals } =  require( __js + '/database' );
+const { hasSchema } = require( __js + '/middleware' );
+const { wrapAsync } = require( __js + '/utils' );
 
 const { completeSchema } = require( './schemas.json' );
-const { hasSchema } = require( __js + '/middleware' );
 
-var auth = require( __js + '/authentication' );
-
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -28,9 +30,10 @@ app.use( function( req, res, next ) {
 	}
 } );
 
-app.get( '/', auth.isLoggedIn, function( req, res ) {
-	res.render( 'complete', { user: req.user } );
-} );
+app.get( '/', auth.isLoggedIn, wrapAsync( async function( req, res ) {
+	const referral = await Referrals.findOne({ referree: req.user });
+	res.render( 'complete', { user: req.user, referral } );
+} ) );
 
 app.post( '/', [
 	auth.isLoggedIn,

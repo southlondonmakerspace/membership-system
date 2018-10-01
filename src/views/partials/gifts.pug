@@ -37,3 +37,8 @@ mixin giftsList(gifts, amount)
 .gifts-wrapper
 	+giftsList(gifts5, 5)
 	+giftsList(gifts3, 3)
+p.gifts-none
+	input(type='radio', id='gift_none', name='referralGift', value='', required).js-gift
+	label(for='gift_none')
+		img(src='/static/imgs/gifts/mug.jpg').gift-img
+		span.small I'm happy without a gift

@@ -209,3 +209,39 @@ $bp-jtj-mug: 400px;
 		opacity: 1;
 	}
 }
+
+.gifts-none {
+	@media (min-width: $bp-join-form) {
+		width: fit-content;
+	}
+
+	@include custom-radio {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		padding: 0.5rem;
+		border-radius: 4px;
+		background-color: $c-blue--dark2;
+		color: white;
+		@media (min-width: $bp-join-form) {
+			display: inline-flex;
+			padding: 0.5rem 1rem;
+			background-color: transparent;
+			color: inherit;
+		}
+	}
+
+	@include custom-radio--is(checked) {
+		background-color: $c-blue;
+		color: white;
+	}
+
+	.gift-img {
+		margin: 0 0.5rem 0 0;
+		@media (min-width: $bp-join-form) {
+			width: 40px;
+			height: 40px;
+			margin-right: 1rem;
+		}
+	}
+}

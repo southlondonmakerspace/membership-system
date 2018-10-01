@@ -48,6 +48,9 @@ block body
 
 					h3 Delivery details
 
+					if referral && referral.referreeGift
+						.alert.alert-warning We need your address to send you you're referral gift
+
 					if user.gocardless.amount >= 3
 						p.
 							You are eligible for a

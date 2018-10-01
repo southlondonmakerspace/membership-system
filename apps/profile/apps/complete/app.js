@@ -38,14 +38,24 @@ app.get( '/', auth.isLoggedIn, wrapAsync( async function( req, res ) {
 app.post( '/', [
 	auth.isLoggedIn,
 	hasSchema(completeSchema).orFlash
-], function( req, res ) {
+], wrapAsync( async function( req, res ) {
 	const { body : { password, delivery_optin, delivery_line1, delivery_line2,
 		delivery_city, delivery_postcode, reason, how }, user } = req;
 
-	auth.generatePassword( password, function( password ) {
-		user.update( { $set: {
-			password, delivery_optin,
-			delivery_address: delivery_optin ? {
+	const referral = await Referrals.findOne({ referree: req.user });
+
+	const needAddress = delivery_optin || referral && referral.referreeGift;
+	const gotAddress = delivery_line1 && delivery_city && delivery_postcode;
+
+	if (needAddress && !gotAddress) {
+		req.flash( 'error', 'referral-need-address' );
+		res.redirect( req.originalUrl );
+	} else {
+		const hashedPassword = await auth.generatePasswordPromise( password );
+		await user.update( { $set: {
+			password: hashedPassword,
+			delivery_optin,
+			delivery_address: needAddress ? {
 				line1: delivery_line1,
 				line2: delivery_line2,
 				city: delivery_city,
@@ -53,11 +63,11 @@ app.post( '/', [
 			} : {},
 			join_reason: reason,
 			join_how: how
-		} }, function () {
-			res.redirect( '/profile' );
-		} );
-	} );
-} );
+		} } );
+
+		res.redirect( '/profile' );
+	}
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

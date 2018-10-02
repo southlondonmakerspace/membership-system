@@ -29,7 +29,8 @@ function memberToOperation(listId, member) {
 			email_address: member.email,
 			merge_fields: {
 				FNAME: member.firstname,
-				LNAME: member.lastname
+				LNAME: member.lastname,
+				REFLINK: config.audience + '/join/referral/' + member.referralCode
 			},
 			status_if_new: 'subscribed'
 		})

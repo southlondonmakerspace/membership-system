@@ -34,7 +34,7 @@ app.get( '/' , function( req, res ) {
 app.post( '/', hasSchema(getResetCodeSchema).orFlash, wrapAsync( async function( req, res ) {
 	const { body: { email } } = req;
 
-	const member = await Members.findOne( { email } );
+	const member = await Members.findOne( { email: email.toLowerCase() } );
 
 	if (member) {
 		const code = auth.generateCode();

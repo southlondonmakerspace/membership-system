@@ -41,6 +41,7 @@ app.get( '/referral/:code', wrapAsync( async function( req, res ) {
 		const jtjInStock = await getJTJInStock();
 		res.render( 'index', { user: req.user, referrer, gifts3, gifts5, jtjInStock } );
 	} else {
+		req.flash('warning', 'referral-code-invalid');
 		res.redirect( '/join' );
 	}
 } ) );

@@ -44,8 +44,8 @@ block contents
 										div
 											h3= referral.referree.firstname
 											if referral.referreeAmount < 3
-												p Not eligible for a gift
-											if referral.referrerGift
+												p Not eligible for a gift #[a (why?)]
+											else if referral.referrerGift
 												p You chose a#[br]#{ giftsById[referral.referrerGift].name }
 											else if referral.referrerGift === ''
 												p You chose not to have a gift

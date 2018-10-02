@@ -58,22 +58,27 @@ app.get( '/code/:password_reset_code', function( req, res ) {
 	res.render( 'change-password', { password_reset_code: req.params.password_reset_code } );
 } );
 
-app.post( '/change-password', hasSchema(resetPasswordSchema).orFlash, wrapAsync( async function( req, res ) {
+app.post( '/code/:password_reset_code?', hasSchema(resetPasswordSchema).orFlash, wrapAsync( async function( req, res ) {
 	const member = await Members.findOne( { 'password.reset_code': req.body.password_reset_code } );
-	const password = await auth.generatePasswordPromise( req.body.password );
+	if (member) {
+		const password = await auth.generatePasswordPromise( req.body.password );
 
-	await member.update( { $set: {
-		'password.salt': password.salt,
-		'password.hash': password.hash,
-		'password.reset_code': null,
-		'password.tries': 0,
-		'password.iterations': password.iterations
-	} } );
+		await member.update( { $set: {
+			'password.salt': password.salt,
+			'password.hash': password.hash,
+			'password.reset_code': null,
+			'password.tries': 0,
+			'password.iterations': password.iterations
+		} } );
 
-	req.login( member, function( ) {
-		req.flash( 'success', 'password-changed' );
-		res.redirect( '/' );
-	} );
+		req.login( member, function( ) {
+			req.flash( 'success', 'password-changed' );
+			res.redirect( '/' );
+		} );
+	} else {
+		req.flash('warning', 'password-reset-code-err');
+		res.redirect( app.mountpath );
+	}
 } ) );
 
 module.exports = function( config ) {

@@ -48,7 +48,7 @@ app.post( '/', [
 	const gotAddress = delivery_line1 && delivery_city && delivery_postcode;
 
 	if (needAddress && !gotAddress) {
-		req.flash( 'error', 'referral-need-address' );
+		req.flash( 'error', 'address-required' );
 		res.redirect( req.originalUrl );
 	} else {
 		const hashedPassword = await auth.generatePasswordPromise( password );

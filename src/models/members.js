@@ -36,6 +36,11 @@ module.exports = {
 				message: '{VALUE} is not a valid email address'
 			}
 		},
+		referralCode: {
+			type: String,
+			unique: true,
+			sparse: true
+		},
 		password: {
 			hash: {
 				type: String,

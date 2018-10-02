@@ -1,19 +1,66 @@
 extends /src/views/base.pug
 
 block prepend title
-	- title = 'Direct Debit'
+	- title = 'Cancel contribution'
 
 block contents
 	.row
 		.col-md-3
 			- page = 'direct-debit'
 			include /apps/profile/views/partials/sidebar.pug
-		.col-md-9
-			+page_header( 'Cancel Subscription' )
-			p Are you sure you want to cancel your subscription?
-				form( method="post" )
+		.col-md-9.col-lg-7
+			+page_header( 'Cancel your membership' )
+
+			p.
+				Oh no! We're really sorry that you're cancelling your membership.
+
+			p.
+				Thank you for your contributions to building a new model for
+				media and supporting high quality journalism, owned and
+				produced by people in Bristol.
+
+			p.
+				We know we have a long way to go, we'd be really grateful if you
+				could take a moment to give us some feedback.
+
+			.row
+				form( method="post" ).col-md-8
 					+csrf
+					.form-group
+						label.question How satisfied have you been in general?
+						div
+							label.radio-inline
+								input(type='radio', name='satisfied', value='1', required)
+								| 1
+							label.radio-inline
+								input(type='radio', name='satisfied', value='2', required)
+								| 2
+							label.radio-inline
+								input(type='radio', name='satisfied', value='3', required)
+								| 3
+							label.radio-inline
+								input(type='radio', name='satisfied', value='4', required)
+								| 4
+							label.radio-inline
+								input(type='radio', name='satisfied', value='5', required)
+								| 5
+						p.help-block 1 = very unsatisified, 5 = very satisified
+					.form-group
+						label(for='reason').question Why are you cancelling?
+						select( name='reason', required )#reason.form-control
+							option( value='', selected, disabled) Please select a reason
+							option Not sufficient opportunities to contribute
+							option Not sufficient time to get involved
+							option Dissatisfied with the Cable’s content
+							option Dissatisfied with the organisation
+							option Dissatisfied with my membership
+							option Moving away from Bristol
+							option Financial reasons
+							option Other
+							option I'd rather not say
+
+					.form-group
+						label(for='other').question Do you have any other feedback?
+						input(type='text', name='other').form-control#other
 					p
-						button( role="button").btn.btn-danger Yes, Cancel Subscription
-						| 
-						a( href="/profile/direct-debit" ).btn.btn-default No
+						button( role="button").btn.btn-danger.outline Cancel your membership

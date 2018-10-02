@@ -12,9 +12,27 @@ block contents
 			+page_header( title )
 			form( method="post" ).form-horizontal
 				+csrf
-				+input( 'email', 'Email', 'email', { value: member.email, required: true, helpblock: "This will change the users login details.", right: 4 } )
-				hr
-				+input( 'text', 'First Name', 'firstname', { value: member.firstname, required: true, right: 4 } )
-				+input( 'text', 'Last Name', 'lastname', { value: member.lastname, required: true, right: 4 } )
-				+input( 'textarea', 'Address', 'address', { value: member.address, required: true, right: 4 } )
-				+form_button( 'Update', 'primary' )
+
+				h3 Account details
+
+				+input( 'email', 'Email', 'email', { value: member.email, required: true, left: 3, right: 4 } )
+				+input( 'text', 'First Name', 'firstname', { value: member.firstname, required: true, left: 3, right: 4 } )
+				+input( 'text', 'Last Name', 'lastname', { value: member.lastname, required: true, left: 3, right: 4 } )
+
+				h3 Delivery details
+				.form-group
+					label.col-md-3.control-label Delivery opt in
+					.col-md-4
+						label.radio-inline
+							input(type='radio', name='delivery_optin', value='true', checked=member.delivery_optin)
+							| Yes
+						| 
+						label.radio-inline
+							input(type='radio', name='delivery_optin', value='false', checked=!member.delivery_optin)
+							| No
+
+				+input( 'text', 'Address line 1', 'delivery_line1', { value: member.delivery_address.line1, left: 3, right: 4 } )
+				+input( 'text', 'Address line 2', 'delivery_line2', { value: member.delivery_address.line2, left: 3, right: 4 } )
+				+input( 'text', 'City/town', 'delivery_city', { value: member.delivery_address.city, left: 3, right: 4 } )
+				+input( 'text', 'Postcode', 'delivery_postcode', { value: member.delivery_address.postcode, left: 3, right: 4 } )
+				+form_button( 'Update', 'primary', {left: 3} )

@@ -1,0 +1,22 @@
+{
+	"updateSchema": {
+		"body": {
+			"type": "object",
+			"required": ["email", "firstname", "lastname"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"format": "email"
+				},
+				"firstname": {
+					"type": "string",
+					"minLength": 1
+				},
+				"lastname": {
+					"type": "string",
+					"minLength": 1
+				}
+			}
+		}
+	}
+}

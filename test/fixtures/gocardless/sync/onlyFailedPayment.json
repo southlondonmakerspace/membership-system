@@ -1,0 +1,82 @@
+{
+  "customers": [
+    {
+      "id": "CU1A12EB27E712",
+      "created_at": "2015-07-16T18:19:11.541Z",
+      "email": "3E53FBE60E77@test.com",
+      "given_name": "Test",
+      "family_name": "Test",
+      "company_name": "",
+      "address_line1": "Test",
+      "address_line2": "Test",
+      "address_line3": "",
+      "city": "Test",
+      "region": "",
+      "postal_code": "BS1 1AA",
+      "country_code": "GB",
+      "language": "en",
+      "swedish_identity_number": null,
+      "danish_identity_number": null,
+      "metadata": {}
+    }
+  ],
+  "mandates": [
+    {
+      "id": "MDEA866FA07730",
+      "created_at": "2015-07-16T18:19:11.900Z",
+      "reference": "8EF7A62C0528",
+      "status": "failed",
+      "scheme": "bacs",
+      "next_possible_charge_date": "Invalid date",
+      "payments_require_approval": false,
+      "metadata": {},
+      "links": {
+        "customer_bank_account": "BAC92237EA3F84",
+        "creditor": "CRB2E433CB995C",
+        "customer": "CU1A12EB27E712"
+      }
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "SB74A72A5DA50F",
+      "created_at": "2015-07-16T18:19:12.000Z",
+      "amount": 200,
+      "currency": "GBP",
+      "status": "cancelled",
+      "name": "Membership- £2",
+      "start_date": "2015-07-21",
+      "end_date": null,
+      "interval": 1,
+      "interval_unit": "monthly",
+      "day_of_month": null,
+      "month": null,
+      "metadata": {},
+      "payment_reference": null,
+      "upcoming_payments": [],
+      "app_fee": null,
+      "links": {
+        "mandate": "MDEA866FA07730"
+      }
+    }
+  ],
+  "payments": [
+    {
+      "id": "PM084F1AD784D2",
+      "created_at": "2015-07-16T18:19:12.673Z",
+      "charge_date": "2015-07-22",
+      "amount": 200,
+      "description": "Membership- £2",
+      "currency": "GBP",
+      "status": "cancelled",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MDEA866FA07730",
+        "subscription": "SB74A72A5DA50F"
+      }
+    }
+  ],
+  "subscriptionCancelledEvents": []
+}

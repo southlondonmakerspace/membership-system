@@ -1,41 +1,152 @@
 extends /src/views/base.pug
 
-block navbar
+block prepend meta
+	- shareTitle = 'Join the Bristol Cable today!'
+	- shareDescription = 'Become a member of local media created and owned by the people of Bristol.'
+	- shareUrl = '/join'
 
 block prepend title
 	- title = app.title
 
 block append js
-	+passwordRequirementsJS
+	script(src='/static/js/join.js')
 
-block append css
-	+passwordRequirementsCSS
+block body
+	header.join-header#join
+		.join-header__bg
 
-block contents
-	.row
-		.col-md-8
-			+page_header( app.title )
-			if Options( 'signup-closed' ) == 'true'
-				+flash( 'warning', 'Unfortunately we are currently not taking new membership signups.', { text: 'Find out more', url: Options( 'signup-redirect' ), type: 'danger' } )
-			p Thanks for choosing to join #{ Options( 'organisation' ) }. Just so you know, you must be over 18 to become a member.
-			form( method="post" ).form-horizontal
-				+csrf
-				+page_header( 'Login Details' )
-				p To keep things simple we use your email address as your login username.
-				
-				+input( 'email', 'Email', 'email', { values: user.email, required: true, left: 3, right: 4 } )
-				
-				+input( 'password', 'Password', 'password', { required: true, id: 'password', class: 'pw-req', left: 3, right: 4 } )
-				+input( 'password', 'Verify password', 'verify', { required: true, id: 'verify', class: 'pw-mat', left: 3, right: 4 } )
-				
-				+page_header( 'Personal Details' )
-				p As a membership organisation, we are legally required to keep your name and address on record and available for inspection.
-				
-				+input( 'text', 'First Name', 'firstname', { value: user.firstname, required: true, left: 3, right: 4 } )
-				+input( 'text', 'Last Name', 'lastname', { value: user.lastname,  required: true, left: 3, right: 4 } )
-				+input( 'textarea', 'Address', 'address', { value: user.address, required: true, left: 3, right: 4 } )
-				+form_button( 'Next', 'primary', { left: 3 } )
-		.col-md-4
-			+page_header( 'Existing member' )
-			p If you are already a member you can just login.
-			include /apps/login/views/partials/form.pug
+		form(method='POST').join-form.js-join-form
+			+csrf
+
+			if user
+				p.alert.alert-warning
+					| You're already a member! Not #{user.firstname}?
+					| #[a(href='/logout') Click here] to logout
+
+			.join-title
+				div
+					img(src='/static/svg/logo.svg').join-title-logo
+				h1 Own your#[br]media
+
+			include /src/views/partials/flash.pug
+
+			h3 I'd like to contribute…
+			ul.join-options.hidden-nojs
+				each amount in [3, 5, 10]
+					li.join-options__opt
+						input(type='radio', name='amount', id='amount_' + amount, value=amount, required).js-join-amount
+						label(for='amount_' + amount).btn £#{amount}#[span.join-monthly /month]
+
+			div.join-other-amount
+				input(type='radio', name='amount', value='other', required, checked).js-join-other-amount
+				label
+					.hidden-nojs Or choose an amount…
+					span.join-other-amount-box
+						span £
+						input(type='number', name='amountOther', min=1, step=1, required).js-join-other-amount-box
+						span.join-monthly /month
+
+			.hidden-js.js-join-form-more
+				.hidden.js-join-sustain
+					h3 Can you help sustain us?
+					p.
+						The Cable is dependent on member contributions to stay alive.
+						Can you afford to increase your contribution to
+						#[b £3 or more]? As a thank you for sustaining independent
+						local journalism we’ll #[b send you a quarterly edition]
+						of our newspaper.
+
+				h3 I'd like to pay…
+				ul.join-options
+					li.join-options__opt
+						input(type='radio', name='period', id='period_m', value='monthly', required, checked).js-join-period
+						label(for='period_m').btn Monthly
+					li.join-options__opt
+						input(type='radio', name='period', id='period_a', value='annually', required).js-join-period
+						label(for='period_a').btn Annually
+					li.join-options__opt
+
+				p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
+				p
+					button.btn.join-btn Join
+
+				p.join-secure.small
+					svg(xmlns='http://www.w3.org/2000/svg', viewBox='0 0 24 24')
+						path(fill='currentColor', d='M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10 0v-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8z')
+					| Your payment will be processed securely with GoCardless
+					| under the Direct Debit Guarantee scheme.
+					|
+					a(href='https://www.directdebit.co.uk/DirectDebitExplained/pages/directdebitguarantee.aspx', target='_blank') Read more
+					| .
+
+	.container.join-container
+		.row
+			.col-sm-10.col-md-7.join-center-col
+				h2.text-center Why join?
+				p.
+					The Bristol Cable is a #[b grassroots] community-led media
+					cooperative in Bristol.
+				p.
+					We exist to #[b inform and empower] our readers, members, and
+					communities across Bristol, by creating #[b independent],
+					challenging local media, rooted in the city and in
+					#[b the public interest].
+
+		ul.join-reasons
+			li
+				.row
+					.col-sm-5
+						h2 #[span Run] by you
+				.row
+					.col-sm-7.pull-right
+						img(src='/static/imgs/join/photo1.jpg')
+					.col-sm-5
+						p.
+							We're a community cooperative, which means we all decide
+							how it's run.
+						p.
+							Our one member, one vote policy means all members have
+							an equal say on decisions.
+						p.
+							No barons, no billionaires. Just 2,000 (and counting!)
+							Bristolians.
+			li
+				.row
+					.col-sm-5.col-sm-offset-7
+						h2 #[span Created] by you
+				.row
+					.col-sm-7.pull-left
+						img(src='/static/imgs/join/photo2.jpg')
+					.col-sm-5
+						p.
+							As members we can all contribute to the Cable's
+							journalism.
+						p.
+							At our monthly members' meetings we discuss the
+							issues affecting our communities. Drawing on your
+							experience and expertise, we can cover the stories
+							that no one else is talking about.
+			li
+				.row
+					.col-sm-10.col-md-7.join-center-col
+						h2 #[span Made free] by you
+						img(src='/static/imgs/join/photo3.jpg')
+						p.
+							By putting our money together we're able to print
+							and distribute our paper for free across Bristol.
+						p.
+							It's packed with investigative journalism and
+							in-depth articles about issues that matter in
+							Bristol.
+						p.
+							Made free to access by members, because we believe
+							journalism is a public good everyone should have
+							access to.
+	.join-footer
+		.join-title
+			div
+				img(src='/static/svg/logo.svg').join-title-logo
+			h1 Ready to#[br]be a part?
+		.text-center
+			h3 Join 2,000 people who own their media
+			a(href='#join').btn.join-btn Join now

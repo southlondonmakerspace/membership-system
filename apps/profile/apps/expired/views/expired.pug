@@ -1,0 +1,85 @@
+extends /src/views/base.pug
+
+block append js
+	script(src='/static/js/join.js')
+
+block contents
+	.row
+		.col-md-12
+			h2.page-header Hello #{user.firstname}
+
+
+	.row
+		.col-sm-8.col-md-7.col-lg-6
+			.alert.alert-warning Your membership expired on #{ moment(user.memberPermission.date_expires).format('dddd, MMMM Do YYYY') }
+
+			if user.gocardless.subscription_id
+				p.
+					This is probably because your last payment failed. Please
+					get in touch at #[+email('membership@thebristolcable.org')]
+					and we'll sort it out.
+			else
+				h3 Restart membership
+				p.
+					We'd love to welcome you back as a member! You can easily
+					restart your membership today.
+
+				form(method='POST').join-form.js-join-form
+					+csrf
+					h4 I'd like to contribute…
+					ul.join-options.hidden-nojs
+						each amount in [3, 5, 10]
+							li.join-options__opt
+								input(type='radio', name='amount', id='amount_' + amount, value=amount, required).js-join-amount
+								label(for='amount_' + amount).btn £#{amount}#[span.join-monthly /month]
+
+					div.join-other-amount
+						input(type='radio', name='amount', value='other', required, checked).js-join-other-amount
+						label
+							.hidden-nojs Or choose an amount…
+							span.join-other-amount-box
+								span £
+								input(type='number', name='amountOther', min=1, step=1, required).js-join-other-amount-box
+								span.join-monthly /month
+
+					h4 I'd like to pay…
+					ul.join-options
+						li.join-options__opt
+							input(type='radio', name='period', id='period_m', value='monthly', required, checked).js-join-period
+							label(for='period_m').btn Monthly
+						li.join-options__opt
+							input(type='radio', name='period', id='period_a', value='annually', required).js-join-period
+							label(for='period_a').btn Annually
+						li.join-options__opt
+
+					if bankAccount
+						div.radio
+							label
+								input(type='radio', name='useMandate', value='true', required, checked)
+								| Use saved bank account
+								br
+								i
+									= bankAccount.account_holder_name
+									| ,
+									|
+									= bankAccount.bank_name
+									| , account number •••••••
+									= bankAccount.account_number_ending
+						div.radio
+							label
+								input(type='radio', name='useMandate', value='false', required)
+								| Use new bank account details
+
+					p.hidden-nojs.join-charge You will be charged #[b.js-join-charge £12] today.
+					p
+						button.btn.join-btn Rejoin
+
+					p.join-secure.small
+						svg(xmlns='http://www.w3.org/2000/svg', viewBox='0 0 24 24')
+							path(fill='currentColor', d='M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10 0v-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8z')
+						| Your payment will be processed securely with GoCardless
+						| under the Direct Debit Guarantee scheme.
+						|
+						a(href='https://www.directdebit.co.uk/DirectDebitExplained/pages/directdebitguarantee.aspx', target='_blank') Read more
+						| .
+

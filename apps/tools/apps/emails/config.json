@@ -1,0 +1,9 @@
+{
+	"title": "Transactional emails",
+	"path": "emails",
+	"permissions": [
+		"superadmin", "admin"
+	],
+	"menu": "main",
+	"priority": 3
+}

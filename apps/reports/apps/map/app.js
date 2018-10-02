@@ -7,7 +7,6 @@ var	express = require( 'express' ),
 	app = express();
 
 var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Permissions = db.Permissions,
 	Members = db.Members;

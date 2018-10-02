@@ -34,18 +34,14 @@ block contents
 				include partials/sidebar.pug
 			.col-md-9
 				.row
-					div( class=( access( 'superadmin' ) ? 'col-md-6' : 'col-md-12' ) )
+					.col-md-12
 						include partials/profile.pug
-					if access( 'superadmin' )
-						.col-md-6
-							include partials/emergency_contact.pug
 				if access( 'superadmin' )
 					.row
 						.col-md-6
 							include partials/system.pug
 						.col-md-6
 							include partials/security.pug
-				if access( 'superadmin' )
 					.row
 						.col-md-6
 							include partials/discourse.pug

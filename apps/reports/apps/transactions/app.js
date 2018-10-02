@@ -1,7 +1,6 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -9,12 +8,11 @@ var	express = require( 'express' ),
 var moment = require( 'moment' );
 
 var db = require( __js + '/database' ),
-	Payments = db.Payments,
-	Members = db.Members;
+	Payments = db.Payments;
 
 var auth = require( __js + '/authentication' );
 
-var config = require( __config + '/config.json' );
+const { wrapAsync } = require( __js + '/utils' );
 
 var app_config = {};
 
@@ -29,7 +27,7 @@ app.use( function( req, res, next ) {
 	next();
 } );
 
-app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
+app.get( '/:year?/:month?', auth.isSuperAdmin, wrapAsync(async function( req, res ) {
 	var start = new Date(); start.setDate( 1 ); start.setHours( 0 ); start.setMinutes( 0 ); start.setSeconds( 0 );
 	if ( req.params.month && req.params.year ) {
 		start.setMonth( parseInt( req.params.month ) - 1 );
@@ -52,27 +50,28 @@ app.get( '/:year?/:month?', auth.isSuperAdmin, function( req, res ) {
 		name: moment( start ).format( 'MMMM YYYY' )
 	} );
 
-	Payments.find( {
+	const payments = await Payments.find( {
 		created: {
 			$gte: start,
 			$lt: end
 		}
-	} ).populate( 'member' ).exec( function( err, payments ) {
-		var total = 0;
-		for ( var p in payments ) {
-			if ( Number.isInteger( payments[p].amount ) )
-				if ( payments[p].status == 'payment_paid_out' )
-					total += payments[p].amount;
-		}
-		res.render( 'index', {
-			payments: payments,
-			total: total,
-			next: end,
-			previous: previous,
-			start: start
-		} );
+	} ).sort('-charge_date').populate( 'member' ).exec();
+
+	const confirmedPayments = payments
+		.filter(p => ['paid_out', 'confirmed'].indexOf(p.status) > -1)
+		.map(p => p.amount - p.amount_refunded)
+		.filter(amount => !isNaN(amount));
+
+	const total = confirmedPayments.reduce((a, b) => a + b, 0);
+
+	res.render( 'index', {
+		payments: payments,
+		total: total,
+		next: end,
+		previous: previous,
+		start: start
 	} );
-} );
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

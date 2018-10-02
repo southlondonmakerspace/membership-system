@@ -4,7 +4,39 @@ html
 	head
 		meta( charset="utf-8" )
 		meta( name="viewport", content="initial-scale=1.0, width=device-width" )
-		link( rel="shortcut icon" href="/imgs/favicon.ico" )
+
+		link( rel="apple-touch-icon", sizes="180x180", href="/apple-touch-icon.png" )
+		link( rel="icon", type="image/png", sizes="32x32", href="/favicon-32x32.png" )
+		link( rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16.png" )
+		link( rel="manifest", href="/site.webmanifest" )
+		link( rel="mask-icon", href="/safari-pinned-tab.svg", color="#5bbad5" )
+		meta( name="msapplication-TileColor", content="#da532c" )
+		meta( name="theme-color", content="#ffffff" )
+
+		block meta
+			if !shareTitle
+				- shareTitle = 'The Bristol Cable: News, Investigations & Events | The city\'s media co-operative.';
+			if !shareDescription
+				- shareDescription = 'Latest Bristol news, investigations &amp; events. The city\'s media co-operative – created and owned by local people. Sticking up for Bristol.';
+			if !shareUrl
+				- shareUrl = '/'
+			meta(property="og:locale" content="en_GB")
+			meta(property="og:type" content="website")
+			meta(property="og:title" content=shareTitle)
+			meta(property="og:description" content=shareDescription)
+			meta(property="og:url" content="https://membership.thebristolcable.org" + shareUrl)
+			meta(property="og:site_name" content="The Bristol Cable")
+			meta(property="og:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(property="og:image:secure_url" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(property="og:image:width" content="512")
+			meta(property="og:image:height" content="512")
+			meta(name="twitter:card" content="summary_large_image")
+			meta(name="twitter:description" content=shareDescription)
+			meta(name="twitter:title" content=shareTitle)
+			meta(name="twitter:site" content="@TheBristolCable")
+			meta(name="twitter:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(name="twitter:creator" content="@TheBristolCable")
+
 		block title
 			if title
 				title #{ title } &mdash; #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
@@ -12,31 +44,82 @@ html
 				title #{ Options( 'software-name' ) } &mdash; #{ Options( 'organisation' ) }
 		block head
 			block css
-				link( rel="stylesheet", href="/css/theme.min.css" )
-				link( rel="stylesheet", href="/css/style.css" )
-			block js
-				script( src="/js/jquery.js" )
-				script( src="/js/bootstrap.js" )
-				script( src="/js/script.js" )
+				link( rel="stylesheet", href="/static/css/theme.min.css" )
+				link( rel="stylesheet", href="/static/css/style.css" )
 	body( class=( dev ? 'dev' : '' ) )
-		block body
-			.container
-				a( href="/" ).logo
-				block navbar
-					include partials/navbar.pug
-				block breadcrumb
-					include partials/breadcrumb.pug
-				include partials/flash.pug
-				block heading
-					if heading
-						+page_header( heading )
-				block contents
-				block footer
+		script.
+			document.body.className += ' has-js';
+
+		.wrapper
+			header.header
+				.container
 					.row
-						.col-md-12
-							hr
-							small.text-muted #{ Options( 'organisation' ) }, #{ Options( 'software-name' ) } &mdash;
-								|  
-								a( href="https://github.com/southlondonmakerspace/membership-system", target="_blank" ) Contribute on GitHub
-							small.text-muted.pull-right
-								| #{ git }
+						.col-xs-6
+							a( href="https://thebristolcable.org/" )
+								img( src="/static/svg/logo.svg" ).header-logo
+						.col-xs-6.text-right
+							if isLoggedIn
+								a( href="/logout" ) Logout
+							else
+								a( href="/login" ) Login
+
+
+			main.main
+				block body
+					.container
+						block navbar
+							include partials/navbar.pug
+						block flashes
+							include partials/flash.pug
+						block heading
+							if heading
+								+page_header( heading )
+						block contents
+
+			footer.footer.small
+				.container
+					.row
+						.col-sm-6
+							p
+								= Options( 'organisation' )
+								br
+								| Online, in print, on the street
+						.col-sm-6
+							ul.footer-links
+								li
+									a( href="https://thebristolcable.org/privacy-policy/" ) Privacy policy
+								li
+									a( href="https://thebristolcable.org/terms/" ) Terms & conditions
+								li
+									a( href="https://www.facebook.com/thebristolcable/" ) Facebook
+								li
+									a( href="https://twitter.com/TheBristolCable" ) Twitter
+					.row
+						.col-sm-12
+							a( href="https://github.com/wpf500/membership-system", target="_blank" ) Contribute on GitHub
+							span.text-muted  (#{ git })
+
+		block js
+			script( src="/static/js/jquery.js" )
+			script( src="/static/js/bootstrap.js" )
+			script( src="/static/js/script.js" )
+
+		script.
+			var _paq = _paq || [];
+			/* tracker methods like "setCustomDimension" should be called before
+			"trackPageView" */
+			_paq.push(["setCookieDomain", "*.dev.thebristolcable.org"]);
+			_paq.push(["setDomains",
+			["*.dev.thebristolcable.org","*.membership.thebristolcable.org","*.thebristolcable.org"]]);
+			_paq.push(["enableCrossDomainLinking"]);
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			(function() {
+				var u="//stats2.xtreamlab.net/";
+				_paq.push(['setTrackerUrl', u+'piwik.php']);
+				_paq.push(['setSiteId', '1']);
+				var d=document, g=d.createElement('script'),
+				s=d.getElementsByTagName('script')[0];
+				g.type='text/javascript'; g.async=true; g.defer=true;
+				g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+			  })();

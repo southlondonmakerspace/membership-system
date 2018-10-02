@@ -1,23 +1,16 @@
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
 
-var config = require( __config + '/config.json' );
-
-var auth = require( __js + '/authentication' ),
-	Mail = require( __js + '/mail' ),
-	Options = require( __js + '/options' )();
+var auth = require( __js + '/authentication' );
 
 var moment = require( 'moment' );
 
 var database = require( __js + '/database' ),
 	Events = database.Events;
-
-var app_config = {};
 
 app.get( '/', auth.isAPIAuthenticated, function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
@@ -41,46 +34,45 @@ app.get( '/', auth.isAPIAuthenticated, function( req, res ) {
 			$gt: date.toDate()
 		}
 	} )
-	.limit( limit )
-	.skip( ( page - 1 ) * limit )
-	.sort( { happened: 'asc' } )
-	.populate( 'member' )
-	.populate( 'permission' )
-	.populate( 'state' )
-	.exec( function( err, events ) {
-		var output = {
-			now: new Date(),
-			since: date.toDate(),
-			limit: limit,
-			page: page,
-			results: events.length,
-			events: []
-		};
-		for ( var e in events ) {
-			var event = events[e];
-			var output_event = {
-				date: event.happened
+		.limit( limit )
+		.skip( ( page - 1 ) * limit )
+		.sort( { happened: 'asc' } )
+		.populate( 'member' )
+		.populate( 'permission' )
+		.populate( 'state' )
+		.exec( function( err, events ) {
+			var output = {
+				now: new Date(),
+				since: date.toDate(),
+				limit: limit,
+				page: page,
+				results: events.length,
+				events: []
 			};
-			if ( event.member )
-				output_event.user = {
-					fullname: event.member.fullname,
-					firstname: event.member.firstname,
-					lastname: event.member.lastname,
-					gravatar: event.member.gravatar
+			for ( var e in events ) {
+				var event = events[e];
+				var output_event = {
+					date: event.happened
 				};
+				if ( event.member )
+					output_event.user = {
+						fullname: event.member.fullname,
+						firstname: event.member.firstname,
+						lastname: event.member.lastname,
+						gravatar: event.member.gravatar
+					};
 
-			if ( event.permission )
-				output_event.permission = {
-					name: event.permission.name,
-				}
+				if ( event.permission )
+					output_event.permission = {
+						name: event.permission.name,
+					};
 
-			output.events.push( output_event );
-		}
-		res.send( JSON.stringify( output ) );
-	} );
+				output.events.push( output_event );
+			}
+			res.send( JSON.stringify( output ) );
+		} );
 } );
 
-module.exports = function( config ) {
-	app_config = config;
+module.exports = function() {
 	return app;
 };

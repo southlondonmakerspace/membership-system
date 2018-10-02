@@ -16,8 +16,6 @@ var database = require(__js + '/database'),
 	Members = database.Members,
 	Enroll = database.Enroll;
 
-var app_config = {};
-
 app.get('/validate/:tag', auth.isAPIAuthenticated, function(req, res) {
 	Members.findOne({
 		'tag.hashed': req.params.tag
@@ -47,7 +45,7 @@ app.get('/identify/:tag', auth.isAPIAuthenticated, function(req, res) {
 				{
 					activeMember = true;
 				}
-			})
+			});
 			res.json({
 				valid: true,
 				firstname: member.firstname,
@@ -119,7 +117,6 @@ app.get('/enroll', auth.isAPIAuthenticated, function(req, res) {
 	});
 });
 
-module.exports = function(config) {
-	app_config = config;
+module.exports = function() {
 	return app;
 };

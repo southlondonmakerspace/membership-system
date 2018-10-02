@@ -4,5 +4,5 @@
 	"permissions": [
 		"loggedIn"
 	],
-	"menu": "secondary"
+	"menu": "none"
 }

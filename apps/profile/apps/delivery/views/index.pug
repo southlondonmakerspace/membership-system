@@ -1,0 +1,56 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = "Delivery details"
+
+block append js
+	script(src='/static/js/delivery-address.js')
+
+block contents
+	.row
+		.col-md-3
+			- page = 'delivery'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9.col-lg-7
+			+page_header( 'Delivery details' )
+			form( method="post" ).form-horizontal
+				+csrf
+
+				if user.gocardless.amount >= 3
+					p.
+						You are eligible for a
+						#[b free copy of our quarterly newspaper]!
+						We would also like to send you very occasional mail
+						such as a reminder for the AGM.
+					p.
+						Can we send you our quarterly newspaper and very
+						occasional mail?
+				else
+					.alert.alert-warning.
+						You aren't eligible for a
+						#[b free copy of our quarterly newspaper]
+					p.
+						Unfortunately it's not financial viable for us to send
+						copies of the quarterly newspaper to members
+						contributing less than £3 per month. However, we'd
+						like to send you very occasional mail such as a reminder
+						for the AGM.
+					p.
+						Can we send you very occasional mail?
+
+				ul.join-options
+					li.join-options__opt
+						input(type='radio', name='delivery_optin', id='delivery_optin_yes' , value='true', required, checked=user.delivery_optin).js-delivery-opt
+						label(for='delivery_optin_yes').btn Yes
+					li.join-options__opt
+						input(type='radio', name='delivery_optin', id='delivery_optin_no' , value='false', required, checked=!user.delivery_optin).js-delivery-opt
+						label(for='delivery_optin_no').btn No
+					li.join-options__opt
+
+				.js-delivery-details(class={'hidden-js': !user.delivery_optin})
+					+input( 'text', 'Address line 1', 'delivery_line1', { value: user.delivery_address.line1, left: 3, right: 5 } )
+					+input( 'text', 'Address line 2', 'delivery_line2', { value: user.delivery_address.line2, left: 3, right: 5 } )
+					+input( 'text', 'City/town', 'delivery_city', { value: user.delivery_address.city, left: 3, right: 5 } )
+					+input( 'text', 'Postcode', 'delivery_postcode', { value: user.delivery_address.postcode, left: 3, right: 5 } )
+				
+				button.btn.join-btn Save

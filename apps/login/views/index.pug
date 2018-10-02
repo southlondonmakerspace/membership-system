@@ -1,14 +1,10 @@
-extends /src/views/base.pug
+extends /src/views/splash.pug
 
 block prepend title
 	- title = app.title
 
-block navbar
-
-block contents
-	.row
-		.col-md-12
-			+page_header( app.title )
-			.row
-				.col-md-4
-					include partials/form.pug
+block splash-contents
+	h3 Log in to your account
+	p Not a member? #[a(href="/join") Join now]!
+	include /src/views/partials/flash.pug
+	include partials/form.pug

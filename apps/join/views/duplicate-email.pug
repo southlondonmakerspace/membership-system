@@ -1,0 +1,26 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = "Duplicate email address"
+
+block contents
+	+page_header( 'Duplicate email address' )
+	.row
+		.col-md-6
+			.alert.alert-warning.
+				A contribution has not been set up, you will not be charged.
+
+			p.
+				This email address is already associated with an active
+				membership,  you can login to your account below.
+			p.
+				If you have never logged in before click "Forgot password" and
+				you will receive an email with instructions to proceed.
+
+	.row
+		.col-md-4
+			include /apps/login/views/partials/form.pug
+
+	if error
+		+page_header( 'Error' )
+		pre #{ error }

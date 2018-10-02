@@ -1,17 +1,10 @@
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
-var __apps = __dirname + '/apps';
-
-var	fs = require( 'fs' ),
-	express = require( 'express' ),
+var	express = require( 'express' ),
 	app = express();
 
-var config = require( __config + '/config.json' );
-
-var apps = [];
 var app_config = {};
 
 var auth = require( __js + '/authentication' );
@@ -37,7 +30,7 @@ app.get( '/', auth.isMember, function( req, res ) {
 	Items.find().populate( 'defaultState' ).sort( { name: 1 } ).exec( function( err, results ) {
 		var itemQueries = [];
 		for ( var i in results ) {
-			itemQueries.push( Events.findOne( { 'item': results[i]._id } ).populate( 'state' ).sort( { "happened": -1 } ) );
+			itemQueries.push( Events.findOne( { 'item': results[i]._id } ).populate( 'state' ).sort( { 'happened': -1 } ) );
 		}
 		Promise.all( itemQueries ).then( function( queryResults ) {
 			for ( var r in results ) {

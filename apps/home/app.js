@@ -17,4 +17,4 @@ app.get( '/', function ( req, res ) {
 	}
 } );
 
-module.exports = function( config ) { return app; };
+module.exports = function() { return app; };

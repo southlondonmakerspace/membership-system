@@ -1,0 +1,18 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Update contribution'
+
+block contents
+	.row
+		.col-md-3
+			- page = 'direct-debit'
+			include /apps/profile/views/partials/sidebar.pug
+		.col-md-9.col-lg-7
+			+page_header( 'Update contribution' )
+
+			p.
+				Your membership has been cancelled and will expire at the end
+				of your next billing cycle. If you want to restart your
+				membership please contact
+				#[+email('membership@thebristolcable.org')].

@@ -3,6 +3,9 @@ This is a membership management system, it's chiefly a database of member data f
 
 This system was created for [South London Makerspace](http://southlondonmakerspace.org).
 
+Browser testing with<br/>
+<a href="https://www.browserstack.com/"><img src="https://user-images.githubusercontent.com/2084823/46341120-52388b00-c62f-11e8-8f41-270915ccc03b.png" width="200" /></a>
+
 ## Setup
 There are two options for setup, either as a new install (Steps 1, 2, 3a, 4, 5), or importing dry test data from the [data drier](https://github.com/southlondonmakerspace/membership-dryer) (Steps 1, 2, 3b, 4, 5), which is currently not publicly available.
 

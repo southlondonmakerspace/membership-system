@@ -1,0 +1,251 @@
+{
+  "customers": [
+    {
+      "id": "CU7A4083198013",
+      "created_at": "2017-10-13T15:55:06.539Z",
+      "email": "456908AFBF87@test.com",
+      "given_name": "Test",
+      "family_name": "Test",
+      "company_name": "",
+      "address_line1": "Test",
+      "address_line2": "Test",
+      "address_line3": "",
+      "city": "Test",
+      "region": "",
+      "postal_code": "BS1 1AA",
+      "country_code": "GB",
+      "language": "en",
+      "swedish_identity_number": null,
+      "danish_identity_number": null,
+      "metadata": {}
+    }
+  ],
+  "mandates": [
+    {
+      "id": "MD2AD93E61FBFD",
+      "created_at": "2017-10-13T15:55:06.605Z",
+      "reference": "D122DD8E7EE2",
+      "status": "active",
+      "scheme": "bacs",
+      "next_possible_charge_date": "2018-06-21",
+      "payments_require_approval": false,
+      "metadata": {},
+      "links": {
+        "customer_bank_account": "BAC7DA3ADEBA3C",
+        "creditor": "CR9B392EB74C62",
+        "customer": "CU7A4083198013"
+      }
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "SBCDB863281E87",
+      "created_at": "2017-10-13T15:55:06.730Z",
+      "amount": 300,
+      "currency": "GBP",
+      "status": "active",
+      "name": "Membership: £3 monthly",
+      "start_date": "2017-10-19",
+      "end_date": null,
+      "interval": 1,
+      "interval_unit": "monthly",
+      "day_of_month": null,
+      "month": null,
+      "metadata": {},
+      "payment_reference": null,
+      "upcoming_payments": [
+        {
+          "charge_date": "2018-06-20",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-07-19",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-08-19",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-09-19",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-10-19",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-11-21",
+          "amount": 300
+        },
+        {
+          "charge_date": "2018-12-19",
+          "amount": 300
+        },
+        {
+          "charge_date": "2019-01-19",
+          "amount": 300
+        },
+        {
+          "charge_date": "2019-02-20",
+          "amount": 300
+        },
+        {
+          "charge_date": "2019-03-20",
+          "amount": 300
+        }
+      ],
+      "app_fee": null,
+      "links": {
+        "mandate": "MD2AD93E61FBFD"
+      }
+    }
+  ],
+  "payments": [
+    {
+      "id": "PM8C546B945202",
+      "created_at": "2018-06-15T06:53:27.713Z",
+      "charge_date": "2018-06-20",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "pending_submission",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM2391CAFF991A",
+      "created_at": "2018-05-16T06:45:30.487Z",
+      "charge_date": "2018-05-19",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM00943638FFA1",
+      "created_at": "2018-04-14T06:43:04.120Z",
+      "charge_date": "2018-04-19",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM3EE93527EAEE",
+      "created_at": "2018-03-16T07:58:17.299Z",
+      "charge_date": "2018-03-21",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM920338ADDC8E",
+      "created_at": "2018-02-16T07:47:38.961Z",
+      "charge_date": "2018-02-21",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM04EC5EE75CCA",
+      "created_at": "2018-01-14T07:47:29.270Z",
+      "charge_date": "2018-01-19",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM06EADCF9F677",
+      "created_at": "2017-12-15T07:52:13.879Z",
+      "charge_date": "2017-12-20",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PM224AE0118187",
+      "created_at": "2017-11-16T07:46:46.081Z",
+      "charge_date": "2017-11-19",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    },
+    {
+      "id": "PME307F24B0E9A",
+      "created_at": "2017-10-13T15:55:06.901Z",
+      "charge_date": "2017-10-19",
+      "amount": 300,
+      "description": "Membership: £3 monthly",
+      "currency": "GBP",
+      "status": "paid_out",
+      "amount_refunded": 0,
+      "reference": null,
+      "metadata": {},
+      "links": {
+        "mandate": "MD2AD93E61FBFD",
+        "subscription": "SBCDB863281E87"
+      }
+    }
+  ],
+  "subscriptionCancelledEvents": []
+}

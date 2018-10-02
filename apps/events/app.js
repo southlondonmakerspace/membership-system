@@ -1,7 +1,6 @@
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config';
 
 var	express = require( 'express' ),
 	app = express();
@@ -9,12 +8,9 @@ var	express = require( 'express' ),
 var moment = require( 'moment' );
 
 var auth = require( __js + '/authentication' ),
-	discourse = require( __js + '/discourse' ),
 	db = require( __js + '/database' ),
 	Events = db.Events,
 	Permissions = db.Permissions;
-
-var config = require( __config + '/config.json' );
 
 var app_config = {};
 
@@ -69,40 +65,40 @@ app.get( '/', auth.isMember, function( req, res ) {
 
 		// Find event
 		Events.find( search ).populate( 'member' )
-		.populate( 'permission' )
-		.populate( 'item' )
-		.populate( 'state' )
-		.sort( [ [ "happened", -1 ] ] )
-		.exec( function( err, events ) {
-			if ( events == null ) {
-				res.render( 'error', { error: 'No events' } );
-				return;
-			}
-			for ( var e = 1; e < events.length; e++ ) {
-				var event = events[e];
-				var prevEvent = events[e-1];
-				if ( event.happened.getDate() != prevEvent.happened.getDate() )
-					event.split = true;
-			}
-			var previousDate = new Date( startDate );
-			previousDate.setMonth( startDate.getMonth() - 1 );
-			// Fetch full list of permissions
-			Permissions.find( { event_name: { $exists: true, $ne: '' } }, function( err, permissions ) {
-				var selected = req.query;
-				if ( Object.keys( req.query ).length === 0 ) {
-					selected.successful = 'on';
-					selected.unsuccessful = 'on';
+			.populate( 'permission' )
+			.populate( 'item' )
+			.populate( 'state' )
+			.sort( [ [ 'happened', -1 ] ] )
+			.exec( function( err, events ) {
+				if ( events == null ) {
+					res.render( 'error', { error: 'No events' } );
+					return;
 				}
-				res.render( 'index', {
-					events: events,
-					previous: previousDate,
-					next: endDate,
-					searchDate: startDate,
-					permissions: permissions,
-					selected: selected
+				for ( var e = 1; e < events.length; e++ ) {
+					var event = events[e];
+					var prevEvent = events[e-1];
+					if ( event.happened.getDate() != prevEvent.happened.getDate() )
+						event.split = true;
+				}
+				var previousDate = new Date( startDate );
+				previousDate.setMonth( startDate.getMonth() - 1 );
+				// Fetch full list of permissions
+				Permissions.find( { event_name: { $exists: true, $ne: '' } }, function( err, permissions ) {
+					var selected = req.query;
+					if ( Object.keys( req.query ).length === 0 ) {
+						selected.successful = 'on';
+						selected.unsuccessful = 'on';
+					}
+					res.render( 'index', {
+						events: events,
+						previous: previousDate,
+						next: endDate,
+						searchDate: startDate,
+						permissions: permissions,
+						selected: selected
+					} );
 				} );
 			} );
-		} );
 	} );
 } );
 

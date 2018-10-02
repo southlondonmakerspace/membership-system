@@ -35,28 +35,28 @@ function templateLocals( req, res, next ) {
 
 	for ( var a in apps ) {
 		var app = apps[a];
-		if ( app.menu != "none" ) {
+		if ( app.menu != 'none' ) {
 			if ( app.permissions && app.permissions != [] ) {
 				if ( req.user ) {
-					for ( var p in app.permissions ) {
+					for ( let p in app.permissions ) {
 						if ( auth.checkPermission( req, app.permissions[p] ) ) {
 							res.locals.apps[ app.menu ].push( app );
 							break;
 						}
 					}
 				} else {
-					if ( app.permissions.indexOf( "loggedOut" ) != -1 )
+					if ( app.permissions.indexOf( 'loggedOut' ) != -1 )
 						res.locals.apps[ app.menu ].push( app );
 				}
 				res.locals.subapps[ app.uid ] = [];
 			}
 			if ( app.subapps.length > 0 ) {
-				for ( var s in app.subapps ) {
+				for ( let s in app.subapps ) {
 					var subapp = app.subapps[s];
 					if ( subapp.hidden !== true ) {
 						if ( subapp.permissions && subapp.permissions != [] ) {
 							if ( req.user ) {
-								for ( var p in subapp.permissions ) {
+								for ( let p in subapp.permissions ) {
 									if ( auth.checkPermission( req, subapp.permissions[p] ) ) {
 										res.locals.subapps[ app.uid ].push( subapp );
 										break;
@@ -74,6 +74,7 @@ function templateLocals( req, res, next ) {
 
 	// Template permissions
 	res.locals.access = function( permission ) {
+		if ( !req.user ) return false;
 		if ( req.user.quickPermissions.indexOf( config.permission.superadmin ) != -1 ) return true;
 		if ( permission == 'member' ) permission = config.permission.member;
 		if ( permission == 'admin' ) permission = config.permission.admin;
@@ -94,6 +95,8 @@ function templateLocals( req, res, next ) {
 		if ( res.locals.access( 'superadmin' ) ) return true;
 		return admin_permissions.indexOf( permission ) != -1;
 	};
+
+	res.locals.isLoggedIn = !!req.user;
 
 	// Delete login redirect URL if user navigates to anything other than the login page
 	if ( req.originalUrl != '/login' && req.originalUrl != '/otp' )

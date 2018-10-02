@@ -1,0 +1,1 @@
+0 1 * * * /opt/membership-system/tools/mailchimp/sync.sh >> /var/log/membership-system/mailchimp.log 2>&1

@@ -1,0 +1,22 @@
+{
+  "id": "PM0009ZR048ZBT",
+  "created_at": "2018-06-07T13:02:33.029Z",
+  "charge_date": "2018-06-12",
+  "amount": 1000,
+  "description": "A test",
+  "currency": "GBP",
+  "status": "pending_submission",
+  "amount_refunded": 0,
+  "reference": null,
+  "metadata": {},
+  "links": {
+    "mandate": "MD0003HAKP3MMH",
+    "creditor": "CR00004GSEERPW"
+  },
+  "transaction_fee": 0,
+  "payout_date": "2018-06-14",
+  "payout_sent_date": "2018-06-14",
+  "payout_received_date": "2018-06-14",
+  "app_fee": 0,
+  "source": "dashboard"
+}

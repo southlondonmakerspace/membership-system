@@ -28,6 +28,7 @@ module.exports = {
 			type: String,
 			required: true,
 			unique: true,
+			lowercase: true,
 			validate: {
 				validator: function ( v ) {
 					return /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,}/.test( v );

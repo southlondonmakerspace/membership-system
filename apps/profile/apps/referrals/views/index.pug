@@ -13,7 +13,10 @@ block contents
 			p.
 				Refer a friend to join the Cable and we'll send you both a
 				gift as a thank you for helping us on the journey towards
-				sustainability. Find out more #[a here].
+				sustainability.
+
+			p
+				a(href='https://thebristolcable.org/referafriend', target='_blank').btn Find out more
 
 			//-
 				form( method="post" ).form-horizontal
@@ -44,7 +47,9 @@ block contents
 										div
 											h3= referral.referree.firstname
 											if referral.referreeAmount < 3
-												p Not eligible for a gift #[a (why?)]
+												p.
+													Not eligible for a gift
+													#[a(href='https://thebristolcable.org/referafriend', target='_blank') (why?)]
 											else if referral.referrerGift
 												p You chose a#[br]#{ giftsById[referral.referrerGift].name }
 											else if referral.referrerGift === ''

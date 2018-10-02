@@ -36,7 +36,7 @@ app.use( function( req, res, next ) {
 
 app.get( '/', wrapAsync( async ( req, res ) => {
 	const referrals = await Referrals.find({ referrer: req.user }).populate('referree');
-	res.render( 'index', { referrals, giftsById } );
+	res.render( 'index', { referralCode: req.user.referralCode, referrals, giftsById } );
 } ) );
 
 app.get( '/:id', wrapAsync( async ( req, res ) => {

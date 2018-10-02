@@ -15,15 +15,17 @@ block contents
 				gift as a thank you for helping us on the journey towards
 				sustainability. Find out more #[a here].
 
-			form( method="post" ).form-horizontal
-				+csrf
-				+input( 'email', 'Email address', 'email', { required: true, left: 3, right: 5 } )
-				.form-group
-					.col-md-offset-3.col-md-5
-						button.btn.join-btn Send referral
+			//-
+				form( method="post" ).form-horizontal
+					+csrf
+					+input( 'email', 'Email address', 'email', { required: true, left: 3, right: 5 } )
+					.form-group
+						.col-md-offset-3.col-md-5
+							button.btn.join-btn Send referral
 
-			p Alternatively, you can send people this link:
-			pre https://membership.thebristolcable.org/join/referral/TEST
+				p Alternatively, you can send people this link:
+			p Send the following link to your friends to refer them:
+			pre https://membership.thebristolcable.org/join/referral/#{ referralCode }
 
 			h3 Your referrees
 			if referrals.length > 0

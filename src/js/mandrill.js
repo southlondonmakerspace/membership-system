@@ -28,7 +28,16 @@ const templates = {
 		name: 'RESTARTLINK',
 		content: config.audience + '/join/restart/' + code
 	}],
-	'successful-referral': () => []
+	'successful-referral': (member, {refereeName, isEligible}) => [{
+		name: 'REFLINK',
+		content: config.audience + '/join/referral/' + member.referralCode
+	}, {
+		name: 'REFEREENAME',
+		content: refereeName
+	}, {
+		name: 'ISELIGIBLE',
+		content: isEligible
+	}]
 };
 
 function memberToTemplate(templateId, member, params) {

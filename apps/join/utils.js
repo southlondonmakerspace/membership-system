@@ -152,7 +152,10 @@ async function startMembership(member, {
 
 			await updateGiftStock({referralGift, referralGiftOptions});
 
-			await mandrill.sendToMember('successful-referral', referrer);
+			await mandrill.sendToMember('successful-referral', referrer, {
+				refereeName: member.firstname,
+				isEligible: amount >= 3
+			});
 		}
 
 		await mailchimp.defaultLists.members.upsert(member.email, {

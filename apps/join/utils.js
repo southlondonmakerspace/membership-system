@@ -128,7 +128,8 @@ async function startMembership(member, joinForm) {
 			email_address: member.email,
 			merge_fields: {
 				FNAME: member.firstname,
-				LNAME: member.lastname
+				LNAME: member.lastname,
+				REFLINK: member.referralLink
 			},
 			status_if_new: 'subscribed'
 		});

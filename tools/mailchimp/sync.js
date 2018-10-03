@@ -30,7 +30,7 @@ function memberToOperation(listId, member) {
 			merge_fields: {
 				FNAME: member.firstname,
 				LNAME: member.lastname,
-				REFLINK: config.audience + '/join/referral/' + member.referralCode
+				REFLINK: member.referralLink
 			},
 			status_if_new: 'subscribed'
 		})

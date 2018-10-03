@@ -1,5 +1,5 @@
 const { getActualAmount } = require('../js/utils');
-const { permission: { memberId } } = require( '../../config/config.json' );
+const { audience, permission: { memberId } } = require( '../../config/config.json' );
 
 const mongoose = require( 'mongoose' );
 const crypto = require( 'crypto' );
@@ -247,6 +247,10 @@ module.exports.schema.virtual( 'setupComplete' ).get( function() {
 	if ( ! this.password.hash )
 		return false;
 	return true;
+} );
+
+module.exports.schema.virtual( 'referralLink' ).get( function () {
+	return audience + '/join/referral/' + this.referralCode;
 } );
 
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

@@ -186,7 +186,8 @@ async function getEditionExport(members) {
 				Address2: member.delivery_address.line2,
 				City: member.delivery_address.city,
 				Postcode: postcode,
-				IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3))
+				IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3)),
+				ReferralLink: member.referralLink
 			};
 		})
 		.sort((a, b) => (

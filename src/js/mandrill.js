@@ -21,13 +21,13 @@ const templates = {
 		name: 'EXPIRES',
 		content: moment(member.memberPermission.date_expires).format('dddd Do MMMM')
 	}],
-	'restart-membership': member => [{
+	'restart-membership': (member, {code}) => [{
 		name: 'RESTARTLINK',
-		content: config.audience + '/join/restart/' + member.restart.code
+		content: config.audience + '/join/restart/' + code
 	}]
 };
 
-function memberToTemplate(templateId, member) {
+function memberToTemplate(templateId, member, params) {
 	return {
 		template_name: templateId,
 		template_content: [],
@@ -43,7 +43,7 @@ function memberToTemplate(templateId, member) {
 						name: 'FNAME',
 						content: member.firstname
 					},
-					...templates[templateId](member)
+					...templates[templateId](member, params)
 				]
 			}],
 		},
@@ -51,9 +51,9 @@ function memberToTemplate(templateId, member) {
 }
 
 module.exports = {
-	sendToMember(templateId, member) {
+	sendToMember(templateId, member, params) {
 		return new Promise((resolve, reject) => {
-			client.messages.sendTemplate(memberToTemplate(templateId, member), resolve, reject);
+			client.messages.sendTemplate(memberToTemplate(templateId, member, params), resolve, reject);
 		});
 	},
 	sendMessage(templateId, message) {

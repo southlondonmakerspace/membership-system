@@ -1,37 +1,34 @@
 const mongoose = require( 'mongoose' );
 
-const joinFormFields = {
-	amount: {
-		type: Number,
-		required: true
-	},
-	period: {
-		type: String,
-		enum: ['monthly', 'annually']
-	},
-	referralCode: String,
-	gift: String
-};
+const { joinFormFields } = require('./join-flows');
 
 module.exports = {
-	name: 'JoinFlows',
+	name: 'RestartFlows',
 	schema: mongoose.Schema( {
+		code: {
+			type: String,
+			required: true
+		},
+		member: {
+			type: mongoose.Schema.ObjectId,
+			ref: 'Members',
+			required: true
+		},
 		date: {
 			type: Date,
 			required: true,
 			default: Date.now
 		},
-		redirect_flow_id: {
+		customerId: {
 			type: String,
 			required: true
 		},
-		sessionToken: {
+		mandateId: {
 			type: String,
-			required: true,
+			required: true
 		},
 		joinForm: joinFormFields
-	} ),
-	joinFormFields
+	} )
 };
 
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

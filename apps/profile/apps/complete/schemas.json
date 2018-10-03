@@ -2,7 +2,7 @@
 	"completeSchema": {
 		"body": {
 			"type": "object",
-			"required": ["password", "verify", "delivery_optin"],
+			"required": ["password", "verify", "reason", "how", "delivery_optin"],
 			"properties": {
 				"password": {
 					"type": "string",
@@ -14,6 +14,10 @@
 					}
 				},
 				"reason": {
+					"type": "string",
+					"minLength": 1
+				},
+				"how": {
 					"type": "string",
 					"minLength": 1
 				},

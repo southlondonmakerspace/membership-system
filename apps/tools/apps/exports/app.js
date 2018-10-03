@@ -178,7 +178,7 @@ async function getEditionQuery() {
 async function getEditionExport(members) {
 	return members
 		.map(member => {
-			const postcode = member.delivery_address.postcode.trim().toUpperCase();
+			const postcode = (member.delivery_address.postcode || '').trim().toUpperCase();
 			return {
 				FirstName: member.firstname,
 				LastName: member.lastname,

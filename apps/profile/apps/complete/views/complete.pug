@@ -88,21 +88,21 @@ block body
 						+input( 'text', 'City/town', 'delivery_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
 						+input( 'text', 'Postcode', 'delivery_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
 
-					//-
-						h3 Why did you join?
+					h3 And finally…
 
-						p.
-							Would you mind telling us where you heard about the Cable?
-							You don't have to but it would really helpful for us to know
-							how the message is getting out.
+					p.
+						Could you tell us what brings you to the Cable? It
+						would really help us understand what we can do to
+						make the the co-operative stronger.
 
-						.form-group
-							div.col-md-12
-								select(name='reason').form-control
-									option(disabled, selected, value='') Select an option
-									option I found a copy of your newspaper
-									option I was recommended to you by a friend
-									option I'd rather not say
-									option Other
+					.form-group
+						div.col-md-12
+							h4 Why are you joining today?
+							input(type='text', name='reason', required).form-control
+
+					.form-group
+						div.col-md-12
+							h4 How did you hear about the Cable?
+							input(type='text', name='how', required).form-control
 
 					button.btn.join-btn Save

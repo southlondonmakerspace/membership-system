@@ -6,7 +6,7 @@ const __config = __root + '/config';
 const moment = require( 'moment' );
 
 const auth = require( __js + '/authentication' );
-const { JoinFlows } = require( __js + '/database' );
+const { JoinFlows, Members } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
 const mailchimp = require( __js + '/mailchimp' );
 const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
@@ -49,6 +49,11 @@ function joinInfoToSubscription(amount, period, mandateId) {
 	};
 }
 
+function generateReferralCode({firstname, lastname}) {
+	const no = ('000' + Math.floor(Math.random() * 1000)).slice(-3);
+	return (firstname[0] + lastname[0] + no).toUpperCase();
+}
+
 async function createJoinFlow(amount, period, completeUrl) {
 	const sessionToken = auth.generateCode();
 	const name = getSubscriptionName(getActualAmount(amount, period), period);
@@ -82,6 +87,21 @@ async function completeJoinFlow(redirect_flow_id) {
 	};
 }
 
+async function createMember(memberObj) {
+	try {
+		return await Members.create({
+			...memberObj,
+			referralCode: generateReferralCode(memberObj)
+		});
+	} catch (saveError) {
+		if (saveError.code === 11000 && saveError.message.indexOf('referralCode') > -1) {
+			// Retry with a different referral code
+			return await createMember(memberObj);
+		}
+		throw saveError;
+	}
+}
+
 async function createSubscription(member, {amount, period}) {
 	if (member.gocardless.subscription_id) {
 		throw new Error('Tried to create subscription on member with active subscription');
@@ -113,5 +133,6 @@ module.exports = {
 	customerToMember,
 	createJoinFlow,
 	completeJoinFlow,
+	createMember,
 	createSubscription
 };

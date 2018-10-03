@@ -13,7 +13,7 @@ const { wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { customerToMember, createJoinFlow, completeJoinFlow, createSubscription } = require( './utils' );
+const { customerToMember, createJoinFlow, completeJoinFlow, createMember, createSubscription } = require( './utils' );
 
 const { joinSchema, completeSchema } = require( './schemas.json' );
 
@@ -57,7 +57,7 @@ app.get( '/complete', [
 	const memberObj = await customerToMember(customerId, mandateId);
 
 	try {
-		const newMember = await Members.create(memberObj);
+		const newMember = await createMember(memberObj);
 		await createSubscription(newMember, {amount, period});
 		await mandrill.sendToMember('welcome', newMember);
 

@@ -37,7 +37,7 @@ app.post( '/', [
 	hasSchema(completeSchema).orFlash
 ], function( req, res ) {
 	const { body : { password, delivery_optin, delivery_line1, delivery_line2,
-		delivery_city, delivery_postcode, reason }, user } = req;
+		delivery_city, delivery_postcode, reason, how }, user } = req;
 
 	auth.generatePassword( password, function( password ) {
 		user.update( { $set: {
@@ -48,7 +48,8 @@ app.post( '/', [
 				city: delivery_city,
 				postcode: delivery_postcode
 			} : {},
-			join_reason: reason
+			join_reason: reason,
+			join_how: how
 		} }, function () {
 			res.redirect( '/profile' );
 		} );

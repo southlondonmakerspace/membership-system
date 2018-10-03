@@ -7,7 +7,7 @@ const client = new mandrill.Mandrill(config.mandrill.api_key);
 const templates = {
 	'welcome': member => [{
 		name: 'REFLINK',
-		content: config.audience + '/join/referral/' + member.referralCode
+		content: member.referralLink
 	}],
 	'reset-password': member => [{
 		name: 'RPLINK',
@@ -30,7 +30,7 @@ const templates = {
 	}],
 	'successful-referral': (member, {refereeName, isEligible}) => [{
 		name: 'REFLINK',
-		content: config.audience + '/join/referral/' + member.referralCode
+		content: member.referralLink
 	}, {
 		name: 'REFEREENAME',
 		content: refereeName

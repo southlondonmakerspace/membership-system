@@ -179,6 +179,12 @@
 	"flash-transactional-email-sending": "Transactional email is sending!",
 	"flash-transactional-email-deleted": "Transactional email deleted",
 
+	"flash-referral-code-invalid": "Invalid referral code",
+	"flash-referral-gift-invalid": "This gift is not available",
+	"flash-referral-gift-chosen": "You have chosen your referral gift",
+
+	"flash-address-required": "Address is required",
+
 	"flash-validation-error-generic": "The data you provided was invalid",
 
 	"flash-validation-error.amount-minimum": "The minimum contribution is £1",

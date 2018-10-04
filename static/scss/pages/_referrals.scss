@@ -1,0 +1,21 @@
+.referrals-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.referrals-item {
+	display: flex;
+	align-items: center;
+
+	h3 {
+		margin-top: 0;
+	}
+	p {
+		margin-bottom: 0;
+	}
+}
+
+.referrals-item__icon {
+	margin-right: 2rem;
+}

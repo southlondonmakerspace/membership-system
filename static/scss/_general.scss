@@ -193,7 +193,7 @@ ul.nav.nav-tabs {
 
 	background-color: $c-blue;
 	&:hover {
-		background-color: darken($c-blue, 5%);
+		background-color: $c-blue--dark1;
 	}
 
 	&,

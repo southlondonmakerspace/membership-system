@@ -1,4 +1,3 @@
-$bp-join-form: 600px;
 $bp-join-why: 768px;
 
 .join-header {
@@ -47,6 +46,35 @@ $bp-join-why: 768px;
 	}
 }
 
+.join-referrer {
+	margin-bottom: 22px;
+
+	@media (min-width: $bp-join-form) {
+		display: flex;
+		align-items: center;
+	}
+
+	p {
+		margin-bottom: 0;
+	}
+}
+
+.join-referrer-icon {
+	margin-right: 1rem;
+	float: left;
+}
+
+.join-referrer-hello {
+	margin-top: 0;
+	min-height: 105px;
+	display: flex;
+	align-items: center;
+	@media (min-width: $bp-join-form) {
+		display: block;
+		min-height: 0;
+	}
+}
+
 .join-title {
 	display: flex;
 	align-items: center;
@@ -90,16 +118,14 @@ $bp-join-why: 768px;
 		max-width: 200px;
 	}
 
-	input[type=radio] {
-		display: none;
+	@include custom-radio {
+		background-color: $c-blue--dark2;
 	}
-
-	label {
-		display: block;
+	@include custom-radio--is(focus) {
+		background-color: $c-blue--dark1;
 	}
-
-	input[type=radio]:checked + label {
-		background-color: darken($c-blue, 12%);
+	@include custom-radio--is(invalid, checked) {
+		background-color: $c-blue;
 	}
 }
 
@@ -110,24 +136,20 @@ $bp-join-why: 768px;
 		margin-top: -1rem;
 	}
 
-	input[type=radio] {
-		display: none;
-	}
-
-	label {
-		display: block;
-	}
-
-	input[type=radio]:checked + label .join-other-amount-box {
-		border-color: darken($c-blue, 10%);
+	@include custom-radio;
+	@include custom-radio--is(invalid, checked) {
+		.join-other-amount-box {
+			border-color: $c-blue;
+			background-color: white;
+		}
 	}
 }
 
 .join-other-amount-box {
 	display: inline-block;
-	border: 4px solid $c-blue;
+	border: 4px solid $c-blue--dark2;
 	border-radius: 3px;
-	background-color: transparentize(white, 0.3);
+	background-color: transparentize(white, 0.5);
 	color: $c-black;
 	font-family: "Roboto", sans-serif;
 	font-size: 24px;
@@ -140,28 +162,30 @@ $bp-join-why: 768px;
 		width: calc(33% - 0.5rem);
 	}
 
+	transition: border-color 0.2s, background-color 0.2s;
 	&:hover {
-		border-color: darken($c-blue, 5%);
+		border-color: $c-blue--dark1;
+	}
+}
+
+.join-other-amount-box__input {
+	width: 45px;
+	height: 40px;
+	font-size: inherit !important; // Override theme
+	background: none;
+	outline: 0;
+	text-align: right;
+
+	-moz-appearance: textfield;
+	&::-webkit-inner-spin-button,
+	&::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
 	}
 
-	input {
-		width: 45px;
-		height: 40px;
-		font-size: inherit;
-		background: none;
-		outline: 0;
-		text-align: right;
-
-		&::-webkit-inner-spin-button,
-		&::-webkit-outer-spin-button {
-			-webkit-appearance: none;
-			margin: 0;
-		}
-
-		&,
-		&:focus {
-			box-shadow: none; // Override theme
-		}
+	&,
+	&:focus {
+		box-shadow: none !important; // Override theme
 	}
 }
 
@@ -184,14 +208,22 @@ $bp-join-why: 768px;
 	}
 
 	&:hover {
-		background-color: darken($c-green, 5%);
+		background-color: $c-green--dark1;
+	}
+}
+
+.join-info {
+	opacity: 0.5;
+
+	& > a {
+		color: inherit;
+		text-decoration: underline;
 	}
 }
 
 .join-secure {
 	position: relative;
 	padding-left: 30px;
-	opacity: 0.8;
 
 	& > svg {
 		position: absolute;
@@ -200,11 +232,6 @@ $bp-join-why: 768px;
 		margin-top: -12px;
 		width: 24px;
 		height: 24px;
-	}
-
-	& > a {
-		color: inherit;
-		text-decoration: underline;
 	}
 }
 

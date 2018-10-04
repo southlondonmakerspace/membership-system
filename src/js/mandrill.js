@@ -5,7 +5,10 @@ const config = require('../../config/config.json');
 const client = new mandrill.Mandrill(config.mandrill.api_key);
 
 const templates = {
-	welcome: () => [],
+	'welcome': member => [{
+		name: 'REFLINK',
+		content: member.referralLink
+	}],
 	'reset-password': member => [{
 		name: 'RPLINK',
 		content: config.audience + '/password-reset/code/' + member.password.reset_code
@@ -24,6 +27,16 @@ const templates = {
 	'restart-membership': (member, {code}) => [{
 		name: 'RESTARTLINK',
 		content: config.audience + '/join/restart/' + code
+	}],
+	'successful-referral': (member, {refereeName, isEligible}) => [{
+		name: 'REFLINK',
+		content: member.referralLink
+	}, {
+		name: 'REFEREENAME',
+		content: refereeName
+	}, {
+		name: 'ISELIGIBLE',
+		content: isEligible
 	}]
 };
 

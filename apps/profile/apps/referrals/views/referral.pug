@@ -1,0 +1,42 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = "Choose a referral gift"
+
+block append js
+	script(src='/static/js/referral.js')
+
+block contents
+	.row
+		.col-md-3
+			- page = 'referrals'
+			include ../../../views/partials/sidebar.pug
+		.col-md-9.col-lg-7
+			+page_header( 'A successful referral!' )
+
+			p.
+				You referred #{ referral.referee.firstname } to the Cable,
+				we're really grateful for it!  Our community is now a bit
+				bigger and more vibrant, and we are edging closer to financial
+				sustainability.
+
+			p.
+				As a thank you for making local independent journalism possible
+				we'd love to send you a gift, choose below!
+
+			h3 Choose a gift
+			if referral.referrerGift !== undefined
+				p You've already chosen your gift.
+			else if referral.refereeAmount < 3
+				p.
+					Unfortunately you're referee signed up for less than £3
+			else
+				form(method='POST').js-referral-form
+					+csrf
+					- giftAmount = referral.refereeAmount
+					include /src/views/partials/gifts
+					p.
+						Please note your gift will only be sent out after the 18th
+						of November, find out more
+						#[a(href='https://thebristolcable.org/referafriend', target='_blank') here].
+					button.btn.join-btn Confirm

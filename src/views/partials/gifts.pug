@@ -1,0 +1,51 @@
+mixin giftsList(gifts, amount)
+	ul.gifts
+		- giftsDisabled = giftAmount && amount > giftAmount
+		if giftsDisabled
+			li.gifts__note.small Only available at £#{amount} or more
+		else
+			li(data-amount=amount).gifts__note.small.hidden.js-gift-note Only available at £#{amount} or more
+		each gift in gifts
+			- imgClass = gift.id === 'jtj-mug' && 'js-jtj-mug-img'
+			li.gifts__item
+				input(
+					type='radio', id='gift_' + gift.id, name='referralGift', value=gift.id,
+					required, disabled=giftsDisabled, data-amount=amount
+				).js-gift
+				label(for='gift_' + gift.id)
+					img(src='/static/imgs/gifts/' + gift.image, class=imgClass).gift-img
+					small.gift-name= gift.name
+			li(data-id=gift.id).gifts__item-details.hidden.js-gift-details
+				img(src='/static/imgs/gifts/' + gift.image, class=imgClass).gifts__item-details__img
+				h4= gift.name
+				p.gift-description.small!= gift.description
+				if gift.options
+					p.small
+						b Select from…
+					each option in gift.options
+						p.gift-option.small(class='gift-option--' + gift.id)
+							span.gift-option-id= option.id
+							each value in option.values
+								if gift.id === 'jtj-mug'
+									if jtjInStock[value]
+										span.gift-jtj-mug-option-value
+											- img = '/static/imgs/gifts/jtj-mug_' + value + '.jpg'
+											input(
+												type='radio', name='referralGiftOptions[' + option.id + ']',
+												value=value, id='jtj-mug-' + value, data-img=img
+											).js-jtj-mug-option-value
+											label(for='jtj-mug-' + value)
+												img(src=img)
+								else
+									label.gift-option-value
+										input(type='radio', name='referralGiftOptions[' + option.id + ']', value=value)
+										= value
+
+.gifts-wrapper
+	+giftsList(gifts5, 5)
+	+giftsList(gifts3, 3)
+p.gifts-none
+	input(type='radio', id='gift_none', name='referralGift', value='', required).js-gift
+	label(for='gift_none')
+		img(src='/static/imgs/gifts/no-gift.png').gift-img
+		span.small I'm happy without a gift

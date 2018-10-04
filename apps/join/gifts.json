@@ -1,0 +1,56 @@
+{
+	"gifts3": [{
+		"id": "cable-ticket",
+		"name": "Ticket to Cable gig",
+		"image": "bc-ticket.png",
+		"description": "The Cable has been known to throw a great party. Details to be confirmed but expect a great venue and local acts."
+	}, {
+		"id": "cable-mug",
+		"name": "Cable mug",
+		"image": "bc-mug.png",
+		"description": "Beautiful custom designed mugs for sharing a warm pot of community-ownership."
+	}, {
+		"id": "jtj-mug",
+		"name": "Journey to Justice mug",
+		"image": "jtj-mug_ada.jpg",
+		"description": "(Very) limited edition mugs produced right here in Bristol by PRSC celebrating and memorialising Bristolians who have fought for our rights. Find out more <a href=\"https://prsc.org.uk/journey-to-justice-bristol-2017/\" target=\"_blank\">here</a>.",
+		"options": [{
+			"id": "Design",
+			"values": ["ada", "ann", "james", "mary", "owen", "princess", "ram", "walter"]
+		}]
+	}],
+	"gifts5": [{
+		"id": "cable-tshirt",
+		"name": "Cable t-shirt",
+		"image": "cable-tshirt.jpg",
+		"description": "Ethically produced on organic cotton, these stylish shirts will mark you out as someone who knows what’s going on.",
+		"options": [{
+			"id": "Fit",
+			"values": ["Male", "Female"]
+		}, {
+			"id": "Size",
+			"values": ["XS", "S", "M", "L", "XL"]
+		}]
+	}, {
+		"id": "custom-poster",
+		"name": "Custom Cable poster",
+		"image": "bc-poster.png",
+		"description": "Designed by a local Cable illustrator, this beautiful A4 poster visualises the power of community media."
+	}, {
+		"id": "ws-voucher",
+		"name": "£10 Watershed voucher",
+		"image": "ws-voucher.jpg",
+		"description": "You may or may not love independent cinema. Either way they show some cracking films at the Watershed."
+	}, {
+		"id": "bsw-voucher",
+		"name": "£10 Bristol Streetwear voucher",
+		"image": "bsw-voucher.png",
+		"description": "The company that has gained notoriety for adding Bristol attitude and humour to high profile brands."
+	}, {
+		"id": "tb-voucher",
+		"name": "£10 Tangent Books voucher",
+		"image": "tb-voucher.png",
+		"description": "Founded in 2004, Tangent Books is the go to for everything from real guides to Bristol, radical history and more."
+	}]
+}
+

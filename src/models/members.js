@@ -2,7 +2,7 @@ const mongoose = require( 'mongoose' );
 const crypto = require( 'crypto' );
 
 const { getActualAmount } = require('../js/utils');
-const { audience, permission: { memberId } } = require( '../../config/config.json' );
+const { permission: { memberId } } = require( '../../config/config.json' );
 
 const ObjectId = mongoose.Schema.ObjectId;
 
@@ -241,7 +241,7 @@ module.exports.schema.virtual( 'setupComplete' ).get( function() {
 } );
 
 module.exports.schema.virtual( 'referralLink' ).get( function () {
-	return audience + '/join/referral/' + this.referralCode;
+	return 'https://thebristolcable.org/refer/' + this.referralCode;
 } );
 
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

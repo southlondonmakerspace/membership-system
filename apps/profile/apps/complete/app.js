@@ -1,15 +1,17 @@
-var __root = '../../../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
+const __root = '../../../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
 
-var	express = require( 'express' ),
-	app = express();
+const express = require( 'express' );
+
+const auth = require( __js + '/authentication' );
+const { Referrals } =  require( __js + '/database' );
+const { hasSchema } = require( __js + '/middleware' );
+const { wrapAsync } = require( __js + '/utils' );
 
 const { completeSchema } = require( './schemas.json' );
-const { hasSchema } = require( __js + '/middleware' );
 
-var auth = require( __js + '/authentication' );
-
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -28,21 +30,32 @@ app.use( function( req, res, next ) {
 	}
 } );
 
-app.get( '/', auth.isLoggedIn, function( req, res ) {
-	res.render( 'complete', { user: req.user } );
-} );
+app.get( '/', auth.isLoggedIn, wrapAsync( async function( req, res ) {
+	const referral = await Referrals.findOne({ referee: req.user });
+	res.render( 'complete', { user: req.user, referral } );
+} ) );
 
 app.post( '/', [
 	auth.isLoggedIn,
 	hasSchema(completeSchema).orFlash
-], function( req, res ) {
+], wrapAsync( async function( req, res ) {
 	const { body : { password, delivery_optin, delivery_line1, delivery_line2,
 		delivery_city, delivery_postcode, reason, how }, user } = req;
 
-	auth.generatePassword( password, function( password ) {
-		user.update( { $set: {
-			password, delivery_optin,
-			delivery_address: delivery_optin ? {
+	const referral = await Referrals.findOne({ referee: req.user });
+
+	const needAddress = delivery_optin || referral && referral.refereeGift;
+	const gotAddress = delivery_line1 && delivery_city && delivery_postcode;
+
+	if (needAddress && !gotAddress) {
+		req.flash( 'error', 'address-required' );
+		res.redirect( req.originalUrl );
+	} else {
+		const hashedPassword = await auth.generatePasswordPromise( password );
+		await user.update( { $set: {
+			password: hashedPassword,
+			delivery_optin,
+			delivery_address: needAddress ? {
 				line1: delivery_line1,
 				line2: delivery_line2,
 				city: delivery_city,
@@ -50,11 +63,11 @@ app.post( '/', [
 			} : {},
 			join_reason: reason,
 			join_how: how
-		} }, function () {
-			res.redirect( '/profile' );
-		} );
-	} );
-} );
+		} } );
+
+		res.redirect( '/profile' );
+	}
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

@@ -13,9 +13,11 @@ const { wrapAsync } = require( __js + '/utils' );
 
 const config = require( __config + '/config.json' );
 
-const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember, startMembership } = require( './utils' );
+const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember,
+	startMembership, getJTJInStock, isGiftAvailable } = require( './utils' );
 
-const { joinSchema, completeSchema } = require( './schemas.json' );
+const { gifts3, gifts5 } = require( './gifts.json' );
+const { joinSchema, referralSchema, completeSchema } = require( './schemas.json' );
 
 const app = express();
 
@@ -33,16 +35,45 @@ app.get( '/' , function( req, res ) {
 	res.render( 'index', { user: req.user } );
 } );
 
+app.get( '/referral/:code', wrapAsync( async function( req, res ) {
+	const referrer = await Members.findOne( { referralCode: req.params.code } );
+	if ( referrer ) {
+		const jtjInStock = await getJTJInStock();
+		res.render( 'index', { user: req.user, referrer, gifts3, gifts5, jtjInStock } );
+	} else {
+		req.flash('warning', 'referral-code-invalid');
+		res.redirect( '/join' );
+	}
+} ) );
+
 app.post( '/', [
 	auth.isNotLoggedIn,
 	hasSchema(joinSchema).orFlash
 ], wrapAsync(async function( req, res ) {
 	const joinForm = processJoinForm(req.body);
+
 	const completeUrl = config.audience + app.mountpath + '/complete';
 	const redirectUrl = await createJoinFlow(completeUrl, joinForm);
 
 	res.redirect( redirectUrl );
 }));
+
+app.post( '/referral/:code', [
+	auth.isNotLoggedIn,
+	hasSchema(joinSchema).orFlash,
+	hasSchema(referralSchema).orFlash
+], wrapAsync( async function ( req, res ) {
+	const joinForm = processJoinForm(req.body);
+
+	if (await isGiftAvailable(joinForm)) {
+		const completeUrl = config.audience + app.mountpath + '/complete';
+		const redirectUrl = await createJoinFlow(completeUrl, joinForm);
+		res.redirect(redirectUrl);
+	} else {
+		req.flash('warning', 'referral-gift-invalid');
+		res.redirect(req.originalUrl);
+	}
+} ) );
 
 app.get( '/complete', [
 	auth.isNotLoggedIn,

@@ -1,0 +1,13 @@
+{
+	"chooseGiftSchema": {
+		"body": {
+			"type": "object",
+			"required": ["referralGift"],
+			"properties": {
+				"referralGift": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

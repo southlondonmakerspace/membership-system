@@ -1,0 +1,26 @@
+// Focusable custom radio buttons
+@mixin custom-radio() {
+	position: relative;
+
+	input[type=radio] {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+		margin: 0;
+		opacity: 0;
+		transform: translate(-50%, 0);
+	}
+
+	label {
+		display: block;
+		@content;
+	}
+};
+
+@mixin custom-radio--is($states...) {
+	@each $state in $states {
+		input[type=radio]:#{$state} + label {
+			@content;
+		}
+	}
+}

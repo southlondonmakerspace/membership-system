@@ -25,17 +25,17 @@
 			]
 		}
 	},
-	"referralSchama": {
+	"referralSchema": {
 		"body": {
 			"type": "object",
 			"required": ["referralCode", "referralGift"],
 			"properties": {
 				"referralCode": {
-					"type": "String",
+					"type": "string",
 					"minLength": 1
 				},
 				"referralGift": {
-					"type": "String"
+					"type": "string"
 				}
 			}
 		}

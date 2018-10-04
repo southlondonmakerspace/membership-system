@@ -52,23 +52,25 @@
     "uuid": "^3.2.1"
   },
   "scripts": {
-    "start": "nodemon --exec \"npm run lint && concurrently -c red,green,blue npm:app npm:webhook npm:watch\"",
+    "start": "npm run build && nodemon --exec \"npm run lint && concurrently -c red,green,blue npm:app npm:webhook npm:watch\"",
     "app": "node app | bunyan",
     "webhook": "node webhook | bunyan",
     "first-time": "node tools/first-time/first-time",
     "new-user": "node tools/new-user/new-user",
     "lint": "eslint apps/ src/ test/ webhook.js",
-    "build:css": "node-sass --source-map true -r static/scss -o static/css",
-    "watch:css": "node-sass --source-map true -rw static/scss -o static/css",
-    "watch": "concurrently  npm:watch:*",
-    "build": "concurrently npm:build:*",
+    "watch": "gulp watch",
+    "build": "gulp build",
     "test": "ava"
   },
   "devDependencies": {
+    "autoprefixer": "^9.1.5",
     "ava": "^0.25.0",
     "concurrently": "^3.6.1",
     "eslint": "^4.19.1",
-    "node-sass": "^4.9.0",
+    "gulp": "^3.9.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4",
     "nodemon": "^1.14.12",
     "watchify": "^3.10.0"
   },
@@ -76,5 +78,9 @@
     "files": [
       "test/**/*.js"
     ]
-  }
+  },
+  "browserslist": [
+    "last 1 versions",
+    "> 1%"
+  ]
 }

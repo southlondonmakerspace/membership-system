@@ -31,7 +31,7 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', auth.isLoggedIn, wrapAsync( async function( req, res ) {
-	const referral = await Referrals.findOne({ referree: req.user });
+	const referral = await Referrals.findOne({ referee: req.user });
 	res.render( 'complete', { user: req.user, referral } );
 } ) );
 
@@ -42,9 +42,9 @@ app.post( '/', [
 	const { body : { password, delivery_optin, delivery_line1, delivery_line2,
 		delivery_city, delivery_postcode, reason, how }, user } = req;
 
-	const referral = await Referrals.findOne({ referree: req.user });
+	const referral = await Referrals.findOne({ referee: req.user });
 
-	const needAddress = delivery_optin || referral && referral.referreeGift;
+	const needAddress = delivery_optin || referral && referral.refereeGift;
 	const gotAddress = delivery_line1 && delivery_city && delivery_postcode;
 
 	if (needAddress && !gotAddress) {

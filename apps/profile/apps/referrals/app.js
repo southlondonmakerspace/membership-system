@@ -35,23 +35,23 @@ app.use( function( req, res, next ) {
 } );
 
 app.get( '/', wrapAsync( async ( req, res ) => {
-	const referrals = await Referrals.find({ referrer: req.user }).populate('referree');
+	const referrals = await Referrals.find({ referrer: req.user }).populate('referee');
 	res.render( 'index', { referralLink: req.user.referralLink, referrals, giftsById } );
 } ) );
 
 app.get( '/:id', wrapAsync( async ( req, res ) => {
-	const referral = await Referrals.findOne({ _id: req.params.id, referrer: req.user }).populate('referree');
+	const referral = await Referrals.findOne({ _id: req.params.id, referrer: req.user }).populate('referee');
 	const jtjInStock = await getJTJInStock();
 	res.render( 'referral', { referral, gifts3, gifts5, jtjInStock } );
 } ) );
 
 app.post( '/:id', hasSchema(chooseGiftSchema).orFlash, wrapAsync( async ( req, res ) => {
-	const referral = await Referrals.findOne({ _id: req.params.id, referrer: req.user }).populate('referree');
+	const referral = await Referrals.findOne({ _id: req.params.id, referrer: req.user }).populate('referee');
 
 	const giftParams = {
 		referralGift: req.body.referralGift,
 		referralGiftOptions: req.body.referralGiftOptions,
-		amount: referral.referreeAmount
+		amount: referral.refereeAmount
 	};
 
 	if (referral.referrerGift === undefined && await isGiftAvailable(giftParams)) {

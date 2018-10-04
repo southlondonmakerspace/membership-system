@@ -54,7 +54,7 @@ block body
 						+input( 'text', 'City/town', 'delivery_city', { required: true, left: 4, right: 6, value: user.delivery_address.city } )
 						+input( 'text', 'Postcode', 'delivery_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
 
-					if referral && referral.referreeGift
+					if referral && referral.refereeGift
 						.alert.alert-warning We need your address to send you you're referral gift
 						+deliveryAddress
 
@@ -91,7 +91,7 @@ block body
 							label(for='delivery_optin_no').btn No
 						li.join-options__opt
 
-					unless referral && referral.referreeGift
+					unless referral && referral.refereeGift
 						.js-delivery-details
 							+deliveryAddress
 

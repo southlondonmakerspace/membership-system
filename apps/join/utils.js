@@ -144,10 +144,10 @@ async function startMembership(member, {
 			const referrer = await Members.findOne({referralCode});
 			await Referrals.create({
 				referrer: referrer._id,
-				referree: member._id,
-				referreeGift: referralGift,
-				referreeGiftOptions: referralGiftOptions,
-				referreeAmount: amount
+				referee: member._id,
+				refereeGift: referralGift,
+				refereeGiftOptions: referralGiftOptions,
+				refereeAmount: amount
 			});
 
 			await updateGiftStock({referralGift, referralGiftOptions});

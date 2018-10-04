@@ -30,7 +30,7 @@ block contents
 			p Send the following link to your friends to refer them:
 			pre= referralLink
 
-			h3 Your referrees
+			h3 Your referees
 			if referrals.length > 0
 				.row
 					ul.referrals-list
@@ -45,8 +45,8 @@ block contents
 													g(transform="scale(0.6) translate(9, 6)")
 														<path fill="#45905c" stroke="white" stroke-width="1" d="M5.48 10.089l1.583-1.464c1.854.896 3.028 1.578 5.11 3.063 3.916-4.442 6.503-6.696 11.312-9.688l.515 1.186c-3.965 3.46-6.87 7.314-11.051 14.814-2.579-3.038-4.301-4.974-7.469-7.911z"/>
 										div
-											h3= referral.referree.firstname
-											if referral.referreeAmount < 3
+											h3= referral.referee.firstname
+											if referral.refereeAmount < 3
 												p.
 													Not eligible for a gift
 													#[a(href='https://thebristolcable.org/referafriend', target='_blank') (why?)]

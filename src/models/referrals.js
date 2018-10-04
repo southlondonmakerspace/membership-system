@@ -15,16 +15,16 @@ module.exports = {
 			ref: 'Members',
 			required: true
 		},
-		referree: {
+		referee: {
 			type: ObjectId,
 			ref: 'Members',
 			required: true
 		},
 		referrerGift: String,
 		referrerGiftOptions: Object,
-		referreeGift: String,
-		referreeGiftOptions: Object,
-		referreeAmount: {
+		refereeGift: String,
+		refereeGiftOptions: Object,
+		refereeAmount: {
 			type: Number,
 			required: true
 		}

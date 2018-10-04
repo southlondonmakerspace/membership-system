@@ -15,7 +15,7 @@ block contents
 			+page_header( 'A successful referral!' )
 
 			p.
-				You referred #{ referral.referree.firstname } to the Cable,
+				You referred #{ referral.referee.firstname } to the Cable,
 				we're really grateful for it!  Our community is now a bit
 				bigger and more vibrant, and we are edging closer to financial
 				sustainability.
@@ -27,13 +27,13 @@ block contents
 			h3 Choose a gift
 			if referral.referrerGift !== undefined
 				p You've already chosen your gift.
-			else if referral.referreeAmount < 3
+			else if referral.refereeAmount < 3
 				p.
-					Unfortunately you're referree signed up for less than £3
+					Unfortunately you're referee signed up for less than £3
 			else
 				form(method='POST').js-referral-form
 					+csrf
-					- giftAmount = referral.referreeAmount
+					- giftAmount = referral.refereeAmount
 					include /src/views/partials/gifts
 					p.
 						Please note your gift will only be sent out after the 18th

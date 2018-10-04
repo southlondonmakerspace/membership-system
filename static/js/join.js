@@ -73,8 +73,7 @@
 		$otherAmountBox.val('');
 	});
 
-	$jtjMugOptionValue.on('input', function () {
-		console.log(this, $jtjMugOptionValue.filter(':checked').data('img'));
+	$jtjMugOptionValue.on('change input', function () {
 		$jtjImg.attr('src', $jtjMugOptionValue.filter(':checked').data('img'));
 	});
 

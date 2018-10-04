@@ -18,7 +18,7 @@ mixin giftsList(gifts, amount)
 			li(data-id=gift.id).gifts__item-details.hidden.js-gift-details
 				img(src='/static/imgs/gifts/' + gift.image, class=imgClass).gifts__item-details__img
 				h4= gift.name
-				p.small= gift.description
+				p.gift-description.small!= gift.description
 				if gift.options
 					p.small
 						b Select from…
@@ -47,5 +47,5 @@ mixin giftsList(gifts, amount)
 p.gifts-none
 	input(type='radio', id='gift_none', name='referralGift', value='', required).js-gift
 	label(for='gift_none')
-		img(src='/static/imgs/gifts/mug.jpg').gift-img
+		img(src='/static/imgs/gifts/no-gift.png').gift-img
 		span.small I'm happy without a gift

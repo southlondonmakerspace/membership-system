@@ -2,21 +2,21 @@
 	"gifts3": [{
 		"id": "cable-ticket",
 		"name": "Ticket to Cable gig",
-		"image": "mug.jpg",
+		"image": "bc-ticket.png",
 		"description": "The Cable has been known to throw a great party. Details to be confirmed but expect a great venue and local acts."
 	}, {
 		"id": "cable-mug",
 		"name": "Cable mug",
-		"image": "mug.jpg",
+		"image": "bc-mug.png",
 		"description": "Beautiful custom designed mugs for sharing a warm pot of community-ownership."
 	}, {
 		"id": "jtj-mug",
 		"name": "Journey to Justice mug",
 		"image": "jtj-mug_ada.jpg",
-		"description": "(Very) limited edition mugs produced right here in Bristol by PRSC celebrating and memorialising Bristolians who have fought for our rights.",
+		"description": "(Very) limited edition mugs produced right here in Bristol by PRSC celebrating and memorialising Bristolians who have fought for our rights. Find out more <a href=\"https://prsc.org.uk/journey-to-justice-bristol-2017/\" target=\"_blank\">here</a>.",
 		"options": [{
 			"id": "Design",
-			"values": ["ada", "ann", "james", "jessie", "mary", "owen", "princess", "ram", "walter"]
+			"values": ["ada", "ann", "james", "mary", "owen", "princess", "ram", "walter"]
 		}]
 	}],
 	"gifts5": [{
@@ -34,7 +34,7 @@
 	}, {
 		"id": "custom-poster",
 		"name": "Custom Cable poster",
-		"image": "mug.jpg",
+		"image": "bc-poster.png",
 		"description": "Designed by a local Cable illustrator, this beautiful A4 poster visualises the power of community media."
 	}, {
 		"id": "ws-voucher",

@@ -103,6 +103,11 @@
 	line-height: 1.25;
 }
 
+.gift-description a {
+	color: inherit;
+	text-decoration: underline;
+}
+
 $gift-img-size: 100px;
 
 .gifts__item-details {

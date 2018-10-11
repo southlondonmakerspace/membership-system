@@ -5,7 +5,6 @@ const __js = __src + '/js';
 const express = require('express');
 
 const auth = require( __js + '/authentication' );
-const { Members } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
 const mandrill = require( __js + '/mandrill' );
 const{ hasSchema } = require( __js + '/middleware' );
@@ -106,10 +105,21 @@ app.post( '/update-subscription', [
 		req.flash( 'danger', 'gocardless-subscription-updating-err' );
 	} else {
 		try {
-			await gocardless.subscriptions.update( user.gocardless.subscription_id, {
-				amount: amount * 100,
-				name: getSubscriptionName( amount, user.gocardless.period )
-			} );
+			try {
+				await gocardless.subscriptions.update( user.gocardless.subscription_id, {
+					amount: amount * 100,
+					name: getSubscriptionName( amount, user.gocardless.period )
+				} );
+			} catch ( gcError ) {
+				// Can't update subscription names if they are linked to a plan
+				if ( gcError.response && gcError.response.status === 422 ) {
+					await gocardless.subscriptions.update( user.gocardless.subscription_id, {
+						amount: amount * 100
+					} );
+				} else {
+					throw gcError;
+				}
+			}
 
 			await user.update( { $set: {
 				'gocardless.amount': amount

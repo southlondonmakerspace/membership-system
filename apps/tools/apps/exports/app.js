@@ -248,6 +248,8 @@ async function getJoinReasonQuery() {
 async function getJoinReasonExport(members) {
 	return members
 		.map(member => ({
+			Joined: member.joined,
+			FirstName: member.first_name,
 			Reason: member.join_reason,
 			FirstHeard: member.join_how
 		}));

@@ -40,7 +40,7 @@ app.post( '/', [
 	hasSchema(completeSchema).orFlash
 ], wrapAsync( async function( req, res ) {
 	const { body : { password, delivery_optin, delivery_line1, delivery_line2,
-		delivery_city, delivery_postcode, reason, how }, user } = req;
+		delivery_city, delivery_postcode, reason, how, shareable }, user } = req;
 
 	const referral = await Referrals.findOne({ referee: req.user });
 
@@ -62,7 +62,8 @@ app.post( '/', [
 				postcode: delivery_postcode
 			} : {},
 			join_reason: reason,
-			join_how: how
+			join_how: how,
+			join_shareable: !!shareable
 		} } );
 
 		res.redirect( '/profile' );

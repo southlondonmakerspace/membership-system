@@ -21,6 +21,9 @@
 					"type": "string",
 					"minLength": 1
 				},
+				"shareable": {
+					"type": "boolean"
+				},
 				"delivery_optin": {
 					"type": "boolean"
 				}

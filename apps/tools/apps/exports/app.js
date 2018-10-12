@@ -241,7 +241,7 @@ async function getPasswordResetExport(members) {
 
 async function getJoinReasonQuery() {
 	return {
-		join_reason: {$exists: true}
+		join_reason: {$exists: true, $ne: null}
 	};
 }
 

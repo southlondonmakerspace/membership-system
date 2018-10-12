@@ -177,6 +177,7 @@ module.exports = {
 		last_seen: Date,
 		join_reason: String,
 		join_how: String,
+		join_shareable: Boolean,
 		cancellation: {
 			satisfied: Number,
 			reason: String,

@@ -8,8 +8,7 @@
 					"type": "string"
 				},
 				"type": {
-					"type": "string",
-					"enum": ["edition", "active-members", "reset-password"]
+					"type": "string"
 				}
 			}
 		}

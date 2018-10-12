@@ -160,6 +160,12 @@ const exportTypes = {
 		statuses: ['added', 'reset'],
 		query: getActiveMembersQuery,
 		export: getPasswordResetExport
+	},
+	'join-reasons': {
+		name: 'Join reasons export',
+		statuses: ['added', 'seen'],
+		query: getJoinReasonQuery,
+		export: getJoinReasonExport
 	}
 };
 
@@ -231,6 +237,20 @@ async function getPasswordResetExport(members) {
 			ResetPasswordURL: config.audience + '/password-reset/code/' + member.password.reset_code
 		}))
 		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
+}
+
+async function getJoinReasonQuery() {
+	return {
+		join_reason: {$exists: true}
+	};
+}
+
+async function getJoinReasonExport(members) {
+	return members
+		.map(member => ({
+			Reason: member.join_reason,
+			FirstHeard: member.join_how
+		}));
 }
 
 module.exports = function( config ) {

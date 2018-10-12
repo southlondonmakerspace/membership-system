@@ -55,7 +55,7 @@ block body
 						+input( 'text', 'Postcode', 'delivery_postcode', { required: true, left: 4, right: 6, value: user.delivery_address.postcode } )
 
 					if referral && referral.refereeGift
-						.alert.alert-warning We need your address to send you you're referral gift
+						.alert.alert-warning We need your address to send you your referral gift
 						+deliveryAddress
 
 					if user.gocardless.amount >= 3

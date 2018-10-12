@@ -5,8 +5,7 @@ module.exports = {
 	schema: mongoose.Schema( {
 		type: {
 			type: String,
-			required: true,
-			enum: ['edition', 'active-members', 'reset-password']
+			required: true
 		},
 		description: {
 			type: String,

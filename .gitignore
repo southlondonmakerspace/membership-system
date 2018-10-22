@@ -28,5 +28,6 @@ node_modules
 
 static/css/
 config/config.json
+config/.htpasswd
 .DS_Store
 *.log*

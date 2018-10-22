@@ -30,3 +30,4 @@ static/css/
 config/config.json
 .DS_Store
 *.log*
+.htpasswd

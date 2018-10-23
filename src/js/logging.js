@@ -38,10 +38,8 @@ if ( config.logStdout != undefined && config.logStdout == true) {
 
 if ( config.log != undefined ) {
 	bunyanConfig.streams.push({
-		type: 'rotating-file',
-		path: config.log,
-		period: '1d', // rotates every day
-		count: 7 // keeps 7 days
+		type: 'file',
+		path: config.log
 	});
 }
 

@@ -53,6 +53,8 @@ mkdir /var/log/membership-system
 chown membership-system:membership-system /var/log/membership-system
 
 ln -s /opt/membership-system/config/nginx.conf /etc/nginx/sites-enabled/thebristolcable.conf
+# Must be owned by root
+cp /opt/membership-system/config/logrotate.conf /etc/logrotate.d/membership-system
 
 certbot -n -d membership.thebristolcable.org -m web@thebristolcable.org --no-eff-email
 

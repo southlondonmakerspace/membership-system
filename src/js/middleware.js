@@ -6,7 +6,6 @@ const config = require( '../../config/config.json' );
 function flashErrors( errors, req, res ) {
 	errors
 		.map( error => {
-			console.log( error );
 			switch ( error.keyword ) {
 			case 'required':
 				return `flash-validation-error${error.dataPath}.${error.params.missingProperty}-required`;

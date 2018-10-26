@@ -11,7 +11,7 @@ const db = require(__js + '/database').connect(config.mongo);
 
 const utils = require('./sync-utils.js');
 const { keyBy } = require('../utils');
-const { createPayment } = require('../../webhook-utils.js');
+const { createPayment, getSubscriptionPeriod } = require('../../webhook-utils.js');
 
 async function loadData(file) {
 	console.log( '# Loading data from file...' );
@@ -90,7 +90,8 @@ async function syncCustomers(validCustomers) {
 
 			payments = [...payments, ...customer.payments.map(payment => ({
 				...createPayment(payment),
-				member: member._id
+				subscription_period: getSubscriptionPeriod(payment.subscription),
+				member: member._id,
 			}))];
 
 			delete membersByCustomerId[customer.id];

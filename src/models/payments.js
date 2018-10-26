@@ -15,6 +15,10 @@ module.exports = {
 			unique: true
 		},
 		subscription_id: String,
+		subscription_period: {
+			type: String,
+			enum: ['monthly', 'annually', 'unknown']
+		},
 		member: {
 			type: ObjectId,
 			ref: 'Members'

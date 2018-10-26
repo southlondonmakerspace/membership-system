@@ -103,7 +103,7 @@ async function handlePaymentResourceEvent( event ) {
 
 	switch( event.action ) {
 	case 'confirmed': // Collected
-		await confirmPayment( gcPayment, payment );
+		await confirmPayment( payment );
 	case 'created': // Pending
 	case 'submitted': // Processing
 	case 'cancelled': // Cancelled
@@ -125,17 +125,25 @@ async function createPayment( gcPayment ) {
 			payment: payment,
 			member: member._id
 		} );
-
-		return await new Payments( { ...payment, member: member._id } ).save();
 	} else {
-		log.info( {
+		log.warn( {
 			app: 'webhook',
 			action: 'create-unlinked-payment',
 			payment: payment
 		} );
-
-		return await new Payments( payment ).save();
 	}
+
+	const subscription = gcPayment.links.subscription &&
+		await gocardless.subscriptions.get(gcPayment.links.subscription);
+
+	return await Payments.create({
+		...payment,
+		...member && {member: member._id},
+		...subscription && {
+			subscription_period: utils.getSubscriptionPeriod(subscription)
+		}
+	});
+
 }
 
 async function updatePayment( gcPayment, payment ) {
@@ -148,8 +156,8 @@ async function updatePayment( gcPayment, payment ) {
 	} );
 }
 
-async function confirmPayment( gcPayment, payment ) {
-	if ( payment.member ) {
+async function confirmPayment( payment ) {
+	if ( payment.member && payment.subscription_id ) {
 		const subscription = await gocardless.subscriptions.get(payment.subscription_id);
 		const expiryDate = moment.utc(payment.charge_date)
 			.add(utils.getSubscriptionDuration(subscription))

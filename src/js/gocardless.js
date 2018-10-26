@@ -36,7 +36,7 @@ gocardless.interceptors.request.use(config => {
 gocardless.interceptors.response.use(response => {
 	return response;
 }, error => {
-	log.error({
+	log.debug({
 		app: 'gocardless',
 		status: error.response.status,
 		data: error.response.data

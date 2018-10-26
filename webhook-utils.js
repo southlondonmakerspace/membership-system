@@ -20,7 +20,17 @@ function getSubscriptionDuration({interval, interval_unit}) {
 	return moment.duration({[unit]: interval});
 }
 
+function getSubscriptionPeriod({interval, interval_unit}) {
+	if (interval === 12 && interval_unit === 'monthly' ||
+			interval === 1 && interval_unit === 'yearly')
+		return 'annually';
+	if (interval === 1 && interval_unit === 'monthly')
+		return 'monthly';
+	return 'unknown';
+}
+
 module.exports = {
 	createPayment,
-	getSubscriptionDuration
+	getSubscriptionDuration,
+	getSubscriptionPeriod
 };

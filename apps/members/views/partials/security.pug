@@ -8,7 +8,8 @@ dl.dl-horizontal
 			dd=member.activation_code
 		if member.password.reset_code
 			dt Password Reset Code
-			dd=member.password.reset_code
+			dd
+				a(href='/password-reset/code/' + member.password.reset_code)= member.password.reset_code
 		dt Password Tries
 		dd #{ member.password.tries } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
 		dt 2FA

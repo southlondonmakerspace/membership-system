@@ -105,10 +105,14 @@ module.exports = {
 			postcode: {
 				type: String
 			},
-			postcode_coordinates: {
-				lat: Number,
-				lng: Number
-			}
+		},
+		billing_location: {
+			lat: Number,
+			lng: Number
+		},
+		delivery_location: {
+			lat: Number,
+			lng: Number
 		},
 		tag: {
 			id: {

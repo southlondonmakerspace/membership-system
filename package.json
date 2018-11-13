@@ -43,7 +43,6 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-totp": "0.0.2",
-    "postcodesio-client": "^0.3.4",
     "pug": "^2.0.3",
     "query-string": "^4.3.4",
     "request": "^2.88.0",

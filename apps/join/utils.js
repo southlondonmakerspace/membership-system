@@ -10,6 +10,7 @@ const config = require( __config + '/config.json' );
 const auth = require( __js + '/authentication' );
 const { JoinFlows, JTJStock, Members, Referrals } = require( __js + '/database' );
 const gocardless = require( __js + '/gocardless' );
+const postcodes = require( __js + '/postcodes' );
 const mailchimp = require( __js + '/mailchimp' );
 const mandrill = require( __js + '/mandrill' );
 const { getActualAmount, getSubscriptionName } = require( __js + '/utils' );
@@ -21,6 +22,7 @@ gifts5.forEach(gift => giftsById[gift.id] = {...gift, minAmount: 5});
 
 async function customerToMember(customerId, mandateId) {
 	const customer = await gocardless.customers.get(customerId);
+	const billing_location = await postcodes.getLocation(customer.postal_code);
 
 	return {
 		firstname: customer.given_name,
@@ -33,6 +35,7 @@ async function customerToMember(customerId, mandateId) {
 			city: customer.city,
 			postcode: customer.postal_code
 		},
+		billing_location,
 		gocardless: {
 			customer_id: customer.id,
 			mandate_id: mandateId

@@ -1,32 +1,33 @@
-const axios = require('axois');
+const axios = require('axios');
 
 const instance = axios.create({
 	baseURL: 'https://api.postcodes.io'
 });
 
 async function lookup(postcode) {
-	const response = instance.get('/postcodes/' + postcode);
-	return response.data;
+	const response = await instance.get('/postcodes/' + postcode);
+	return response.data.result;
 }
 
 async function bulkLookup(postcodes) {
-	const response = instance.post('/postcodes', {postcodes});
+	const response = await instance.post('/postcodes', {postcodes});
 	return response.data;
 }
 
 async function getLocation(postcode) {
 	try {
-		const postcodeData = await lookup(postcode);
+		const data = await lookup(postcode);
 		return {
-			lat: postcodeData.result.latitude,
-			lng: postcodeData.result.longitude
+			lat: data.latitude,
+			lng: data.longitude
 		};
 	} catch (err) {
+		console.log(err);
 		return null;
 	}
 }
 
-return {
+module.exports = {
 	lookup,
 	bulkLookup,
 	getLocation

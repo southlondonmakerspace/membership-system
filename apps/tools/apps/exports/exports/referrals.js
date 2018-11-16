@@ -42,8 +42,8 @@ async function getExport(referrals) {
 		'Address2',
 		'City',
 		'Postcode',
-		'Amount',
 		'Gift',
+		'RefereeAmount',
 		...giftOptions
 	];
 

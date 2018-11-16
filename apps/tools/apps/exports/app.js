@@ -1,27 +1,20 @@
-var __root = '../../../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-var __config = __root + '/config';
+const __root = '../../../..';
+const __src = __root + '/src';
+const __js = __src + '/js';
 
+const express = require( 'express' );
 const Papa = require('papaparse');
 
-var	express = require( 'express' ),
-	app = express();
-
-var	db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members,
-	Exports = db.Exports;
-
-const config = require( __config + '/config.json' );
-
-var auth = require( __js + '/authentication' );
-
-const { wrapAsync } = require( __js + '/utils' );
+const auth = require( __js + '/authentication' );
+const { Exports } = require( __js + '/database' );
 const { hasSchema } = require( __js + '/middleware' );
+const { wrapAsync } = require( __js + '/utils' );
 
 const { createSchema, updateSchema } = require('./schemas.json');
 
+const exportTypes = require('./exports');
+
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -53,43 +46,43 @@ app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, 
 } ) );
 
 app.get( '/:uuid', wrapAsync( async function( req, res ) {
-	const exportDetails = await Exports.findOne({_id: req.params.uuid});
+	const exportDetails = await Exports.findById(req.params.uuid);
 	const exportType = exportTypes[exportDetails.type];
 
-	const newMembers = await Members.find({
-		...await exportType.query(),
+	const newItems = await exportType.collection.find({
+		...await exportType.getQuery(),
 		exports: {$not: {$elemMatch: {
 			export_id: exportDetails
 		}}}
 	});
 
-	const exportMembers = await Members.find({
+	const exportItems = await exportType.collection.find({
 		exports: {$elemMatch: {
 			export_id: exportDetails
 		}}
 	});
 
-	exportMembers.forEach(member => {
+	exportItems.forEach(member => {
 		member.currentExport = member.exports.find(e => e.export_id.equals(exportDetails._id));
 	});
 
 	res.render('export', {
 		exportDetails,
 		exportType,
-		exportMembers,
-		newMembers
+		exportItems,
+		newItems
 	});
 } ) );
 
 app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( req, res ) {
 	const data = req.body;
 
-	const exportDetails = await Exports.findOne({_id: req.params.uuid});
+	const exportDetails = await Exports.findById(req.params.uuid);
 	const exportType = exportTypes[exportDetails.type];
 
 	if (data.action === 'add') {
-		await Members.updateMany({
-			...await exportType.query(),
+		await exportType.collection.updateMany({
+			...await exportType.getQuery(),
 			exports: {$not: {$elemMatch: {
 				export_id: exportDetails
 			}}}
@@ -106,7 +99,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		res.redirect('/tools/exports/' + exportDetails._id);
 
 	} else if (data.action === 'update') {
-		await Members.updateMany({
+		await exportType.collection.updateMany({
 			exports: {$elemMatch: {
 				export_id: exportDetails,
 				...data.old_status !== '' && {status: data.old_status}
@@ -122,7 +115,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		res.redirect('/tools/exports/' + exportDetails._id);
 
 	} else if (data.action === 'export') {
-		const members = await Members.find({
+		const members = await exportType.collection.find({
 			exports: {$elemMatch: {
 				export_id: exportDetails,
 				...data.status !== '' && {status: data.status}
@@ -130,131 +123,17 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		});
 
 		const exportName = `export-${exportDetails.description}_${new Date().toISOString()}.csv`;
-		const exportData = await exportType.export(members);
+		const exportData = await exportType.getExport(members);
 		res.attachment(exportName).send(Papa.unparse(exportData));
 	} else if (data.action === 'delete') {
 		await Exports.deleteOne({_id: exportDetails._id});
-		await Members.updateMany({}, {
+		await exportType.collection.updateMany({}, {
 			$pull: {exports: {export_id: exportDetails._id}}
 		});
 		req.flash('success', 'exports-deleted');
 		res.redirect('/tools/exports');
 	}
 } ) );
-
-const exportTypes = {
-	edition: {
-		name: 'Edition export',
-		statuses: ['added', 'sent'],
-		query: getEditionQuery,
-		export: getEditionExport
-	},
-	'active-members': {
-		name: 'Active members export',
-		statuses: ['added', 'seen'],
-		query: getActiveMembersQuery,
-		export: getActiveMembersExport
-	},
-	'reset-password': {
-		name: 'Password reset export',
-		statuses: ['added', 'reset'],
-		query: getActiveMembersQuery,
-		export: getPasswordResetExport
-	},
-	'join-reasons': {
-		name: 'Join reasons export',
-		statuses: ['added', 'seen'],
-		query: getJoinReasonQuery,
-		export: getJoinReasonExport
-	}
-};
-
-async function getEditionQuery() {
-	const permission = await Permissions.findOne( { slug: config.permission.member });
-	return {
-		'gocardless.amount': {$gte: 3},
-		permissions: {$elemMatch: {
-			permission,
-			date_expires: {$gte: new Date()}
-		}},
-		delivery_optin: true
-	};
-}
-
-async function getEditionExport(members) {
-	return members
-		.map(member => {
-			const postcode = (member.delivery_address.postcode || '').trim().toUpperCase();
-			return {
-				FirstName: member.firstname,
-				LastName: member.lastname,
-				Address1: member.delivery_address.line1,
-				Address2: member.delivery_address.line2,
-				City: member.delivery_address.city,
-				Postcode: postcode,
-				IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3)),
-				ReferralLink: member.referralLink
-			};
-		})
-		.sort((a, b) => (
-			(b.IsLocal - a.IsLocal) ||
-				(b.LastName.toLowerCase() > a.LastName.toLowerCase() ? -1 : 1)
-		));
-}
-
-async function getActiveMembersQuery() {
-	const permission = await Permissions.findOne( { slug: config.permission.member });
-	return {
-		permissions: {$elemMatch: {
-			permission,
-			date_expires: {$gte: new Date()}
-		}}
-	};
-}
-
-async function getActiveMembersExport(members) {
-	return members
-		.map(member => ({
-			EmailAddress: member.email,
-			FirstName: member.firstname,
-			LastName: member.lastname
-		}))
-		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
-}
-
-async function getPasswordResetExport(members) {
-	for (let member of members) {
-		const code = auth.generateCode();
-		member.password.reset_code = code;
-		await member.save();
-	}
-
-	return members
-		.map(member => ({
-			EmailAddress: member.email,
-			FirstName: member.firstname,
-			LastName: member.lastname,
-			ResetPasswordURL: config.audience + '/password-reset/code/' + member.password.reset_code
-		}))
-		.sort((a, b) => a.EmailAddress < b.EmailAddress ? -1 : 1);
-}
-
-async function getJoinReasonQuery() {
-	return {
-		join_reason: {$exists: true, $ne: null}
-	};
-}
-
-async function getJoinReasonExport(members) {
-	return members
-		.map(member => ({
-			Shareable: member.join_shareable ? 'Yes' : 'No',
-			Joined: member.joined,
-			FirstName: member.firstname,
-			Reason: member.join_reason,
-			FirstHeard: member.join_how
-		}));
-}
 
 module.exports = function( config ) {
 	app_config = config;

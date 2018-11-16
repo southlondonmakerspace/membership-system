@@ -28,8 +28,8 @@ async function getExport(referrals) {
 
 	const giftOptions = referrals
 		.map(referral => [
-			...Object.keys(referral.referrerGiftOptions),
-			...Object.keys(referral.refereeGiftOptions)
+			...Object.keys(referral.referrerGiftOptions || {}),
+			...Object.keys(referral.refereeGiftOptions || {})
 		])
 		.reduce((a, b) => [...a, ...b], [])
 		.filter((opt, i, arr) => arr.indexOf(opt) === i); // deduplicate
@@ -42,6 +42,7 @@ async function getExport(referrals) {
 		'Address2',
 		'City',
 		'Postcode',
+		'RefereeAmount',
 		'Gift',
 		...giftOptions
 	];
@@ -54,13 +55,15 @@ async function getExport(referrals) {
 			return [[
 				'Referrer',
 				...memberDetails(referrer),
+				referral.refereeAmount,
 				referral.referrerGift,
-				...giftOptions.map(opt => referral.referrerGiftOptions[opt] || '')
+				...giftOptions.map(opt => (referral.referrerGiftOptions || {[opt]: ''})[opt])
 			], [
 				'Referee',
 				...memberDetails(referee),
+				referral.refereeAmount,
 				referral.refereeGift,
-				...giftOptions.map(opt => referral.refereeGiftOptions[opt] || '')
+				...giftOptions.map(opt => (referral.refereeGiftOptions || {[opt]: ''})[opt])
 			]];
 		})
 		.reduce((a, b) => [...a, ...b], []);

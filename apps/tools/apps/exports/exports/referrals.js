@@ -42,8 +42,8 @@ async function getExport(referrals) {
 		'Address2',
 		'City',
 		'Postcode',
-		'Gift',
 		'RefereeAmount',
+		'Gift',
 		...giftOptions
 	];
 
@@ -55,14 +55,14 @@ async function getExport(referrals) {
 			return [[
 				'Referrer',
 				...memberDetails(referrer),
-				referral.referrerGift,
 				referral.refereeAmount,
+				referral.referrerGift,
 				...giftOptions.map(opt => (referral.referrerGiftOptions || {[opt]: ''})[opt])
 			], [
 				'Referee',
 				...memberDetails(referee),
-				referral.refereeGift,
 				referral.refereeAmount,
+				referral.refereeGift,
 				...giftOptions.map(opt => (referral.refereeGiftOptions || {[opt]: ''})[opt])
 			]];
 		})

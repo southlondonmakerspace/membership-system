@@ -10,6 +10,7 @@ async function getQuery() {
 
 function memberDetails(member) {
 	return [
+		member.email,
 		member.firstname,
 		member.lastname,
 		...member.delivery_optin ? [
@@ -36,6 +37,7 @@ async function getExport(referrals) {
 
 	const fields = [
 		'Type',
+		'Email',
 		'FirstName',
 		'LastName',
 		'Address1',

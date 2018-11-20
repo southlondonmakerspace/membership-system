@@ -1,4 +1,4 @@
-var __root = __dirname + '/../..';
+var __root = __dirname + '/..';
 
 var config = require( __root + '/config/config.json' ),
 	db = require( __root + '/src/js/database' ).connect( config.mongo ),

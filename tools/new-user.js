@@ -1,4 +1,4 @@
-var __root = __dirname + '/../..';
+var __root = __dirname + '/..';
 var __config = __root + '/config';
 var __src = __root + '/src';
 var __js = __src + '/js';

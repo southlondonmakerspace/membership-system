@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo This is for reference only
+exit 0
+
 adduser --disabled-password membership-system
 chmod 700 /home/membership-system
 

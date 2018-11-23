@@ -17,13 +17,10 @@
 	"flash-logged-out": "Logged out",
 	"flash-login-failed": "Login unsuccessful",
 	"flash-login-required": "You must be logged in",
-	"flash-inactive-account": "Account not activated",
 	"flash-already-logged-in": "You are already logged in",
 	"flash-inactive-membership": "Your membership is inactive",
 	"flash-403": "You do not have access to this area",
 	"flash-information-ommited": "Important information was ommited",
-
-	"flash-user-duplicate": "Unable to create account",
 
 	"flash-password-changed": "Password changed",
 	"flash-password-invalid": "Incorrect current password",
@@ -81,10 +78,6 @@
 	"flash-discourse-cancelled": "Activation cancelled",
 
 	"flash-gocardless-updated": "GoCardless updated",
-	"flash-gocardless-subscription-success": "Contribution setup succesfully",
-	"flash-gocardless-subscription-min": "Minimum direct debit amount is £%",
-	"flash-gocardless-subscription-invalid-day": "Contribution payment date must be between 1st and 28th of the month or last day of the month",
-	"flash-gocardless-subscription-err": "Error setting up contribution",
 	"flash-gocardless-subscription-cancelled": "Contribution cancelled",
 	"flash-gocardless-subscription-cancellation-err": "Error cancelling contribution",
 	"flash-gocardless-subscription-updated": "Contribution updated",

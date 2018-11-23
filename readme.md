@@ -45,21 +45,7 @@ Before you can start the server you'll need to ensure:
 1. Start the main server using `npm start`.
 1. Open a browser to `http://localhost:3001`.
 
-## Deployment
-
-### Setup
-
-Currently setting up a production environment involves following the guide in
-`tools/install.sh`
-
-### Updating
-
-```
-git pull
-pm2 restart config/ecosystem.prod.js
-```
-
-## Creating Apps
+### Creating apps
 The system is built around modular apps. If you're looking to add functionality
 to the site the best way to do this would by adding an app to the site rather
 than modifying it's base. This means you're unlikely to mess anything up.
@@ -74,5 +60,18 @@ Stub out your app structure within `app/`, this will include:
 				app.js
 				config.js
 
-
 Check out these files to get an idea of how each of these should be structure.
+
+## Deployment
+
+### Setup
+
+Currently setting up a production environment involves following the guide in
+`tools/install.sh`
+
+### Updating
+
+```
+git pull
+pm2 restart config/ecosystem.prod.js
+```

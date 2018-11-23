@@ -7,10 +7,11 @@ and repurposed by [The Bristol Cable](https://thebristolcable.org).
 Browser testing with<br/>
 <a href="https://www.browserstack.com/"><img src="https://user-images.githubusercontent.com/2084823/46341120-52388b00-c62f-11e8-8f41-270915ccc03b.png" width="150" /></a>
 
-The system is now up and running, however you'll need to review:
-- Setting up GoCardless for subscriptions.
-- Configuring Discourse for forum management.
-- Testing the API integration with your access control system.
+### Integrations
+- GoCardless for direct debits
+- MailChimp for newsletters
+- Mandrill for transactional emails
+- Discourse for forums (not sure what the state of this is)
 
 ## Development
 

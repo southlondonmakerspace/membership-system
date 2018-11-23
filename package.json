@@ -39,7 +39,6 @@
     "mandrill-api": "^1.0.45",
     "moment": "^2.22.2",
     "mongoose": "^5.3.6",
-    "nodemailer": "^2.3.2",
     "notp": "^2.0.3",
     "papaparse": "^4.6.1",
     "passport": "^0.3.2",

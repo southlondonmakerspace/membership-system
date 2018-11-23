@@ -1,8 +1,0 @@
-{
-	"title": "Events",
-	"path": "events",
-	"permissions": [
-		"superadmin"
-	],
-	"priority": 3
-}

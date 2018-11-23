@@ -1,8 +1,0 @@
-{
-	"title": "Catchment",
-	"path": "catchment",
-	"permissions": [
-		"superadmin"
-	],
-	"priority": 1
-}

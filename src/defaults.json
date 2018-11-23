@@ -5,16 +5,11 @@
 	"home-text": "Hello there Makers!",
 	"home-link-text": "Find out more",
 	"home-link-url": "http://example.com/about",
-	"gocardless-minimum": "20",
 	"off-switch": "false",
 
 	"content-email-admin": "This can only be changed by an administrator.",
 	"leaders": "directors",
 	"leader-email": "directors@example.com",
-
-	"signup-cap": "0",
-	"signup-closed": "false",
-	"signup-redirect": "https://example.com/closed",
 
 	"membership-support-email": "membership@example.com",
 
@@ -22,13 +17,10 @@
 	"flash-logged-out": "Logged out",
 	"flash-login-failed": "Login unsuccessful",
 	"flash-login-required": "You must be logged in",
-	"flash-inactive-account": "Account not activated",
 	"flash-already-logged-in": "You are already logged in",
 	"flash-inactive-membership": "Your membership is inactive",
 	"flash-403": "You do not have access to this area",
 	"flash-information-ommited": "Important information was ommited",
-
-	"flash-user-duplicate": "Unable to create account",
 
 	"flash-password-changed": "Password changed",
 	"flash-password-invalid": "Incorrect current password",
@@ -56,8 +48,6 @@
 	"flash-profile-updated": "Profile updated",
 	"flash-account-updated": "Your account details have been updated",
 	"flash-delivery-updated": "Your delivery details have been updated",
-
-	"flash-emergency-contact-updated": "Emergency contact updated",
 
 	"flash-permission-404": "Permission not found",
 	"flash-permission-created": "Permission created",
@@ -88,10 +78,6 @@
 	"flash-discourse-cancelled": "Activation cancelled",
 
 	"flash-gocardless-updated": "GoCardless updated",
-	"flash-gocardless-subscription-success": "Contribution setup succesfully",
-	"flash-gocardless-subscription-min": "Minimum direct debit amount is £%",
-	"flash-gocardless-subscription-invalid-day": "Contribution payment date must be between 1st and 28th of the month or last day of the month",
-	"flash-gocardless-subscription-err": "Error setting up contribution",
 	"flash-gocardless-subscription-cancelled": "Contribution cancelled",
 	"flash-gocardless-subscription-cancellation-err": "Error cancelling contribution",
 	"flash-gocardless-subscription-updated": "Contribution updated",
@@ -99,18 +85,6 @@
 	"flash-gocardless-subscription-exists": "You already have an active contribution",
 	"flash-gocardless-subscription-doesnt-exist": "You don't have an active contribution",
 	"flash-gocardless-subscription-restarted": "You have successfully restarted your contribution",
-
-	"flash-event-404": "Event not found",
-	"flash-event-not-linkable": "Tag cannot be linked",
-	"flash-event-linked": "Tag linked to user",
-	"flash-event-date-in-future": "Events do not occour in the future",
-
-	"flash-apikey-404": "API Key not found",
-	"flash-apikey-created": "API Key created",
-	"flash-apikey-update": "API Key updated",
-	"flash-apikey-delete": "API Key deleted",
-	"flash-apikey-name-required": "API Key requires a name",
-	"flash-apikey-key-required": "API Key requires a secret key",
 
 	"flash-tag-revoked": "Your tag has been revoked",
 	"flash-discourse-unlinked": "Your Discourse account has been unlinked",
@@ -132,43 +106,6 @@
 	"flash-option-404": "Option not found",
 	"flash-option-updated": "Option updated",
 	"flash-option-reset": "Option reset to default",
-
-	"flash-item-404": "Item not found",
-	"flash-item-created": "Item created",
-	"flash-item-not-created": "Item was not created due to an error",
-	"flash-item-updated": "Item updated",
-	"flash-item-removed": "Item removed",
-	"flash-item-expiry-error": "Expiry date must not be the same as or before the start date",
-	"flash-item-admin-only": "Only admin users can modify items",
-	"flash-item-name-required": "Items must have a name",
-	"flash-item-slug-required": "Items must have a slug",
-	"flash-item-duplicate": "User already has this Item",
-	"flash-item-action-duplicate": "Item already has this action",
-
-	"flash-action-404": "Action not found",
-	"flash-action-created": "Action created",
-	"flash-action-updated": "Action updated",
-	"flash-action-removed": "Action removed",
-	"flash-action-expiry-error": "Expiry date must not be the same as or before the start date",
-	"flash-action-admin-only": "Only admin users can modify actions",
-	"flash-action-slug-required": "Action must have a slug",
-	"flash-action-duplicate": "User already has this action",
-
-	"flash-state-404": "State not found",
-	"flash-state-created": "State created",
-	"flash-state-updated": "State updated",
-	"flash-state-removed": "State removed",
-	"flash-state-expiry-error": "Expiry date must not be the same as or before the start date",
-	"flash-state-admin-only": "Only admin users can modify states",
-	"flash-state-name-required": "State must have text to describe it",
-	"flash-state-slug-required": "State must have a slug",
-	"flash-state-duplicate": "User already has this state",
-
-	"flash-enroll-invalid": "Enroll code invalid",
-	"flash-enroll-expired": "Enroll code expired",
-	"flash-enroll-success": "Tag successful enrolled",
-	"flash-enroll-dupe": "Tag already enrolled",
-	"flash-enroll-error": "Error enrolling tag",
 
 	"flash-exports-created": "Export created",
 	"flash-exports-added": "Added members to export",

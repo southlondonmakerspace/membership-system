@@ -70,17 +70,6 @@ module.exports = {
 				default: false
 			}
 		},
-		activated: {
-			type: Boolean,
-			default: false
-		},
-		signup_override: {
-			type: Boolean,
-			default: false
-		},
-		activation_code: {
-			type: String,
-		},
 		firstname: {
 			type: String,
 			required: true
@@ -127,17 +116,6 @@ module.exports = {
 			type: Date,
 			default: Date.now,
 			required: true
-		},
-		emergency_contact: {
-			firstname: {
-				type: String
-			},
-			lastname: {
-				type: String
-			},
-			telephone: {
-				type: String
-			}
 		},
 		discourse: {
 			username: String,

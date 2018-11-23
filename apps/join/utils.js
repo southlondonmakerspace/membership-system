@@ -39,8 +39,7 @@ async function customerToMember(customerId, mandateId) {
 		gocardless: {
 			customer_id: customer.id,
 			mandate_id: mandateId
-		},
-		activated: true
+		}
 	};
 }
 

@@ -77,7 +77,6 @@ async function syncCustomers(validCustomers) {
 					lastname: customer.family_name,
 					email: customer.email,
 					joined: moment(customer.created_at).toDate(),
-					activated: true,
 					gocardless,
 					permissions: [{
 						permission,

@@ -1,9 +1,0 @@
-{
-	"title": "Events",
-	"path": "events",
-	"permissions": [
-		"superadmin", "admin", "member"
-	],
-	"menu": "main",
-	"priority": 2
-}

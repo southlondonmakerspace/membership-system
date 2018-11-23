@@ -305,39 +305,6 @@ app.post( '/:uuid/profile', [
 	res.redirect(app.mountpath + '/' + uuid + '/profile');
 } ) );
 
-app.get( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
-	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( ! member ) {
-			req.flash( 'warning', 'member-404' );
-			res.redirect( app.mountpath );
-			return;
-		}
-		res.locals.breadcrumb.push( {
-			name: member.fullname,
-			url: '/members/' + member.uuid
-		} );
-		res.locals.breadcrumb.push( {
-			name: 'Activation',
-		} );
-		res.render( 'activation', { member: member } );
-	} );
-} );
-
-app.post( '/:uuid/activation', auth.isSuperAdmin, function( req, res ) {
-	var member = {
-		activated: ( req.body.activated ? true : false )
-	};
-
-	if ( req.body.activated ) {
-		member.activation_code = null;
-	}
-
-	Members.update( { uuid: req.params.uuid }, member, function() {
-		req.flash( 'success', 'activation-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid + '/activation' );
-	} );
-} );
-
 app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( ! member ) {
@@ -719,37 +686,6 @@ app.post( '/:uuid/2fa', auth.isSuperAdmin, function( req, res ) {
 		req.flash( 'success', '2fa-no-change' );
 		res.redirect( app.mountpath + '/' + req.params.uuid );
 	}
-} );
-
-
-
-app.get( '/:uuid/override', auth.isSuperAdmin, function( req, res ) {
-	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( ! member ) {
-			req.flash( 'warning', 'member-404' );
-			res.redirect( app.mountpath );
-			return;
-		}
-		res.locals.breadcrumb.push( {
-			name: member.fullname,
-			url: '/members/' + member.uuid
-		} );
-		res.locals.breadcrumb.push( {
-			name: 'Signup Override',
-		} );
-		res.render( 'override', { member: member } );
-	} );
-} );
-
-app.post( '/:uuid/override', auth.isSuperAdmin, function( req, res ) {
-	var member = {
-		signup_override: ( req.body.override ? true : false )
-	};
-
-	Members.update( { uuid: req.params.uuid }, member, function() {
-		req.flash( 'success', 'override-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid + '/override' );
-	} );
 } );
 
 module.exports = function( config ) {

@@ -116,7 +116,6 @@ function processAnswers( answers ) {
 	var actions = [
 		processMembership( user, answers.membership ),
 		processPermission( user, answers.permission ),
-		processActivation( user, answers.activation ),
 		processPassword( user, answers.password )
 	];
 
@@ -172,22 +171,6 @@ function processMembership( user, answer ) {
 			resolve();
 		} else {
 			resolve();
-		}
-	} );
-}
-
-function processActivation( user, answer ) {
-	return new Promise( function( resolve, reject ) {
-		if ( answer == 'Yes' ) {
-			user.activated = true;
-			resolve();
-		} else {
-			user.activated = false;
-			Auth.generateActivationCode( function( code ) {
-				console.log( 'Activation code: ' + code );
-				user.activation_code = code;
-				resolve();
-			} );
 		}
 	} );
 }

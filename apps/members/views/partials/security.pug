@@ -3,9 +3,6 @@ dl.dl-horizontal
 	dt Tag
 	dd #{ member.tag.id ? member.tag.id : '–' }
 	if access( 'superadmin' )
-		if member.activation_code
-			dt Activation Code
-			dd=member.activation_code
 		if member.password.reset_code
 			dt Password Reset Code
 			dd

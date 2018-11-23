@@ -6,7 +6,7 @@ var __js = __src + '/js';
 var config = require( __config ),
 	Options = require( __js + '/options.js' )();
 
-var { Members, APIKeys } = require( __js + '/database' );
+var { Members } = require( __js + '/database' );
 
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy,
@@ -43,11 +43,6 @@ var Authentication = {
 					Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
 						// Check the hashes match
 						if ( hash == user.password.hash ) {
-
-							// Check the user account is activated
-							if ( ! ( user.activated ) ) {
-								return done( null, false, { message: 'inactive-account' } );
-							}
 
 							// Clear any pending password resets and notify
 							if ( user.password.reset_code ) {
@@ -222,24 +217,19 @@ var Authentication = {
 
 	LOGGED_IN: true,
 	NOT_LOGGED_IN: false,
-	NOT_ACTIVATED: -1,
-	NOT_MEMBER: -2,
-	NOT_ADMIN: -3,
-	REQUIRES_2FA: -4,
+	NOT_MEMBER: -1,
+	NOT_ADMIN: -2,
+	REQUIRES_2FA: -3,
 
 	// Checks the user is logged in and activated.
 	loggedIn: function( req ) {
 		// Is the user logged in?
 		if ( req.isAuthenticated() && req.user ) {
 			// Is the user active
-			if ( req.user.activated ) {
-				if ( ! req.user.otp.activated || ( req.user.otp.activated && req.session.method == 'totp' ) ) {
-					return Authentication.LOGGED_IN;
-				} else {
-					return Authentication.REQUIRES_2FA;
-				}
+			if ( ! req.user.otp.activated || ( req.user.otp.activated && req.session.method == 'totp' ) ) {
+				return Authentication.LOGGED_IN;
 			} else {
-				return Authentication.NOT_ACTIVATED;
+				return Authentication.REQUIRES_2FA;
 			}
 		} else {
 			return Authentication.NOT_LOGGED_IN;
@@ -310,10 +300,6 @@ var Authentication = {
 		switch ( status ) {
 		case Authentication.LOGGED_IN:
 			return next();
-		case Authentication.NOT_ACTIVATED:
-			req.flash( 'warning', 'inactive-account' );
-			res.redirect( '/' );
-			return;
 		case Authentication.REQUIRES_2FA:
 			if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 			res.redirect( '/otp' );
@@ -339,25 +325,12 @@ var Authentication = {
 		}
 	},
 
-	// Express middleware to redirect unauthenticated API calls
-	isAPIAuthenticated: function( req, res, next ) {
-		if ( ! req.query.api_key ) return res.sendStatus( 403 );
-		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
-			if ( key ) return next();
-			return res.sendStatus( 403 );
-		} );
-	},
-
 	// Express middleware to redirect inactive members
 	isMember: function( req, res, next ) {
 		var status = Authentication.activeMember( req );
 		switch ( status ) {
 		case Authentication.LOGGED_IN:
 			return next();
-		case Authentication.NOT_ACTIVATED:
-			req.flash( 'warning', 'inactive-account' );
-			res.redirect( '/' );
-			return;
 		case Authentication.NOT_MEMBER:
 			req.flash( 'warning', 'inactive-membership' );
 			res.redirect( '/profile' );
@@ -382,10 +355,6 @@ var Authentication = {
 		switch ( status ) {
 		case Authentication.LOGGED_IN:
 			return next();
-		case Authentication.NOT_ACTIVATED:
-			req.flash( 'warning', 'inactive-account' );
-			res.redirect( '/' );
-			return;
 		case Authentication.NOT_MEMBER:
 			req.flash( 'warning', 'inactive-membership' );
 			res.redirect( '/profile' );
@@ -414,10 +383,6 @@ var Authentication = {
 		switch ( status ) {
 		case Authentication.LOGGED_IN:
 			return next();
-		case Authentication.NOT_ACTIVATED:
-			req.flash( 'warning', 'inactive-account' );
-			res.redirect( '/' );
-			return;
 		case Authentication.NOT_MEMBER:
 			req.flash( 'warning', 'inactive-membership' );
 			res.redirect( '/profile' );

@@ -6,7 +6,7 @@ var __js = __src + '/js';
 var config = require( __config ),
 	Options = require( __js + '/options.js' )();
 
-var { Members, APIKeys } = require( __js + '/database' );
+var { Members } = require( __js + '/database' );
 
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy,
@@ -323,15 +323,6 @@ var Authentication = {
 			res.redirect( '/profile' );
 			return;
 		}
-	},
-
-	// Express middleware to redirect unauthenticated API calls
-	isAPIAuthenticated: function( req, res, next ) {
-		if ( ! req.query.api_key ) return res.sendStatus( 403 );
-		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
-			if ( key ) return next();
-			return res.sendStatus( 403 );
-		} );
 	},
 
 	// Express middleware to redirect inactive members

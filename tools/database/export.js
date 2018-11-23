@@ -3,90 +3,56 @@ const __config = __root + '/config/config.json';
 const __src = __root + '/src';
 const __js = __src + '/js';
 
-const Chance = require('chance');
-const crypto = require('crypto');
 const _ = require('lodash');
-const mongoose = require('mongoose');
-
 const config = require( __config );
-const db = require( __js + '/database' ).connect( config.mongo );
+const db = require( __js + '/database' );
+const exportTypes = require('./types');
 
-const chance = new Chance();
+// Anonymise properties but maintain same mapping to keep links
+let valueMap = {};
+function anonymiseProperties(item, properties) {
+	let newItem = JSON.parse(JSON.stringify(item));
 
-function anonymiseId(len, prefix='') {
-	return (prefix + crypto.randomBytes(6).toString('hex').slice(0, len)).toUpperCase();
+	_.forEach(properties, (anonymiseFn, property) => {
+		const value = _.get(item, property);
+		if (value) {
+			if (valueMap[value] === undefined) valueMap[value] = anonymiseFn();
+			_.set(newItem, property, valueMap[value]);
+		}
+	});
+
+	return newItem;
 }
 
-const payments = {
-	_id: () => new mongoose.Types.ObjectId(),
-	payment_id: () => anonymiseId(12, 'PM'),
-	subscription_id: () => anonymiseId(12, 'SB'),
-	member: () => new mongoose.Types.ObjectId()
-};
+async function runExport({model, properties={}}) {
+	console.error('Fetching', model.modelName);
 
-const members = {
-	_id: () => new mongoose.Types.ObjectId(),
-	guid: () => chance.guid({version: 4}),
-	email: () => chance.email(),
-	firstname: () => chance.first(),
-	lastname: () => chance.last(),
-	opt: () => ({}),
-	password: () => ({}),
-	join_reason: () => chance.sentence(),
-	join_why: () => chance.sentence(),
-	'gocardless.customer_id': () => anonymiseId(12, 'CU'),
-	'gocardless.mandate_id': () => anonymiseId(12, 'MA'),
-	'gocardless.subscription_id': () => anonymiseId(12, 'SB'),
-	'delivery_address.line1': () => chance.address(),
-	'delivery_address.line2': () => chance.pickone(['Cabot', 'Easton', 'Southmead']),
-	'delivery_address.city': () => 'Bristol',
-	'delivery_address.postcode': () => 'BS1 1AA',
-	'cancellation.satisfied': () => chance.integer({min: 0, max: 5}),
-	'cancellation.reason': () => chance.sentence(),
-	'cancellation.other': () => chance.sentence()
-};
-
-const referrals = {
-	_id: () => new mongoose.Types.ObjectId(),
-	referrer: () => new mongoose.Types.ObjectId(),
-	referee: () => new mongoose.Types.ObjectId()
-};
-
-const exportTypes = [
-	{ model: db.Exports },
-	{ model: db.JTJStock },
-	{ model: db.Options },
-	{ model: db.Permissions },
-	{ model: db.Payments, properties: payments },
-	{ model: db.Members, properties: members },
-	{ model: db.Referrals, properties: referrals }
-];
-
-async function runExport() {
-	let valueMap = {};
-
-	function anonymiseProperties(item, properties) {
-		let newItem = _.cloneDeep(item);
-
-		_.forEach(properties, (anonymiseFn, property) => {
-			const value = _.get(item, property);
-			if (value) {
-				if (!valueMap[value]) valueMap[value] = anonymiseFn();
-				_.set(newItem, property, valueMap[value]);
-			}
+	// Use native collection to reduce memory usage
+	const items = await new Promise((resolve, reject) => {
+		model.collection.find({}, (err, cursor) => {
+			if (err) reject(err);
+			else resolve(cursor.toArray());
 		});
+	});
 
-		return newItem;
-	}
+	console.error(`Anonymising ${model.modelName}, got ${items.length} items`);
+	const newItems = items.map(item => anonymiseProperties(item, properties));
 
-	const out = await Promise.all(exportTypes.map(async ({model, properties={}}) => {
-		const items = await model.find();
-		return items.slice(0, 10).map(item => anonymiseProperties(item, properties));
-	}));
-
-	console.log(out);
+	return {
+		modelName: model.modelName,
+		items: newItems
+	};
 }
 
-runExport()
-	.catch(err => console.error(err))
-	.then(() => db.mongoose.disconnect());
+async function main() {
+	const exportData = await Promise.all(exportTypes.map(runExport));
+	console.log(JSON.stringify(exportData));
+}
+
+db.connect(config.mongo);
+
+db.mongoose.connection.on('connected', () => {
+	main()
+		.catch(err => console.error(err))
+		.then(() => db.mongoose.disconnect());
+});

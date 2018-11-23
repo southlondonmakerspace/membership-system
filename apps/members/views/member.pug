@@ -16,11 +16,6 @@ block contents
 					if member.discourse.activated && discourse != undefined
 						dt Discourse
 						dd: a( target="_blank", href=discourse_path + '/users/' + discourse.user.username ) @#{ discourse.user.username }
-					dt Emergency Contact
-					if member.emergency_contact.telephone
-						dd On file
-					else
-						dd Not held
 					dt Tag
 					if member.tag.id
 						dd Yes

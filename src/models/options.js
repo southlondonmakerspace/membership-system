@@ -16,9 +16,13 @@ module.exports = {
 		},
 		value: {
 			type: String,
-			required: true
+			required: requiredButAllowEmptyString
 		}
 	} )
 };
+
+function requiredButAllowEmptyString() {
+	return typeof this.value === 'string' ? false : true;
+}
 
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

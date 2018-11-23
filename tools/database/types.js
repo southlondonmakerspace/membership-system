@@ -12,14 +12,22 @@ const chance = new Chance();
 
 // TODO: anonymise dates
 
-function anonymiseId(len, prefix='') {
-	return (prefix + crypto.randomBytes(6).toString('hex').slice(0, len)).toUpperCase();
+function randomId(len) {
+	return crypto.randomBytes(6).toString('hex').slice(0, len).toUpperCase();
+}
+
+let referralNo = 0;
+function uniqueReferralCode() {
+	referralNo++;
+	const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(referralNo / 1000)];
+	const no = referralNo % 1000;
+	return letter.padStart(2, 'A') + (no + '').padStart(3, '0');
 }
 
 const payments = {
 	_id: () => new mongoose.Types.ObjectId(),
-	payment_id: () => anonymiseId(12, 'PM'),
-	subscription_id: () => anonymiseId(12, 'SB'),
+	payment_id: () => 'PM' + randomId(12),
+	subscription_id: () => 'SB' + randomId(12),
 	member: () => new mongoose.Types.ObjectId()
 };
 
@@ -31,18 +39,21 @@ const members = {
 	lastname: () => chance.last(),
 	otp: () => ({}),
 	password: () => ({}),
+	referralCode: uniqueReferralCode,
 	join_reason: () => chance.sentence(),
 	join_why: () => chance.sentence(),
-	'gocardless.customer_id': () => anonymiseId(12, 'CU'),
-	'gocardless.mandate_id': () => anonymiseId(12, 'MA'),
-	'gocardless.subscription_id': () => anonymiseId(12, 'SB'),
+	'gocardless.customer_id': () => 'CU' + randomId(12),
+	'gocardless.mandate_id': () => 'MA' + randomId(12),
+	'gocardless.subscription_id': () => 'SB' + randomId(12),
 	'delivery_address.line1': () => chance.address(),
 	'delivery_address.line2': () => chance.pickone(['Cabot', 'Easton', 'Southmead']),
 	'delivery_address.city': () => 'Bristol',
 	'delivery_address.postcode': () => 'BS1 1AA',
 	'cancellation.satisfied': () => chance.integer({min: 0, max: 5}),
 	'cancellation.reason': () => chance.sentence(),
-	'cancellation.other': () => chance.sentence()
+	'cancellation.other': () => chance.sentence(),
+	'billing_location.latitude': () => chance.latitude(),
+	'billing_location.longitude': () => chance.longitude(),
 };
 
 const referrals = {

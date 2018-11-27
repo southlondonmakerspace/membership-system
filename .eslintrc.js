@@ -31,5 +31,12 @@ module.exports = {
 			"off"
 		],
 		"no-unused-vars": "warn"
+	},
+	"globals": {
+		"__apps": true,
+		"__config": true,
+		"__js": true,
+		"__models": true,
+		"__root": true
 	}
 };

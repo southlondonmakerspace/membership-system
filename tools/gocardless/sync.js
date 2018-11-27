@@ -1,10 +1,11 @@
+global.__root = __dirname + '/../..';
+global.__apps = __root + '/apps';
+global.__config = __root + '/config/config.json';
+global.__js = __root + '/src/js';
+global.__models = __root + '/src/models';
+
 const fs = require('fs');
 const moment = require('moment');
-
-const __root = __dirname + '/../..';
-const __config = __root + '/config/config.json';
-const __src = __root + '/src';
-const __js = __src + '/js';
 
 const config = require(__config);
 const db = require(__js + '/database').connect(config.mongo);

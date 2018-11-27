@@ -1,12 +1,13 @@
-var __root = __dirname + '/..';
-var __config = __root + '/config';
-var __src = __root + '/src';
-var __js = __src + '/js';
+global.__root = __dirname + '/..';
+global.__apps = __root + '/apps';
+global.__config = __root + '/config/config.json';
+global.__js = __root + '/src/js';
+global.__models = __root + '/src/models';
 
 var inquirer = require( 'inquirer' );
 var moment = require( 'moment' );
 
-var config = require( __config + '/config.json' );
+var config = require( __config );
 
 var	db = require( __js + '/database' ).connect( config.mongo ),
 	Permissions = db.Permissions,

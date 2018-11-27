@@ -1,8 +1,3 @@
-const __root = '../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-const __config = __root + '/config';
-
 const express = require( 'express' );
 
 const auth = require( __js + '/authentication' );
@@ -11,7 +6,7 @@ const mandrill = require( __js + '/mandrill' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
-const config = require( __config + '/config.json' );
+const config = require( __config );
 
 const { processJoinForm, customerToMember, createJoinFlow, completeJoinFlow, createMember,
 	startMembership, getJTJInStock, isGiftAvailable } = require( './utils' );

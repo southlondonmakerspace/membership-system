@@ -1,10 +1,5 @@
-const __root = '../../../../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-const __config = __root + '/config';
-
 const { Members, Permissions } = require(__js + '/database');
-const config = require( __config + '/config.json' );
+const config = require( __config );
 
 async function getQuery() {
 	const permission = await Permissions.findOne( { slug: config.permission.member });

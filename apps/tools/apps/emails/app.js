@@ -1,7 +1,3 @@
-const __root = '../../../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-
 const express = require( 'express' );
 const busboy = require( 'connect-busboy' );
 const Papa = require('papaparse');

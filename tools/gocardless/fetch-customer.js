@@ -1,6 +1,12 @@
+global.__root = __dirname + '/../..';
+global.__apps = __root + '/apps';
+global.__config = __root + '/config/config.json';
+global.__js = __root + '/src/js';
+global.__models = __root + '/src/models';
+
 const crypto = require('crypto');
 const moment = require('moment');
-const gocardless = require('../../src/js/gocardless');
+const gocardless = require(__js + '/gocardless');
 
 async function fetchCustomers(customerIds) {
 	let customers = [], mandates = [], subscriptions = [], payments = [],

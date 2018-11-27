@@ -1,8 +1,3 @@
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-var __config = __root + '/config/config.json';
-
 var config = require( __config );
 
 var Database = require( __js + '/database' ),

@@ -1,8 +1,3 @@
-var __home = __dirname + '/../..';
-var __config = __home + '/config/config.json';
-var __src = __home + '/src';
-var __js = __src + '/js';
-
 var config = require( __config ),
 	Options = require( __js + '/options.js' )();
 

@@ -1,7 +1,3 @@
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-
 var Options = require( __js + '/options' )();
 
 module.exports = function( req, res, next ) {

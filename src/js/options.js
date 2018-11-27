@@ -1,11 +1,7 @@
-var __home = __dirname + '/../..';
-var __src = __home + '/src';
-var __js = __src + '/js';
-
 var db = require( __js + '/database' ),
 	OptionsDB = db.Options;
 
-var defaults = require( __src + '/defaults.json' );
+var defaults = require( __root + '/src/defaults.json' );
 
 var _options = [];
 

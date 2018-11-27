@@ -1,7 +1,11 @@
-var __root = __dirname + '/..';
+global.__root = __dirname + '/../..';
+global.__apps = __root + '/apps';
+global.__config = __root + '/config/config.json';
+global.__js = __root + '/src/js';
+global.__models = __root + '/src/models';
 
-var config = require( __root + '/config/config.json' ),
-	db = require( __root + '/src/js/database' ).connect( config.mongo ),
+var config = require( __config ),
+	db = require( __js + '/database' ).connect( config.mongo ),
 	Permissions = db.Permissions;
 
 // Member

@@ -1,8 +1,3 @@
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-var __config = __root + '/config';
-
 var	express = require( 'express' ),
 	app = express(),
 	discourse = require( __js + '/discourse' );
@@ -20,9 +15,9 @@ var { wrapAsync } = require( __js + '/utils' );
 var { hasSchema } = require( __js + '/middleware' );
 var { updateProfileSchema } = require('./schemas.json');
 
-const { syncMemberDetails } = require( __root + '/apps/profile/apps/account/utils' );
+const { syncMemberDetails } = require( __apps + '/profile/apps/account/utils' );
 
-var config = require( __config + '/config.json' );
+var config = require( __config );
 
 var app_config = {};
 

@@ -1,13 +1,8 @@
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-var __config = __root + '/config';
-
 var log = require( __js + '/logging' ).log;
 
 var auth = require( __js + '/authentication' );
 
-var config = require( __config + '/config.json' );
+var config = require( __config );
 
 var moment = require( 'moment' ),
 	gitRev = require( 'git-rev' );

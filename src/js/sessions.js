@@ -1,6 +1,3 @@
-var __root = '../..';
-var __config = __root + '/config/config.json';
-
 var session = require( 'express-session' ),
 	config = require( __config ),
 	cookie = require('cookie-parser'),

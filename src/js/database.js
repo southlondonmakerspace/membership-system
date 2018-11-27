@@ -1,8 +1,3 @@
-var __root = __dirname + '/../..',
-	__src = __root + '/src',
-	__js = __src + '/js',
-	__models = __src + '/models';
-
 var fs = require( 'fs' ),
 	path = require( 'path' ),
 	mongoose = require( 'mongoose' ),

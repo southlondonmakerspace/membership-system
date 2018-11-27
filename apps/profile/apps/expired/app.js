@@ -1,8 +1,3 @@
-const __root = '../../../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-const __config = __root + '/config';
-
 const express = require( 'express' );
 const moment = require( 'moment' );
 
@@ -11,9 +6,9 @@ const gocardless = require( __js + '/gocardless' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
-const config = require( __config + '/config.json' );
+const config = require( __config );
 
-const { processJoinForm, createJoinFlow, completeJoinFlow, startMembership } = require( __root + '/apps/join/utils' );
+const { processJoinForm, createJoinFlow, completeJoinFlow, startMembership } = require( __apps + '/join/utils' );
 
 const { rejoinSchema, completeSchema } = require( './schemas.json' );
 

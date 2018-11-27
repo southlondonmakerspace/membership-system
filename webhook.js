@@ -1,6 +1,8 @@
-const __config = __dirname + '/config/config.json';
-const __src = __dirname + '/src';
-const __js = __src + '/js';
+global.__root = __dirname;
+global.__apps = __root + '/apps';
+global.__config = __root + '/config/config.json';
+global.__js = __root + '/src/js';
+global.__models = __root + '/src/models';
 
 const config = require( __config );
 

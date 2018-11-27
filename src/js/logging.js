@@ -1,6 +1,3 @@
-var __root = '../..';
-var __config = __root + '/config/config.json';
-
 var config = require( __config );
 
 var bunyan = require( 'bunyan' ),

@@ -1,7 +1,3 @@
-const __root = '../../../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-
 const express = require( 'express' );
 
 const auth = require( __js + '/authentication' );
@@ -9,8 +5,8 @@ const { Referrals } = require( __js + '/database' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
-const { gifts3, gifts5 } = require( __root + '/apps/join/gifts.json' );
-const { getJTJInStock, isGiftAvailable, updateGiftStock } = require( __root + '/apps/join/utils' );
+const { gifts3, gifts5 } = require( __apps + '/join/gifts.json' );
+const { getJTJInStock, isGiftAvailable, updateGiftStock } = require( __apps + '/join/utils' );
 
 const { chooseGiftSchema } = require( './schema.json' );
 

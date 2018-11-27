@@ -1,11 +1,6 @@
-const __root = '../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-const __config = __root + '/config';
-
 const moment = require( 'moment' );
 
-const config = require( __config + '/config.json' );
+const config = require( __config );
 
 const auth = require( __js + '/authentication' );
 const { JoinFlows, JTJStock, Members, Referrals } = require( __js + '/database' );

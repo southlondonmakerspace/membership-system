@@ -1,9 +1,3 @@
-var __root = __dirname + '/../..';
-var __config = __root + '/config/config.json';
-var __apps = __root + '/apps';
-var __src = __root + '/src';
-var __js = __src + '/js';
-
 var config = require( __config );
 
 var log = require( __js + '/logging' ).log;

@@ -1,7 +1,3 @@
-const __root = '../../../..';
-const __src = __root + '/src';
-const __js = __src + '/js';
-
 const gocardless = require( __js + '/gocardless' );
 const mailchimp = require( __js + '/mailchimp' );
 

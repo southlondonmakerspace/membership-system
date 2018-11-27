@@ -1,9 +1,8 @@
-var __root = __dirname;
-var __config = __root + '/config/config.json';
-var __static = __root + '/static';
-var __src = __root + '/src';
-var __views = __src + '/views';
-var __js = __src + '/js';
+global.__root = __dirname;
+global.__apps = __root + '/apps';
+global.__config = __root + '/config/config.json';
+global.__js = __root + '/src/js';
+global.__models = __root + '/src/models';
 
 var log = require( __js + '/logging' ).log;
 log.info( {
@@ -44,7 +43,7 @@ app.use( helmet() );
 require( __js + '/authentication' ).auth( app );
 
 // Setup static route
-app.use( '/static', express.static( __static ) );
+app.use( '/static', express.static( __root + '/static' ) );
 
 // Handle sessions
 require( __js + '/sessions' )( app );
@@ -54,7 +53,7 @@ app.use( flash() );
 app.use( require( __js + '/quickflash' ) );
 
 // Use PUG to render pages
-app.set( 'views', __views );
+app.set( 'views', __root + '/src/views' );
 app.set( 'view engine', 'pug' );
 app.set( 'view cache', false );
 

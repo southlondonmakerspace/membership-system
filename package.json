@@ -29,7 +29,7 @@
     "helmet": "^3.10.0",
     "inquirer": "^3.0.6",
     "moment": "^2.15.1",
-    "mongoose": "^4.13.10",
+    "mongoose": "^4.13.17",
     "nodemailer": "^2.3.2",
     "notp": "^2.0.3",
     "passport": "^0.3.2",

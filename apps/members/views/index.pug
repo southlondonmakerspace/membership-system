@@ -14,7 +14,7 @@ block contents
 			include partials/search.pug
 		.col-md-9
 			+page_header( title, { small: count + ' of ' + total + ' displayed' } )
-			a(href="").btn.btn-primary Add member
+			a(href="/members/add").btn.btn-primary Add member
 			if count > 0
 				include partials/table.pug
 				include partials/pagination.pug

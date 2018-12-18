@@ -1,0 +1,19 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- activeApp = 'members'
+
+block contents
+	.row
+		.col-md-9
+			+page_header( 'Add member' )
+			p.
+				You can manually add a member directly using an existing
+				GoCardless customer and active mandate.
+			form(method='POST').form-horizontal
+				+csrf
+				input(type='hidden' name='step' value='1')
+				+input( 'text', 'Customer ID', 'customer_id', { required: true, left: 3, right: 4 } )
+				+input( 'text', 'Mandate ID', 'mandate_id', { required: true, left: 3, right: 4 } )
+				+form_button( 'Create', 'primary', {left: 3} )

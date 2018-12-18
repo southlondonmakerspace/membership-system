@@ -15,6 +15,7 @@ var { wrapAsync } = require( __js + '/utils' );
 var { hasSchema } = require( __js + '/middleware' );
 var { updateProfileSchema } = require('./schemas.json');
 
+const { createMember, customerToMember } = require( __apps + '/join/utils' );
 const { syncMemberDetails } = require( __apps + '/profile/apps/account/utils' );
 
 var config = require( __config );
@@ -202,6 +203,16 @@ app.get( '/', function( req, res ) {
 		} );
 	} );
 } );
+
+app.get( '/add', function( req, res ) {
+	res.render( 'add' );
+} );
+
+app.post( '/add', wrapAsync( async function( req, res ) {
+	const memberObj = await customerToMember( req.body.customer_id, req.body.mandate_id );
+	const member = await createMember( memberObj );
+	res.redirect( app.mountpath + '/' + member.uuid );
+} ) );
 
 app.get( '/:uuid', function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid } ).populate( 'permissions.permission' ).exec( function( err, member ) {

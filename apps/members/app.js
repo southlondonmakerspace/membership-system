@@ -15,7 +15,7 @@ var { wrapAsync } = require( __js + '/utils' );
 var { hasSchema } = require( __js + '/middleware' );
 var { updateProfileSchema } = require('./schemas.json');
 
-const { createMember, customerToMember } = require( __apps + '/join/utils' );
+const { createMember, customerToMember, startMembership } = require( __apps + '/join/utils' );
 const { syncMemberDetails } = require( __apps + '/profile/apps/account/utils' );
 
 var config = require( __config );
@@ -412,37 +412,41 @@ app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 	} );
 } );
 
-app.get( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
-	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
-		if ( ! member ) {
-			req.flash( 'warning', 'member-404' );
-			res.redirect( app.mountpath );
-			return;
-		}
-
-		res.locals.breadcrumb.push( {
-			name: member.fullname,
-			url: '/members/' + member.uuid
-		} );
-		res.locals.breadcrumb.push( {
-			name: 'GoCardless'
-		} );
-		res.render( 'gocardless', { member: member } );
+app.get( '/:uuid/gocardless', auth.isSuperAdmin, wrapAsync( async function( req, res ) {
+	const member = await Members.findOne({ uuid: req.params.uuid });
+	res.locals.breadcrumb.push( {
+		name: member.fullname,
+		url: '/members/' + member.uuid
 	} );
-} );
-
-app.post( '/:uuid/gocardless', auth.isSuperAdmin, function( req, res ) {
-	var member = {
-		'gocardless.mandate_id': req.body.mandate_id,
-		'gocardless.subscription_id': req.body.subscription_id,
-		'gocardless.minimum': req.body.minimum
-	};
-
-	Members.update( { uuid: req.params.uuid }, { $set: member }, function() {
-		req.flash( 'success', 'gocardless-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid + '/gocardless' );
+	res.locals.breadcrumb.push( {
+		name: 'GoCardless'
 	} );
-} );
+	res.render( 'gocardless', { member: member } );
+} ) );
+
+app.post( '/:uuid/gocardless', auth.isSuperAdmin, wrapAsync( async function( req, res ) {
+	const member = await Members.findOne({ uuid: req.params.uuid });
+
+	switch ( req.body.action ) {
+	case 'create-subscription':
+		await startMembership(member, {
+			amount: Number(req.body.amount),
+			period: req.body.period
+		});
+		break;
+
+	case 'force-update':
+		await member.update({ $set: {
+			'gocardless.customer_id': req.body.customer_id,
+			'gocardless.mandate_id': req.body.mandate_id,
+			'gocardless.subscription_id': req.body.subscription_id
+		} });
+		break;
+	}
+
+	req.flash( 'success', 'gocardless-updated' );
+	res.redirect( app.mountpath + '/' + req.params.uuid + '/gocardless' );
+} ) );
 
 app.get( '/:uuid/permissions', function( req, res ) {
 	Permissions.find( function( err, permissions ) {

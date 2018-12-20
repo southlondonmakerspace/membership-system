@@ -12,9 +12,10 @@ block contents
 		.col-md-3
 			+page_header( 'Search' )
 			include partials/search.pug
+			+page_header( 'Tools' )
+			a(href="/members/add").btn.btn-primary Add member
 		.col-md-9
 			+page_header( title, { small: count + ' of ' + total + ' displayed' } )
-			a(href="/members/add").btn.btn-primary Add member
 			if count > 0
 				include partials/table.pug
 				include partials/pagination.pug

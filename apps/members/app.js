@@ -11,8 +11,10 @@ var	db = require( __js + '/database' ),
 	Payments = db.Payments;
 
 var auth = require( __js + '/authentication' );
-var { wrapAsync } = require( __js + '/utils' );
+var mandrill = require( __js + '/mandrill' );
 var { hasSchema } = require( __js + '/middleware' );
+var { wrapAsync } = require( __js + '/utils' );
+
 var { updateProfileSchema } = require('./schemas.json');
 
 const { createMember, customerToMember, startMembership } = require( __apps + '/join/utils' );
@@ -309,6 +311,20 @@ app.post( '/:uuid/profile', [
 	}
 
 	res.redirect(app.mountpath + '/' + uuid + '/profile');
+} ) );
+
+app.get( '/:uuid/emails', auth.isSuperAdmin, wrapAsync( async function( req, res ) {
+	const member = await Members.findOne( { uuid: req.params.uuid });
+	res.render( 'emails' , { member } );
+} ) );
+
+app.post( '/:uuid/emails', auth.isSuperAdmin, wrapAsync( async function ( req, res ) {
+	const member = await Members.findOne( { uuid: req.params.uuid });
+
+	await mandrill.sendToMember(req.body.email, member);
+
+	req.flash( 'success', 'emails-sent');
+	res.redirect(app.mountpath + '/' + req.params.uuid + '/emails');
 } ) );
 
 app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {

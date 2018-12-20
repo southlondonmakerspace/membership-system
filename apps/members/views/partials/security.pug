@@ -3,11 +3,25 @@ dl.dl-horizontal
 	dt Tag
 	dd #{ member.tag.id ? member.tag.id : '–' }
 	if access( 'superadmin' )
-		if member.password.reset_code
-			dt Password Reset Code
-			dd
+		dt Login override
+		dd
+			if member.loginOverride && moment(member.loginOverride.expires).isAfter()
+				a(href='/login/' + member.loginOverride.code)= member.loginOverride.code
+			else
+				form(method='POST')
+					+csrf
+					input(type='hidden' name='action' value='login-override')
+					button.btn.btn-sm Generate link
+		dt Password reset
+		dd
+			if member.password.reset_code
 				a(href='/password-reset/code/' + member.password.reset_code)= member.password.reset_code
-		dt Password Tries
+			else
+				form(method='POST')
+					+csrf
+					input(type='hidden' name='action' value='password-reset')
+					button.btn.btn-sm Generate link
+		dt Password tries
 		dd #{ member.password.tries } #{ member.password.tries >= password_tries ? ' – Locked Out' : '' }
 		dt 2FA
 		dd #{ member.otp.activated ? 'Enabled' : 'Disabled' }

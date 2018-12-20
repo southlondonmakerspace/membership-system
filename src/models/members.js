@@ -41,6 +41,10 @@ module.exports = {
 			unique: true,
 			sparse: true
 		},
+		loginOverride: {
+			code: String,
+			expires: Date
+		},
 		password: {
 			hash: {
 				type: String,

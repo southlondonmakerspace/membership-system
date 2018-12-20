@@ -17,6 +17,7 @@
 	"flash-logged-out": "Logged out",
 	"flash-login-failed": "Login unsuccessful",
 	"flash-login-required": "You must be logged in",
+	"flash-login-code-invalid": "Login code is invalid or has expired",
 	"flash-already-logged-in": "You are already logged in",
 	"flash-inactive-membership": "Your membership is inactive",
 	"flash-403": "You do not have access to this area",
@@ -31,21 +32,13 @@
 
 	"flash-email-duplicate": "Email address already in use",
 
-	"flash-account-created": "Account created, please check your email for a registration link",
-	"flash-member-created": "Member successful created",
-
-	"flash-activation-error": "Activation code or password did not match",
-	"flash-activation-success": "You account is now active",
-	"flash-activation-updated": "Activation updated",
-
-	"flash-override-updated": "Signup override updated",
-
 	"flash-account-locked": "Maximum number of password attempts exceeded",
 	"flash-account-attempts": "There has been % attempt(s) to login to your account since you last logged in",
 
 	"flash-member-404": "Member not found",
+	"flash-member-login-override-generated": "Login override code generated",
+	"flash-member-password-reset-generated": "Password reset code generated",
 
-	"flash-profile-updated": "Profile updated",
 	"flash-account-updated": "Your account details have been updated",
 	"flash-delivery-updated": "Your delivery details have been updated",
 

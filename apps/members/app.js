@@ -249,6 +249,28 @@ app.get( '/:uuid', function( req, res ) {
 	} );
 } );
 
+app.post( '/:uuid', wrapAsync( async function( req, res ) {
+	const member = await Members.findOne( { uuid: req.params.uuid } );
+	switch (req.body.action) {
+	case 'login-override':
+		await member.update({$set: {
+			loginOverride: {
+				code: auth.generateCode(),
+				expires: moment().add(24, 'hours').toDate()
+			}
+		}});
+		req.flash('success', 'member-login-override-generated');
+		break;
+	case 'password-reset':
+		await member.update({$set: {
+			'password.reset_code': auth.generateCode()
+		}});
+		req.flash('success', 'member-password-reset-generated');
+	}
+
+	res.redirect(app.mountpath + '/' + req.params.uuid);
+} ) );
+
 app.get( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	Members.findOne( { uuid: req.params.uuid }, function( err, member ) {
 		if ( ! member ) {

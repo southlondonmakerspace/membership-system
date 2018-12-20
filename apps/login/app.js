@@ -1,11 +1,10 @@
-var	express = require( 'express' ),
-	app = express();
+const express = require( 'express' );
+const passport = require( 'passport' );
 
-var	passport = require( 'passport' );
+const { Members } = require( __js + '/database' );
+const { wrapAsync } = require ( __js + '/utils' );
 
-var db = require( __js + '/database' ),
-	Members = db.Members;
-
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -25,29 +24,49 @@ app.get( '/' , function( req, res ) {
 	}
 } );
 
+app.get( '/:code', wrapAsync( async function( req, res ) {
+	const member = await Members.findOne( {
+		'loginOverride.code': req.params.code,
+		'loginOverride.expires': {$gt: new Date()}
+	} );
+
+	if (member) {
+		await member.update({$unset: {loginOverride: 1}});
+
+		req.login(member, function ( loginError ) {
+			if ( loginError ) {
+				throw loginError;
+			}
+			res.redirect('/profile');
+		});
+	} else {
+		req.flash('error', 'login-code-invalid');
+		res.redirect( '/login' );
+	}
+} ) );
+
 app.post( '/', passport.authenticate( 'local', {
 	failureRedirect: '/login',
 	failureFlash: true,
 	successFlash: true
-} ), function ( req, res ) {
-	Members.findById( req.user, function( err, user ) {
-		if ( user ) {
-			req.session.method = 'plain';
-			if ( user.otp.activated ) {
-				res.redirect( '/otp' );
-			} else {
-				if ( req.session.requestedUrl ) {
-					res.redirect( req.session.requestedUrl );
-					delete req.session.requestedUrl;
-				} else {
-					res.redirect( '/profile' );
-				}
-			}
+} ), wrapAsync( async function ( req, res ) {
+	const user = await Members.findById( req.user );
+	if ( user ) {
+		req.session.method = 'plain';
+		if ( user.otp.activated ) {
+			res.redirect( '/otp' );
 		} else {
-			res.redirect( '/' );
+			if ( req.session.requestedUrl ) {
+				res.redirect( req.session.requestedUrl );
+				delete req.session.requestedUrl;
+			} else {
+				res.redirect( '/profile' );
+			}
 		}
-	} );
-} );
+	} else {
+		res.redirect( '/' );
+	}
+} ) );
 
 module.exports = function( config ) {
 	app_config = config;

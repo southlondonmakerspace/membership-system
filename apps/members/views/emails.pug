@@ -1,0 +1,24 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Emails'
+	- page = 'emails'
+
+block contents
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			+page_header( title )
+
+			h3 Send transactional email
+			form(method='POST').form-horizontal
+				+csrf
+				.form-group
+					label(for='email').control-label.col-md-3 Email
+					.col-md-4
+						select(name='email' id='email' required).form-control
+							option(value='' selected disabled) Select email
+							option(value='welcome') Welcome email
+				+form_button('Send email', 'primary', {left: 3})
+

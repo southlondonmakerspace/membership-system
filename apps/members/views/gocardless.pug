@@ -10,7 +10,31 @@ block contents
 			include partials/sidebar.pug
 		.col-md-9
 			+page_header( title )
+
+			h3 Create subscription
+			if member.gocardless.subscription_id
+				p User has a subscription
+			else if !member.gocardless.mandate_id
+				p User does not have an active mandate
+			else
+				form( method="post").form-horizontal
+					+csrf
+					input( type='hidden' name='action' value='create-subscription' )
+					+input( 'number', 'Monthly amount', 'amount', { left: 3, right: 4, before: '£' })
+					+input( 'radio', 'Period', 'period', {
+						left: 3, right: 4,
+						options: {'monthly': 'Monthly', 'annually': 'Annually'}
+					})
+					+form_button( 'Create', 'primary', { left: 3 } )
+
+			h3 Force update
+			.alert.alert-warning.
+				If done incorrectly this could result in payments being taken but not
+				recorded
 			form( method="post" ).form-horizontal
 				+csrf
+				input( type='hidden' name='action' value='force-update' )
 				+input( 'text', 'Customer ID', 'customer_id', { value: member.gocardless.customer_id, left: 3, right: 4 } )
-				+form_button( 'Resync', 'primary', { left: 3 } )
+				+input( 'text', 'Mandate ID', 'mandate_id', { value: member.gocardless.mandate_id, left: 3, right: 4 } )
+				+input( 'text', 'Subscription ID', 'subscription_id', { value: member.gocardless.subscription_id, left: 3, right: 4 } )
+				+form_button( 'Update', 'primary', { left: 3 } )

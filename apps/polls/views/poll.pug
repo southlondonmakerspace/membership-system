@@ -16,6 +16,8 @@ block contents
 						We believe journalism isn’t just about information. It’s about
 						empowering our communities and making a difference.
 
+					img(src='/static/imgs/polls/hand1.png').poll-hand1
+
 					p.
 						In 2017 Bristol Cable members voted to create lasting change through
 						dogged, creative and impactful campaigning journalism. Since then we
@@ -26,7 +28,8 @@ block contents
 						next campaign. 
 
 					p.
-						And it’s now time to have you say and vote for what we do next!
+						#[b And now it's time to have you say and vote for what we do next!]
+						Voting closes on Feburary 27th.
 
 					hr
 
@@ -34,7 +37,8 @@ block contents
 
 					p Read about the campaigns then make your choice below
 
-					h4 Campaign 1: Prevent drug deaths and clean up our streets!
+					h4.poll-title
+						span Campaign 1: Prevent drug deaths and clean up our streets!
 
 					p.
 						Every day, people who use drugs risk infection and overdose. Many
@@ -61,7 +65,8 @@ block contents
 						with the police, community groups and public bodies to set up a safe
 						consumption room in Bristol immediately. 
 
-					h4 Campaign 2: We want clean air. Let’s fight for it.
+					h4.poll-title
+						span Campaign 2: We want clean air. Let’s fight for it.
 
 					p.
 						At a busy junction or in your neighbourhood, the very air we breathe is
@@ -71,6 +76,8 @@ block contents
 						A day spent on the streets of Bristol does as much damage as smoking
 						between 1–2 cigarettes. Approximately 300 deaths every year are
 						attributable to air pollution. 
+
+					img(src='/static/imgs/polls/hand3.png').poll-hand3
 
 					p.
 						Countless others suffer, with children and people in working class
@@ -99,18 +106,22 @@ block contents
 
 					h3 Choose a campaign
 
-					p.
-						You can change your vote up until 5pm on 27th February.
+					p
+						if answer
+							b
+								| You voted to campaign to
+								|
+								|
+								if answer.answer === '1'
+									| prevent drug deaths and clean up our streets
+								else
+									| clean up our air
+							|.
+							|
+						| You can change your vote up until 5pm on 27th February.
 
 					form(method='POST')
 						+csrf
-						p
-							label.radio-inline
-								input(type='radio', name='answer', value='1', checked=answer && answer.answer === '1')
-								| Campaign 1
-							| 
-							label.radio-inline
-								input(type='radio', name='answer', value='2', checked=answer && answer.answer === '2')
-								| Campaign 2
-
-						button.btn Vote
+						.poll-options
+							button(name='answer' value='1').btn Campaign 1
+							button(name='answer' value='2').btn Campaign 2

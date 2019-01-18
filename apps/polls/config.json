@@ -1,0 +1,9 @@
+{
+	"title": "Polls",
+	"path": "polls",
+	"permissions": [
+		"loggedIn"
+	],
+	"menu": "main",
+	"priority": 5
+}

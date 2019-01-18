@@ -22,7 +22,9 @@ test('/complete valid no address', t => {
 		'email': 'blah@blah.com',
 		'password': 'MyPassw0rd',
 		'verify': 'MyPassw0rd',
-		'delivery_optin': 'false'
+		'delivery_optin': 'false',
+		'reason': 'a reason',
+		'how': 'a how'
 	});
 });
 
@@ -42,7 +44,9 @@ test('/complete valid with address', t => {
 		'delivery_optin': 'true',
 		'delivery_line1': 'asdad',
 		'delivery_city': 'Bristol',
-		'delivery_postcode': 'BS1 1AA'
+		'delivery_postcode': 'BS1 1AA',
+		'reason': 'a reason',
+		'how': 'a how'
 	});
 
 	isCompleteValid(t, {
@@ -53,7 +57,9 @@ test('/complete valid with address', t => {
 		'delivery_line1': 'asdad',
 		'delivery_line2': '',
 		'delivery_city': 'Bristol',
-		'delivery_postcode': 'BS1 1AA'
+		'delivery_postcode': 'BS1 1AA',
+		'reason': 'a reason',
+		'how': 'a how'
 	});
 });
 
@@ -62,7 +68,9 @@ test('/complete invalid password', t => {
 		'email': 'blah@blah.com',
 		'password': 'password',
 		'verify': 'password',
-		'delivery_optin': 'false'
+		'delivery_optin': 'false',
+		'reason': 'a reason',
+		'how': 'a how'
 	});
 
 	t.false(valid);

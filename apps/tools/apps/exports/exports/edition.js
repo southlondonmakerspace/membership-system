@@ -1,4 +1,5 @@
 const { Members, Permissions } = require(__js + '/database');
+const { isLocalPostcode } = require( '../utils.js' );
 const config = require( __config );
 
 async function getQuery() {
@@ -24,7 +25,7 @@ async function getExport(members) {
 				Address2: member.delivery_address.line2,
 				City: member.delivery_address.city,
 				Postcode: postcode,
-				IsLocal: /^BS[3-9]\D?$/.test(postcode.slice(0, -3)),
+				IsLocal: isLocalPostcode(postcode),
 				ReferralLink: member.referralLink
 			};
 		})

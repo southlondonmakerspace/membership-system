@@ -1,0 +1,127 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+
+block contents
+	.row
+		.col-md-3
+			- page = '2fa'
+			include /apps/profile/views/partials/sidebar.pug
+		.col-md-9
+			+page_header( 'Vote for the Cable\'s next campaign' )
+			.row
+				.col-md-9
+					p.
+						We believe journalism isn’t just about information. It’s about
+						empowering our communities and making a difference.
+
+					img(src='/static/imgs/polls/hand1.png').poll-hand1
+
+					p.
+						In 2017 Bristol Cable members voted to create lasting change through
+						dogged, creative and impactful campaigning journalism. Since then we
+						have chalked up several wins.
+
+					p.
+						Over the past months, Cable members have contributed to planning our
+						next campaign. 
+
+					p.
+						#[b And now it's time to have you say and vote for what we do next!]
+						Voting closes on Feburary 27th.
+
+					hr
+
+					h3 The campaigns
+
+					p Read about the campaigns then make your choice below
+
+					h4.poll-title
+						span Campaign 1: Prevent drug deaths and clean up our streets!
+
+					p.
+						Every day, people who use drugs risk infection and overdose. Many
+						residents feel unsafe and find thousands of needles in our parks.
+						Police time is wasted fighting a public health crisis. And the NHS
+						picks up the pieces. 
+
+					p.
+						But it doesn’t have to be this way. 
+
+					p.
+						Safe drug consumption rooms are medical facilities where people take
+						illegal drugs and receive support to get clean. These services improve
+						rehab rates, reduce drug deaths, crime, infections, public injecting
+						and needle litter. 
+
+					p.
+						They are pioneered in more than 10 countries, but the government
+						remains opposed. Now a growing number of charities, politicians, senior
+						police and local authorities are backing them.
+
+					p.
+						This campaign would drum up support and call on the council to work
+						with the police, community groups and public bodies to set up a safe
+						consumption room in Bristol immediately. 
+
+					h4.poll-title
+						span Campaign 2: We want clean air. Let’s fight for it.
+
+					p.
+						At a busy junction or in your neighbourhood, the very air we breathe is
+						doing us harm.
+
+					p.
+						A day spent on the streets of Bristol does as much damage as smoking
+						between 1–2 cigarettes. Approximately 300 deaths every year are
+						attributable to air pollution. 
+
+					img(src='/static/imgs/polls/hand3.png').poll-hand3
+
+					p.
+						Countless others suffer, with children and people in working class
+						neighbourhoods hit hardest. 
+
+					p.
+						This can, and must, change.
+
+					p.
+						From industry to fuel, transport to research, the problems – and
+						solutions – are wide-ranging. 
+
+					p.
+						But the solutions will only be implemented if we push for it. 
+
+					p.
+						Through a series of coverage and working with allies and community
+						groups the Cable will investigate the sources and solutions to
+						Bristol’s dirty air and then push for action, from companies, the
+						authorities and the public. 
+
+					p.
+						It’s time we all breathed a little easier.
+
+					hr
+
+					h3 Choose a campaign
+
+					p
+						if answer
+							b
+								| You voted to campaign to
+								|
+								|
+								if answer.answer === '1'
+									| prevent drug deaths and clean up our streets
+								else
+									| clean up our air
+							|.
+							|
+						| You can change your vote up until 5pm on 27th February.
+
+					form(method='POST')
+						+csrf
+						.poll-options
+							button(name='answer' value='1').btn Campaign 1
+							button(name='answer' value='2').btn Campaign 2

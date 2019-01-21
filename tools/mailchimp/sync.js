@@ -31,7 +31,8 @@ function memberToOperation(listId, member) {
 			merge_fields: {
 				FNAME: member.firstname,
 				LNAME: member.lastname,
-				REFLINK: member.referralLink
+				REFLINK: member.referralLink,
+				CMPGN2019: member.campaign2019Answer
 			},
 			status_if_new: 'subscribed'
 		})
@@ -64,20 +65,28 @@ async function fetchMembers(startDate, endDate) {
 		}}
 	});
 
+	const answers = await db.PollAnswers.find({});
+
 	console.log(`Got ${members.length} members`);
 
 	const now = moment();
-	// Hack to store membership active status somewhere
-	members.forEach(member => {
-		member.isActiveMember = member.memberPermission.date_added < now &&
+
+	return members.map(member => {
+		const isActiveMember = member.memberPermission.date_added < now &&
 			(!member.memberPermission.date_expires || member.memberPermission.date_expires > now);
-	});
+		const campaign2019Answer = (answers.find(answer => answer.member.equals(member._id)) || {}).answer || '';
 
-	members.forEach(member => {
-		console.log(member.isActiveMember ? 'U' : 'D', member.email);
-	});
+		console.log(isActiveMember ? 'U' : 'D', member.email);
 
-	return members;
+		return {
+			firstname: member.firstname,
+			lastname: member.lastname,
+			email: member.email,
+			referralLink: member.referralLink,
+			isActiveMember,
+			campaign2019Answer
+		};
+	});
 }
 
 async function processMembers(members) {

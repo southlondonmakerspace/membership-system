@@ -7,7 +7,8 @@ module.exports = {
 	schema: mongoose.Schema( {
 		poll: {
 			type: ObjectId,
-			ref: 'Polls'
+			ref: 'Polls',
+			required: true
 		},
 		answer: {
 			type: String,
@@ -18,7 +19,9 @@ module.exports = {
 			ref: 'Members',
 			required: true
 		}
-	} )
+	}, {
+		timestamps: true
+	})
 };
 
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

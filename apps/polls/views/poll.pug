@@ -12,6 +12,23 @@ block contents
 			+page_header( 'Vote for the Cable\'s next campaign' )
 			.row
 				.col-md-9
+					if answer
+						.alert.alert-success
+							| You voted to campaign to
+							|
+							|
+							if answer.answer === '1'
+								| prevent drug deaths and clean up our streets
+							else
+								| clean up our air
+							|.
+							|
+							| You can
+							|
+							a(href="#vote") change your mind
+							|
+							| up until 5pm on Feburary 27th.
+
 					p.
 						We believe journalism isn’t just about information. It’s about
 						empowering our communities and making a difference.
@@ -106,22 +123,35 @@ block contents
 
 					h3 Choose a campaign
 
-					p
-						if answer
-							b
-								| You voted to campaign to
-								|
-								|
-								if answer.answer === '1'
-									| prevent drug deaths and clean up our streets
-								else
-									| clean up our air
-							|.
-							|
-						| You can change your vote up until 5pm on 27th February.
+					p You can change your vote up until 5pm on 27th February.
 
-					form(method='POST')
+					form(method='POST').form-horizontal#vote
 						+csrf
+
+						h4 Which campaign would you like to vote for?
 						.poll-options
-							button(name='answer' value='1').btn Campaign 1
-							button(name='answer' value='2').btn Campaign 2
+							input(type='radio' name='answer' value='1' required)#answer1
+							label(for="answer1").btn Campaign 1
+							input(type='radio' name='answer' value='2' required)#answer2
+							label(for="answer2").btn Campaign 2
+
+						h4 Why are you voting for this campaign?
+
+						.form-group
+							.col-md-12
+								input(type='text', name='reason').form-control
+
+						p.
+							We'd like to use your voice to encourage other members to take
+							part in this poll. With your permission, we'd like to share your
+							reason and first name in communications.
+
+						.form-group
+							.col-md-12
+								.checkbox
+									label
+										input(type='checkbox' name='shareable' value='true')
+										| Yes, you can show my reason and first
+										| name in communications
+
+						button.btn.join-btn Vote

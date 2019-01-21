@@ -15,6 +15,7 @@ module.exports = {
 			required: true
 		},
 		reason: String,
+		shareable: Boolean,
 		member: {
 			type: ObjectId,
 			ref: 'Members',

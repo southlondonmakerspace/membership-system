@@ -43,6 +43,9 @@ const schema = {
 			},
 			reason: {
 				type: 'string'
+			},
+			shareable: {
+				type: 'boolean'
 			}
 		}
 	}
@@ -55,7 +58,8 @@ app.post( '/campaign2019', hasSchema( schema ).orFlash, wrapAsync( async ( req, 
 			poll,
 			member: req.user,
 			answer: req.body.answer,
-			reason: req.body.reason
+			reason: req.body.reason,
+			shareable: req.body.shareable
 		}
 	}, { upsert: true } );
 
@@ -66,7 +70,7 @@ app.post( '/campaign2019', hasSchema( schema ).orFlash, wrapAsync( async ( req, 
 	} );
 
 	req.flash( 'success', 'polls-answer-chosen' );
-	res.redirect( '/polls/campaign2019' );
+	res.redirect( '/polls/campaign2019#' );
 } ) );
 
 module.exports = config => {

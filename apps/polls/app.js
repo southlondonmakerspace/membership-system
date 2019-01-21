@@ -40,6 +40,9 @@ const schema = {
 			answer: {
 				type: 'string',
 				enum: ['1', '2']
+			},
+			reason: {
+				type: 'string'
 			}
 		}
 	}
@@ -51,7 +54,8 @@ app.post( '/campaign2019', hasSchema( schema ).orFlash, wrapAsync( async ( req, 
 		$set: {
 			poll,
 			member: req.user,
-			answer: req.body.answer
+			answer: req.body.answer,
+			reason: req.body.reason
 		}
 	}, { upsert: true } );
 

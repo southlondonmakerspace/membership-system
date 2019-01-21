@@ -14,6 +14,7 @@ module.exports = {
 			type: String,
 			required: true
 		},
+		reason: String,
 		member: {
 			type: ObjectId,
 			ref: 'Members',

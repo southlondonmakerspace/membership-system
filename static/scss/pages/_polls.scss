@@ -17,14 +17,25 @@ $c-orange: #f7881f;
 	flex-wrap: wrap;
 	margin: 0 -0.5rem;
 
+	& > input {
+		position: absolute;
+		opacity: 0;
+	}
+
 	& > .btn {
 		margin: 0 0.5rem 1rem;
 		flex: 1 1 calc(50% - 1rem);
 		padding: 2rem;
+		opacity: 0.3;
 		background-color: $c-orange;
 		&:hover {
 			background-color: darken($c-orange, 10%);
 		}
+	}
+
+	& > input:checked + .btn,
+	& > input:invalid + .btn {
+		opacity: 1;
 	}
 }
 

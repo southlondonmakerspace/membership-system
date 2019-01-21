@@ -69,21 +69,17 @@ async function fetchMembers(startDate, endDate) {
 
 	console.log(`Got ${members.length} members`);
 
-	const now = moment();
-
 	return members.map(member => {
-		const isActiveMember = member.memberPermission.date_added < now &&
-			(!member.memberPermission.date_expires || member.memberPermission.date_expires > now);
 		const campaign2019Answer = (answers.find(answer => answer.member.equals(member._id)) || {}).answer || '';
 
-		console.log(isActiveMember ? 'U' : 'D', member.email);
+		console.log(member.isActiveMember ? 'U' : 'D', member.email);
 
 		return {
 			firstname: member.firstname,
 			lastname: member.lastname,
 			email: member.email,
 			referralLink: member.referralLink,
-			isActiveMember,
+			isActiveMember: member.isActiveMember,
 			campaign2019Answer
 		};
 	});

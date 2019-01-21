@@ -221,6 +221,13 @@ module.exports.schema.virtual( 'memberPermission' )
 		}
 	} );
 
+module.exports.schema.virtual( 'isActiveMember' )
+	.get( function () {
+		const now = new Date();
+		return this.memberPermission && this.memberPermission.date_added < now &&
+			(!this.memberPermission.date_expires || this.memberPermission.date_expires > now);
+	} );
+
 module.exports.schema.virtual( 'setupComplete' ).get( function() {
 	if ( ! this.password.hash )
 		return false;

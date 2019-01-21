@@ -2,13 +2,15 @@ const gocardless = require( __js + '/gocardless' );
 const mailchimp = require( __js + '/mailchimp' );
 
 async function syncMemberDetails(member, {email, firstname, lastname}) {
-	await mailchimp.defaultLists.members.update( member.email, {
-		email_address: email,
-		merge_fields: {
-			FNAME: firstname,
-			LNAME: lastname
-		}
-	} );
+	if ( member.isActiveMember ) {
+		await mailchimp.defaultLists.members.update( member.email, {
+			email_address: email,
+			merge_fields: {
+				FNAME: firstname,
+				LNAME: lastname
+			}
+		} );
+	}
 
 	if ( member.gocardless.customer_id ) {
 		await gocardless.customers.update( member.gocardless.customer_id, {

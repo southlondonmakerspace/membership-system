@@ -2,6 +2,7 @@ const express = require( 'express' );
 
 const auth = require( __js + '/authentication' );
 const { Polls, PollAnswers } = require( __js + '/database' );
+const mailchimp = require( __js + '/mailchimp' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
 
@@ -53,6 +54,12 @@ app.post( '/campaign2019', hasSchema( schema ).orFlash, wrapAsync( async ( req, 
 			answer: req.body.answer
 		}
 	}, { upsert: true } );
+
+	await mailchimp.defaultLists.members.update( req.user.email, {
+		merge_fields: {
+			CMPGN2019: req.body.answer
+		}
+	} );
 
 	req.flash( 'success', 'polls-answer-chosen' );
 	res.redirect( '/polls/campaign2019' );

@@ -45,7 +45,7 @@ html
 		block head
 			block css
 				link( rel="stylesheet", href="/static/css/theme.min.css" )
-				link( rel="stylesheet", href="/static/css/style.css?v=4" )
+				link( rel="stylesheet", href="/static/css/style.css?v=" + git )
 	body( class=( dev ? 'dev' : '' ) )
 		script.
 			document.body.className += ' has-js';
@@ -102,7 +102,7 @@ html
 		block js
 			script( src="/static/js/jquery.js" )
 			script( src="/static/js/bootstrap.js" )
-			script( src="/static/js/script.js" )
+			script( src="/static/js/script.js?v=" + git )
 
 		if dev
 			script.

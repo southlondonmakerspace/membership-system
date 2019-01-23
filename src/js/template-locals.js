@@ -100,8 +100,10 @@ function templateLocals( req, res, next ) {
 	// Check if user setup is complete
 	res.locals.setupComplete = true;
 	if ( req.user ) {
-		res.locals.memberId = req.user.uuid;
 		res.locals.setupComplete = req.user.setupComplete;
+		res.cookie('memberId', req.user.uuid, {
+			'domain': '.thebristolcable.org'
+		});
 	}
 
 	// Prepare a CSRF token if available

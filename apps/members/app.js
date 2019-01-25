@@ -1,27 +1,22 @@
-var	express = require( 'express' ),
-	app = express(),
-	discourse = require( __js + '/discourse' );
+const escapeStringRegexp = require( 'escape-string-regexp' );
+const express = require( 'express' );
+const moment = require( 'moment' );
+const config = require( __config );
 
-var escapeStringRegexp = require( 'escape-string-regexp' );
-
-var moment = require( 'moment' );
-var	db = require( __js + '/database' ),
-	Permissions = db.Permissions,
-	Members = db.Members,
-	Payments = db.Payments;
-
-var auth = require( __js + '/authentication' );
-var mandrill = require( __js + '/mandrill' );
-var { hasSchema } = require( __js + '/middleware' );
-var { wrapAsync } = require( __js + '/utils' );
-
-var { updateProfileSchema } = require('./schemas.json');
+const auth = require( __js + '/authentication' );
+const { Exports, Members, Permissions, Payments } = require( __js + '/database' );
+const discourse = require( __js + '/discourse' );
+const mandrill = require( __js + '/mandrill' );
+const { hasSchema } = require( __js + '/middleware' );
+const { wrapAsync } = require( __js + '/utils' );
 
 const { createMember, customerToMember, startMembership } = require( __apps + '/join/utils' );
 const { syncMemberDetails } = require( __apps + '/profile/apps/account/utils' );
+const exportTypes = require( __apps + '/tools/apps/exports/exports');
 
-var config = require( __config );
+const { updateProfileSchema } = require('./schemas.json');
 
+const app = express();
 var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
@@ -347,6 +342,65 @@ app.post( '/:uuid/emails', auth.isSuperAdmin, wrapAsync( async function ( req, r
 
 	req.flash( 'success', 'emails-sent');
 	res.redirect(app.mountpath + '/' + req.params.uuid + '/emails');
+} ) );
+
+app.get( '/:uuid/exports', auth.isSuperAdmin, wrapAsync( async function( req, res ) {
+	const member = await Members.findOne( { uuid: req.params.uuid });
+
+	// Only show member-based exports
+	const exports = (await Exports.find()).filter(exportDetails => (
+		exportTypes[exportDetails.type].collection === Members
+	));
+
+	(member.exports || []).forEach(e => {
+		e.details = exports.find(e2 => e2._id.equals(e.export_id));
+	});
+
+	res.render('exports', {member, exports, exportTypes});
+} ) );
+
+app.post( '/:uuid/exports', auth.isSuperAdmin, wrapAsync( async function( req, res ) {
+	if (req.body.action === 'update') {
+		await Members.updateOne( {
+			uuid: req.params.uuid,
+			exports: { $elemMatch: {
+				export_id: req.body.export_id
+			} }
+		}, {
+			'exports.$.status': req.body.status
+		} );
+		req.flash('success', 'success!');
+
+	} else if (req.body.action === 'add') {
+		const exportDetails = await Exports.findById(req.body.export_id);
+		const exportType = exportTypes[exportDetails.type];
+
+		// Check member is eligible
+		const member = await Members.findOne( {
+			...await exportType.getQuery(),
+			exports: {$not: {$elemMatch: {
+				export_id: exportDetails
+			}}},
+			uuid: req.params.uuid
+		} );
+
+		if (member) {
+			await member.update( {
+				$push: {
+					exports: {
+						export_id: exportDetails,
+						status: exportType.statuses[0]
+					}
+				}
+			} );
+
+			req.flash( 'success', 'success!' );
+		} else {
+			req.flash( 'error', 'Not elgibile' );
+		}
+	}
+
+	res.redirect( app.mountpath + '/' + req.params.uuid + '/exports' );
 } ) );
 
 app.get( '/:uuid/tag', auth.isSuperAdmin, function( req, res ) {

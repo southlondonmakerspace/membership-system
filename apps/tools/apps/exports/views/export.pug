@@ -15,33 +15,36 @@ block contents
 
 			p
 				| There are #{exportItems.length} #{exportType.itemName} in this export.
-				|
-				| (
-				each status in exportItemStatuses
-					= status.name
-					| :
-					|
-					= status.count
-					| ,
-					|
-				| )
+
+			.panel-group#items
+				.panel.panel-default
+					.panel-heading
+						h4.panel-title
+							a(data-toggle="collapse" data-parent="#items" href="#new_items").
+								New #{exportType.itemName} (#{newItems.length})
+					.panel-collapse.collapse#new_items
+						.panel-body
+							!= renderItems(newItems)
+				for status in exportItemsByStatus
+					.panel.panel-default
+						.panel-heading
+							h4.panel-title
+								a(data-toggle="collapse" data-parent="#items" href="#" + status.name + "_items")
+									| Existing #{exportType.itemName} - #{status.name}
+									|
+									| (#{status.items.length})
+						.panel-collapse.collapse(id=status.name + "_items")
+							.panel-body
+								!= renderItems(status.items)
+
+			form(method='POST')
+				+csrf
+				input(type='hidden', name='action', value='add')
+				button(dsiabled=newItems.length === 0).btn Add new members
+
 
 	.row
 		.col-md-8
-			hr
-
-			h3 New #{exportType.itemName}
-			if newItems.length > 0
-				p Found #{newItems.length} #{exportType.itemName} not previously in the export
-				form(method='POST')
-					+csrf
-					input(type='hidden', name='action', value='add')
-					button.btn Add
-
-				//- TODO: table view
-			else
-				p All eligible #{exportType.itemName} are in export
-
 			hr
 
 			h3 Run export

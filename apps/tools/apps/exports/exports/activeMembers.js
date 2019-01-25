@@ -26,7 +26,6 @@ module.exports = {
 	statuses: ['added', 'seen'],
 	collection: Members,
 	itemName: 'active members',
-	tableView: 'members',
 	getQuery,
 	getExport
 };

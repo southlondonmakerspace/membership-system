@@ -1,5 +1,6 @@
 const express = require( 'express' );
 const Papa = require('papaparse');
+const pug = require( 'pug' );
 
 const auth = require( __js + '/authentication' );
 const { Exports } = require( __js + '/database' );
@@ -10,10 +11,19 @@ const { createSchema, updateSchema } = require('./schemas.json');
 
 const exportTypes = require('./exports');
 
+const viewsPath = __dirname + '/views';
+
+const exportTypeViews = {
+	'active-members': pug.compileFile(viewsPath + '/tables/members.pug'),
+	'edition': pug.compileFile(viewsPath + '/tables/members.pug'),
+	'join-reasons': pug.compileFile(viewsPath + '/tables/join-reasons.pug'),
+	'referrals': () => {}
+};
+
 const app = express();
 var app_config = {};
 
-app.set( 'views', __dirname + '/views' );
+app.set( 'views', viewsPath );
 
 app.use( auth.isAdmin );
 
@@ -62,17 +72,18 @@ app.get( '/:uuid', wrapAsync( async function( req, res ) {
 		item.currentExport = item.exports.find(e => e.export_id.equals(exportDetails._id));
 	});
 
-	const exportItemStatuses = exportType.statuses.map(status => ({
+	const exportItemsByStatus = exportType.statuses.map(status => ({
 		name: status,
-		count: exportItems.filter(item => item.currentExport.status === status).length
+		items: exportItems.filter(item => item.currentExport.status === status)
 	}));
 
 	res.render('export', {
 		exportDetails,
 		exportType,
 		exportItems,
-		exportItemStatuses,
-		newItems
+		exportItemsByStatus,
+		newItems,
+		renderItems: items => exportTypeViews[exportDetails.type]({items})
 	});
 } ) );
 

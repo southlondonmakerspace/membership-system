@@ -40,7 +40,13 @@ app.use( function( req, res, next ) {
 
 app.get( '/', wrapAsync( async function( req, res ) {
 	const exports = await Exports.find();
-	res.render('index', {exports, exportTypes});
+
+	const exportsByType = Object.keys(exportTypes).map(type => ({
+		name: exportTypes[type].name,
+		exports: exports.filter(e => e.type === type)
+	}));
+
+	res.render('index', {exportsByType, exportTypes});
 } ) );
 
 app.post( '/', hasSchema(createSchema).orFlash, wrapAsync( async function( req, res ) {

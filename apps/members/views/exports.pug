@@ -1,0 +1,47 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = 'Exports'
+	- page = 'exports'
+
+block contents
+	.row
+		.col-md-3
+			include partials/sidebar.pug
+		.col-md-9
+			+page_header( title )
+
+			table.table
+				thead
+					tr
+						th Export name
+						th Status
+				tbody
+					for exprt in member.exports
+						tr
+							td= exprt.details.description
+							td
+								form(method="post").form-inline
+									+csrf
+									input(type="hidden" name="action" value="update")
+									input(type="hidden" name="export_id" value=exprt.export_id)
+									.form-group
+										select(name="status").form-control
+											for status in exportTypes[exprt.details.type].statuses
+												option(selected=status === exprt.status)= status
+									| &nbsp;&nbsp;
+									button.btn.btn-sm Update
+
+			h3 Add to export
+			form(method="post").form-horizontal
+				+csrf
+				input(type="hidden" name="action" value="add")
+				.form-group
+					label(for="export").col-md-3.control-label Export name
+					.col-md-4
+						select(id="export" name="export_id" required).form-control
+							option(value='' selected disabled)
+							for exportDetails in exports
+								option(value=exportDetails._id)= exportDetails.description
+				.col-md-offset-3.col-md-4
+					button.btn Add

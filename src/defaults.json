@@ -104,8 +104,10 @@
 
 	"flash-exports-created": "Export created",
 	"flash-exports-added": "Added members to export",
+	"flash-exports-added-one": "Added member to export",
 	"flash-exports-updated": "Updated export status",
 	"flash-exports-deleted": "Export deleted",
+	"flash-exports-ineligible": "Member is not eligible to be in this export.",
 
 	"flash-transactional-email-created": "Transactional email created",
 	"flash-transactional-email-sending": "Transactional email is sending!",

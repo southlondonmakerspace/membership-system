@@ -4,6 +4,7 @@ ul.nav.nav-pills.nav-stacked
 	if access( 'superadmin' )
 		li( class=( page == 'profile' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/profile' ) Profile
 		li( class=( page === 'emails' ? 'active' : '' ) ): a(href='/members/' + member.uuid + '/emails' ) Emails
+		li( class=( page === 'exports' ? ' active' : '' ) ): a(href='/members/' + member.uuid + '/exports' ) Exports
 		li( class=( page == 'gocardless' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/gocardless' ) GoCardless
 		li( class=( page == 'tag' ? 'active' : '' ) ): a( href='/members/' + member.uuid + '/tag' ) Tag
 		if ( member.otp.activated )

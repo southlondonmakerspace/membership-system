@@ -58,14 +58,20 @@ app.get( '/:uuid', wrapAsync( async function( req, res ) {
 		}}
 	});
 
-	exportItems.forEach(member => {
-		member.currentExport = member.exports.find(e => e.export_id.equals(exportDetails._id));
+	exportItems.forEach(item => {
+		item.currentExport = item.exports.find(e => e.export_id.equals(exportDetails._id));
 	});
+
+	const exportItemStatuses = exportType.statuses.map(status => ({
+		name: status,
+		count: exportItems.filter(item => item.currentExport.status === status).length
+	}));
 
 	res.render('export', {
 		exportDetails,
 		exportType,
 		exportItems,
+		exportItemStatuses,
 		newItems
 	});
 } ) );
@@ -98,7 +104,7 @@ app.post( '/:uuid', hasSchema(updateSchema).orFlash, wrapAsync( async function( 
 		await exportType.collection.updateMany({
 			exports: {$elemMatch: {
 				export_id: exportDetails,
-				...data.old_status !== '' && {status: data.old_status}
+				status: data.old_status
 			}}
 		},
 		{

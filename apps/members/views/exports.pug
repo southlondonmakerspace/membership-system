@@ -17,18 +17,19 @@ block contents
 						th Export name
 						th Status
 				tbody
-					for exprt in member.exports
+					for e in member.exports
 						tr
-							td= exprt.details.description
+							td
+								a(href="/tools/exports/" + e.export_id)= e.details.description
 							td
 								form(method="post").form-inline
 									+csrf
 									input(type="hidden" name="action" value="update")
-									input(type="hidden" name="export_id" value=exprt.export_id)
+									input(type="hidden" name="export_id" value=e.export_id)
 									.form-group
 										select(name="status").form-control
-											for status in exportTypes[exprt.details.type].statuses
-												option(selected=status === exprt.status)= status
+											for status in exportTypes[e.details.type].statuses
+												option(selected=status === e.status)= status
 									| &nbsp;&nbsp;
 									button.btn.btn-sm Update
 

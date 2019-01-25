@@ -74,7 +74,6 @@ module.exports = {
 	statuses: ['added', 'seen'],
 	collection: Referrals,
 	itemName: 'referrals',
-	tableView: 'referrals',
 	getQuery,
 	getExport
 };

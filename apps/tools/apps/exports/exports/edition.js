@@ -40,7 +40,6 @@ module.exports = {
 	statuses: ['added', 'sent'],
 	collection: Members,
 	itemName: 'members',
-	tableView: 'members',
 	getQuery,
 	getExport
 };

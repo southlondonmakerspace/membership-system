@@ -12,27 +12,39 @@ block contents
 			p.
 				#{exportType.name}, created
 				#{moment(exportDetails.date).format('DD/MM/YYYY [at] HH:mm')}
-	.row
-		.col-md-8
+
+			p
+				| There are #{exportItems.length} #{exportType.itemName} in this export.
+
+			.panel-group#items
+				.panel.panel-default
+					.panel-heading
+						h4.panel-title
+							a(data-toggle="collapse" data-parent="#items" href="#new_items").
+								New #{exportType.itemName} (#{newItems.length})
+					.panel-collapse.collapse#new_items
+						.panel-body
+							!= renderItems(newItems)
+				for status in exportItemsByStatus
+					.panel.panel-default
+						.panel-heading
+							h4.panel-title
+								a(data-toggle="collapse" data-parent="#items" href="#" + status.name + "_items")
+									| Existing #{exportType.itemName} - #{status.name}
+									|
+									| (#{status.items.length})
+						.panel-collapse.collapse(id=status.name + "_items")
+							.panel-body
+								!= renderItems(status.items)
+
 			form(method='POST')
 				+csrf
-				input(type='hidden', name='action', value='delete')
-				button.btn.btn-danger.outline Delete
+				input(type='hidden', name='action', value='add')
+				button(dsiabled=newItems.length === 0).btn Add new members
 
-			hr
 
-			h3 New #{exportType.itemName}
-			if newItems.length > 0
-				p Found #{newItems.length} #{exportType.itemName} not previously in the export
-				form(method='POST')
-					+csrf
-					input(type='hidden', name='action', value='add')
-					button.btn Add
-
-				//- TODO: table view
-			else
-				p All eligible #{exportType.itemName} are in export
-
+	.row
+		.col-md-8
 			hr
 
 			h3 Run export
@@ -53,8 +65,7 @@ block contents
 
 			hr
 
-			h3 Update statuses
-			p There are #{exportItems.length} #{exportType.itemName} in export
+			h3 Update #{exportType.itemName}
 			form(method='POST').form-horizontal
 				+csrf
 				input(type='hidden', name='action', value='update')
@@ -63,7 +74,6 @@ block contents
 					label(for='old_status').form-label.col-md-3 Old status
 					.col-md-4
 						select(id='old_status', name='old_status').form-control
-							option(value='') -- All --
 							each status in exportType.statuses
 								option= status
 
@@ -74,8 +84,22 @@ block contents
 							each status in exportType.statuses
 								option= status
 
+				p
+					label.checkbox-inline
+						input(type='checkbox' required)
+						| This change is irreversible, confirm to proceed
+
 				button.btn Update
 
 			hr
 
-			//- TODO: table view
+			h3 Delete export
+
+			form(method='POST')
+				+csrf
+				input(type='hidden', name='action', value='delete')
+				p
+					label.checkbox-inline
+						input(type='checkbox' required)
+						| This change is irreversible, confirm to proceed
+				button.btn.btn-danger.outline Delete

@@ -369,7 +369,7 @@ app.post( '/:uuid/exports', auth.isSuperAdmin, wrapAsync( async function( req, r
 		}, {
 			'exports.$.status': req.body.status
 		} );
-		req.flash('success', 'success!');
+		req.flash('success', 'exports-updated');
 
 	} else if (req.body.action === 'add') {
 		const exportDetails = await Exports.findById(req.body.export_id);
@@ -394,9 +394,9 @@ app.post( '/:uuid/exports', auth.isSuperAdmin, wrapAsync( async function( req, r
 				}
 			} );
 
-			req.flash( 'success', 'success!' );
+			req.flash( 'success', 'exports-added-one' );
 		} else {
-			req.flash( 'error', 'Not elgibile' );
+			req.flash( 'error', 'exports-ineligible' );
 		}
 	}
 

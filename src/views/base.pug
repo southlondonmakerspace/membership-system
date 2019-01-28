@@ -51,17 +51,18 @@ html
 			document.body.className += ' has-js';
 
 		.wrapper
-			header.header
-				.container
-					.row
-						.col-xs-6
-							a( href="https://thebristolcable.org/" )
-								img( src="/static/svg/logo.svg" ).header-logo
-						.col-xs-6.text-right
-							if isLoggedIn
-								a( href="/logout" ) Logout
-							else
-								a( href="/login" ) Login
+			block header
+				header.header
+					.container
+						.row
+							.col-xs-6
+								a( href="https://thebristolcable.org/" )
+									img( src="/static/svg/logo.svg" ).header-logo
+							.col-xs-6.text-right
+								if isLoggedIn
+									a( href="/logout" ) Logout
+								else
+									a( href="/login" ) Login
 
 
 			main.main

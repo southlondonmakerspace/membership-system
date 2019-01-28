@@ -46,3 +46,10 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Open Sans Condensed';
+    src: url('/static/fonts/OpenSansCondensed-Bold.woff2') format('woff2'),
+        url('/static/fonts/OpenSansCondensed-Bold.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+}

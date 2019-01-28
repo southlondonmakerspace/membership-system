@@ -11,8 +11,6 @@ var app_config = {};
 
 app.set( 'views', __dirname + '/views' );
 
-app.use( auth.isLoggedIn );
-
 app.use( ( req, res, next ) => {
 	res.locals.app = app_config;
 	res.locals.breadcrumb.push( {
@@ -28,8 +26,12 @@ app.get( '/', ( req, res ) => {
 } );
 
 app.get( '/campaign2019', wrapAsync( async ( req, res ) => {
-	const answer = await PollAnswers.findOne( { member: req.user } );
-	res.render( 'poll', { answer } );
+	if (req.user) {
+		const answer = await PollAnswers.findOne( { member: req.user } );
+		res.render( 'poll', { answer } );
+	} else {
+		res.render( 'poll-landing' );
+	}
 } ) );
 
 const schema = {
@@ -51,7 +53,10 @@ const schema = {
 	}
 };
 
-app.post( '/campaign2019', hasSchema( schema ).orFlash, wrapAsync( async ( req, res ) => {
+app.post( '/campaign2019', [
+	auth.isLoggedIn,
+	hasSchema( schema ).orFlash,
+], wrapAsync( async ( req, res ) => {
 	const poll = await Polls.findOne();
 	await PollAnswers.findOneAndUpdate( { member: req.user }, {
 		$set: {

@@ -13,7 +13,7 @@ block body
 			h1.poll-title.poll-title--white
 				span Vote for our next campaign
 	
-	.container.poll-container
+	.container
 		.row
 			.col-md-6
 				h2.poll-title.poll-title--orange
@@ -40,10 +40,11 @@ block body
 						span Not a member?
 					a(href="/join").btn.poll-btn Join now
 
-		.row
+		.row.poll-random-hand-anchor
 			.col-md-12
 				h2.poll-title.poll-title--orange
 					span The campaigns
+				img(src='/static/imgs/polls/hand3.png').poll-random-hand
 
 		.row
 			.col-md-6
@@ -124,8 +125,6 @@ block body
 
 						p.
 							It’s time we all breathed a little easier.
-
-		img(src='/static/imgs/polls/hand3.png').poll-random-hand
 
 	.poll-footer
 		.container

@@ -1,10 +1,6 @@
 $c-orange: #f7881f;
 $c-dark-orange: #623204;
 
-.poll-container {
-	position: relative;
-}
-
 .poll-title {
 	font-family: "Open Sans Condensed";
 	font-weight: bold;
@@ -226,12 +222,23 @@ $c-dark-orange: #623204;
 	}
 }
 
+.poll-random-hand-anchor {
+	position: relative;
+	margin-top: 80px;
+	@media (min-width: 992px) {
+		margin-top: 0;
+	}
+}
+
 .poll-random-hand {
 	position: absolute;
-	z-index: -1;
+	z-index: 1;
+	top: -100px;
 	right: 0;
-	top: 200px;
-	width: 200px;
+	width: 150px;
+	@media (min-width: 992px) {
+		width: 200px;
+	}
 }
 
 .poll-btn {

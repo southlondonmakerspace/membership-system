@@ -20,21 +20,23 @@ html
 				- shareDescription = 'Latest Bristol news, investigations &amp; events. The city\'s media co-operative – created and owned by local people. Sticking up for Bristol.';
 			if !shareUrl
 				- shareUrl = '/'
+			if !shareImage
+				- shareImage = 'https://membership.thebristolcable.org/static/imgs/share.jpg'
 			meta(property="og:locale" content="en_GB")
 			meta(property="og:type" content="website")
 			meta(property="og:title" content=shareTitle)
 			meta(property="og:description" content=shareDescription)
 			meta(property="og:url" content="https://membership.thebristolcable.org" + shareUrl)
 			meta(property="og:site_name" content="The Bristol Cable")
-			meta(property="og:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
-			meta(property="og:image:secure_url" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(property="og:image" content=shareImage)
+			meta(property="og:image:secure_url" content=shareImage)
 			meta(property="og:image:width" content="512")
 			meta(property="og:image:height" content="512")
 			meta(name="twitter:card" content="summary_large_image")
 			meta(name="twitter:description" content=shareDescription)
 			meta(name="twitter:title" content=shareTitle)
 			meta(name="twitter:site" content="@TheBristolCable")
-			meta(name="twitter:image" content="https://membership.thebristolcable.org/static/imgs/share.jpg")
+			meta(name="twitter:image" content=shareImage)
 			meta(name="twitter:creator" content="@TheBristolCable")
 
 		block title
@@ -51,17 +53,18 @@ html
 			document.body.className += ' has-js';
 
 		.wrapper
-			header.header
-				.container
-					.row
-						.col-xs-6
-							a( href="https://thebristolcable.org/" )
-								img( src="/static/svg/logo.svg" ).header-logo
-						.col-xs-6.text-right
-							if isLoggedIn
-								a( href="/logout" ) Logout
-							else
-								a( href="/login" ) Login
+			block header
+				header.header
+					.container
+						.row
+							.col-xs-6
+								a( href="https://thebristolcable.org/" )
+									img( src="/static/svg/logo.svg" ).header-logo
+							.col-xs-6.text-right
+								if isLoggedIn
+									a( href="/logout" ) Logout
+								else
+									a( href="/login" ) Login
 
 
 			main.main

@@ -243,4 +243,8 @@ module.exports.schema.virtual( 'referralLink' ).get( function () {
 	return 'https://thebristolcable.org/refer/' + this.referralCode;
 } );
 
+module.exports.schema.virtual( 'voteLink' ).get( function () {
+	return 'https://membership.thebristolcable.org/polls/campaign2019/' + this.pollsCode;
+} );
+
 module.exports.model = mongoose.model( module.exports.name, module.exports.schema );

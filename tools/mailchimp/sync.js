@@ -32,7 +32,8 @@ function memberToOperation(listId, member) {
 				FNAME: member.firstname,
 				LNAME: member.lastname,
 				REFLINK: member.referralLink,
-				CMPGN2019: member.campaign2019Answer
+				CMPGN2019: member.campaign2019Answer,
+				VOTELINK: member.voteLink
 			},
 			status_if_new: 'subscribed'
 		})
@@ -80,7 +81,8 @@ async function fetchMembers(startDate, endDate) {
 			email: member.email,
 			referralLink: member.referralLink,
 			isActiveMember: member.isActiveMember,
-			campaign2019Answer
+			campaign2019Answer,
+			voteLink: member.voteLink
 		};
 	});
 }

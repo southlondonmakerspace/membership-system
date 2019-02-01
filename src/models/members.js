@@ -45,6 +45,11 @@ module.exports = {
 			code: String,
 			expires: Date
 		},
+		pollsCode: {
+			type: String,
+			unique: true,
+			sparse: true
+		},
 		password: {
 			hash: {
 				type: String,

@@ -38,11 +38,11 @@ app.get( '/campaign2019/:code', wrapAsync( async ( req, res ) => {
 	res.render( 'poll', { code: req.params.code } );
 } ) );
 
-async function setAnswer( member, { answer, reason, shareable } ) {
+async function setAnswer( member, { answer, reason, shareable, volunteer, idea } ) {
 	const poll = await Polls.findOne();
 	await PollAnswers.findOneAndUpdate( { member: member }, {
 		$set: {
-			poll, member, answer, reason, shareable
+			poll, member, answer, reason, shareable, volunteer, idea
 		}
 	}, { upsert: true } );
 
@@ -67,7 +67,13 @@ const answerSchema = {
 			},
 			shareable: {
 				type: 'boolean'
-			}
+			},
+			volunteer: {
+				type: 'boolean'
+			},
+			idea: {
+				type: 'string'
+			},
 		}
 	}
 };

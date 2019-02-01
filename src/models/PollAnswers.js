@@ -21,6 +21,8 @@ module.exports = {
 			ref: 'Members',
 			required: true
 		},
+		volunteer: Boolean,
+		idea: String,
 		exports: [ {
 			export_id: {
 				type: ObjectId,

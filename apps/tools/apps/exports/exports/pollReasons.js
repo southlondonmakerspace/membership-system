@@ -15,7 +15,8 @@ async function getExport(pollAnswers) {
 		.map(pollAnswer => ({
 			Shareable: pollAnswer.shareable ? 'Yes' : 'No',
 			FirstName: membersById[pollAnswer.member].firstname,
-			Reason: pollAnswer.reason
+			Reason: pollAnswer.reason,
+			Answer: pollAnswer.answer
 		}));
 }
 

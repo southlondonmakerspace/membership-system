@@ -1,7 +1,7 @@
 const express = require( 'express' );
 
 const auth = require( __js + '/authentication' );
-const { Polls, PollAnswers } = require( __js + '/database' );
+const { Members, Polls, PollAnswers } = require( __js + '/database' );
 const mailchimp = require( __js + '/mailchimp' );
 const { hasSchema } = require( __js + '/middleware' );
 const { wrapAsync } = require( __js + '/utils' );
@@ -34,7 +34,26 @@ app.get( '/campaign2019', wrapAsync( async ( req, res ) => {
 	}
 } ) );
 
-const schema = {
+app.get( '/campaign2019/:code', wrapAsync( async ( req, res ) => {
+	res.render( 'poll', { code: req.params.code } );
+} ) );
+
+async function setAnswer( member, { answer, reason, shareable } ) {
+	const poll = await Polls.findOne();
+	await PollAnswers.findOneAndUpdate( { member: member }, {
+		$set: {
+			poll, member, answer, reason, shareable
+		}
+	}, { upsert: true } );
+
+	await mailchimp.defaultLists.members.update( member.email, {
+		merge_fields: {
+			CMPGN2019: answer
+		}
+	} );
+}
+
+const answerSchema = {
 	body: {
 		type: 'object',
 		required: ['answer'],
@@ -55,27 +74,44 @@ const schema = {
 
 app.post( '/campaign2019', [
 	auth.isLoggedIn,
-	hasSchema( schema ).orFlash,
+	hasSchema( answerSchema ).orFlash,
 ], wrapAsync( async ( req, res ) => {
-	const poll = await Polls.findOne();
-	await PollAnswers.findOneAndUpdate( { member: req.user }, {
-		$set: {
-			poll,
-			member: req.user,
-			answer: req.body.answer,
-			reason: req.body.reason,
-			shareable: req.body.shareable
-		}
-	}, { upsert: true } );
-
-	await mailchimp.defaultLists.members.update( req.user.email, {
-		merge_fields: {
-			CMPGN2019: req.body.answer
-		}
-	} );
-
+	await setAnswer(req.user, req.body);
 	req.flash( 'success', 'polls-answer-chosen' );
 	res.redirect( '/polls/campaign2019#' );
+} ) );
+
+app.post( '/campaign2019/:code', [
+	hasSchema( answerSchema ).orFlash,
+	hasSchema( { body: {
+		type: 'object',
+		required: ['email'],
+		properties: {
+			email: {
+				type: 'string',
+				format: 'email'
+			}
+		}
+	} } ).orFlash
+], wrapAsync( async ( req, res ) => {
+	const member = await Members.findOne( {
+		email: req.body.email,
+		pollsCode: req.params.code
+	} );
+
+	if ( member ) {
+		await setAnswer(member, req.body);
+		req.flash( 'success', 'polls-answer-chosen' );
+
+		res.cookie('memberId', member.uuid, {
+			domain: '.thebristolcable.org',
+			maxAge: 30 * 24 * 60 * 60 * 1000
+		});
+	} else {
+		req.flash( 'error', 'polls-unknown-user' );
+	}
+
+	res.redirect( '/polls/campaign2019/' + req.params.code + '#' );
 } ) );
 
 module.exports = config => {

@@ -108,10 +108,12 @@ async function createMember(memberObj) {
 	try {
 		return await Members.create({
 			...memberObj,
-			referralCode: generateReferralCode(memberObj)
+			referralCode: generateReferralCode(memberObj),
+			pollsCode: generateReferralCode(memberObj)
 		});
 	} catch (saveError) {
-		if (saveError.code === 11000 && saveError.message.indexOf('referralCode') > -1) {
+		const {code, message} = saveError;
+		if (code === 11000 && (message.indexOf('referralCode') > -1 || message.indexOf('pollsCode') > -1)) {
 			// Retry with a different referral code
 			return await createMember(memberObj);
 		}
@@ -160,7 +162,8 @@ async function startMembership(member, {
 			merge_fields: {
 				FNAME: member.firstname,
 				LNAME: member.lastname,
-				REFLINK: member.referralLink
+				REFLINK: member.referralLink,
+				VOTELINK: member.voteLink
 			},
 			status_if_new: 'subscribed'
 		});

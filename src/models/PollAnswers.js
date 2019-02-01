@@ -20,7 +20,18 @@ module.exports = {
 			type: ObjectId,
 			ref: 'Members',
 			required: true
-		}
+		},
+		exports: [ {
+			export_id: {
+				type: ObjectId,
+				ref: 'Exports',
+				required: true
+			},
+			status: {
+				type: String,
+				required: true
+			}
+		} ]
 	}, {
 		timestamps: true
 	})

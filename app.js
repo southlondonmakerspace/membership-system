@@ -61,11 +61,37 @@ app.set( 'view cache', false );
 app_loader( app );
 
 // Start server
-var listener = app.listen( config.port ,config.host, function () {
+var server = app.listen( config.port ,config.host, function () {
 	log.debug( {
 		app: 'main',
 		action: 'start-webserver',
 		message: 'Started',
-		address: listener.address()
+		address: server.address()
 	} );
 } );
+
+process.on('SIGTERM', () => {
+	log.debug( {
+		app: 'main',
+		action: 'stop-webserver',
+		message: 'Waiting for server to shutdown'
+	} );
+
+	setTimeout(() => {
+		log.debug( {
+			app: 'main',
+			action: 'stop-webserver',
+			message: 'Server was forced to shutdown after timeout'
+		} );
+		process.exit(1);
+	}, 20000).unref();
+
+	server.close(() => {
+		log.debug( {
+			app: 'main',
+			action: 'stop-webserver',
+			message: 'Server successfully shutdown'
+		} );
+		process.exit();
+	});
+});

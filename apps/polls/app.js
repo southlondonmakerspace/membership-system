@@ -101,7 +101,7 @@ app.post( '/campaign2019/:code', [
 	} } ).orFlash
 ], wrapAsync( async ( req, res ) => {
 	const member = await Members.findOne( {
-		email: req.body.email,
+		email: req.body.email.trim().toLowerCase(),
 		pollsCode: req.params.code
 	} );
 

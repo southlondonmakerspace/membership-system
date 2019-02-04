@@ -35,7 +35,11 @@ app.get( '/campaign2019', wrapAsync( async ( req, res ) => {
 } ) );
 
 app.get( '/campaign2019/:code', wrapAsync( async ( req, res ) => {
-	res.render( 'poll', { code: req.params.code } );
+	if ( req.user ) {
+		res.redirect( '/polls/campaign2019' );
+	} else {
+		res.render( 'poll', { code: req.params.code } );
+	}
 } ) );
 
 async function setAnswer( member, { answer, reason, shareable, volunteer, idea } ) {

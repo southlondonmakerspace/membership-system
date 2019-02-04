@@ -49,6 +49,9 @@ block contents
 						#[b And now it's time to have you say and vote for what we do next!]
 						Voting closes on February 27th.
 
+					p
+						a(href="#vote").btn.poll-btn Go to vote
+
 					hr
 
 					h3 The campaigns
@@ -120,20 +123,19 @@ block contents
 					p.
 						It’s time we all breathed a little easier.
 
-					hr
+					hr#vote
 
 					h3 Choose a campaign
 
 					p You can change your vote up until 5pm on 27th February.
 
-					form(method='POST').form-horizontal#vote
+					form(method='POST')
 						+csrf
 
 						if code
 							h4 Please confirm your email address
 							.form-group
-								.col-md-12
-									input(type='text' name='email').form-control
+								input(type='text' name='email').form-control
 
 						h4 Which campaign would you like to vote for?
 						.poll-options
@@ -145,45 +147,40 @@ block contents
 						h4 Why are you voting for this campaign?
 
 						.form-group
-							.col-md-12
-								input(type='text', name='reason').form-control
+							input(type='text', name='reason').form-control
 
 						p.
-							We'd like to use your voice to encourage other members to take
-							part in this poll. With your permission, we'd like to share your
-							reason and first name in communications.
+							With your permission, we'd like to use your voice to encourage
+							other members to take part in this poll.
 
 						.form-group
-							.col-md-12
-								.checkbox
-									label
-										input(type='checkbox' name='shareable' value='true')
-										| Yes, you can show my reason and first
-										| name in communications
+							.checkbox
+								label
+									input(type='checkbox' name='shareable' value='true')
+									| Yes, you can show my reason and first
+									| name in communications
 
 						h4 Get involved
 
 						img(src='/static/imgs/polls/hand3.png').poll-hand4
+						.poll-volunteer
+							p.
+								Together as members we can make a difference. Are you interested
+								in being contacted about opportunities to get involved in the
+								campaign?
 
-						p.
-							Together as members we can make a difference. Are you interested
-							in being contacted about opportunities to get involved in the
-							campaign?
-
-						.form-group
-							.col-md-12
+							.form-group
 								.checkbox
 									label
 										input(type='checkbox' name='volunteer' value='true')
-										| Yes, I'd be happy to be contacted about opportunities
-										| to get involved
+										| Yes, I'd like to be contacted about opportunities to get
+										| involved
 
 						p.
-							Do you have any particular ideas of how you might like to get
+							Do you have any particular ideas of how you'd like to be
 							involved?
 
 						.form-group
-							.col-md-12
-								input(type='text', name='idea').form-control
+							input(type='text', name='idea').form-control
 
 						button.btn.join-btn Vote

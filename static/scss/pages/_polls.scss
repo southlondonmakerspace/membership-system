@@ -78,7 +78,7 @@ $c-dark-orange: #623204;
 .poll-hand4 {
 	float: left;
 	margin: 1rem 2rem 1rem 0;
-	width: 100px;
+	width: 70px;
 	transform: scale(-1, 1);
 }
 
@@ -296,3 +296,9 @@ $c-dark-orange: #623204;
 	}
 }
 
+
+.poll-volunteer {
+	@media (min-width: 460px) {
+		overflow: hidden;
+	}
+}

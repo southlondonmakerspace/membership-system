@@ -27,7 +27,7 @@ async function getExport(members) {
 		Address2: member.delivery_address.line2,
 		Address3: member.delivery_address.city,
 		Address4: member.delivery_address.postcode,
-		Custom1: 'thebristolcable.org/vote2019/' + member.pollsCode
+		'Custom 1': 'thebristolcable.org/vote2019/' + member.pollsCode
 	}));
 }
 

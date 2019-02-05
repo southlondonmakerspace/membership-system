@@ -11,13 +11,17 @@ async function getExport(pollAnswers) {
 	const membersById = {};
 	members.forEach(member => membersById[member._id] = member);
 
-	return pollAnswers
-		.map(pollAnswer => ({
+	return pollAnswers.map(pollAnswer => {
+		const member = membersById[pollAnswer.member];
+		return {
 			Shareable: pollAnswer.shareable ? 'Yes' : 'No',
-			FirstName: membersById[pollAnswer.member].firstname,
+			EmailAddress: member.email,
+			FirstName: member.firstname,
+			LastName: member.lastname,
 			Reason: pollAnswer.reason,
 			Answer: pollAnswer.answer
-		}));
+		};
+	});
 }
 
 module.exports = {

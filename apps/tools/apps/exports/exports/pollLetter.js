@@ -32,6 +32,7 @@ async function getExport(members) {
 			Surname: member.lastname,
 			'Full name': member.fullname,
 			'Custom 1': 'thebristolcable.org/vote2019/' + member.pollsCode,
+			'Custom 2': member.uuid,
 			...addressFields
 		};
 	});

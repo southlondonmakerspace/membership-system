@@ -129,11 +129,18 @@ block contents
 
 					p You can change your vote up until 5pm on 27th February.
 
-					form(method='POST')
+					form(method='POST' action="#vote")
 						+csrf
+						include /src/views/partials/flash.pug
 
 						if code
 							h4 Please confirm your email address
+							p.
+								For data protection reasons, this must be the email address
+								that we have on record for you.  If you have trouble please
+								email
+								#[a(href='mailto:membership@thebristolcable.org') membership@thebristolcable.org].
+
 							.form-group
 								input(type='text' name='email').form-control
 

@@ -1,0 +1,28 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.11.3
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build
+  deploy:
+    docker:
+      - image: circleci/node:8.11.3
+    steps:
+      - run: echo Here
+
+workflows:
+  version: 2
+  build_then_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+

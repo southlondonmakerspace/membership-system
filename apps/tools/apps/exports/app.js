@@ -17,6 +17,7 @@ const exportTypeViews = {
 	'active-members': pug.compileFile(viewsPath + '/tables/members.pug'),
 	'edition': pug.compileFile(viewsPath + '/tables/members.pug'),
 	'join-reasons': pug.compileFile(viewsPath + '/tables/join-reasons.pug'),
+	'poll-letter': () => {},
 	'poll-reasons': () => {},
 	'referrals': () => {}
 };

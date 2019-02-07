@@ -121,7 +121,7 @@ app.post( '/campaign2019/:code', [
 		req.flash( 'error', 'polls-unknown-user' );
 	}
 
-	res.redirect( '/polls/campaign2019/' + req.params.code + '#' );
+	res.redirect( '/polls/campaign2019/' + req.params.code + '#vote' );
 } ) );
 
 module.exports = config => {

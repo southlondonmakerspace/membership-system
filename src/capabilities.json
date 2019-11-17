@@ -1,0 +1,30 @@
+{
+    "api-read-events": {
+        "name": "Read event log",
+        "description": "Provides a queryable log of events."
+    },
+    "api-read-item-state": {
+        "name": "Read item state",
+        "description": "Provide a the status of the item requested."
+    },
+    "api-write-item-state": {
+        "name": "Write item state",
+        "description": "Updates the provided item's status."
+    },
+    "api-validate-tag": {
+        "name": "Validate tag",
+        "description": "Validate's if the tag is enrolled already."
+    },
+    "api-identify-tag": {
+        "name": "Identify tag",
+        "description": "Identify which user the tag is enrolled with."
+    },
+    "api-enroll-tag": {
+        "name": "Enroll tag",
+        "description": "Creates a new tag enrollment and emails the user."
+    },
+    "api-member-permission-check": {
+        "name": "Check member's permissions",
+        "description": "Checks the tag is enrolled to a user with membership and the requested permission."
+    }
+}

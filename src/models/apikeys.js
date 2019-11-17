@@ -17,7 +17,12 @@ module.exports = {
 			type: String,
 			unique: true,
 			required: true
-		}
+		},
+		capabilities: [
+			{
+				type: String
+			}
+		]
 	} )
 };
 

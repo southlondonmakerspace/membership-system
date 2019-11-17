@@ -19,7 +19,7 @@ var database = require( __js + '/database' ),
 
 var app_config = {};
 
-app.get( '/', auth.isAPIAuthenticated, function( req, res ) {
+app.get( '/', auth.apiCan( 'api-read-events' ), function( req, res ) {
 	res.setHeader('Content-Type', 'application/json');
 
 	if ( ! req.query.since ) return res.sendStatus( 404 );

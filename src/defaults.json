@@ -117,6 +117,7 @@
 	"flash-apikey-delete": "API Key deleted",
 	"flash-apikey-name-required": "API Key requires a name",
 	"flash-apikey-key-required": "API Key requires a secret key",
+	"flash-apikey-invalid-capability": "API Key has one or more invalid capabilities",
 
 	"flash-tag-revoked": "Your tag has been revoked",
 	"flash-discourse-unlinked": "Your Discourse account has been unlinked",

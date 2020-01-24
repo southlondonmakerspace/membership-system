@@ -6,9 +6,9 @@ const daysItTakesToProcessPayments = 2;
 const moment = require('moment')
 const wooSubscriptionProductId = 13;
 
-var config = require( __config ),
-	db = require( __js + '/database' ).connect( config.mongo ),
-	GoCardless = require( __js + '/gocardless' )( config.gocardless );
+var config = require(__config),
+    db = require(__js + '/database').connect(config.mongo),
+    GoCardless = require(__js + '/gocardless')(config.gocardless);
 
 var Members = db.Members;
 const paymentCutoffDate = moment().startOf('day').add(daysItTakesToProcessPayments, 'days');
@@ -40,25 +40,30 @@ const columns = [
     "_old_gocardless_subscription_id",
     "_old_permissions"
 ];
+
 function doubleSquashObject(anArray) {
     const aStringValue = ""
     const stringParts = []
     Object.keys(anArray).forEach((key) => {
-        stringParts.push( key + "=" + anArray[key] )
+        stringParts.push(key + "=" + anArray[key])
     });
-    return stringParts.join('+');  
+    return stringParts.join('+');
 }
 
 function squashObject(anArray) {
     const aStringValue = ""
     const stringParts = []
     Object.keys(anArray).forEach((key) => {
-        stringParts.push( key + ":" + anArray[key] )
+        if (typeof anArray[key] === 'object') {
+            stringParts.push(key + doubleSquashObject(anArray[key]))
+        } else {
+            stringParts.push(key + ":" + anArray[key]);
+        }
     });
     return stringParts.join('|');
 }
 
-function headerRow(flatMember) {
+function headerRow() {
     return columns.join(',');
 }
 
@@ -71,19 +76,19 @@ function memberRow(flatMember) {
 }
 
 function flattenMember(member) {
-    const [ address1, address2,  postcode] = member.address.split(/[\n\r]/);
+    const [address1, address2, postcode] = member.address.split(/[\n\r]/);
     return {
         "customer_email": member.email,
         "billing_first_name": member.firstname,
         "billing_last_name": member.lastname,
-        "billing_address_1": `"${address1.replace('\n','')}"`,
-        "billing_address_2": `"${address2.replace('\n','')}"`,
-        "billing_postcode": `"${postcode.replace('\n','')}"`,
+        "billing_address_1": `"${address1.replace('\n', '')}"`,
+        "billing_address_2": `"${address2.replace('\n', '')}"`,
+        "billing_postcode": `"${postcode.replace('\n', '')}"`,
         "shipping_first_name": member.firstname,
         "shipping_last_name": member.lastname,
-        "shipping_address_1": `"${address1.replace('\n','')}"`,
-        "shipping_address_2": `"${address2.replace('\n','')}"`,
-        "shipping_postcode": `"${postcode.replace('\n','')}"`,
+        "shipping_address_1": `"${address1.replace('\n', '')}"`,
+        "shipping_address_2": `"${address2.replace('\n', '')}"`,
+        "shipping_postcode": `"${postcode.replace('\n', '')}"`,
         "subscription_status": 'wc-active',
         "start_date": moment(member.joined).format('YYYY-MM-DD HH:mm:ss'),
         "next_payment_date": moment(member.gocardless.next_possible_charge_date).format('YYYY-MM-DD HH:mm:ss'),
@@ -98,13 +103,12 @@ function flattenMember(member) {
         "payment_method": "gocardless",
         "payment_method_title": "Direct Debit",
         "payment_method_post_meta": squashObject({
-            "_gocardless_mandate_id":  member.gocardless.mandate_id,
-            "_gocardless_mandate": doubleSquashObject(
-                {
-                    id: member.gocardless.mandate_id
-                }
-            )
-            }),
+            "_gocardless_mandate_id": member.gocardless.mandate_id,
+            "_gocardless_mandate":
+            {
+                id: member.gocardless.mandate_id
+            }
+        }),
         "customer_note": "Migrated from SLMS Membership System 2020",
         "_old_gocardless_subscription_amount": member.gocardless.amount,
         "_old_gocardless_subscription_id": member.gocardless.subscription_id,
@@ -112,10 +116,10 @@ function flattenMember(member) {
     };
 
 }
-
-Members.find( {
-	'gocardless.subscription_id': { $exists: true }
-}, function( err, members ) {
+console.log(headerRow());
+Members.find({
+    'gocardless.subscription_id': { $exists: true }
+}, function (err, members) {
     members.forEach(function (member) {
         const nextChargeDate = moment(member.gocardless.next_possible_charge_date);
         console.log(nextChargeDate);
@@ -127,13 +131,11 @@ Members.find( {
             if (subscription.status === 'active') {
                 console.log("subscription is active")
                 const flatMember = flattenMember(member);
-                console.log(headerRow(flatMember));
                 console.log(memberRow(flatMember));
-                console.log()
             } else {
-                console.log("subscription is not active")
+                return;
             }
         });
     });
-    console.log("all members boinged")
+    console.log("# Done")
 });

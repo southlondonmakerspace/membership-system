@@ -5,6 +5,7 @@ var __js = __src + '/js';
 const daysItTakesToProcessPayments = 2;
 const moment = require('moment')
 const wooSubscriptionProductId = 13;
+const util = require('util');
 
 var config = require(__config),
     db = require(__js + '/database').connect(config.mongo),
@@ -12,7 +13,6 @@ var config = require(__config),
 
 var Members = db.Members;
 const paymentCutoffDate = moment().startOf('day').add(daysItTakesToProcessPayments, 'days');
-console.log("Looking for all members who are due to make a payment after " + paymentCutoffDate.format('DD-MM-YYYY'))
 
 const columns = [
     "customer_email",
@@ -120,22 +120,21 @@ console.log(headerRow());
 Members.find({
     'gocardless.subscription_id': { $exists: true }
 }, function (err, members) {
-    members.forEach(function (member) {
+    members.forEach(async function (member) {
         const nextChargeDate = moment(member.gocardless.next_possible_charge_date);
-        console.log(nextChargeDate);
         if (nextChargeDate.isBefore(paymentCutoffDate)) {
             return;
         }
-        console.log(member.gocardless.subscription_id);
-        GoCardless.getSubscription(member.gocardless.subscription_id, function (error, subscription) {
+        try {
+            const subscription = await util.promisify(GoCardless.getSubscription)(member.gocardless.subscription_id);
             if (subscription.status === 'active') {
-                console.log("subscription is active")
                 const flatMember = flattenMember(member);
                 console.log(memberRow(flatMember));
             } else {
                 return;
             }
-        });
+        } catch (e) {
+            console.error(e);
+        }
     });
-    console.log("# Done")
 });

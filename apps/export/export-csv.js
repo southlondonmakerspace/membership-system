@@ -3,8 +3,6 @@ var __config = __root + '/config/config.json';
 var __src = __root + '/src';
 var __js = __src + '/js';
 
-var logger = require(__js + '/logging');
-
 var moment = require('moment');
 var util = require('util');
 var stringify = require('csv-stringify');

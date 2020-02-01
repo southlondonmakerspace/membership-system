@@ -19,6 +19,13 @@ The fields that are exported are:
 - `subscription_id`: the GoCardless Subscription ID
 - `mandate_id`: the GoCardless Mandate ID
 - `permissions`: an array of permission IDs
+- `emergency_contact_first_name`: First name of the emergency contact,
+- `emergency_contact_last_name`: Last name of the emergency contact,
+- `emergency_contact_telephone`: Telephone number of the emergency contact,
+- `tag_id`: The RFID Tag ID associated with the member (if any),
+- `tag_hashed`: a hashed version of the RFID Tag (used by tag readers),
+- `signup_override`: Whether the user has been allowed to sign up even when signups are closed
+
 
 Dates are in `YYYY-MM-DD HH:mm:ss` format. 
 

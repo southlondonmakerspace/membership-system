@@ -59,7 +59,7 @@ function flattenMember(member) {
         "emergency_contact_first_name": member.emergency_contact.firstname,
         "emergency_contact_last_name": member.emergency_contact.lastname,
         "emergency_contact_telephone": member.emergency_contact.telephone,
-        "tag_id": member.tag.id
+        "tag_id": member.tag.id,
         "tag_hashed": member.tag.hashed,
         "signup_override": member.signup_override
     };

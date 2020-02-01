@@ -32,7 +32,7 @@ Dates are in `YYYY-MM-DD HH:mm:ss` format.
 Permissions are an ordered array, which has been converted into a pipe delimited format.  For example
 
 ```
-   0:permissionID1|1:permissionID2
+   permissionID1|permissionID2
 ```
 
 Each permission ID correlates with a permission available in the other file

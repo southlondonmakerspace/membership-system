@@ -176,5 +176,7 @@
 	"flash-enroll-dupe": "Tag already enrolled",
 	"flash-enroll-error": "Error enrolling tag",
 
-	"flash-signup-closed": "Signups are currently closed"
+	"flash-signup-closed": "Signups are currently closed",
+	"external-permission-validator-enabled": "false",
+	"external-permission-validator-url": "http://localhost/"
 }

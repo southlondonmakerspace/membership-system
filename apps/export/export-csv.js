@@ -13,14 +13,6 @@ var config = require(__config),
 var Members = db.Members;
 var Permissions = db.Permissions;
 
-function flattenPermissions(permissions) {
-    const permissionsArray = [];
-    permissions.forEach((permission) => {
-        permissionsArray.push( permission.permission.toString() );
-    });
-    return permissionsArray.join('|');
-}
-
 var columns = [
     "customer_email",
     "first_name",
@@ -35,6 +27,14 @@ var columns = [
     "mandate_id",
     "permissions"
 ];
+
+function flattenPermissions(permissions) {
+    const permissionsArray = [];
+    permissions.forEach((permission) => {
+        permissionsArray.push( permission.permission.toString() );
+    });
+    return permissionsArray.join('|');
+}
 
 function flattenMember(member) {
     return {

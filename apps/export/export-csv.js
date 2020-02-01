@@ -105,7 +105,8 @@ module.exports = {
                 }
             });
             stringify(rows, {
-                header: true
+                header: true,
+                columns
             }, function (err, data) {
                 if (err) {
                     callback(err);

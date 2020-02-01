@@ -10,16 +10,15 @@ The fields that are exported are:
 - `customer_email`: the email address of the member
 - `first_name`: the member's first name
 - `last_name`: the member's last name
-- `address`: the full address entered by the member
-- `postcode`: the postcode of the member (if supplied)
+- `address`: the full address entered by the member, including postcode
 - `start_date`: the date the member first signed up to the system (NOT their first payment)
 - `next_payment_date`: the next date that their subscription is due to renew
 - `payment_method`: the method by which the member pays their subscription (currently always `gocardless`)
 - `customer_note`: A note stating where this record came from
-- `_old_gocardless_subscription_amount`: The amount a member pays for their subscription
-- `_old_gocardless_subscription_id`: the GoCardless Subscription ID
-- `_old_gocardless_mandate_id`: the GoCardless Mandate ID
-- `_old_permissions`: an array of permission IDs
+- `subscription_amount`: The amount a member pays for their subscription
+- `subscription_id`: the GoCardless Subscription ID
+- `mandate_id`: the GoCardless Mandate ID
+- `permissions`: an array of permission IDs
 
 Dates are in `YYYY-MM-DD HH:mm:ss` format. 
 

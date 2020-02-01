@@ -26,33 +26,30 @@ var columns = [
     "first_name",
     "last_name",
     "address",
-    "postcode",
     "start_date",
     "next_payment_date",
     "payment_method",
     "customer_note",
-    "_old_gocardless_subscription_amount",
-    "_old_gocardless_subscription_id",
-    "_old_gocardless_mandate_id",
-    "_old_permissions"
+    "subscription_amount",
+    "subscription_id",
+    "mandate_id",
+    "permissions"
 ];
 
 function flattenMember(member) {
-    const [address1, address2, postcode] = member.address.split(/[\n\r]/);
     return {
         "customer_email": member.email,
         "first_name": member.firstname,
         "last_name": member.lastname,
-        "address": `${address1.replace('\n', '')}`,
-        "postcode": `${postcode.replace('\n', '')}`,
+        "address": member.address.replace(/(?:\r\n|\r|\n)/g, ','),
         "start_date": moment(member.joined).format('YYYY-MM-DD HH:mm:ss'),
         "next_payment_date": moment(member.gocardless.next_possible_charge_date).format('YYYY-MM-DD HH:mm:ss'),
         "payment_method": "gocardless",
         "customer_note": "Migrated from SLMS Membership System 2020",
-        "_old_gocardless_subscription_amount": member.gocardless.amount,
-        "_old_gocardless_subscription_id": member.gocardless.subscription_id,
-        "_old_gocardless_mandate_id": member.gocardless.mandate_id,
-        "_old_permissions": flattenPermissions(member.permissions)
+        "subscription_amount": member.gocardless.amount,
+        "subscription_id": member.gocardless.subscription_id,
+        "mandate_id": member.gocardless.mandate_id,
+        "permissions": flattenPermissions(member.permissions)
     };
 }
 
@@ -65,7 +62,7 @@ module.exports = {
             for (index = 0, len = members.length; index < len; ++index) {
                 var member = members[index];
                 try {
-                    records.push( flattenMember(member) )
+                    records.push( flattenMember(member) );
                 } catch (e) {
                     callback(e, null);
                     return;
@@ -79,7 +76,7 @@ module.exports = {
                     callback(err, null);
                 }
                 callback(null, data);
-            })
+            });
         });
     },
     permissions: function (callback) {
@@ -88,13 +85,13 @@ module.exports = {
                 callback(err);
                 return;
             }
-            var rows = []
+            var rows = [];
             var columns = [
                 "id",
                 "name",
                 "slug",
                 "description"
-            ]
+            ];
             permissions.forEach(function (permission) {
                 try {
                     rows.push( {
@@ -115,7 +112,7 @@ module.exports = {
                     return;
                 }
                 callback(null, data);
-            })
-        })
+            });
+        });
     }
 }

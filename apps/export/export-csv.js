@@ -25,7 +25,13 @@ var columns = [
     "subscription_amount",
     "subscription_id",
     "mandate_id",
-    "permissions"
+    "permissions",
+    "emergency_contact_first_name",
+    "emergency_contact_last_name",
+    "emergency_contact_telephone",
+    "tag_id",
+    "tag_hashed",
+    "signup_override"
 ];
 
 function flattenPermissions(permissions) {
@@ -49,7 +55,13 @@ function flattenMember(member) {
         "subscription_amount": member.gocardless.amount,
         "subscription_id": member.gocardless.subscription_id,
         "mandate_id": member.gocardless.mandate_id,
-        "permissions": flattenPermissions(member.permissions)
+        "permissions": flattenPermissions(member.permissions),
+        "emergency_contact_first_name": member.emergency_contact.firstname,
+        "emergency_contact_last_name": member.emergency_contact.lastname,
+        "emergency_contact_telephone": member.emergency_contact.telephone,
+        "tag_id": member.tag.id
+        "tag_hashed": member.tag.hashed,
+        "signup_override": member.signup_override
     };
 }
 

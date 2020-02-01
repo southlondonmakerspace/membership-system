@@ -8,37 +8,17 @@ var util = require('util');
 var stringify = require('csv-stringify');
 
 var config = require(__config),
-    db = require(__js + '/database').connect(config.mongo);
+    db = require( __js + '/database' );
 
 var Members = db.Members;
 var Permissions = db.Permissions;
-
-function doubleSquashObject(anArray) {
-    const stringParts = [];
-    Object.keys(anArray).forEach((key) => {
-        stringParts.push(key + "=" + anArray[key]);
-    });
-    return stringParts.join('+');
-}
-
-function squashObject(anArray) {
-    const stringParts = [];
-    Object.keys(anArray).forEach((key) => {
-        if (typeof anArray[key] === 'object') {
-            stringParts.push(key + doubleSquashObject(anArray[key]));
-        } else {
-            stringParts.push(key + ":" + anArray[key]);
-        }
-    });
-    return stringParts.join('|');
-}
 
 function flattenPermissions(permissions) {
     const permissionsArray = [];
     permissions.forEach((permission) => {
         permissionsArray.push( permission.permission.toString() );
-    })
-    return squashObject(permissionsArray);
+    });
+    return permissionsArray.join('|');
 }
 
 var columns = [
@@ -49,7 +29,6 @@ var columns = [
     "postcode",
     "start_date",
     "next_payment_date",
-    "order_items",
     "payment_method",
     "customer_note",
     "_old_gocardless_subscription_amount",

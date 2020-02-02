@@ -1,0 +1,22 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+	
+block breadcrumb
+	- setupComplete = true
+
+block contents
+	if member
+		+page_header( 'You are a member!', { level: 'h2' } )
+		p Happy making!
+	else
+		+page_header( 'You are not a member yet...', { level: 'h2' } )
+		if ! mandate
+			p You need to 
+				a( href="/profile/direct-debit" ) create a Direct Debit mandate.
+		else if !subscription
+			p You need to 
+				a( href="/profile/direct-debit" ) setup a subscription.
+		else
+			p Your first payment is pending.

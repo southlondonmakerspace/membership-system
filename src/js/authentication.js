@@ -317,12 +317,19 @@ var Authentication = {
 	},
 
 	// Express middleware to redirect unauthenticated API calls
-	isAPIAuthenticated: function( req, res, next ) {
-		if ( ! req.query.api_key ) return res.sendStatus( 403 );
-		APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
-			if ( key ) return next();
-			return res.sendStatus( 403 );
-		} );
+	apiCan: function( capability ) {
+		return function( req, res, next ) {
+			if ( ! req.query.api_key ) return res.sendStatus( 403 );
+			APIKeys.findOne( { key: req.query.api_key }, function( err, key ) {
+				if ( key ) {
+					if ( key.capabilities.indexOf( capability ) !== -1 ) {
+						return next();
+					}
+					return res.sendStatus( 403 );
+				}
+				return res.sendStatus( 403 );
+			} );
+		}
 	},
 
 	// Express middleware to redirect inactive members

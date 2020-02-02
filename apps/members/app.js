@@ -301,7 +301,7 @@ app.post( '/:uuid/profile', auth.isSuperAdmin, function( req, res ) {
 	}, function( error ) {
 		req.log.debug( {
 			app: 'members',
-			action: 'postcode-lookup-error',
+			action: 'error-lookingup-postcode',
 			error: error
 		} );
 
@@ -447,9 +447,16 @@ app.post( '/:uuid/discourse', auth.isSuperAdmin, function( req, res ) {
 
 	if ( req.body.activated ) member['discourse.activation_code'] = null;
 
-	Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
-		req.flash( 'success', 'discourse-updated' );
-		res.redirect( app.mountpath + '/' + req.params.uuid + '/discourse' );
+	Members.findOne( { "discourse.username": req.body.username }, function( err, member ) {
+		if ( member ) {
+			req.flash( 'warning', 'discouse-username-duplicate' );
+			res.redirect( app.mountpath + '/' + req.params.uuid + '/discourse' );
+		} else {
+			Members.update( { uuid: req.params.uuid }, { $set: member }, function( status ) {
+				req.flash( 'success', 'discourse-updated' );
+				res.redirect( app.mountpath + '/' + req.params.uuid + '/discourse' );
+			} );
+		}
 	} );
 } );
 

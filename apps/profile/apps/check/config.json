@@ -1,0 +1,9 @@
+{
+	"title": "Check",
+	"path": "check",
+	"permissions": [
+		"member"
+	],
+	"priority": 1,
+	"hidden": true
+}

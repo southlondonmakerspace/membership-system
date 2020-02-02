@@ -3,6 +3,8 @@ var __src = __root + '/src';
 var __js = __src + '/js';
 var __config = __root + '/config';
 
+var capabilities = require( __src + '/capabilities.json' );
+
 var	express = require( 'express' ),
 	app = express();
 
@@ -34,7 +36,7 @@ app.get( '/create', auth.isSuperAdmin, function( req, res ) {
 	res.locals.breadcrumb.push( {
 		name: 'Create'
 	} );
-	res.render( 'create' );
+	res.render( 'create', { capabilities: capabilities } );
 } );
 
 app.post( '/create', auth.isSuperAdmin, function( req, res ) {
@@ -50,9 +52,22 @@ app.post( '/create', auth.isSuperAdmin, function( req, res ) {
 		return;
 	}
 
+	if ( req.body.capabilities == undefined ) req.body.capabilities = [];
+
+	var invalidCapabilities = req.body.capabilities.filter( function( c ) {
+		if ( capabilities[c] == undefined ) return c;
+		return;
+	} );
+	if ( invalidCapabilities.length > 0 ) {
+		req.flash( 'danger', 'apikey-invalid-capability' );
+		res.redirect( app.parent.mountpath + app.mountpath + '/create' );
+		return;
+	}
+
 	var key = {
 		name: req.body.name,
-		key: req.body.key
+		key: req.body.key,
+		capabilities: req.body.capabilities
 	};
 
 	new APIKeys( key ).save( function( err ) {
@@ -72,26 +87,40 @@ app.get( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 		res.locals.breadcrumb.push( {
 			name: key.name
 		} );
-		res.render( 'edit', { key: key } );
+
+		res.render( 'edit', { key: key, capabilities: capabilities } );
 	} );
 } );
 
 app.post( '/:id/edit', auth.isSuperAdmin, function( req, res ) {
 	if ( ! req.body.name || req.body.name.trim() === '' ) {
 		req.flash( 'danger', 'apikey-name-required' );
-		res.redirect( app.parent.mountpath + app.mountpath );
+		res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.id + '/edit' );
 		return;
 	}
 
 	if ( ! req.body.key || req.body.key.trim() === '' ) {
 		req.flash( 'danger', 'apikey-key-required' );
-		res.redirect( app.parent.mountpath + app.mountpath );
+		res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.id + '/edit' );
+		return;
+	}
+
+	if ( req.body.capabilities == undefined ) req.body.capabilities = [];
+
+	var invalidCapabilities = req.body.capabilities.filter( function( c ) {
+		if ( capabilities[c] == undefined ) return c;
+		return;
+	} );
+	if ( invalidCapabilities.length > 0 ) {
+		req.flash( 'danger', 'apikey-invalid-capability' );
+		res.redirect( app.parent.mountpath + app.mountpath + '/' + req.params.id + '/edit' );
 		return;
 	}
 
 	var apikey = {
 		name: req.body.name,
-		key: req.body.key
+		key: req.body.key,
+		capabilities: req.body.capabilities
 	};
 
 	APIKeys.update( { _id: req.params.id }, apikey, function( status ) {

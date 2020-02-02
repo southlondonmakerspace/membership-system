@@ -1,0 +1,10 @@
+{
+	"title": "Export",
+	"path": "export",
+	"menu": "main",
+	"permissions": [
+		"superadmin"
+	],
+	"priority": 1
+
+}

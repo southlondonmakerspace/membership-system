@@ -240,7 +240,7 @@ app.post( '/', function( req, res ) {
 		}, function( error ) {
 			req.log.debug( {
 				app: 'join',
-				action: 'postcode-lookup-error',
+				action: 'error-lookingup-postcode',
 				error: error
 			} );
 			req.flash( 'danger', 'user-postcode' );

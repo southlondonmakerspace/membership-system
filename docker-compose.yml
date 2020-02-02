@@ -14,3 +14,10 @@ services:
      image: ministryofjustice/mailcatcher
      ports:
        - "1080:1080"
+   proxy:
+     image: nginx
+     build: ./nginx/
+     ports:
+       - "8080:8080"
+     depends_on:
+       - membership

@@ -13,7 +13,7 @@ block contents
 			p: a( href=Options( 'home-link-url' ), target="_blank").btn #{ Options( 'home-link-text' ) }
 			.bg
 	.row
-		if ! Options( 'signup-closed' )
+		if Options( 'signup-closed' ) == 'false'
 			.col-md-6
 				+page_header( 'New member' )
 				p Becoming a new member is straightforward. Click below to get started. 
@@ -21,7 +21,7 @@ block contents
 		.col-md-6
 			+page_header( 'Existing member' )
 			include /apps/login/views/partials/form.pug
-		if Options( 'signup-closed' )
+		if Options( 'signup-closed' ) == 'true'
 			.col-md-6
 				+page_header( 'Membership closed' )
 				p Unfortunately we are currently not taking new membership signups.

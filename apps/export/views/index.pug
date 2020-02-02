@@ -1,0 +1,23 @@
+extends /src/views/base.pug
+
+block prepend title
+	- title = app.title
+	- heading = app.title
+
+block contents
+	p This page allows you to export data from current membership database in CSV format, in order to archive the data or import into another system.
+	h4 Member Data
+	p All members with a #[strong GoCardless Subscription ID] will be exported in CSV format.  
+	p Anyone who currently is, or has been, a member will be included in this file. Users who have registered, but #[strong NOT ] set up a subscription are #[em excluded]. 
+	p
+		em #[strong WARNING]: This data is classified as personally identifiable data under GDPR and should be handled with care!
+	.form-group
+		.col-md-offset-2.col-md-10
+			a( href="/export/memberscsv" ).btn.btn-primary Export Members as CSV
+	br
+	h4 Permissions
+	p In order to make use of the permissions in the member data, a record of which IDs relate to which permissions is required.  The CSV generated using the button below will provide a list of permissions with their respective IDs, names and slugs.
+	.form-group
+		.col-md-offset-2.col-md-10
+			a( href="/export/permissionscsv" ).btn.btn-secondary Export Permissions as CSV
+			

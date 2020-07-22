@@ -39,7 +39,7 @@ app.get( '/:slug/:tag', auth.apiCan( 'api-member-permission-check' ), function( 
 	}
 	// curl https://southlondonmakerspace.org/toolcontrolJSON.php?tag_hashed=${req.params.tag}&tool=${mappedToolIdFromSlug}&espid=legacy-doorbot
 	const requestToNewSystem = {
-		tag: req.params.tag,
+		tag_hashed: req.params.tag,
 		tool: mappedToolIdFromSlug,
 		espid: 'legacy-membership-api'
 	};

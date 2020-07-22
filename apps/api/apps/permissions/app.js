@@ -1,3 +1,5 @@
+const { request } = require('express');
+
 var __root = '../../../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
@@ -19,7 +21,47 @@ var database = require( __js + '/database' ),
 
 var app_config = {};
 
+/* Migrate permissions to new system */
+const superagent = require('superagent');
+
+const toolIdMap = {
+	'shutter': 4,
+	'door': 3,
+	'access': 3,
+	'test': 21 // D94081A2 example tag ID (not hashed)
+};
+
 app.get( '/:slug/:tag', auth.apiCan( 'api-member-permission-check' ), function( req, res ) {
+	const mappedToolIdFromSlug = toolIdMap[req.params.slug];
+	if (!mappedToolIdFromSlug) {
+		res.sendStatus(404);
+		return;
+	}
+	// curl https://southlondonmakerspace.org/toolcontrolJSON.php?tag_hashed=${req.params.tag}&tool=${mappedToolIdFromSlug}&espid=legacy-doorbot
+	const requestToNewSystem = {
+		tag: req.params.tag,
+		tool: mappedToolIdFromSlug,
+		espid: 'legacy-membership-api'
+	};
+	console.log(requestToNewSystem);
+	superagent
+		.post('https://southlondonmakerspace.org/toolcontrol/ToolRcvr1.php')
+		.type('form')
+		.send(requestToNewSystem)
+		.set('accept', 'json')
+		.end(function (err, fwdResponse) {
+			if (fwdResponse.body.perm === 'APPROVE') {
+				res.send(JSON.stringify( {
+					name: fwdResponse.body.userfn
+				}));
+			} else {
+				console.log(fwdResponse.statusCode, 'Denied access to new membership system', fwdResponse.body)
+				res.sendStatus(403);
+			}
+		})
+});
+
+/*app.get( '/:slug/:tag', auth.apiCan( 'api-member-permission-check' ), function( req, res ) {
 	Members.findOne( { 'tag.hashed': req.params.tag } ).populate( 'permissions.permission' ).exec( function( err, member ) {
 		var grantAccess = false;
 		if ( member ) {
@@ -60,7 +102,7 @@ app.get( '/:slug/:tag', auth.apiCan( 'api-member-permission-check' ), function( 
 			res.sendStatus( 404 );
 		}
 	} );
-} );
+} );*/
 
 module.exports = function( config ) {
 	app_config = config;

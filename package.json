@@ -40,6 +40,7 @@
     "pug": "^2.0.0-beta11",
     "query-string": "^4.3.4",
     "request": "^2.70.0",
+    "superagent": "^5.3.1",
     "thirty-two": "^1.0.2"
   },
   "scripts": {
@@ -62,6 +63,6 @@
     "watchify": "^3.11.1"
   },
   "engines": {
-      "node": ">=8.10"
+    "node": ">=8.10"
   }
 }
